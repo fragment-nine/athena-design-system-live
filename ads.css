@@ -565,6 +565,15 @@ button.ad-card__name:focus-visible { outline: none; box-shadow: var(--ring-selec
 .ad-form-section { display: flex; flex-direction: column; margin-top: var(--space-4); }
 .ad-form-section__error { margin: 0 0 var(--space-2); }
 .ad-form-actions { display: flex; justify-content: flex-end; gap: var(--space-2); margin-top: var(--space-6); }
+/* InlineEdit: the words themselves until the pointer is on them; then the field's fill, never an edge. */
+.ad-inline-edit { all: unset; box-sizing: border-box; display: block; width: 100%; min-width: 0; padding: 0 var(--space-2); margin: 0 calc(var(--space-2) * -1); border-radius: var(--radius-page); color: var(--text-primary); text-overflow: ellipsis; }
+.ad-inline-edit--body { font-family: var(--font-body); font-size: var(--text-base); line-height: var(--h-field); }
+.ad-inline-edit--title { font-family: var(--font-display); font-weight: 600; font-size: var(--text-20); line-height: var(--lh-tight); padding-block: var(--space-1); }
+.ad-inline-edit:hover { background: var(--bg-raised); }
+.ad-inline-edit:focus { background: var(--bg-hover); }
+.ad-inline-edit:focus-visible { box-shadow: var(--ring-select); }
+.ad-inline-edit::placeholder { color: var(--text-muted); }
+.ad-inline-edit:disabled { background: transparent; cursor: default; }
 
 /* src/components/Furniture/Furniture.css */
 /* TitleBlock, Contents, Caption, DualUnit, Ground */
@@ -858,6 +867,13 @@ button:hover > .ad-project-pill:not(.ad-project-pill--current) { color: var(--ac
 .ad-facts__icon svg { width: var(--icon-sm); height: var(--icon-sm); }
 .ad-popover__section { margin-top: var(--space-3); }
 .ad-popover__section-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: var(--space-2); }
+/* With a foot: the body scrolls and the foot stays pinned under it, a hairline above. */
+.ad-popover--with-foot { display: flex; flex-direction: column; overflow: hidden; padding-bottom: 0; }
+.ad-popover__body { flex: 1; min-height: 0; overflow-y: auto; }
+.ad-popover__foot { flex: none; display: flex; align-items: center; gap: var(--space-2); margin: var(--space-3) calc(var(--space-4) * -1) 0; padding: var(--space-3) var(--space-4); border-top: var(--border-w) solid var(--border); }
+.ad-popover__action { margin-left: auto; display: inline-flex; }
+.ad-popover__title .ad-inline-edit--title { margin-left: calc(var(--space-2) * -1); }
+.ad-popover__title:has(.ad-inline-edit) { flex: 1; min-width: 0; }
 
 /* src/components/Row/Row.css */
 /* Row, RowDate, TodoCheck */
