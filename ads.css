@@ -913,6 +913,11 @@ button:hover > .ad-project-pill:not(.ad-project-pill--current) { color: var(--ac
 .ad-pick-field[aria-expanded="true"] { background: var(--bg-hover); }
 .ad-pick-field:focus-visible { outline: none; box-shadow: var(--ring-select); }
 .ad-pick-field__list { width: var(--w-menu); padding: var(--space-2); }
+/* The picker's Repeat line under the month (built 2026-10-25 for Athena): the quick picks' look, its current words in mono at the right. */
+.ad-datepicker__repeat { display: flex; align-items: center; gap: var(--space-2); width: 100%; height: var(--h-btn); margin-top: var(--space-2); padding: 0 var(--space-2); border: 0; border-top: var(--border-w) solid var(--border); border-radius: 0; background: transparent; font-family: var(--font-body); font-size: var(--text-base); color: var(--text-primary); cursor: pointer; text-align: left; }
+.ad-datepicker__repeat .ad-datepicker__pick-date { margin-left: auto; }
+.ad-datepicker__repeat:hover { color: var(--accent); }
+.ad-datepicker__repeat:focus-visible { outline: none; box-shadow: var(--ring-select); }
 
 /* src/components/Popover/Popover.css */
 /* Popover and its pieces */

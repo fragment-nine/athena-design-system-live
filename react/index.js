@@ -1468,8 +1468,9 @@ function TextScramble({
 
 // src/components/Status/Status.tsx
 import { jsx as jsx11, jsxs as jsxs8 } from "react/jsx-runtime";
-function Dot({ tone = "neutral", className, ...rest }) {
-  return /* @__PURE__ */ jsx11("span", { "aria-hidden": "true", ...rest, className: cx("ad-dot", `ad-dot--${tone}`, className) });
+function Dot({ tone = "neutral", hue, className, ...rest }) {
+  const colour = useHue(hue);
+  return /* @__PURE__ */ jsx11("span", { "aria-hidden": "true", ...rest, "data-coloured": colour ? true : void 0, style: colour ? { ["--ad-dot"]: colour } : void 0, className: cx("ad-dot", `ad-dot--${tone}`, className) });
 }
 function Status({ label, tone = "neutral", className, ...rest }) {
   return /* @__PURE__ */ jsxs8("span", { ...rest, className: cx("ad-status", className), children: [
@@ -1733,13 +1734,13 @@ function TodoCheck({ checked, onChange, priority = 4, ariaLabel, disabled, unack
     }
   );
 }
-function TodoRow({ name, priority, done, onTick, due, today, dept, who, selected, onOpen, completeLabel = "Complete", unacknowledged, onAcknowledge, acknowledgeLabel = "Acknowledge", repeat, pastDeadline, pastDeadlineLabel = "Deadline passed", role, deliverable, project, picking, onPressDate, onPressWho, onPressDeliverable, pressLabels, onRename }) {
+function TodoRow({ name, priority, done, onTick, due, today, dept, who, selected, onOpen, completeLabel = "Complete", unacknowledged, onAcknowledge, acknowledgeLabel = "Acknowledge", repeat, pastDeadline, pastDeadlineLabel = "Deadline passed", role, deliverable, project, picking, onPressDate, onPressWho, onPressDeliverable, pressLabels, onRename, onPressProject, onPressDept, rowProps }) {
   const plain = due ? /* @__PURE__ */ jsx16(RowDate, { due, today, done }) : null;
   const date = plain && onPressDate ? /* @__PURE__ */ jsx16(RowPress, { label: pressLabels?.date ?? "Change the date", onPress: onPressDate, children: plain }) : plain;
   const extras = repeat || pastDeadline || role || deliverable;
   const meta = date || dept || extras ? /* @__PURE__ */ jsxs13(Fragment5, { children: [
     date,
-    dept && /* @__PURE__ */ jsx16(Department, { dept: dept.dept, name: dept.name }),
+    dept && /* @__PURE__ */ jsx16(Department, { dept: dept.dept, name: dept.name, onPress: onPressDept, pressLabel: pressLabels?.dept }),
     repeat && /* @__PURE__ */ jsxs13("span", { className: "ad-row__fact", children: [
       /* @__PURE__ */ jsx16(Icon, { job: "repeat", size: "sm" }),
       String(repeat)
@@ -1757,6 +1758,10 @@ function TodoRow({ name, priority, done, onTick, due, today, dept, who, selected
   return /* @__PURE__ */ jsx16(
     Row,
     {
+      ...(() => {
+        const { className: _c, style: _s, ...hooks } = rowProps ?? {};
+        return hooks;
+      })(),
       picked: picking?.picked,
       onRename,
       renameLabel: onRename ? String(name) : void 0,
@@ -1772,7 +1777,7 @@ function TodoRow({ name, priority, done, onTick, due, today, dept, who, selected
           const faces = list.length > 1 ? /* @__PURE__ */ jsx16(AvatarStack, { people: list }) : list[0] ? /* @__PURE__ */ jsx16(Avatar, { name: list[0].name, src: list[0].src }) : null;
           return onPressWho && faces ? /* @__PURE__ */ jsx16(RowPress, { label: pressLabels?.who ?? "Change who", onPress: onPressWho, children: faces }) : faces;
         })(),
-        project && /* @__PURE__ */ jsx16(ProjectPill, { code: project.code, color: project.color })
+        project && /* @__PURE__ */ jsx16(ProjectPill, { code: project.code, color: project.color, onPress: onPressProject, pressLabel: pressLabels?.project })
       ] }) : void 0,
       selected,
       onOpen
@@ -2276,8 +2281,8 @@ function PickField({ options, value, onPick, label, placeholder, search, disable
 // src/components/Pickers/DatePicker.tsx
 import { useEffect as useEffect9, useId as useId8, useMemo as useMemo2, useRef as useRef13, useState as useState13 } from "react";
 import { jsx as jsx25, jsxs as jsxs22 } from "react/jsx-runtime";
-var EN = { today: "Today", tomorrow: "Tomorrow", nextWeek: "Next week", inTwoWeeks: "In two weeks", previousMonth: "Previous month", nextMonth: "Next month" };
-function DatePicker({ value, onChange, today: todayIn, weekStart = 1, locale = "en-US", labels: l, quickPicks, shadeWeekends = true, className }) {
+var EN = { today: "Today", tomorrow: "Tomorrow", nextWeek: "Next week", inTwoWeeks: "In two weeks", previousMonth: "Previous month", nextMonth: "Next month", noDate: "No date", repeat: "Repeat" };
+function DatePicker({ value, onChange, today: todayIn, weekStart = 1, locale = "en-US", labels: l, quickPicks, shadeWeekends = true, onClear, repeat, className }) {
   const labels = { ...EN, ...l };
   const today = dayOf(todayIn);
   const [focus, setFocus] = useState13(dayOf(value ?? today));
@@ -2330,10 +2335,13 @@ function DatePicker({ value, onChange, today: todayIn, weekStart = 1, locale = "
     }
   };
   return /* @__PURE__ */ jsxs22("div", { className: cx("ad-datepicker", className), children: [
-    /* @__PURE__ */ jsx25("div", { className: "ad-datepicker__quick", children: picks.map((p) => /* @__PURE__ */ jsxs22("button", { type: "button", className: "ad-datepicker__pick", "aria-pressed": sameDay(value, p.date), onClick: () => onChange(dayOf(p.date)), children: [
-      /* @__PURE__ */ jsx25("span", { children: p.label }),
-      /* @__PURE__ */ jsx25("span", { className: "ad-datepicker__pick-date", children: pickDate(p.date) })
-    ] }, p.id)) }),
+    /* @__PURE__ */ jsxs22("div", { className: "ad-datepicker__quick", children: [
+      picks.map((p) => /* @__PURE__ */ jsxs22("button", { type: "button", className: "ad-datepicker__pick", "aria-pressed": sameDay(value, p.date), onClick: () => onChange(dayOf(p.date)), children: [
+        /* @__PURE__ */ jsx25("span", { children: p.label }),
+        /* @__PURE__ */ jsx25("span", { className: "ad-datepicker__pick-date", children: pickDate(p.date) })
+      ] }, p.id)),
+      onClear && /* @__PURE__ */ jsx25("button", { type: "button", className: "ad-datepicker__pick", "aria-pressed": value == null, onClick: onClear, children: /* @__PURE__ */ jsx25("span", { children: labels.noDate }) })
+    ] }),
     /* @__PURE__ */ jsxs22("div", { className: "ad-datepicker__month", children: [
       /* @__PURE__ */ jsx25("span", { className: "ad-datepicker__month-name", "aria-live": "polite", children: monthName }),
       /* @__PURE__ */ jsxs22("span", { className: "ad-datepicker__navs", children: [
@@ -2365,6 +2373,11 @@ function DatePicker({ value, onChange, today: todayIn, weekStart = 1, locale = "
           }
         ) }, formatISO(d));
       }) }, r))
+    ] }),
+    repeat && /* @__PURE__ */ jsxs22("button", { type: "button", className: "ad-datepicker__repeat", onClick: (e) => repeat.onPress(e.currentTarget), children: [
+      /* @__PURE__ */ jsx25(Icon, { name: "repeat", size: "sm" }),
+      /* @__PURE__ */ jsx25("span", { children: labels.repeat }),
+      /* @__PURE__ */ jsx25("span", { className: "ad-datepicker__pick-date", children: repeat.words })
     ] })
   ] });
 }
