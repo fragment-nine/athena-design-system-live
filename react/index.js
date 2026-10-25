@@ -1830,18 +1830,24 @@ function Menu({ open, onClose, anchor, items: given, ariaLabel, placement = "dro
       "button",
       {
         type: "button",
-        role: "menuitem",
+        role: item.checked != null ? "menuitemcheckbox" : "menuitem",
+        "aria-checked": item.checked,
+        "aria-description": item.sub,
         "aria-disabled": item.disabled || void 0,
         tabIndex: i === at ? 0 : -1,
         "data-index": i,
         "data-active": i === at || void 0,
         onMouseEnter: () => i >= 0 && setAt(i),
         onClick: () => i >= 0 && choose(i),
-        className: cx("ad-menu__item", item.danger && "ad-menu__item--danger"),
+        className: cx("ad-menu__item", item.danger && "ad-menu__item--danger", item.sub && "ad-menu__item--two"),
         children: [
           item.icon && /* @__PURE__ */ jsx19("span", { className: "ad-menu__icon", "aria-hidden": "true", children: item.icon }),
-          /* @__PURE__ */ jsx19("span", { className: "ad-menu__label", children: item.label }),
-          item.shortcut && /* @__PURE__ */ jsx19("kbd", { className: "ad-menu__shortcut", children: item.shortcut })
+          item.sub ? /* @__PURE__ */ jsxs17("span", { className: "ad-menu__words", children: [
+            /* @__PURE__ */ jsx19("span", { className: "ad-menu__label", children: item.label }),
+            /* @__PURE__ */ jsx19("span", { className: "ad-menu__sub", children: item.sub })
+          ] }) : /* @__PURE__ */ jsx19("span", { className: "ad-menu__label", children: item.label }),
+          item.shortcut && /* @__PURE__ */ jsx19("kbd", { className: "ad-menu__shortcut", children: item.shortcut }),
+          item.checked && /* @__PURE__ */ jsx19("span", { className: "ad-menu__check", "aria-hidden": "true", children: /* @__PURE__ */ jsx19(Icon, { job: "check", size: "sm" }) })
         ]
       },
       item.id
@@ -1895,6 +1901,7 @@ function PickList({ options, value, onPick, searchLabel, noMatch = "Nothing matc
   };
   const listId = useId7();
   const picked = new Set(value == null ? [] : Array.isArray(value) ? value : [value]);
+  const many = Array.isArray(value);
   const shown = useMemo(() => {
     const s = q.trim().toLowerCase();
     if (onQuery) return options;
@@ -1968,9 +1975,11 @@ function PickList({ options, value, onPick, searchLabel, noMatch = "Nothing matc
               onClick: () => !o.disabled && onPick(o.id),
               className: "ad-picklist__option",
               children: [
+                many && /* @__PURE__ */ jsx21("span", { className: "ad-checkbox__box", "data-state": picked.has(o.id) ? "on" : "off", "aria-hidden": "true", children: picked.has(o.id) && /* @__PURE__ */ jsx21(Icon, { name: "check" }) }),
                 o.lead != null && /* @__PURE__ */ jsx21("span", { className: "ad-picklist__lead", children: o.lead }),
                 /* @__PURE__ */ jsx21("span", { className: "ad-picklist__label", children: o.label }),
-                o.hint != null && /* @__PURE__ */ jsx21("span", { className: "ad-picklist__hint", children: o.hint })
+                o.hint != null && /* @__PURE__ */ jsx21("span", { className: "ad-picklist__hint", children: o.hint }),
+                !many && picked.has(o.id) && /* @__PURE__ */ jsx21("span", { className: "ad-picklist__check", "aria-hidden": "true", children: /* @__PURE__ */ jsx21(Icon, { name: "check", size: "sm" }) })
               ]
             }
           )
