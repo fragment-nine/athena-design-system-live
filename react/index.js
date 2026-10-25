@@ -2628,13 +2628,14 @@ function Dials({ children }) {
 }
 
 // src/components/PageHeader/PageHeader.tsx
-import { useId as useId9, useRef as useRef17, useState as useState16 } from "react";
+import { useId as useId10, useRef as useRef17, useState as useState16 } from "react";
 
 // src/components/ShowOptions/ShowOptions.tsx
 import { useRef as useRef16, useState as useState15 } from "react";
 
 // src/components/Settings/Settings.tsx
-import { jsx as jsx29, jsxs as jsxs26 } from "react/jsx-runtime";
+import { useId as useId9 } from "react";
+import { Fragment as Fragment8, jsx as jsx29, jsxs as jsxs26 } from "react/jsx-runtime";
 function SettingsLayout({ nav, children, className }) {
   return /* @__PURE__ */ jsxs26("div", { className: cx("ad-settings", className), children: [
     nav,
@@ -2650,13 +2651,19 @@ function SettingsNavItem({ icon, label, current, onSelect }) {
     label
   ] });
 }
-function SettingsSection({ title, help, children }) {
-  return /* @__PURE__ */ jsxs26("section", { className: "ad-settings__section", children: [
+function SettingsSection({ title, help, number, fold, children }) {
+  const rows = useId9();
+  const words = /* @__PURE__ */ jsxs26(Fragment8, { children: [
+    fold && /* @__PURE__ */ jsx29(Icon, { name: "caret-down", className: "ad-settings__chevron" }),
+    number != null && /* @__PURE__ */ jsx29("span", { className: "ad-settings__numeral", children: String(number).padStart(2, "0") }),
+    title
+  ] });
+  return /* @__PURE__ */ jsxs26("section", { className: "ad-settings__section", "data-collapsed": fold ? String(fold.collapsed) : void 0, children: [
     /* @__PURE__ */ jsxs26("div", { className: "ad-settings__title-row", children: [
-      /* @__PURE__ */ jsx29("h2", { className: "ad-settings__title", children: title }),
+      /* @__PURE__ */ jsx29("h2", { className: "ad-settings__title", children: fold ? /* @__PURE__ */ jsx29("button", { type: "button", className: "ad-settings__fold", "aria-expanded": !fold.collapsed, "aria-controls": rows, onClick: fold.onToggle, children: words }) : words }),
       help && /* @__PURE__ */ jsx29(Help, { text: help })
     ] }),
-    /* @__PURE__ */ jsx29("div", { className: "ad-settings__rows", children })
+    /* @__PURE__ */ jsx29("div", { className: "ad-settings__rows", id: rows, hidden: fold?.collapsed || void 0, children })
   ] });
 }
 function SettingRow(props) {
@@ -2670,7 +2677,7 @@ function AccessRow({ face, name, className, ...rest }) {
 }
 
 // src/components/ShowOptions/ShowOptions.tsx
-import { Fragment as Fragment8, jsx as jsx30, jsxs as jsxs27 } from "react/jsx-runtime";
+import { Fragment as Fragment9, jsx as jsx30, jsxs as jsxs27 } from "react/jsx-runtime";
 var showOrder = ["compactRows", "projectColours", "itemColours", "departmentColours", "weekendShading", "people", "archive"];
 var WORDS = {
   compactRows: "Compact rows",
@@ -2687,7 +2694,7 @@ function ShowOptionsGear({ value, onChange, options = [...showOrder], labels: l 
   const now = { ...SHOW_DEFAULTS, ...value };
   const shown = showOrder.filter((o) => options.includes(o));
   const gearLabel = l.gear ?? "Show options";
-  return /* @__PURE__ */ jsxs27(Fragment8, { children: [
+  return /* @__PURE__ */ jsxs27(Fragment9, { children: [
     /* @__PURE__ */ jsx30(IconButton, { ref: gear, label: gearLabel, active: open, "aria-expanded": open, "aria-haspopup": "dialog", onClick: () => setOpen(!open), children: /* @__PURE__ */ jsx30(Icon, { job: "settings" }) }),
     /* @__PURE__ */ jsx30(Popover, { open, onClose: () => setOpen(false), anchor: gear, ariaLabel: gearLabel, children: /* @__PURE__ */ jsx30(PopoverSection, { label: gearLabel, children: shown.map((o) => /* @__PURE__ */ jsx30(SettingRow, { label: l[o] ?? WORDS[o], children: /* @__PURE__ */ jsx30(Switch, { checked: now[o], "aria-label": l[o] ?? WORDS[o], onChange: (on) => onChange({ ...now, [o]: on }) }) }, o)) }) })
   ] });
@@ -2741,7 +2748,7 @@ function PageHeader({ title, icon, stamp, tabs, back, description, countdown: gi
 }
 function Tabs({ tabs, value, onChange, ariaLabel, numbered = true, panelId, className }) {
   const list = useRef17(null);
-  const base = useId9();
+  const base = useId10();
   const at = tabs.findIndex((t) => t.id === value);
   const onKeyDown2 = (e) => {
     let n = null;
@@ -3131,12 +3138,12 @@ function ViewSwitch({ options, value, onChange, ariaLabel, className }) {
 }
 
 // src/components/Warnings/Warnings.tsx
-import { forwardRef as forwardRef9, useId as useId10, useState as useState19 } from "react";
-import { Fragment as Fragment9, jsx as jsx36, jsxs as jsxs32 } from "react/jsx-runtime";
+import { forwardRef as forwardRef9, useId as useId11, useState as useState19 } from "react";
+import { Fragment as Fragment10, jsx as jsx36, jsxs as jsxs32 } from "react/jsx-runtime";
 function AlertBar({ alerts, label = "Alerts", snoozeLabel = "Snooze", pillLabel = (p, n) => `${n} priority ${p}`, priorityLabel = (p) => `Priority ${p}`, defaultOpen = false, open, onOpenChange, className }) {
   const [own, setOwn] = useState19(defaultOpen);
   const isOpen = open ?? own;
-  const listId = useId10();
+  const listId = useId11();
   if (!alerts.length) return null;
   const counts = [1, 2, 3, 4].map((p) => [p, alerts.filter((a) => a.priority === p).length]).filter(([, n]) => n > 0);
   const toggle = () => {
@@ -3181,7 +3188,7 @@ function NotificationList({ days, unreadLabel = "Unread" }) {
       /* @__PURE__ */ jsx36("span", { className: "ad-notifications__date", children: d.date })
     ] }),
     d.items.map((n) => {
-      const body = /* @__PURE__ */ jsxs32(Fragment9, { children: [
+      const body = /* @__PURE__ */ jsxs32(Fragment10, { children: [
         n.unread ? /* @__PURE__ */ jsx36("span", { className: "ad-notification__unread", role: "img", "aria-label": unreadLabel }) : /* @__PURE__ */ jsx36("span", { className: "ad-notification__read" }),
         n.face && /* @__PURE__ */ jsx36("span", { className: "ad-notification__face", children: n.face }),
         /* @__PURE__ */ jsx36("span", { className: "ad-notification__sentence", children: n.sentence }),
@@ -3310,19 +3317,42 @@ function SelectionBar({ count, countLabel = (n) => `${n} selected`, actions, cla
 
 // src/components/Timeline/Timeline.tsx
 import { jsx as jsx39, jsxs as jsxs35 } from "react/jsx-runtime";
-function Bar({ label, unconfirmed, deal, backup, color, selected, startLabel, endLabel, lead, children, thin, labelOutside, onOpen, className, style }) {
-  const Tag2 = onOpen ? "button" : "div";
+var strip = (h) => {
+  if (!h) return {};
+  const { className: _c, style: _s, ...rest } = h;
+  return rest;
+};
+function Bar({ label, unconfirmed, deal, backup, color, selected, startLabel, endLabel, lead, children, thin, labelOutside, onOpen, ends, barProps, className, style }) {
+  const asButton = !!onOpen && !ends;
+  const Tag2 = asButton ? "button" : "div";
   const hue = useHue(color);
+  const hooks = strip(barProps);
   const name = /* @__PURE__ */ jsx39("span", { className: "ad-bar__name", children: label });
+  const grip = (side, h) => h && /* @__PURE__ */ jsx39("span", { "aria-hidden": h["aria-label"] ? void 0 : true, ...strip(h), className: `ad-bar__grip ad-bar__grip--${side}` });
   return /* @__PURE__ */ jsxs35(
     Tag2,
     {
-      type: onOpen ? "button" : void 0,
-      onClick: onOpen,
+      ...hooks,
+      type: asButton ? "button" : void 0,
+      role: onOpen && !asButton ? "button" : hooks.role,
+      tabIndex: onOpen && !asButton ? 0 : hooks.tabIndex,
+      onClick: (e) => {
+        hooks.onClick?.(e);
+        if (e.target.closest(".ad-bar__grip")) return;
+        onOpen?.();
+      },
+      onKeyDown: (e) => {
+        hooks.onKeyDown?.(e);
+        if (onOpen && !asButton && e.target === e.currentTarget && (e.key === "Enter" || e.key === " ")) {
+          e.preventDefault();
+          onOpen();
+        }
+      },
       "aria-current": selected || void 0,
       className: cx("ad-bar", unconfirmed && "ad-bar--unconfirmed", deal && "ad-bar--deal", backup && "ad-bar--backup", thin && "ad-bar--thin", labelOutside && "ad-bar--label-outside", selected && "ad-bar--selected", className),
       style: { ...style, ["--ad-bar"]: hue },
       children: [
+        grip("start", ends?.start),
         startLabel && /* @__PURE__ */ jsx39("span", { className: "ad-bar__end ad-bar__end--start", children: startLabel }),
         /* @__PURE__ */ jsxs35("span", { className: "ad-bar__label", children: [
           lead,
@@ -3330,7 +3360,8 @@ function Bar({ label, unconfirmed, deal, backup, color, selected, startLabel, en
         ] }),
         children,
         labelOutside && /* @__PURE__ */ jsx39("span", { className: "ad-bar__outside", children: name }),
-        endLabel && /* @__PURE__ */ jsx39("span", { className: "ad-bar__end ad-bar__end--end", children: endLabel })
+        endLabel && /* @__PURE__ */ jsx39("span", { className: "ad-bar__end ad-bar__end--end", children: endLabel }),
+        grip("end", ends?.end)
       ]
     }
   );
@@ -3478,8 +3509,13 @@ function PeriodCluster({ shown, periods, period, onPeriod, onPrevious, onNext, o
 
 // src/components/Calendar/Calendar.tsx
 import { jsx as jsx41, jsxs as jsxs37 } from "react/jsx-runtime";
+var hooksOf = (h) => {
+  if (!h) return {};
+  const { className: _c, style: _s, ...rest } = h;
+  return rest;
+};
 var diff = (a, b) => daysBetween(b, a);
-function MonthCalendar({ month, items, today: todayIn, weekStart = 1, locale = "en-US", onOpen, className }) {
+function MonthCalendar({ month, items, today: todayIn, weekStart = 1, locale = "en-US", onOpen, dayProps, itemProps, marks, className }) {
   const today = dayOf(todayIn);
   const hueOf = useHueOf();
   const shadeWeekends = useShow().weekendShading;
@@ -3512,12 +3548,20 @@ function MonthCalendar({ month, items, today: todayIn, weekStart = 1, locale = "
         Array.from({ length: 7 }, (_2, i) => {
           const d = addDays(ws, i);
           const wk = d.getDay() === 0 || d.getDay() === 6;
-          return /* @__PURE__ */ jsx41("div", { style: { gridColumn: i + 1 }, "aria-hidden": "true", className: "ad-month__cell", "data-outside": d.getMonth() !== first.getMonth() || void 0, "data-weekend": shadeWeekends && wk || void 0, children: /* @__PURE__ */ jsx41("span", { className: "ad-month__num", "data-today": diff(d, today) === 0 || void 0, children: d.getDate() }) }, i);
+          const mark = marks?.(d);
+          return /* @__PURE__ */ jsx41("div", { "aria-hidden": dayProps ? void 0 : true, ...hooksOf(dayProps?.(d)), style: { gridColumn: i + 1 }, className: "ad-month__cell", "data-outside": d.getMonth() !== first.getMonth() || void 0, "data-weekend": shadeWeekends && wk || void 0, children: /* @__PURE__ */ jsxs37("span", { className: "ad-month__day", children: [
+            /* @__PURE__ */ jsx41("span", { className: "ad-month__num", "data-today": diff(d, today) === 0 || void 0, children: d.getDate() }),
+            mark != null && /* @__PURE__ */ jsx41("span", { className: "ad-month__marks", children: mark })
+          ] }) }, i);
         }),
         placed.map(({ item, lane, from, to, cutStart, cutEnd }) => {
           const style = { gridColumn: `${from + 1} / ${to + 2}`, ["--ad-lane"]: lane, ["--ad-bar"]: hueOf(item.color) };
           const cls = cx("ad-month__bar", item.unconfirmed && "ad-month__bar--unconfirmed", cutStart && "ad-month__bar--cut-start", cutEnd && "ad-month__bar--cut-end");
-          return onOpen ? /* @__PURE__ */ jsx41("button", { type: "button", className: cls, style, onClick: () => onOpen(item), children: /* @__PURE__ */ jsx41("span", { children: item.label }) }, item.id) : /* @__PURE__ */ jsx41("span", { className: cls, style, children: /* @__PURE__ */ jsx41("span", { children: item.label }) }, item.id);
+          const hooks = hooksOf(itemProps?.(item));
+          return onOpen ? /* @__PURE__ */ jsx41("button", { type: "button", ...hooks, className: cls, style, onClick: (e) => {
+            hooks.onClick?.(e);
+            onOpen(item);
+          }, children: /* @__PURE__ */ jsx41("span", { children: item.label }) }, item.id) : /* @__PURE__ */ jsx41("span", { ...hooks, className: cls, style, children: /* @__PURE__ */ jsx41("span", { children: item.label }) }, item.id);
         })
       ] }, w);
     })
@@ -3562,7 +3606,7 @@ function TimeGrid({ startHour, endHour, bookings = [], columns, now, hourLabel =
 }
 
 // src/components/Charts/Charts.tsx
-import { Fragment as Fragment10, jsx as jsx42, jsxs as jsxs38 } from "react/jsx-runtime";
+import { Fragment as Fragment11, jsx as jsx42, jsxs as jsxs38 } from "react/jsx-runtime";
 function AmountBars({ items, max, ariaLabel, className }) {
   const top = max ?? Math.max(1, ...items.map((i) => i.value));
   return /* @__PURE__ */ jsx42("div", { className: cx("ad-amounts", className), role: "list", "aria-label": ariaLabel, children: items.map((i) => /* @__PURE__ */ jsxs38("div", { className: "ad-amounts__row", role: "listitem", children: [
@@ -3586,7 +3630,7 @@ function BudgetBar({ fraction, figure, note = "worked", remainder, end, ariaLabe
       /* @__PURE__ */ jsx42("span", { children: note }),
       /* @__PURE__ */ jsxs38("span", { children: [
         remainder,
-        end && /* @__PURE__ */ jsxs38(Fragment10, { children: [
+        end && /* @__PURE__ */ jsxs38(Fragment11, { children: [
           " \xB7 ",
           end
         ] })
@@ -3725,7 +3769,7 @@ function PixxBrief({ open, face, greeting, children, onSnooze, onGotIt, snoozeLa
 }
 
 // src/components/Furniture/Furniture.tsx
-import { Fragment as Fragment11, jsx as jsx45, jsxs as jsxs40 } from "react/jsx-runtime";
+import { Fragment as Fragment12, jsx as jsx45, jsxs as jsxs40 } from "react/jsx-runtime";
 function TitleBlock({ code, number, venue, pageNumber, page }) {
   return /* @__PURE__ */ jsxs40("footer", { className: "ad-title-block", children: [
     /* @__PURE__ */ jsxs40("span", { className: "ad-title-block__cell ad-title-block__code", children: [
@@ -3742,7 +3786,7 @@ function TitleBlock({ code, number, venue, pageNumber, page }) {
 }
 function Contents({ entries, ariaLabel = "Contents" }) {
   return /* @__PURE__ */ jsx45("ol", { className: "ad-contents", "aria-label": ariaLabel, children: entries.map((e, i) => {
-    const inner = /* @__PURE__ */ jsxs40(Fragment11, { children: [
+    const inner = /* @__PURE__ */ jsxs40(Fragment12, { children: [
       /* @__PURE__ */ jsx45("span", { className: "ad-contents__numeral", children: String(i + 1).padStart(2, "0") }),
       /* @__PURE__ */ jsxs40("span", { className: "ad-contents__body", children: [
         /* @__PURE__ */ jsx45("span", { className: "ad-contents__name", children: e.name }),

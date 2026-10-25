@@ -376,6 +376,8 @@
 .ad-month__cell { grid-row: 1 / -1; display: flex; flex-direction: column; justify-content: space-between; padding: var(--space-1) var(--space-1); border-right: var(--border-w) solid var(--border); border-bottom: var(--border-w) solid var(--border); }
 .ad-month__cell[data-weekend] { background-image: var(--hatch-fine); }
 .ad-month__cell[data-outside] .ad-month__num { color: var(--text-faint); }
+.ad-month__day { display: flex; align-items: center; gap: var(--space-2); align-self: stretch; }
+.ad-month__marks { display: inline-flex; align-items: center; gap: var(--space-1); margin-left: auto; color: var(--text-secondary); }
 .ad-month__num { position: relative; align-self: flex-start; font-family: var(--font-mono); font-size: var(--text-xs); color: var(--text-secondary); }
 .ad-month__num[data-today] { color: var(--text-primary); }
 .ad-month__num[data-today]::after { content: ""; position: absolute; top: 50%; left: calc(100% + var(--space-1)); width: var(--space-1); height: var(--space-1); transform: translateY(-50%); border-radius: var(--radius-round); background: var(--text-primary); }
@@ -1091,6 +1093,13 @@ button.ad-row__name:focus-visible { outline: none; box-shadow: var(--ring-select
 /* A set-time field ("9:00 – 18:00") reads in mono. */
 /* "No access" sits quiet. */
 .ad-settings__title-row { display: flex; align-items: center; gap: var(--space-1); }
+.ad-settings__title { display: flex; align-items: center; gap: var(--space-2); }
+.ad-settings__numeral { font-family: var(--font-mono); font-weight: 400; color: var(--text-faint); }
+.ad-settings__fold { display: inline-flex; align-items: center; gap: var(--space-2); padding: 0; border: 0; background: none; color: inherit; font: inherit; cursor: pointer; }
+.ad-settings__fold:focus-visible { outline: none; box-shadow: var(--ring-select); }
+.ad-settings__chevron { width: var(--icon-sm); height: var(--icon-sm); color: var(--text-muted); transition: transform var(--dur-fast) var(--ease-out); }
+.ad-settings__section[data-collapsed="true"] .ad-settings__chevron { transform: rotate(-90deg); }
+@media (prefers-reduced-motion: reduce) { .ad-settings__chevron { transition: none; } }
 
 /* src/components/Status/Status.css */
 /* Dot and Status */
@@ -1245,6 +1254,15 @@ button.ad-row__name:focus-visible { outline: none; box-shadow: var(--ring-select
   transition: box-shadow var(--dur-fast) var(--ease-out);
 }
 button.ad-bar { cursor: pointer; }
+.ad-bar[role="button"] { cursor: pointer; }
+/* Grab handles: a short bone tick inside each end, shown on hover or focus; the cursor says it resizes. */
+.ad-bar__grip { position: absolute; top: 0; bottom: 0; width: var(--space-2); cursor: ew-resize; z-index: 1; }
+.ad-bar__grip--start { left: 0; }
+.ad-bar__grip--end { right: 0; }
+.ad-bar__grip::after { content: ""; position: absolute; top: 25%; bottom: 25%; left: 50%; width: var(--border-w-strong); transform: translateX(-50%); border-radius: var(--radius-round); background: var(--text-primary); opacity: 0; transition: opacity var(--dur-fast) var(--ease-out); }
+.ad-bar:hover .ad-bar__grip::after, .ad-bar__grip:focus-visible::after { opacity: 1; }
+.ad-bar__grip:focus-visible { outline: none; box-shadow: var(--ring-select); border-radius: var(--radius-page); }
+@media (prefers-reduced-motion: reduce) { .ad-bar__grip::after { transition: none; } }
 /* A part line: outlined only, no fill, the name text-secondary at the small size. */
 .ad-bar--thin { background: transparent; box-shadow: inset 0 0 0 var(--border-w) var(--line-strong); color: var(--text-secondary); font-size: var(--text-xs); }
 .ad-bar--unconfirmed { background: transparent; background-image: var(--hatch); box-shadow: inset 0 0 0 var(--border-w) var(--line-strong); }
