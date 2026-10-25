@@ -318,6 +318,11 @@
 .ad-lane__card-icon svg { width: var(--icon-sm); height: var(--icon-sm); }
 .ad-lane__card-face { margin-left: auto; display: inline-flex; }
 .ad-drop-line { height: var(--bw-select); border-radius: var(--border-w); background: var(--text-primary); }
+/* A lane heading you can press; a card's marks and project code (built 2026-10-25 for Athena). */
+.ad-lane__name--press { margin: 0; padding: 0; border: 0; background: transparent; font: inherit; letter-spacing: inherit; text-transform: inherit; color: inherit; cursor: pointer; border-radius: var(--radius-page); }
+.ad-lane__name--press:hover { color: var(--accent); }
+.ad-lane__name--press:focus-visible { outline: none; box-shadow: var(--ring-select); }
+.ad-lane__card-marks, .ad-lane__card-code { display: inline-flex; align-items: center; gap: var(--space-1); }
 
 /* src/components/Button/Button.css */
 /* Button and IconButton */
@@ -436,6 +441,14 @@ button.ad-card__name:focus-visible { outline: none; box-shadow: var(--ring-selec
 .ad-card__name { font-size: var(--text-base); line-height: var(--lh-tight); margin-bottom: var(--space-2); }
 /* A widget's dials: three across, as the Dashboard card lays them. */
 .ad-card__dials { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--space-4) var(--space-2); }
+/* Built 2026-10-25 for Athena: a picked card is one tone lighter, its tick box at the top left; a name may carry a lead (the todo's ring). */
+.ad-card { position: relative; }
+.ad-card[data-picked] { background: var(--bg-hover); }
+.ad-card__pick { position: absolute; top: var(--space-2); left: var(--space-2); }
+.ad-card:has(.ad-card__pick) { padding-left: calc(var(--space-2) + var(--check-size) + var(--space-2)); }
+.ad-card__name-row { display: flex; align-items: flex-start; gap: var(--space-2); margin-bottom: var(--space-2); }
+.ad-card__name-row .ad-card__name { margin-bottom: 0; flex: 1; min-width: 0; }
+.ad-card__lead { display: inline-flex; flex: none; }
 
 /* src/components/Charts/Charts.css */
 /* AmountBars, BudgetBar, ProgressBar, OverTime, Dial, Verdict, as the Charts and Dashboard cards draw them */

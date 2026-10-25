@@ -2409,7 +2409,7 @@ function DateField({ onParsed, label, text: given, onText, format, icon, classNa
 import { createContext as createContext5, forwardRef as forwardRef6, useContext as useContext5 } from "react";
 import { jsx as jsx25, jsxs as jsxs23 } from "react/jsx-runtime";
 var OpenCard = createContext5(void 0);
-var Card = forwardRef6(function Card2({ title, onMore, moreLabel = "More", children, onOpen, selected, dragging, size = "tile", className, onClick, ...rest }, ref) {
+var Card = forwardRef6(function Card2({ title, onMore, moreLabel = "More", children, onOpen, selected, dragging, picking, size = "tile", className, onClick, ...rest }, ref) {
   return /* @__PURE__ */ jsxs23(
     "div",
     {
@@ -2417,6 +2417,7 @@ var Card = forwardRef6(function Card2({ title, onMore, moreLabel = "More", child
       ...rest,
       "data-selected": selected || void 0,
       "data-dragging": dragging || void 0,
+      "data-picked": picking?.picked || void 0,
       onClick: (e) => {
         onClick?.(e);
         if (onOpen && !e.defaultPrevented && !fromControl(e)) onOpen();
@@ -2433,17 +2434,22 @@ var Card = forwardRef6(function Card2({ title, onMore, moreLabel = "More", child
             onMore();
           }, children: moreLabel })
         ] }),
+        picking && /* @__PURE__ */ jsx25("span", { className: "ad-card__pick", children: /* @__PURE__ */ jsx25(Checkbox, { "aria-label": picking.label, checked: picking.picked, onChange: picking.onChange }) }),
         /* @__PURE__ */ jsx25(OpenCard.Provider, { value: onOpen, children })
       ]
     }
   );
 });
-function CardName({ children }) {
+function CardName({ children, lead, onRename, renameLabel }) {
   const open = useContext5(OpenCard);
-  return open ? /* @__PURE__ */ jsx25("button", { type: "button", className: "ad-card__name ad-open", onClick: (e) => {
+  const name = onRename ? /* @__PURE__ */ jsx25(InlineEdit, { value: String(children), onCommit: onRename, ariaLabel: renameLabel ?? "Name", className: "ad-card__name" }) : open ? /* @__PURE__ */ jsx25("button", { type: "button", className: "ad-card__name ad-open", onClick: (e) => {
     e.stopPropagation();
     open();
   }, children }) : /* @__PURE__ */ jsx25("div", { className: "ad-card__name", children });
+  return lead != null ? /* @__PURE__ */ jsxs23("div", { className: "ad-card__name-row", children: [
+    /* @__PURE__ */ jsx25("span", { className: "ad-card__lead", children: lead }),
+    name
+  ] }) : name;
 }
 function Dials({ children }) {
   return /* @__PURE__ */ jsx25("div", { className: "ad-card__dials", children });
@@ -3016,19 +3022,21 @@ import { jsx as jsx34, jsxs as jsxs31 } from "react/jsx-runtime";
 function Board({ children, ariaLabel, className }) {
   return /* @__PURE__ */ jsx34("div", { className: cx("ad-board", className), role: "region", "aria-label": ariaLabel, children });
 }
-function BoardLane({ title, mark, children, className }) {
+function BoardLane({ title, mark, onTitle, titleLabel, children, className }) {
   return /* @__PURE__ */ jsxs31("section", { className: cx("ad-lane", className), children: [
     /* @__PURE__ */ jsxs31("h3", { className: "ad-lane__heading", children: [
       mark,
-      /* @__PURE__ */ jsx34("span", { className: "ad-lane__name", children: title })
+      onTitle ? /* @__PURE__ */ jsx34("button", { type: "button", className: "ad-lane__name ad-lane__name--press", "aria-label": titleLabel, onClick: onTitle, children: title }) : /* @__PURE__ */ jsx34("span", { className: "ad-lane__name", children: title })
     ] }),
     /* @__PURE__ */ jsx34("div", { className: "ad-lane__cards", children })
   ] });
 }
-function BoardCardMeta({ date, icon, face }) {
+function BoardCardMeta({ date, icon, face, code, marks }) {
   return /* @__PURE__ */ jsxs31("div", { className: "ad-lane__card-meta", children: [
     date,
     icon && /* @__PURE__ */ jsx34("span", { "aria-hidden": "true", className: "ad-lane__card-icon", children: icon }),
+    marks && /* @__PURE__ */ jsx34("span", { className: "ad-lane__card-marks", children: marks }),
+    code && /* @__PURE__ */ jsx34("span", { className: "ad-lane__card-code", children: code }),
     face && /* @__PURE__ */ jsx34("span", { className: "ad-lane__card-face", children: face })
   ] });
 }
