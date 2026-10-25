@@ -1499,10 +1499,11 @@ function TextScramble({
 
 // src/components/Status/Status.tsx
 import { jsx as jsx12, jsxs as jsxs9 } from "react/jsx-runtime";
-var SETTINGS_COLOUR = /^project-(0[1-9]|1[0-2])$/;
+var pickColours = ["grey", "blue", "teal", "green", "amber", "orange", "red", "purple", "white"];
+var PICKABLE = new Set(pickColours);
 function Dot({ tone = "neutral", hue, priority, colour: picked, className, ...rest }) {
   const shown = useHue(hue);
-  const colour = picked && SETTINGS_COLOUR.test(picked) ? `var(--${picked})` : shown;
+  const colour = picked && PICKABLE.has(picked) ? `var(--pick-${picked})` : shown;
   return /* @__PURE__ */ jsx12("span", { "aria-hidden": "true", ...rest, "data-coloured": colour ? true : void 0, style: colour ? { ["--ad-dot"]: colour } : void 0, className: cx("ad-dot", `ad-dot--${tone}`, priority && `ad-dot--p${priority}`, className) });
 }
 function Status({ label, tone = "neutral", colour, className, ...rest }) {
@@ -4022,6 +4023,7 @@ export {
   cx,
   describeViolations,
   hueNames,
+  pickColours,
   projectHue,
   resetDesignViolations,
   scanIn,

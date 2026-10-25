@@ -39,6 +39,15 @@
   --status-good: #6f9c6a;
   --status-info-blue: #6f9fc4;
   --status-neutral: #7c7a77;
+  --pick-grey: var(--status-neutral);
+  --pick-blue: #4e88b4;
+  --pick-teal: #5aa0a0;
+  --pick-green: var(--status-good);
+  --pick-amber: var(--status-warn);
+  --pick-orange: #e16d48;
+  --pick-red: var(--status-error);
+  --pick-purple: #9a6db0;
+  --pick-white: #f2f2f0;
   --priority-p1: var(--status-error);
   --priority-p2: var(--status-warn);
   --priority-p3: var(--status-info-blue);
