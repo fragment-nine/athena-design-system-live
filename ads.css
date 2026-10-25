@@ -800,6 +800,9 @@ button:hover > .ad-project-pill:not(.ad-project-pill--current) { color: var(--ac
 .ad-page-header__back { display: inline-flex; align-items: center; gap: var(--space-1); height: var(--h-btn-bar); margin: 0 0 var(--space-2); padding: 0; border: 0; background: transparent; font-family: var(--font-body); font-size: var(--text-base); color: var(--text-secondary); cursor: pointer; }
 .ad-page-header__back:hover { color: var(--accent); }
 .ad-page-header__back:focus-visible { outline: none; box-shadow: var(--ring-select); border-radius: var(--radius-page); }
+/* A screen's own menu before the gear; the small bone dot says your board differs from the default (ruled 2026-10-25). */
+.ad-page-header__menu { position: relative; display: inline-flex; }
+.ad-page-header__mark { position: absolute; top: var(--space-1); right: var(--space-1); width: var(--space-2); height: var(--space-2); border-radius: var(--radius-round); background: var(--text-primary); pointer-events: none; }
 
 /* src/components/Pickers/Pickers.css */
 /* PickList and DatePicker */

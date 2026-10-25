@@ -2447,7 +2447,7 @@ function Dials({ children }) {
 }
 
 // src/components/PageHeader/PageHeader.tsx
-import { useId as useId9, useRef as useRef15 } from "react";
+import { useId as useId9, useRef as useRef15, useState as useState15 } from "react";
 
 // src/components/ShowOptions/ShowOptions.tsx
 import { useRef as useRef14, useState as useState14 } from "react";
@@ -2518,8 +2518,10 @@ function countdownWords(c) {
   const days = n === 0 ? "Today" : `${n} ${n === 1 ? "day" : "days"} to`;
   return `${days} ${c.what} \xB7 ${monthDay(c.to, c.today)} ${c.place}`;
 }
-function PageHeader({ title, icon, stamp, tabs, back, description, countdown: given, gear, onSearch, onPopOut, onHelp, headerLabels, scramble = true, className }) {
-  const anyEnd = gear || onSearch || onPopOut || onHelp;
+function PageHeader({ title, icon, stamp, tabs, back, description, countdown: given, gear, onSearch, onPopOut, onHelp, menu, headerLabels, scramble = true, className }) {
+  const anyEnd = gear || onSearch || onPopOut || onHelp || menu;
+  const [menuOpen, setMenuOpen] = useState15(false);
+  const menuAt = useRef15(null);
   const countdown = given && typeof given === "object" && given.to instanceof Date ? countdownWords(given) : null;
   return /* @__PURE__ */ jsxs26("header", { className: cx("ad-page-header", className), children: [
     typeof stamp === "string" && STATES.has(stamp) && /* @__PURE__ */ jsx28("div", { className: "ad-type-stamp ad-page-header__stamp", children: stamp }),
@@ -2541,7 +2543,12 @@ function PageHeader({ title, icon, stamp, tabs, back, description, countdown: gi
         /* @__PURE__ */ jsxs26(ButtonSizeScope, { size: "bar", children: [
           onSearch && /* @__PURE__ */ jsx28(IconButton, { label: headerLabels?.search ?? "Search", onClick: onSearch, children: /* @__PURE__ */ jsx28(Icon, { job: "search", size: "md" }) }),
           onPopOut && /* @__PURE__ */ jsx28(IconButton, { label: headerLabels?.popOut ?? "Pop out", onClick: onPopOut, children: /* @__PURE__ */ jsx28(Icon, { job: "external", size: "md" }) }),
-          onHelp && /* @__PURE__ */ jsx28(IconButton, { label: headerLabels?.help ?? "Help", onClick: onHelp, children: /* @__PURE__ */ jsx28(Icon, { job: "help", size: "md" }) })
+          onHelp && /* @__PURE__ */ jsx28(IconButton, { label: headerLabels?.help ?? "Help", onClick: onHelp, children: /* @__PURE__ */ jsx28(Icon, { job: "help", size: "md" }) }),
+          menu && /* @__PURE__ */ jsxs26("span", { className: "ad-page-header__menu", children: [
+            /* @__PURE__ */ jsx28(IconButton, { ref: menuAt, label: menu.label ?? "More", active: menuOpen, "aria-haspopup": "menu", "aria-expanded": menuOpen, onClick: () => setMenuOpen((o) => !o), children: /* @__PURE__ */ jsx28(Icon, { job: "more", size: "md" }) }),
+            menu.marked && /* @__PURE__ */ jsx28("span", { className: "ad-page-header__mark", "aria-hidden": "true" }),
+            /* @__PURE__ */ jsx28(Menu, { open: menuOpen, onClose: () => setMenuOpen(false), anchor: menuAt, ariaLabel: menu.label ?? "More", items: menu.items })
+          ] })
         ] }),
         gear && /* @__PURE__ */ jsx28(ShowOptionsGear, { ...gear })
       ] })
@@ -2570,10 +2577,10 @@ function Tabs({ tabs, value, onChange, ariaLabel, numbered = true, panelId, clas
 }
 
 // src/components/Toolbar/Toolbar.tsx
-import { forwardRef as forwardRef8, useRef as useRef18, useState as useState16 } from "react";
+import { forwardRef as forwardRef8, useRef as useRef18, useState as useState17 } from "react";
 
 // src/components/Writing/TokenInput.tsx
-import { useEffect as useEffect10, useLayoutEffect as useLayoutEffect3, useRef as useRef16, useState as useState15 } from "react";
+import { useEffect as useEffect10, useLayoutEffect as useLayoutEffect3, useRef as useRef16, useState as useState16 } from "react";
 import { jsx as jsx29, jsxs as jsxs27 } from "react/jsx-runtime";
 var CHIP = { project: "project", date: "calendar", deadline: "calendar", priority: "flag", person: "user", recurrence: "repeat", reminder: "bell" };
 var DEPTS = /* @__PURE__ */ new Set(["lighting", "video", "eng", "sfx", "content", "scenic", "direction", "admin", "pm", "lasers"]);
@@ -2651,7 +2658,7 @@ function TokenInput({ value, onChange, read: read2, onSubmit, label, placeholder
   const blurred = useRef16(false);
   const composing = useRef16(false);
   const justComposed = useRef16(false);
-  const [moved, setMoved] = useState15(0);
+  const [moved, setMoved] = useState16(0);
   const tokens = readTokens(value, read2);
   const refresh = (leaving = false) => {
     const el = box.current;
@@ -2842,13 +2849,13 @@ var ViewButton = forwardRef8(function ViewButton2({ label = "View", open, opens,
 function ToolbarSeparator() {
   return /* @__PURE__ */ jsx31("span", { className: "ad-toolbar__separator", role: "separator", "aria-orientation": "vertical" });
 }
-function ViewPopover({ open, onClose, anchor, builtInViews = [], savedViews, currentView, onPickView, onStarView, viewActions, onSaveView, saveScopes, query, rules, groupBy, sortBy, labels: l = {} }) {
-  const L = { view: "View", builtInViews: "Views", savedViews: "Saved views", saveView: "Save this view\u2026", viewName: "View name", save: "Save", cancel: "Cancel", star: "Star", unstar: "Unstar", more: "More", filter: "Filter", groupBy: "Group by", sortBy: "Sort by", ascending: "Ascending", descending: "Descending", ...l };
+function ViewPopover({ open, onClose, anchor, builtInViews = [], savedViews, currentView, onPickView, onStarView, viewActions, onSaveView, saveScopes, query, rules, groupBy, sortBy, show, labels: l = {} }) {
+  const L = { show: "Show", view: "View", builtInViews: "Views", savedViews: "Saved views", saveView: "Save this view\u2026", viewName: "View name", save: "Save", cancel: "Cancel", star: "Star", unstar: "Unstar", more: "More", filter: "Filter", groupBy: "Group by", sortBy: "Sort by", ascending: "Ascending", descending: "Descending", ...l };
   const SAVE = "__save";
-  const [naming, setNaming] = useState16(false);
-  const [name, setName] = useState16("");
-  const [scope, setScope] = useState16(saveScopes?.[0]?.value);
-  const [menuFor, setMenuFor] = useState16(null);
+  const [naming, setNaming] = useState17(false);
+  const [name, setName] = useState17("");
+  const [scope, setScope] = useState17(saveScopes?.[0]?.value);
+  const [menuFor, setMenuFor] = useState17(null);
   const menuAnchor = useRef18(null);
   const viewsShown = builtInViews.length > 0 || savedViews != null;
   const views = [
@@ -2918,7 +2925,8 @@ function ViewPopover({ open, onClose, anchor, builtInViews = [], savedViews, cur
           children: /* @__PURE__ */ jsx31(Icon, { job: sortBy.direction.value === "ascending" ? "arrow-up" : "arrow-down" })
         }
       ) })
-    ] }) })
+    ] }) }),
+    show && show.length > 0 && /* @__PURE__ */ jsx31(PopoverSection, { label: L.show, children: show.map((s) => /* @__PURE__ */ jsx31(FieldRow, { label: s.label, children: s.kind === "switch" ? /* @__PURE__ */ jsx31(Switch, { checked: s.on, onChange: s.onChange, "aria-label": s.label }) : /* @__PURE__ */ jsx31(Select, { "aria-label": s.label, value: s.value, onChange: (e) => s.onChange(e.target.value), options: s.options }) }, s.id)) })
   ] });
 }
 
@@ -2939,10 +2947,10 @@ function ViewSwitch({ options, value, onChange, ariaLabel, className }) {
 }
 
 // src/components/Warnings/Warnings.tsx
-import { forwardRef as forwardRef9, useId as useId10, useState as useState17 } from "react";
+import { forwardRef as forwardRef9, useId as useId10, useState as useState18 } from "react";
 import { Fragment as Fragment9, jsx as jsx33, jsxs as jsxs30 } from "react/jsx-runtime";
 function AlertBar({ alerts, label = "Alerts", snoozeLabel = "Snooze", pillLabel = (p, n) => `${n} priority ${p}`, priorityLabel = (p) => `Priority ${p}`, defaultOpen = false, open, onOpenChange, className }) {
-  const [own, setOwn] = useState17(defaultOpen);
+  const [own, setOwn] = useState18(defaultOpen);
   const isOpen = open ?? own;
   const listId = useId10();
   if (!alerts.length) return null;
@@ -3425,12 +3433,12 @@ function CommandSearch({ open, onClose, query, onQuery, results, onPick, label =
 }
 
 // src/components/Guidance/Guidance.tsx
-import { useEffect as useEffect12, useLayoutEffect as useLayoutEffect4, useRef as useRef21, useState as useState18 } from "react";
+import { useEffect as useEffect12, useLayoutEffect as useLayoutEffect4, useRef as useRef21, useState as useState19 } from "react";
 import { jsx as jsx41, jsxs as jsxs37 } from "react/jsx-runtime";
 var useIsoLayoutEffect3 = typeof window === "undefined" ? useEffect12 : useLayoutEffect4;
 function TourStep({ open, anchor, step, total, title, children, onBack, onNext, onExit, backLabel = "Back", nextLabel = "Next", progressLabel = (s, t) => `${s} of ${t}`, side = "below" }) {
   const card = useRef21(null);
-  const [rect, setRect] = useState18(null);
+  const [rect, setRect] = useState19(null);
   useFocusReturn(open, card);
   useIsoLayoutEffect3(() => {
     if (!open) return;
