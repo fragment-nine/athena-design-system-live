@@ -953,6 +953,14 @@ button.ad-row__name:focus-visible { outline: none; box-shadow: var(--ring-select
 .ad-row[data-dragging] { background: var(--glass-bg); backdrop-filter: var(--blur-glass); -webkit-backdrop-filter: var(--blur-glass); box-shadow: var(--elev-float); border-radius: var(--radius-float); }
 /* The face, and under it the project's code in a list mixing projects. */
 .ad-row__who { display: inline-flex; flex-direction: column; align-items: flex-end; gap: var(--space-1); }
+/* A fact you press to change it: it looks the same; coral under the cursor (built 2026-10-25 for Athena). */
+.ad-row__press { display: inline-flex; align-items: center; margin: 0; padding: 0; border: 0; background: transparent; font: inherit; color: inherit; cursor: pointer; border-radius: var(--radius-page); }
+.ad-row__press:hover, .ad-row__press:hover .ad-row-date, .ad-row__press:hover .ad-row__fact { color: var(--accent); }
+.ad-row__press:focus-visible { outline: none; box-shadow: var(--ring-select); }
+/* A button repeated on every row is never filled (rules/design-rules.md, Controls): words only, coral under the cursor. */
+.ad-row__trail .ad-button--quiet { background: transparent; }
+.ad-row .ad-inline-edit.ad-row__name { margin: 0; padding: 0 var(--space-1); }
+.ad-row__lead { gap: var(--space-2); }
 
 /* src/components/Search/Search.css */
 /* CommandSearch (the Finding card): a glass card near the top, the typing line 40 tall with a hairline under it, no fill;

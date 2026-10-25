@@ -1583,7 +1583,7 @@ function SideMenu({ screens, projects, views = [], current, onSelect, onHome, la
 
 // src/components/Row/Row.tsx
 import { Fragment as Fragment5, jsx as jsx15, jsxs as jsxs13 } from "react/jsx-runtime";
-var Row = forwardRef5(function Row2({ name, meta, lead, status, dates, tags, people, trail, selected, picked, dragging, heading, onOpen, className, onClick, ...rest }, ref) {
+var Row = forwardRef5(function Row2({ name, meta, lead, status, dates, tags, people, trail, selected, picked, dragging, heading, onOpen, onRename, renameLabel, className, onClick, ...rest }, ref) {
   const inList = useInList();
   const { compactRows } = useShow();
   return /* @__PURE__ */ jsxs13(
@@ -1603,7 +1603,7 @@ var Row = forwardRef5(function Row2({ name, meta, lead, status, dates, tags, peo
       children: [
         lead != null && /* @__PURE__ */ jsx15("span", { className: "ad-row__lead", children: lead }),
         /* @__PURE__ */ jsxs13("span", { className: "ad-row__body", children: [
-          onOpen ? /* @__PURE__ */ jsx15("button", { type: "button", className: "ad-row__name ad-open", "aria-current": selected || void 0, onClick: (e) => {
+          onRename ? /* @__PURE__ */ jsx15(InlineEdit, { value: String(name), onCommit: onRename, ariaLabel: renameLabel ?? "Name", className: "ad-row__name" }) : onOpen ? /* @__PURE__ */ jsx15("button", { type: "button", className: "ad-row__name ad-open", "aria-current": selected || void 0, onClick: (e) => {
             e.stopPropagation();
             onOpen();
           }, children: name }) : /* @__PURE__ */ jsx15("span", { className: "ad-row__name", children: name }),
@@ -1618,6 +1618,12 @@ var Row = forwardRef5(function Row2({ name, meta, lead, status, dates, tags, peo
     }
   );
 });
+function RowPress({ label, onPress, children }) {
+  return /* @__PURE__ */ jsx15("button", { type: "button", "aria-label": label, onClick: (e) => {
+    e.stopPropagation();
+    onPress(e.currentTarget);
+  }, className: "ad-row__press", children });
+}
 function RowDate({ due, today, until, done, what, icon }) {
   const first = dueLabel(due, today);
   if (!first.label) return null;
@@ -1658,8 +1664,9 @@ function TodoCheck({ checked, onChange, priority = 4, ariaLabel, disabled, unack
     }
   );
 }
-function TodoRow({ name, priority, done, onTick, due, today, dept, who, selected, onOpen, completeLabel = "Complete", unacknowledged, onAcknowledge, acknowledgeLabel = "Acknowledge", repeat, pastDeadline, pastDeadlineLabel = "Deadline passed", role, deliverable, project }) {
-  const date = due ? /* @__PURE__ */ jsx15(RowDate, { due, today, done }) : null;
+function TodoRow({ name, priority, done, onTick, due, today, dept, who, selected, onOpen, completeLabel = "Complete", unacknowledged, onAcknowledge, acknowledgeLabel = "Acknowledge", repeat, pastDeadline, pastDeadlineLabel = "Deadline passed", role, deliverable, project, picking, onPressDate, onPressWho, onPressDeliverable, pressLabels, onRename }) {
+  const plain = due ? /* @__PURE__ */ jsx15(RowDate, { due, today, done }) : null;
+  const date = plain && onPressDate ? /* @__PURE__ */ jsx15(RowPress, { label: pressLabels?.date ?? "Change the date", onPress: onPressDate, children: plain }) : plain;
   const extras = repeat || pastDeadline || role || deliverable;
   const meta = date || dept || extras ? /* @__PURE__ */ jsxs13(Fragment5, { children: [
     date,
@@ -1670,19 +1677,32 @@ function TodoRow({ name, priority, done, onTick, due, today, dept, who, selected
     ] }),
     pastDeadline && /* @__PURE__ */ jsx15("span", { className: "ad-row__fact ad-row__fact--late", role: "img", "aria-label": pastDeadlineLabel, children: /* @__PURE__ */ jsx15(Icon, { job: "flag", size: "sm" }) }),
     role && /* @__PURE__ */ jsx15("span", { className: "ad-row__fact", children: String(role) }),
-    deliverable && /* @__PURE__ */ jsxs13("span", { className: "ad-row__fact", children: [
+    deliverable && (onPressDeliverable ? /* @__PURE__ */ jsx15(RowPress, { label: pressLabels?.deliverable ?? `Open ${deliverable}`, onPress: onPressDeliverable, children: /* @__PURE__ */ jsxs13("span", { className: "ad-row__fact", children: [
       /* @__PURE__ */ jsx15(Icon, { job: "kind-deliverable", size: "sm" }),
       String(deliverable)
-    ] })
+    ] }) }) : /* @__PURE__ */ jsxs13("span", { className: "ad-row__fact", children: [
+      /* @__PURE__ */ jsx15(Icon, { job: "kind-deliverable", size: "sm" }),
+      String(deliverable)
+    ] }))
   ] }) : void 0;
   return /* @__PURE__ */ jsx15(
     Row,
     {
-      lead: /* @__PURE__ */ jsx15(TodoCheck, { checked: done, onChange: onTick, priority, ariaLabel: `${completeLabel}: ${name}`, unacknowledged, onAcknowledge, acknowledgeLabel: `${acknowledgeLabel}: ${name}` }),
+      picked: picking?.picked,
+      onRename,
+      renameLabel: onRename ? String(name) : void 0,
+      lead: /* @__PURE__ */ jsxs13(Fragment5, { children: [
+        picking && /* @__PURE__ */ jsx15(Checkbox, { "aria-label": picking.label ?? `Pick: ${name}`, checked: picking.picked, onChange: picking.onChange }),
+        /* @__PURE__ */ jsx15(TodoCheck, { checked: done, onChange: onTick, priority, ariaLabel: `${completeLabel}: ${name}`, unacknowledged, onAcknowledge, acknowledgeLabel: `${acknowledgeLabel}: ${name}` })
+      ] }),
       name: String(name),
       meta,
       people: who || project ? /* @__PURE__ */ jsxs13("span", { className: "ad-row__who", children: [
-        who && /* @__PURE__ */ jsx15(Avatar, { name: who.name, src: who.src }),
+        who && (() => {
+          const list = Array.isArray(who) ? who : [who];
+          const faces = list.length > 1 ? /* @__PURE__ */ jsx15(AvatarStack, { people: list }) : list[0] ? /* @__PURE__ */ jsx15(Avatar, { name: list[0].name, src: list[0].src }) : null;
+          return onPressWho && faces ? /* @__PURE__ */ jsx15(RowPress, { label: pressLabels?.who ?? "Change who", onPress: onPressWho, children: faces }) : faces;
+        })(),
         project && /* @__PURE__ */ jsx15(ProjectPill, { code: project.code, color: project.color })
       ] }) : void 0,
       selected,
@@ -3570,6 +3590,7 @@ export {
   Row,
   RowDate,
   RowFigure,
+  RowPress,
   RuleBuilder,
   RuleValue,
   Ruler,
