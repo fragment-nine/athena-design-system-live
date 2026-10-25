@@ -1758,7 +1758,7 @@ function List({ children, ariaLabel, className }) {
 function useInList() {
   return useContext3(InList);
 }
-function ListSection({ title, children, collapsible, collapsed, onCollapsedChange, day, className, ...heading }) {
+function ListSection({ title, children, collapsible, collapsed, onCollapsedChange, day, bar, className, ...heading }) {
   const [own, setOwn] = useState8(!!collapsible && !heading.needsYou);
   useEffect6(() => {
     if (heading.needsYou) setOwn(false);
@@ -1772,8 +1772,11 @@ function ListSection({ title, children, collapsible, collapsed, onCollapsedChang
   };
   const inList = useInList();
   return /* @__PURE__ */ jsxs14("section", { role: inList ? "listitem" : void 0, className: cx("ad-list-section", className), children: [
-    day ? /* @__PURE__ */ jsx16(DayHeading, { day: day.day, today: day.today }) : /* @__PURE__ */ jsx16(GroupHeading, { ...heading, collapsible, collapsed: shut, onToggle: toggle, controls: bodyId, children: title }),
-    /* @__PURE__ */ jsx16("div", { id: bodyId, role: "list", hidden: collapsible ? shut : void 0, className: "ad-list-section__body", children: /* @__PURE__ */ jsx16(InList.Provider, { value: true, children }) })
+    day ? /* @__PURE__ */ jsx16(DayHeading, { day: day.day, today: day.today }) : bar ? /* @__PURE__ */ jsxs14("div", { className: "ad-list-section__bar", children: [
+      collapsible && /* @__PURE__ */ jsx16("button", { type: "button", className: "ad-list-section__fold", "aria-expanded": !shut, "aria-controls": bodyId, "aria-label": bar.foldLabel ?? String(title), onClick: toggle, children: /* @__PURE__ */ jsx16(Icon, { job: shut ? "chevron-right" : "chevron-down", size: "sm" }) }),
+      /* @__PURE__ */ jsx16(Row, { heading: true, name: title, status: bar.status, dates: bar.dates, onOpen: bar.onOpen })
+    ] }) : /* @__PURE__ */ jsx16(GroupHeading, { ...heading, collapsible, collapsed: shut, onToggle: toggle, controls: bodyId, children: title }),
+    /* @__PURE__ */ jsx16("div", { id: bodyId, role: "list", hidden: collapsible ? shut : void 0, className: cx("ad-list-section__body", bar && "ad-list-section__body--nested"), children: /* @__PURE__ */ jsx16(InList.Provider, { value: true, children }) })
   ] });
 }
 function DayHeading({ day, today, level = 3 }) {

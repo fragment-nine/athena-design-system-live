@@ -690,6 +690,14 @@ button.ad-contents__button:focus-visible { outline: none; box-shadow: var(--ring
 .ad-loading { display: flex; flex-direction: column; }
 .ad-loading-row .ad-row__name, .ad-loading-row .ad-row__meta { color: var(--text-muted); white-space: pre; }
 .ad-load-error > .ad-button { align-self: flex-start; }
+/* A deliverable over its todos (built 2026-10-25 for Athena): its heading row, the fold before it, and its todos on the joining
+   hairline under it; a section inside is a sub-deliverable, two deep. */
+.ad-list-section__bar { display: flex; align-items: center; gap: var(--space-1); }
+.ad-list-section__bar > .ad-row { flex: 1; min-width: 0; }
+.ad-list-section__fold { display: inline-flex; align-items: center; justify-content: center; flex: none; width: var(--h-btn-row); height: var(--h-btn-row); margin: 0; padding: 0; border: 0; border-radius: var(--radius-page); background: transparent; color: var(--text-muted); cursor: pointer; }
+.ad-list-section__fold:hover { color: var(--accent); }
+.ad-list-section__fold:focus-visible { outline: none; box-shadow: var(--ring-select); }
+.ad-list-section__body--nested { margin-left: calc(var(--h-btn-row) / 2); padding-left: var(--space-4); border-left: var(--border-w) solid var(--border); }
 
 /* src/components/Menu/Menu.css */
 /* Menu */
