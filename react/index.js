@@ -3211,10 +3211,10 @@ function BoardCardMeta({ date, icon, face, code, marks, role, deliverable }) {
     date,
     icon && /* @__PURE__ */ jsx37("span", { "aria-hidden": "true", className: "ad-lane__card-icon", children: icon }),
     marks && /* @__PURE__ */ jsx37("span", { className: "ad-lane__card-marks", children: marks }),
-    role && /* @__PURE__ */ jsx37("span", { className: "ad-lane__card-fact", children: String(role) }),
-    deliverable && /* @__PURE__ */ jsxs33("span", { className: "ad-lane__card-fact", children: [
+    role && /* @__PURE__ */ jsx37("span", { className: "ad-lane__card-fact", title: String(role), children: /* @__PURE__ */ jsx37("span", { className: "ad-lane__card-fact-word", children: String(role) }) }),
+    deliverable && /* @__PURE__ */ jsxs33("span", { className: "ad-lane__card-fact", title: String(deliverable), children: [
       /* @__PURE__ */ jsx37(Icon, { job: "kind-deliverable", size: "sm" }),
-      String(deliverable)
+      /* @__PURE__ */ jsx37("span", { className: "ad-lane__card-fact-word", children: String(deliverable) })
     ] }),
     code && /* @__PURE__ */ jsx37("span", { className: "ad-lane__card-code", children: code }),
     face && /* @__PURE__ */ jsx37("span", { className: "ad-lane__card-face", children: face })

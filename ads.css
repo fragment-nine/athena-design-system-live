@@ -313,7 +313,8 @@
   font-family: var(--font-display); font-weight: 600; font-size: var(--text-xs); letter-spacing: var(--track-caps); text-transform: uppercase; color: var(--text-muted);
 }
 .ad-lane__cards { display: flex; flex-direction: column; gap: var(--space-2); }
-.ad-lane__card-meta { display: flex; align-items: center; gap: var(--space-2); }
+.ad-lane__card-meta { display: flex; align-items: center; gap: var(--space-2); min-width: 0; }
+.ad-lane__card-meta > * { flex-shrink: 0; }
 .ad-lane__card-icon { display: inline-flex; color: var(--text-muted); }
 .ad-lane__card-icon svg { width: var(--icon-sm); height: var(--icon-sm); }
 .ad-lane__card-face { margin-left: auto; display: inline-flex; }
@@ -323,7 +324,9 @@
 .ad-lane__name--press:hover { color: var(--accent); }
 .ad-lane__name--press:focus-visible { outline: none; box-shadow: var(--ring-select); }
 .ad-lane__card-marks, .ad-lane__card-code { display: inline-flex; align-items: center; gap: var(--space-1); }
+.ad-lane__card-meta > .ad-lane__card-fact { flex-shrink: 1; min-width: 0; }
 .ad-lane__card-fact { display: inline-flex; align-items: center; gap: var(--space-1); color: var(--text-secondary); white-space: nowrap; }
+.ad-lane__card-fact-word { overflow: hidden; text-overflow: ellipsis; min-width: 0; }
 
 /* src/components/Button/Button.css */
 /* Button and IconButton */
