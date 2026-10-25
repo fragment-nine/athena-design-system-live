@@ -1186,6 +1186,10 @@ button.ad-row__name:focus-visible { outline: none; box-shadow: var(--ring-select
 .ad-zoom__btn:focus-visible { outline: none; box-shadow: var(--ring-select); }
 .ad-zoom__btn:disabled { color: var(--text-faint); cursor: default; }
 .ad-zoom__btn--today { color: var(--text-primary); }
+/* PeriodCluster (built 2026-10-25 for Athena): the span in words in bone, the steps, then the sizes; the current size in bone. */
+.ad-period .ad-zoom__name { color: var(--text-primary); margin-right: var(--space-1); }
+.ad-period__sizes { display: inline-flex; gap: var(--space-1); margin-left: var(--space-2); }
+.ad-period__size[aria-checked="true"] { color: var(--text-primary); }
 
 /* src/components/Timeline/Timeline.css */
 /* Timeline marks, as the Bars and Page-Schedule cards draw them */

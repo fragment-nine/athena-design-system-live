@@ -3260,6 +3260,17 @@ function ZoomCluster({ zoom, onZoom, onPrevious, onToday, onNext, labels }) {
     btn(`${L.zoomIn} (${L[ORDER[Math.max(i - 1, 0)]]})`, "+", () => onZoom(ORDER[Math.max(i - 1, 0)]), i === 0)
   ] });
 }
+function PeriodCluster({ shown, periods, period, onPeriod, onPrevious, onNext, onToday, previousOff, nextOff, labels }) {
+  const L = { previous: "Earlier", today: "Today", next: "Later", period: "Period", ...labels };
+  const step = (label, glyph, on, off, today) => on && /* @__PURE__ */ jsx37("button", { type: "button", "aria-label": off ? `${label}: ${off}` : label, title: off ?? label, disabled: !!off, onClick: on, className: cx("ad-zoom__btn", today && "ad-zoom__btn--today"), children: /* @__PURE__ */ jsx37("span", { "aria-hidden": "true", children: glyph }) });
+  return /* @__PURE__ */ jsxs34("div", { className: "ad-zoom ad-period", role: "group", "aria-label": shown, children: [
+    /* @__PURE__ */ jsx37("span", { className: "ad-zoom__name", children: shown }),
+    step(L.previous, "\u2039", onPrevious, previousOff),
+    step(L.today, "\u2022", onToday, void 0, true),
+    step(L.next, "\u203A", onNext, nextOff),
+    periods && periods.length > 1 && onPeriod && /* @__PURE__ */ jsx37("span", { className: "ad-period__sizes", role: "radiogroup", "aria-label": L.period, children: periods.map((p) => /* @__PURE__ */ jsx37("button", { type: "button", role: "radio", "aria-checked": p.id === period, onClick: () => onPeriod(p.id), className: "ad-zoom__btn ad-period__size", children: p.label.toLowerCase() }, p.id)) })
+  ] });
+}
 
 // src/components/Calendar/Calendar.tsx
 import { jsx as jsx38, jsxs as jsxs35 } from "react/jsx-runtime";
@@ -3689,6 +3700,7 @@ export {
   OverTime,
   PageHeader,
   PastHatch,
+  PeriodCluster,
   Person,
   PersonPicker,
   PickField,
