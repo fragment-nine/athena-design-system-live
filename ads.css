@@ -313,7 +313,7 @@
   font-family: var(--font-display); font-weight: 600; font-size: var(--text-xs); letter-spacing: var(--track-caps); text-transform: uppercase; color: var(--text-muted);
 }
 .ad-lane__cards { display: flex; flex-direction: column; gap: var(--space-2); }
-.ad-lane__card-meta { display: flex; align-items: center; gap: var(--space-2); min-width: 0; }
+.ad-lane__card-meta { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-1) var(--space-2); min-width: 0; }
 .ad-lane__card-meta > * { flex-shrink: 0; }
 .ad-lane__card-icon { display: inline-flex; color: var(--text-muted); }
 .ad-lane__card-icon svg { width: var(--icon-sm); height: var(--icon-sm); }
@@ -324,8 +324,8 @@
 .ad-lane__name--press:hover { color: var(--accent); }
 .ad-lane__name--press:focus-visible { outline: none; box-shadow: var(--ring-select); }
 .ad-lane__card-marks, .ad-lane__card-code { display: inline-flex; align-items: center; gap: var(--space-1); }
-.ad-lane__card-meta > .ad-lane__card-fact { flex-shrink: 1; min-width: 0; }
 .ad-lane__card-fact { display: inline-flex; align-items: center; gap: var(--space-1); color: var(--text-secondary); white-space: nowrap; }
+.ad-lane__card-meta > .ad-lane__card-fact--cut { flex-shrink: 1; min-width: 0; max-width: 100%; }
 .ad-lane__card-fact-word { overflow: hidden; text-overflow: ellipsis; min-width: 0; }
 
 /* src/components/Button/Button.css */
@@ -1163,7 +1163,7 @@ button.ad-row__name:focus-visible { outline: none; box-shadow: var(--ring-select
 /* Built 2026-10-25 for Athena. Held columns stay put while a wide table scrolls sideways; they keep the page's ground under them. */
 .ad-table-wrap { overflow-x: auto; }
 .ad-table__frozen--start, .ad-table__frozen--end { position: sticky; z-index: 1; background: var(--bg-base); }
-.ad-table__frozen--start { left: 0; }
+.ad-table__frozen--start { --ad-held: 0px; left: var(--ad-held); }
 .ad-table__frozen--end { right: 0; }
 .ad-table th[scope="col"].ad-table__frozen--start, .ad-table th[scope="col"].ad-table__frozen--end { z-index: 2; }
 /* A group heading row: the section-label look, one hairline under. */

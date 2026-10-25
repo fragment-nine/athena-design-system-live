@@ -3212,7 +3212,7 @@ function BoardCardMeta({ date, icon, face, code, marks, role, deliverable }) {
     icon && /* @__PURE__ */ jsx37("span", { "aria-hidden": "true", className: "ad-lane__card-icon", children: icon }),
     marks && /* @__PURE__ */ jsx37("span", { className: "ad-lane__card-marks", children: marks }),
     role && /* @__PURE__ */ jsx37("span", { className: "ad-lane__card-fact", title: String(role), children: /* @__PURE__ */ jsx37("span", { className: "ad-lane__card-fact-word", children: String(role) }) }),
-    deliverable && /* @__PURE__ */ jsxs33("span", { className: "ad-lane__card-fact", title: String(deliverable), children: [
+    deliverable && /* @__PURE__ */ jsxs33("span", { className: "ad-lane__card-fact ad-lane__card-fact--cut", title: String(deliverable), children: [
       /* @__PURE__ */ jsx37(Icon, { job: "kind-deliverable", size: "sm" }),
       /* @__PURE__ */ jsx37("span", { className: "ad-lane__card-fact-word", children: String(deliverable) })
     ] }),
@@ -3225,19 +3225,43 @@ function DropLine() {
 }
 
 // src/components/Table/Table.tsx
+import { useLayoutEffect as useLayoutEffect4, useRef as useRef22, useState as useState20 } from "react";
 import { jsx as jsx38, jsxs as jsxs34 } from "react/jsx-runtime";
 var Arrow = ({ up }) => /* @__PURE__ */ jsx38(Icon, { name: up ? "arrow-up" : "arrow-down", size: "sm", className: "ad-table__arrow" });
-function Table({ columns, rows, rowId, caption, sort, onSort, picked, onPickedChange, onPickAllChange, pickLabel, pickAllLabel = "Pick all", onOpen, rowProps, group, depth, className }) {
+function Table({ columns, rows, rowId, caption, sort, onSort, picked, onPickedChange, onPickAllChange, pickLabel, pickAllLabel = "Pick all", onOpen, rowProps, group, depth, nameColumn, className }) {
   const span = columns.length + (onPickedChange ? 1 : 0);
   let lastGroup;
   const all = rows.length > 0 && rows.every((r) => picked?.has(rowId(r)));
+  const nameAt = Math.max(0, nameColumn ? columns.findIndex((c) => c.id === nameColumn) : 0);
+  const headRow = useRef22(null);
+  const [held, setHeld] = useState20({});
+  const heldKey = columns.filter((c) => c.frozen === "start").map((c) => c.id).join(" ");
+  useLayoutEffect4(() => {
+    const tr = headRow.current;
+    if (!tr || heldKey.split(" ").length < 2) return;
+    const measure = () => {
+      const next = {};
+      let x = 0;
+      tr.querySelectorAll("th[data-held]").forEach((th) => {
+        next[th.dataset.held] = x;
+        x += th.getBoundingClientRect().width;
+      });
+      setHeld((was) => Object.keys(next).every((k) => was[k] === next[k]) ? was : next);
+    };
+    measure();
+    if (typeof ResizeObserver === "undefined") return;
+    const seen = new ResizeObserver(measure);
+    tr.querySelectorAll("th").forEach((th) => seen.observe(th));
+    return () => seen.disconnect();
+  }, [heldKey, onPickedChange]);
+  const at = (c) => c.frozen === "start" && held[c.id] ? { ["--ad-held"]: `${held[c.id]}px` } : {};
   return /* @__PURE__ */ jsx38("div", { className: cx("ad-table-wrap", className), children: /* @__PURE__ */ jsxs34("table", { className: "ad-table", children: [
     /* @__PURE__ */ jsx38("caption", { className: "ad-sr", children: caption }),
-    /* @__PURE__ */ jsx38("thead", { children: /* @__PURE__ */ jsxs34("tr", { children: [
+    /* @__PURE__ */ jsx38("thead", { children: /* @__PURE__ */ jsxs34("tr", { ref: headRow, children: [
       onPickedChange && /* @__PURE__ */ jsx38("th", { scope: "col", className: "ad-table__pick", children: /* @__PURE__ */ jsx38(Checkbox, { "aria-label": pickAllLabel, checked: all, onChange: (on) => onPickAllChange?.(on) }) }),
       columns.map((c) => {
         const sorted = sort?.id === c.id ? sort.direction : void 0;
-        return /* @__PURE__ */ jsx38("th", { scope: "col", "aria-sort": sorted ?? (c.sortable ? "none" : void 0), className: cx(c.numeric && "ad-num", c.frozen && `ad-table__frozen--${c.frozen}`), style: c.width ? { width: c.width } : void 0, children: c.sortable && onSort ? /* @__PURE__ */ jsxs34("button", { type: "button", className: "ad-table__sort", onClick: () => onSort(c.id), children: [
+        return /* @__PURE__ */ jsx38("th", { scope: "col", "data-held": c.frozen === "start" ? c.id : void 0, "aria-sort": sorted ?? (c.sortable ? "none" : void 0), className: cx(c.numeric && "ad-num", c.frozen && `ad-table__frozen--${c.frozen}`), style: { ...c.width ? { width: c.width } : {}, ...at(c) }, children: c.labelHidden ? /* @__PURE__ */ jsx38("span", { className: "ad-sr", children: c.label }) : c.sortable && onSort ? /* @__PURE__ */ jsxs34("button", { type: "button", className: "ad-table__sort", onClick: () => onSort(c.id), children: [
           c.label,
           sorted && /* @__PURE__ */ jsx38(Arrow, { up: sorted === "ascending" })
         ] }) : c.label }, c.id);
@@ -3258,10 +3282,10 @@ function Table({ columns, rows, rowId, caption, sort, onSort, picked, onPickedCh
         onPickedChange && /* @__PURE__ */ jsx38("td", { className: "ad-table__pick", children: /* @__PURE__ */ jsx38(Checkbox, { "aria-label": pickLabel?.(r) ?? id, checked: !!on, onChange: (v) => onPickedChange(id, v) }) }),
         columns.map((c, i) => {
           const frozen = c.frozen && `ad-table__frozen--${c.frozen}`;
-          if (i > 0) return /* @__PURE__ */ jsx38("td", { className: cx(c.numeric && "ad-num", c.mono && "ad-mono", frozen), children: c.cell(r) }, c.id);
+          if (i !== nameAt) return /* @__PURE__ */ jsx38("td", { className: cx(c.numeric && "ad-num", c.mono && "ad-mono", frozen), style: c.frozen === "start" ? at(c) : void 0, children: c.cell(r) }, c.id);
           const words = onOpen ? /* @__PURE__ */ jsx38("button", { type: "button", className: "ad-table__open", onClick: () => onOpen(r), children: c.cell(r) }) : c.cell(r);
           const meta = c.meta?.(r);
-          return /* @__PURE__ */ jsxs34("th", { scope: "row", className: cx("ad-table__name", frozen, meta != null && "ad-table__name--two"), style: d ? { ["--ad-depth"]: d } : void 0, children: [
+          return /* @__PURE__ */ jsxs34("th", { scope: "row", className: cx("ad-table__name", frozen, meta != null && "ad-table__name--two"), style: d || c.frozen === "start" ? { ...d ? { ["--ad-depth"]: d } : {}, ...at(c) } : void 0, children: [
             d > 0 && /* @__PURE__ */ jsx38("span", { className: "ad-table__elbow", "aria-hidden": "true" }),
             meta != null ? /* @__PURE__ */ jsxs34("span", { className: "ad-table__words", children: [
               words,
@@ -3613,10 +3637,10 @@ function Verdict({ word, sentence }) {
 }
 
 // src/components/Search/Search.tsx
-import { useRef as useRef22 } from "react";
+import { useRef as useRef23 } from "react";
 import { jsx as jsx43 } from "react/jsx-runtime";
 function CommandSearch({ open, onClose, query, onQuery, results, onPick, label = "Search everything", noMatch = "Nothing by that name" }) {
-  const box = useRef22(null);
+  const box = useRef23(null);
   const z = useLayer(open, onClose, [box], "dialog");
   usePageInert(open, [box]);
   useFocusReturn(open, box);
@@ -3639,12 +3663,12 @@ function CommandSearch({ open, onClose, query, onQuery, results, onPick, label =
 }
 
 // src/components/Guidance/Guidance.tsx
-import { useEffect as useEffect13, useLayoutEffect as useLayoutEffect4, useRef as useRef23, useState as useState20 } from "react";
+import { useEffect as useEffect13, useLayoutEffect as useLayoutEffect5, useRef as useRef24, useState as useState21 } from "react";
 import { jsx as jsx44, jsxs as jsxs39 } from "react/jsx-runtime";
-var useIsoLayoutEffect3 = typeof window === "undefined" ? useEffect13 : useLayoutEffect4;
+var useIsoLayoutEffect3 = typeof window === "undefined" ? useEffect13 : useLayoutEffect5;
 function TourStep({ open, anchor, step, total, title, children, onBack, onNext, onExit, backLabel = "Back", nextLabel = "Next", progressLabel = (s, t) => `${s} of ${t}`, side = "below" }) {
-  const card = useRef23(null);
-  const [rect, setRect] = useState20(null);
+  const card = useRef24(null);
+  const [rect, setRect] = useState21(null);
   const doc = useFloatingDocument() ?? document;
   useFocusReturn(open, card);
   useIsoLayoutEffect3(() => {
