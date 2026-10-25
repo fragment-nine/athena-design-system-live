@@ -853,6 +853,16 @@ button:hover > .ad-project-pill:not(.ad-project-pill--current) { color: var(--ac
 /* What is picked shows (built 2026-10-25 for Athena): one pick carries a check at the right; picking several draws the tick box before each row. Never coral. */
 .ad-picklist__check { display: inline-flex; margin-left: auto; color: var(--text-secondary); }
 .ad-picklist__option .ad-checkbox__box { margin-right: var(--space-1); }
+/* PickField: the field's skin (filled one tone lighter, no edge) holding the pick's face or code, its words, a caret. */
+.ad-pick-field { cursor: pointer; text-align: left; padding-right: var(--space-3); max-width: 100%; }
+.ad-pick-field__lead { display: inline-flex; flex: none; }
+.ad-pick-field__words { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.ad-pick-field__words--empty { color: var(--text-muted); }
+.ad-pick-field__caret { width: var(--icon-sm); height: var(--icon-sm); flex: none; color: var(--text-muted); }
+.ad-pick-field:hover .ad-pick-field__caret { color: var(--accent); }
+.ad-pick-field[aria-expanded="true"] { background: var(--bg-hover); }
+.ad-pick-field:focus-visible { outline: none; box-shadow: var(--ring-select); }
+.ad-pick-field__list { width: var(--w-menu); padding: var(--space-2); }
 
 /* src/components/Popover/Popover.css */
 /* Popover and its pieces */
