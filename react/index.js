@@ -1764,7 +1764,7 @@ function TodoCheck({ checked, onChange, priority = 4, ariaLabel, disabled, unack
     }
   );
 }
-function TodoRow({ name, priority, done, onTick, due, today, dept, who, selected, onOpen, completeLabel = "Complete", unacknowledged, onAcknowledge, acknowledgeLabel = "Acknowledge", repeat, pastDeadline, pastDeadlineLabel = "Deadline passed", role, deliverable, project, picking, onPressDate, onPressWho, onPressDeliverable, pressLabels, onRename, onPressProject, onPressDept, rowProps, cells }) {
+function TodoRow({ name, priority, done, onTick, due, today, dept, who, selected, onOpen, completeLabel = "Complete", unacknowledged, onAcknowledge, acknowledgeLabel = "Acknowledge", repeat, pastDeadline, pastDeadlineLabel = "Deadline passed", role, deliverable, project, picking, onPressDate, onPressWho, onPressDeliverable, pressLabels, onRename, onPressProject, onPressDept, rowProps, cells, ring = true, whoMax }) {
   const plain = due ? /* @__PURE__ */ jsx17(RowDate, { due, today, done }) : null;
   const date = plain && onPressDate ? /* @__PURE__ */ jsx17(RowPress, { label: pressLabels?.date ?? "Change the date", onPress: onPressDate, children: plain }) : plain;
   const extras = repeat || pastDeadline || role || deliverable;
@@ -1798,14 +1798,14 @@ function TodoRow({ name, priority, done, onTick, due, today, dept, who, selected
       renameLabel: onRename ? String(name) : void 0,
       lead: /* @__PURE__ */ jsxs14(Fragment5, { children: [
         picking && /* @__PURE__ */ jsx17(Checkbox, { "aria-label": picking.label ?? `Pick: ${name}`, checked: picking.picked, onChange: picking.onChange }),
-        /* @__PURE__ */ jsx17(TodoCheck, { checked: done, onChange: onTick, priority, ariaLabel: `${completeLabel}: ${name}`, unacknowledged, onAcknowledge, acknowledgeLabel: `${acknowledgeLabel}: ${name}` })
+        ring && /* @__PURE__ */ jsx17(TodoCheck, { checked: done, onChange: onTick, priority, ariaLabel: `${completeLabel}: ${name}`, unacknowledged, onAcknowledge, acknowledgeLabel: `${acknowledgeLabel}: ${name}` })
       ] }),
       name: String(name),
       meta,
       people: who || project ? /* @__PURE__ */ jsxs14("span", { className: "ad-row__who", children: [
         who && (() => {
           const list = Array.isArray(who) ? who : [who];
-          const faces = list.length > 1 ? /* @__PURE__ */ jsx17(AvatarStack, { people: list }) : list[0] ? /* @__PURE__ */ jsx17(Avatar, { name: list[0].name, src: list[0].src }) : null;
+          const faces = list.length > 1 ? /* @__PURE__ */ jsx17(AvatarStack, { people: list, max: whoMax }) : list[0] ? /* @__PURE__ */ jsx17(Avatar, { name: list[0].name, src: list[0].src }) : null;
           return onPressWho && faces ? /* @__PURE__ */ jsx17(RowPress, { label: pressLabels?.who ?? "Change who", onPress: onPressWho, children: faces }) : faces;
         })(),
         project && /* @__PURE__ */ jsx17(ProjectPill, { code: project.code, color: project.color, onPress: onPressProject, pressLabel: pressLabels?.project })
