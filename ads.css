@@ -721,6 +721,20 @@ button.ad-contents__button:focus-visible { outline: none; box-shadow: var(--ring
 .ad-list-section__fold:hover { color: var(--accent); }
 .ad-list-section__fold:focus-visible { outline: none; box-shadow: var(--ring-select); }
 .ad-list-section__body--nested { margin-left: calc(var(--h-btn-row) / 2); padding-left: var(--space-4); border-left: var(--border-w) solid var(--border); }
+/* A list's columns (built 2026-10-25 for Athena's custom fields): headings held at the top in the table-heading look, each row's
+   cells lined up under them at the person's own widths, a heading's edge dragged to resize. */
+.ad-list-columns { position: relative; --ad-col: auto; }
+.ad-list-columns__head { position: sticky; top: 0; z-index: 1; display: flex; align-items: center; height: var(--h-btn); padding: 0 var(--space-2); background: var(--bg-base); border-bottom: var(--border-w) solid var(--border); }
+.ad-list-columns__spacer { flex: 1; }
+.ad-list-columns__heading { position: relative; display: inline-flex; align-items: center; flex: none; width: var(--ad-col); padding: 0 var(--space-2); box-sizing: border-box; font-family: var(--font-display); font-weight: 600; font-size: var(--text-xs); letter-spacing: var(--track-caps); text-transform: uppercase; color: var(--text-muted); white-space: nowrap; }
+.ad-list-columns__heading[aria-sort] { color: var(--text-primary); }
+.ad-list-columns__sort { display: inline-flex; align-items: center; gap: var(--space-1); margin: 0; padding: 0; border: 0; background: transparent; font: inherit; letter-spacing: inherit; text-transform: inherit; color: inherit; cursor: pointer; }
+.ad-list-columns__sort:hover { color: var(--accent); }
+.ad-list-columns__sort:focus-visible { outline: none; box-shadow: var(--ring-select); border-radius: var(--radius-page); }
+.ad-list-columns__edge { position: absolute; top: 0; right: 0; bottom: 0; width: var(--space-2); cursor: col-resize; }
+.ad-list-columns__edge:hover { box-shadow: inset calc(var(--border-w) * -1) 0 0 var(--text-muted); }
+.ad-row__cells { --ad-col: auto; display: inline-flex; align-items: center; flex: none; }
+.ad-row__cell { flex: none; width: var(--ad-col); padding: 0 var(--space-2); box-sizing: border-box; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: var(--text-base); color: var(--text-secondary); }
 
 /* src/components/Menu/Menu.css */
 /* Menu */
@@ -1084,6 +1098,10 @@ button.ad-row__name:focus-visible { outline: none; box-shadow: var(--ring-select
 .ad-dot--problem { --ad-dot: var(--status-error); }
 .ad-status { display: inline-flex; align-items: center; gap: var(--space-2); font-family: var(--font-body); font-size: var(--text-base); color: var(--text-secondary); white-space: nowrap; }
 .ad-health { display: inline-flex; align-items: center; }
+/* A priority's dot: the ring's colours (P4 stays the neutral grey). */
+.ad-dot--p1 { --ad-dot: var(--priority-p1); }
+.ad-dot--p2 { --ad-dot: var(--priority-p2); }
+.ad-dot--p3 { --ad-dot: var(--priority-p3); }
 
 /* src/components/Switch/Switch.css */
 /* Switch */
