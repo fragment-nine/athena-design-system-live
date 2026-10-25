@@ -489,6 +489,12 @@ button.ad-card__name:focus-visible { outline: none; box-shadow: var(--ring-selec
 .ad-dial__label { font-family: var(--font-body); font-size: var(--text-xs); color: var(--text-secondary); text-align: center; }
 .ad-verdict__word { margin: 0 0 var(--space-1); font-family: var(--font-display); font-weight: 600; font-size: var(--text-28); line-height: var(--lh-tight); color: var(--text-primary); }
 .ad-verdict__sentence { margin: 0; font-family: var(--font-body); font-size: var(--text-base); line-height: var(--lh-normal); color: var(--text-secondary); }
+/* A budget's second reading (built 2026-10-25 for Athena): planned as a lighter layer under the worked part; a named mark where
+   another figure falls (the original budget against the revised estimate). */
+.ad-progress { position: relative; }
+.ad-progress__planned { position: absolute; left: 0; top: 0; bottom: 0; background: var(--bg-hover); }
+.ad-progress__done { position: relative; }
+.ad-progress__mark { position: absolute; top: calc(var(--space-hair) * -1); bottom: calc(var(--space-hair) * -1); width: var(--border-w-strong); background: var(--text-primary); transform: translateX(-50%); }
 
 /* src/components/Checkbox/Checkbox.css */
 /* Checkbox */
@@ -510,6 +516,10 @@ button.ad-card__name:focus-visible { outline: none; box-shadow: var(--ring-selec
 .ad-dept .ad-icon { color: var(--text-muted); transition: color var(--dur-fast) var(--ease-out); }
 .ad-dept:hover .ad-icon { color: var(--accent); }
 .ad-dept--coloured .ad-icon { color: var(--ad-dept); }
+/* Pressed to narrow the view (built 2026-10-25 for Athena): the same look, coral under the cursor. */
+.ad-dept--press { margin: 0; padding: 0; border: 0; background: transparent; font: inherit; cursor: pointer; border-radius: var(--radius-page); }
+.ad-dept--press:hover, .ad-dept--press:hover svg { color: var(--accent); }
+.ad-dept--press:focus-visible { outline: none; box-shadow: var(--ring-select); }
 
 /* src/components/Dialog/Dialog.css */
 /* Dialog */
@@ -786,6 +796,9 @@ button:hover > .ad-project-pill:not(.ad-project-pill--current) { color: var(--ac
 .ad-side__fold:focus-visible { outline: none; box-shadow: var(--ring-select); }
 .ad-side__list li[draggable] { cursor: grab; }
 .ad-side__list li[data-drop] { box-shadow: inset 0 var(--border-w-strong) 0 var(--text-primary); }
+.ad-project-pill--press { margin: 0; border: 0; font: inherit; cursor: pointer; }
+.ad-project-pill--press:hover { color: var(--accent); }
+.ad-project-pill--press:focus-visible { outline: none; box-shadow: var(--ring-select); }
 
 /* src/components/PageHeader/PageHeader.css */
 /* PageHeader and Tabs */

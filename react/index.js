@@ -1465,12 +1465,16 @@ function Health({ state, reason, labels: l = {} }) {
 import { jsx as jsx11, jsxs as jsxs9 } from "react/jsx-runtime";
 var KNOWN2 = /* @__PURE__ */ new Set(["lighting", "video", "eng", "sfx", "content", "scenic", "direction", "admin", "pm", "lasers"]);
 var FOLDED = { pyro: "sfx" };
-function Department({ dept: given, name, glyphOnly }) {
+function Department({ dept: given, name, glyphOnly, onPress, pressLabel }) {
   const dept = FOLDED[given] ?? given;
   const known = KNOWN2.has(dept);
   const colour = useHue(`dept-${known ? dept : "lighting"}`);
   const tint = known ? colour : null;
-  return /* @__PURE__ */ jsxs9("span", { className: cx("ad-dept", tint && "ad-dept--coloured"), style: tint ? { ["--ad-dept"]: tint } : void 0, children: [
+  const Tag2 = onPress ? "button" : "span";
+  return /* @__PURE__ */ jsxs9(Tag2, { type: onPress ? "button" : void 0, "aria-label": onPress ? pressLabel ?? String(name) : void 0, onClick: onPress ? (e) => {
+    e.stopPropagation();
+    onPress();
+  } : void 0, className: cx("ad-dept", tint && "ad-dept--coloured", onPress && "ad-dept--press"), style: tint ? { ["--ad-dept"]: tint } : void 0, children: [
     /* @__PURE__ */ jsx11(Icon, { job: known ? `dept-${dept}` : "tag", size: "sm" }),
     glyphOnly ? /* @__PURE__ */ jsx11("span", { className: "ad-sr", children: String(name) }) : /* @__PURE__ */ jsx11("span", { className: "ad-dept__name", children: String(name) })
   ] });
@@ -1540,9 +1544,13 @@ import { forwardRef as forwardRef5 } from "react";
 import { useState as useState7 } from "react";
 import { jsx as jsx14, jsxs as jsxs12 } from "react/jsx-runtime";
 var X = () => /* @__PURE__ */ jsx14("span", { className: "ad-rail__x", "aria-hidden": "true" });
-function ProjectPill({ code, current, color }) {
+function ProjectPill({ code, current, color, onPress, pressLabel }) {
   const hue = useHue(color);
   const shown = hue && !current ? hue : void 0;
+  if (onPress) return /* @__PURE__ */ jsx14("button", { type: "button", "aria-label": pressLabel ?? code, onClick: (e) => {
+    e.stopPropagation();
+    onPress();
+  }, className: cx("ad-project-pill", "ad-project-pill--press", current && "ad-project-pill--current"), style: shown ? { ["--ad-pill"]: shown } : void 0, "data-coloured": shown ? true : void 0, children: code });
   return /* @__PURE__ */ jsx14("span", { className: cx("ad-project-pill", current && "ad-project-pill--current"), style: shown ? { ["--ad-pill"]: shown } : void 0, "data-coloured": shown ? true : void 0, children: code });
 }
 function Rail({ screens, projects, current, onSelect, onHome, onSettings, onToggle, labels: l = {} }) {
@@ -3369,11 +3377,15 @@ function AmountBars({ items, max, ariaLabel, className }) {
     ] })
   ] }, i.id)) });
 }
-function BudgetBar({ fraction, figure, note = "worked", remainder, end, ariaLabel, className }) {
+function BudgetBar({ fraction, figure, note = "worked", remainder, end, ariaLabel, planned, marks = [], className }) {
   const done = Math.max(0, Math.min(1, fraction));
   return /* @__PURE__ */ jsxs36("div", { className: cx("ad-budget", className), children: [
     /* @__PURE__ */ jsx39("div", { className: "ad-budget__figure", children: figure }),
-    /* @__PURE__ */ jsx39("div", { className: "ad-progress", role: "meter", "aria-label": ariaLabel, "aria-valuemin": 0, "aria-valuemax": Math.max(100, Math.round(fraction * 100)), "aria-valuenow": Math.round(fraction * 100), children: /* @__PURE__ */ jsx39("span", { className: "ad-progress__done", style: { width: `${done * 100}%` } }) }),
+    /* @__PURE__ */ jsxs36("div", { className: "ad-progress", role: "meter", "aria-label": ariaLabel, "aria-valuemin": 0, "aria-valuemax": Math.max(100, Math.round(fraction * 100)), "aria-valuenow": Math.round(fraction * 100), children: [
+      planned != null && /* @__PURE__ */ jsx39("span", { className: "ad-progress__planned", style: { width: `${Math.max(0, Math.min(1, planned)) * 100}%` } }),
+      /* @__PURE__ */ jsx39("span", { className: "ad-progress__done", style: { width: `${done * 100}%` } }),
+      marks.map((m) => /* @__PURE__ */ jsx39("span", { className: "ad-progress__mark", role: "img", "aria-label": m.label, title: m.label, style: { left: `${Math.max(0, Math.min(1, m.at)) * 100}%` } }, m.label))
+    ] }),
     /* @__PURE__ */ jsxs36("div", { className: "ad-budget__foot", children: [
       /* @__PURE__ */ jsx39("span", { children: note }),
       /* @__PURE__ */ jsxs36("span", { children: [
