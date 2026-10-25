@@ -756,6 +756,15 @@ button:hover > .ad-project-pill:not(.ad-project-pill--current) { color: var(--ac
 .ad-side__item:hover, .ad-side__item:hover .ad-side__icon, .ad-side__item:hover .ad-side__star { color: var(--accent); }
 .ad-side__item:focus-visible { outline: none; box-shadow: var(--ring-select); }
 .ad-side__item[aria-current="page"] { background: var(--tint-selected); color: var(--text-primary); }
+/* The expanded menu's foot: Settings and the fold back to the rail; a dragged item's drop place is the one hairline (built 2026-10-25 for Athena). */
+.ad-side { display: flex; flex-direction: column; }
+.ad-side__foot { margin-top: auto; display: flex; align-items: center; gap: var(--space-1); border-top: var(--border-w) solid var(--border); padding-top: var(--space-2); }
+.ad-side__foot .ad-side__item { flex: 1; }
+.ad-side__fold { display: inline-flex; align-items: center; justify-content: center; width: var(--h-btn); height: var(--h-btn); margin: 0; padding: 0; border: 0; border-radius: var(--radius-page); background: transparent; color: var(--text-muted); cursor: pointer; }
+.ad-side__fold:hover { color: var(--accent); }
+.ad-side__fold:focus-visible { outline: none; box-shadow: var(--ring-select); }
+.ad-side__list li[draggable] { cursor: grab; }
+.ad-side__list li[data-drop] { box-shadow: inset 0 var(--border-w-strong) 0 var(--text-primary); }
 
 /* src/components/PageHeader/PageHeader.css */
 /* PageHeader and Tabs */
@@ -787,6 +796,10 @@ button:hover > .ad-project-pill:not(.ad-project-pill--current) { color: var(--ac
 .ad-tab[aria-selected="true"] { color: var(--text-primary); border-bottom-color: var(--text-primary); }
 .ad-tab__numeral { font-family: var(--font-mono); font-weight: 400; letter-spacing: 0; color: var(--text-faint); }
 .ad-tab[aria-selected="true"] .ad-tab__numeral { color: var(--text-secondary); }
+/* The way back from a detail page that is not a project: quiet words with the chevron, on the top line (built 2026-10-25 for Athena). */
+.ad-page-header__back { display: inline-flex; align-items: center; gap: var(--space-1); height: var(--h-btn-bar); margin: 0 0 var(--space-2); padding: 0; border: 0; background: transparent; font-family: var(--font-body); font-size: var(--text-base); color: var(--text-secondary); cursor: pointer; }
+.ad-page-header__back:hover { color: var(--accent); }
+.ad-page-header__back:focus-visible { outline: none; box-shadow: var(--ring-select); border-radius: var(--radius-page); }
 
 /* src/components/Pickers/Pickers.css */
 /* PickList and DatePicker */

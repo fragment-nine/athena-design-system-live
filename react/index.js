@@ -1531,12 +1531,13 @@ function Person({ name, initials: initials2, src, className }) {
 }
 
 // src/components/List/List.tsx
-import { createContext as createContext3, useContext as useContext3, useEffect as useEffect6, useId as useId4, useState as useState7 } from "react";
+import { createContext as createContext3, useContext as useContext3, useEffect as useEffect6, useId as useId4, useState as useState8 } from "react";
 
 // src/components/Row/Row.tsx
 import { forwardRef as forwardRef5 } from "react";
 
 // src/components/Navigation/Navigation.tsx
+import { useState as useState7 } from "react";
 import { jsx as jsx14, jsxs as jsxs12 } from "react/jsx-runtime";
 var X = () => /* @__PURE__ */ jsx14("span", { className: "ad-rail__x", "aria-hidden": "true" });
 function ProjectPill({ code, current, color }) {
@@ -1557,27 +1558,64 @@ function Rail({ screens, projects, current, onSelect, onHome, onSettings, onTogg
     ] })
   ] });
 }
-function SideMenu({ screens, projects, views = [], current, onSelect, onHome, labels: l = {} }) {
-  const L = { home: "Home", menu: "Main", ...l };
+function SideMenu({ screens, projects, views = [], current, onSelect, onHome, onSettings, onToggle, onReorder, labels: l = {} }) {
+  const L = { home: "Home", menu: "Main", settings: "Settings", fold: "Fold the menu", ...l };
+  const [drag, setDrag] = useState7(null);
+  const [over, setOver] = useState7(null);
+  const movable = (group, id, ids) => onReorder ? {
+    draggable: true,
+    "data-drop": over === id && drag?.group === group && drag.id !== id ? "" : void 0,
+    onDragStart: (e) => {
+      e.dataTransfer.effectAllowed = "move";
+      setDrag({ group, id });
+    },
+    onDragOver: (e) => {
+      if (drag?.group === group) {
+        e.preventDefault();
+        setOver(id);
+      }
+    },
+    onDragEnd: () => {
+      setDrag(null);
+      setOver(null);
+    },
+    onDrop: (e) => {
+      e.preventDefault();
+      if (drag?.group === group && drag.id !== id) {
+        const n = ids.filter((x) => x !== drag.id);
+        n.splice(n.indexOf(id), 0, drag.id);
+        onReorder(group, n);
+      }
+      setDrag(null);
+      setOver(null);
+    }
+  } : {};
   return /* @__PURE__ */ jsxs12("nav", { className: "ad-side", "aria-label": L.menu, children: [
     /* @__PURE__ */ jsxs12("ul", { className: "ad-side__list", children: [
       /* @__PURE__ */ jsx14("li", { children: /* @__PURE__ */ jsxs12("button", { type: "button", className: "ad-side__item", onClick: onHome, children: [
         /* @__PURE__ */ jsx14("span", { className: "ad-side__icon", "aria-hidden": "true", children: /* @__PURE__ */ jsx14(X, {}) }),
         L.home
       ] }) }),
-      screens.map((s) => /* @__PURE__ */ jsx14("li", { children: /* @__PURE__ */ jsxs12("button", { type: "button", className: "ad-side__item", "aria-current": current === s.id ? "page" : void 0, onClick: () => onSelect(s.id), children: [
+      screens.map((s) => /* @__PURE__ */ jsx14("li", { ...movable("screens", s.id, screens.map((x) => x.id)), children: /* @__PURE__ */ jsxs12("button", { type: "button", className: "ad-side__item", "aria-current": current === s.id ? "page" : void 0, onClick: () => onSelect(s.id), children: [
         /* @__PURE__ */ jsx14("span", { className: "ad-side__icon", "aria-hidden": "true", children: s.icon }),
         s.label
       ] }) }, s.id))
     ] }),
-    projects.length > 0 && /* @__PURE__ */ jsx14("ul", { className: "ad-side__list", children: projects.map((p) => /* @__PURE__ */ jsx14("li", { children: /* @__PURE__ */ jsxs12("button", { type: "button", className: "ad-side__item", "aria-current": current === p.id ? "page" : void 0, onClick: () => onSelect(p.id), children: [
+    projects.length > 0 && /* @__PURE__ */ jsx14("ul", { className: "ad-side__list", children: projects.map((p) => /* @__PURE__ */ jsx14("li", { ...movable("projects", p.id, projects.map((x) => x.id)), children: /* @__PURE__ */ jsxs12("button", { type: "button", className: "ad-side__item", "aria-current": current === p.id ? "page" : void 0, onClick: () => onSelect(p.id), children: [
       /* @__PURE__ */ jsx14(ProjectPill, { code: p.code, current: current === p.id, color: p.color }),
       p.name
     ] }) }, p.id)) }),
     views.length > 0 && /* @__PURE__ */ jsx14("ul", { className: "ad-side__list", children: views.map((v) => /* @__PURE__ */ jsx14("li", { children: /* @__PURE__ */ jsxs12("button", { type: "button", className: "ad-side__item", "aria-current": current === v.id ? "page" : void 0, onClick: () => onSelect(v.id), children: [
       /* @__PURE__ */ jsx14(Icon, { name: "star", className: "ad-side__star" }),
       v.label
-    ] }) }, v.id)) })
+    ] }) }, v.id)) }),
+    (onSettings || onToggle) && /* @__PURE__ */ jsxs12("div", { className: "ad-side__foot", children: [
+      onSettings && /* @__PURE__ */ jsxs12("button", { type: "button", className: "ad-side__item", "aria-current": current === "settings" ? "page" : void 0, onClick: onSettings, children: [
+        /* @__PURE__ */ jsx14("span", { className: "ad-side__icon", "aria-hidden": "true", children: /* @__PURE__ */ jsx14(Icon, { name: "gear" }) }),
+        L.settings
+      ] }),
+      onToggle && /* @__PURE__ */ jsx14("button", { type: "button", className: "ad-side__fold", "aria-label": L.fold, title: L.fold, "aria-expanded": "true", onClick: onToggle, children: /* @__PURE__ */ jsx14(Icon, { name: "caret-left" }) })
+    ] })
   ] });
 }
 
@@ -1721,7 +1759,7 @@ function useInList() {
   return useContext3(InList);
 }
 function ListSection({ title, children, collapsible, collapsed, onCollapsedChange, day, className, ...heading }) {
-  const [own, setOwn] = useState7(!!collapsible && !heading.needsYou);
+  const [own, setOwn] = useState8(!!collapsible && !heading.needsYou);
   useEffect6(() => {
     if (heading.needsYou) setOwn(false);
   }, [heading.needsYou]);
@@ -1762,8 +1800,8 @@ var noise = (n, row, tick) => Array.from({ length: n }, (_, i) => {
   return h >>> 13 & 1 ? "1" : "0";
 }).join("");
 function LoadingRows({ label, rows = 3, oneLine, delay }) {
-  const [shown, setShown] = useState7(delay === 0);
-  const [tick, setTick] = useState7(0);
+  const [shown, setShown] = useState8(delay === 0);
+  const [tick, setTick] = useState8(0);
   useEffect6(() => {
     if (shown) return;
     const t = setTimeout(() => setShown(true), delay ?? tokenMs("--delay-loading", 1e3));
@@ -1911,7 +1949,7 @@ function ConfirmDialog({ open, act, thing, detail, onConfirm, onKeep, labels: l 
 }
 
 // src/components/Menu/Menu.tsx
-import { useEffect as useEffect7, useRef as useRef9, useState as useState8 } from "react";
+import { useEffect as useEffect7, useRef as useRef9, useState as useState9 } from "react";
 import { jsx as jsx20, jsxs as jsxs18 } from "react/jsx-runtime";
 function ordered(items) {
   const danger = items.filter((i) => i.kind !== "separator" && i.danger);
@@ -1925,7 +1963,7 @@ function Menu({ open, onClose, anchor, items: given, ariaLabel, placement = "dro
   const style = usePlacement(open, anchor, box, placement);
   const z = useLayer(open, onClose, [box, anchor]);
   const live = items.filter((i) => i.kind !== "separator" && !i.disabled);
-  const [at, setAt] = useState8(0);
+  const [at, setAt] = useState9(0);
   useEffect7(() => {
     if (!open) return;
     setAt(0);
@@ -2007,10 +2045,10 @@ function Menu({ open, onClose, anchor, items: given, ariaLabel, placement = "dro
 }
 
 // src/components/UndoNote/UndoNote.tsx
-import { useEffect as useEffect8, useRef as useRef10, useState as useState9 } from "react";
+import { useEffect as useEffect8, useRef as useRef10, useState as useState10 } from "react";
 import { jsx as jsx21, jsxs as jsxs19 } from "react/jsx-runtime";
 function UndoNote({ open, noteId, message, actionLabel = "Undo", onAction, onClose, className }) {
-  const [held, setHeld] = useState9(false);
+  const [held, setHeld] = useState10(false);
   const latest = useRef10(onClose);
   latest.current = onClose;
   useEffect8(() => {
@@ -2041,10 +2079,10 @@ function UndoNote({ open, noteId, message, actionLabel = "Undo", onAction, onClo
 }
 
 // src/components/Pickers/PickList.tsx
-import { useId as useId7, useMemo, useRef as useRef11, useState as useState10 } from "react";
+import { useId as useId7, useMemo, useRef as useRef11, useState as useState11 } from "react";
 import { jsx as jsx22, jsxs as jsxs20 } from "react/jsx-runtime";
 function PickList({ options, value, onPick, searchLabel, noMatch = "Nothing matches", noSearch, query, onQuery, className }) {
-  const [own, setOwn] = useState10("");
+  const [own, setOwn] = useState11("");
   const q = query ?? own;
   const setQ = (v) => {
     setOwn(v);
@@ -2060,7 +2098,7 @@ function PickList({ options, value, onPick, searchLabel, noMatch = "Nothing matc
   }, [options, q, onQuery]);
   const live = shown.filter((o) => !o.disabled);
   const start = Math.max(0, live.findIndex((o) => picked.has(o.id)));
-  const [at, setAt] = useState10(start);
+  const [at, setAt] = useState11(start);
   const cur = live[Math.min(at, live.length - 1)];
   const listRef = useRef11(null);
   const optId = (o) => `${listId}-${o.id}`;
@@ -2141,7 +2179,7 @@ function PickList({ options, value, onPick, searchLabel, noMatch = "Nothing matc
 }
 
 // src/components/Pickers/Pickers.tsx
-import { useRef as useRef12, useState as useState11 } from "react";
+import { useRef as useRef12, useState as useState12 } from "react";
 import { Fragment as Fragment7, jsx as jsx23, jsxs as jsxs21 } from "react/jsx-runtime";
 function PersonPicker({ people, ...rest }) {
   return /* @__PURE__ */ jsx23(PickList, { ...rest, options: people.map((p) => ({ id: p.id, label: p.name, keywords: p.email, lead: /* @__PURE__ */ jsx23(Avatar, { name: p.name, initials: p.initials, src: p.src }) })) });
@@ -2153,7 +2191,7 @@ function StatusPicker({ statuses, noSearch = true, ...rest }) {
   return /* @__PURE__ */ jsx23(PickList, { ...rest, noSearch, options: statuses.map((s) => ({ id: s.id, label: s.label, lead: /* @__PURE__ */ jsx23(Dot, { tone: s.tone }) })) });
 }
 function PickField({ options, value, onPick, label, placeholder, search, disabled, className }) {
-  const [open, setOpen] = useState11(false);
+  const [open, setOpen] = useState12(false);
   const anchor = useRef12(null);
   const box = useRef12(null);
   const style = usePlacement(open, anchor, box, "drop");
@@ -2201,13 +2239,13 @@ function PickField({ options, value, onPick, label, placeholder, search, disable
 }
 
 // src/components/Pickers/DatePicker.tsx
-import { useEffect as useEffect9, useId as useId8, useMemo as useMemo2, useRef as useRef13, useState as useState12 } from "react";
+import { useEffect as useEffect9, useId as useId8, useMemo as useMemo2, useRef as useRef13, useState as useState13 } from "react";
 import { jsx as jsx24, jsxs as jsxs22 } from "react/jsx-runtime";
 var EN = { today: "Today", tomorrow: "Tomorrow", nextWeek: "Next week", inTwoWeeks: "In two weeks", previousMonth: "Previous month", nextMonth: "Next month" };
 function DatePicker({ value, onChange, today: todayIn, weekStart = 1, locale = "en-US", labels: l, quickPicks, shadeWeekends = true, className }) {
   const labels = { ...EN, ...l };
   const today = dayOf(todayIn);
-  const [focus, setFocus] = useState12(dayOf(value ?? today));
+  const [focus, setFocus] = useState13(dayOf(value ?? today));
   const grid = useRef13(null);
   const moved = useRef13(false);
   const said = (words, fallback) => readDate(words, today, { weekStart })?.date ?? fallback;
@@ -2301,13 +2339,13 @@ function DateField({ onParsed, label, text: given, onText, format, icon, classNa
     const r = readDate(t, picker.today, { weekStart: picker.weekStart });
     return r && { date: r.date, readback: r.readback, extra: r.recurrence };
   };
-  const [own, setOwn] = useState12(value ? fmt(value) : "");
+  const [own, setOwn] = useState13(value ? fmt(value) : "");
   const text = given ?? own;
   const setText = (t) => {
     if (given === void 0) setOwn(t);
     onText?.(t);
   };
-  const [open, setOpen] = useState12(false);
+  const [open, setOpen] = useState13(false);
   const dropId = useId8();
   const anchor = useRef13(null);
   const drop = useRef13(null);
@@ -2412,7 +2450,7 @@ function Dials({ children }) {
 import { useId as useId9, useRef as useRef15 } from "react";
 
 // src/components/ShowOptions/ShowOptions.tsx
-import { useRef as useRef14, useState as useState13 } from "react";
+import { useRef as useRef14, useState as useState14 } from "react";
 
 // src/components/Settings/Settings.tsx
 import { jsx as jsx26, jsxs as jsxs24 } from "react/jsx-runtime";
@@ -2460,7 +2498,7 @@ var WORDS = {
   archive: "Show archive"
 };
 function ShowOptionsGear({ value, onChange, options = [...showOrder], labels: l = {} }) {
-  const [open, setOpen] = useState13(false);
+  const [open, setOpen] = useState14(false);
   const gear = useRef14(null);
   const now = { ...SHOW_DEFAULTS, ...value };
   const shown = showOrder.filter((o) => options.includes(o));
@@ -2480,11 +2518,15 @@ function countdownWords(c) {
   const days = n === 0 ? "Today" : `${n} ${n === 1 ? "day" : "days"} to`;
   return `${days} ${c.what} \xB7 ${monthDay(c.to, c.today)} ${c.place}`;
 }
-function PageHeader({ title, icon, stamp, tabs, description, countdown: given, gear, onSearch, onPopOut, onHelp, headerLabels, scramble = true, className }) {
+function PageHeader({ title, icon, stamp, tabs, back, description, countdown: given, gear, onSearch, onPopOut, onHelp, headerLabels, scramble = true, className }) {
   const anyEnd = gear || onSearch || onPopOut || onHelp;
   const countdown = given && typeof given === "object" && given.to instanceof Date ? countdownWords(given) : null;
   return /* @__PURE__ */ jsxs26("header", { className: cx("ad-page-header", className), children: [
     typeof stamp === "string" && STATES.has(stamp) && /* @__PURE__ */ jsx28("div", { className: "ad-type-stamp ad-page-header__stamp", children: stamp }),
+    back && /* @__PURE__ */ jsx28(ButtonSizeScope, { size: "bar", children: /* @__PURE__ */ jsxs26("button", { type: "button", className: "ad-page-header__back", onClick: back.onBack, children: [
+      /* @__PURE__ */ jsx28(Icon, { job: "chevron-left", size: "sm" }),
+      back.label
+    ] }) }),
     tabs && /* @__PURE__ */ jsx28("div", { className: "ad-page-header__tabs", children: tabs }),
     /* @__PURE__ */ jsxs26("div", { className: "ad-page-header__row", children: [
       /* @__PURE__ */ jsxs26("h1", { className: "ad-page-header__title", children: [
@@ -2528,10 +2570,10 @@ function Tabs({ tabs, value, onChange, ariaLabel, numbered = true, panelId, clas
 }
 
 // src/components/Toolbar/Toolbar.tsx
-import { forwardRef as forwardRef8, useRef as useRef18, useState as useState15 } from "react";
+import { forwardRef as forwardRef8, useRef as useRef18, useState as useState16 } from "react";
 
 // src/components/Writing/TokenInput.tsx
-import { useEffect as useEffect10, useLayoutEffect as useLayoutEffect3, useRef as useRef16, useState as useState14 } from "react";
+import { useEffect as useEffect10, useLayoutEffect as useLayoutEffect3, useRef as useRef16, useState as useState15 } from "react";
 import { jsx as jsx29, jsxs as jsxs27 } from "react/jsx-runtime";
 var CHIP = { project: "project", date: "calendar", deadline: "calendar", priority: "flag", person: "user", recurrence: "repeat", reminder: "bell" };
 var DEPTS = /* @__PURE__ */ new Set(["lighting", "video", "eng", "sfx", "content", "scenic", "direction", "admin", "pm", "lasers"]);
@@ -2609,7 +2651,7 @@ function TokenInput({ value, onChange, read: read2, onSubmit, label, placeholder
   const blurred = useRef16(false);
   const composing = useRef16(false);
   const justComposed = useRef16(false);
-  const [moved, setMoved] = useState14(0);
+  const [moved, setMoved] = useState15(0);
   const tokens = readTokens(value, read2);
   const refresh = (leaving = false) => {
     const el = box.current;
@@ -2803,10 +2845,10 @@ function ToolbarSeparator() {
 function ViewPopover({ open, onClose, anchor, builtInViews = [], savedViews, currentView, onPickView, onStarView, viewActions, onSaveView, saveScopes, query, rules, groupBy, sortBy, labels: l = {} }) {
   const L = { view: "View", builtInViews: "Views", savedViews: "Saved views", saveView: "Save this view\u2026", viewName: "View name", save: "Save", cancel: "Cancel", star: "Star", unstar: "Unstar", more: "More", filter: "Filter", groupBy: "Group by", sortBy: "Sort by", ascending: "Ascending", descending: "Descending", ...l };
   const SAVE = "__save";
-  const [naming, setNaming] = useState15(false);
-  const [name, setName] = useState15("");
-  const [scope, setScope] = useState15(saveScopes?.[0]?.value);
-  const [menuFor, setMenuFor] = useState15(null);
+  const [naming, setNaming] = useState16(false);
+  const [name, setName] = useState16("");
+  const [scope, setScope] = useState16(saveScopes?.[0]?.value);
+  const [menuFor, setMenuFor] = useState16(null);
   const menuAnchor = useRef18(null);
   const viewsShown = builtInViews.length > 0 || savedViews != null;
   const views = [
@@ -2897,10 +2939,10 @@ function ViewSwitch({ options, value, onChange, ariaLabel, className }) {
 }
 
 // src/components/Warnings/Warnings.tsx
-import { forwardRef as forwardRef9, useId as useId10, useState as useState16 } from "react";
+import { forwardRef as forwardRef9, useId as useId10, useState as useState17 } from "react";
 import { Fragment as Fragment9, jsx as jsx33, jsxs as jsxs30 } from "react/jsx-runtime";
 function AlertBar({ alerts, label = "Alerts", snoozeLabel = "Snooze", pillLabel = (p, n) => `${n} priority ${p}`, priorityLabel = (p) => `Priority ${p}`, defaultOpen = false, open, onOpenChange, className }) {
-  const [own, setOwn] = useState16(defaultOpen);
+  const [own, setOwn] = useState17(defaultOpen);
   const isOpen = open ?? own;
   const listId = useId10();
   if (!alerts.length) return null;
@@ -3383,12 +3425,12 @@ function CommandSearch({ open, onClose, query, onQuery, results, onPick, label =
 }
 
 // src/components/Guidance/Guidance.tsx
-import { useEffect as useEffect12, useLayoutEffect as useLayoutEffect4, useRef as useRef21, useState as useState17 } from "react";
+import { useEffect as useEffect12, useLayoutEffect as useLayoutEffect4, useRef as useRef21, useState as useState18 } from "react";
 import { jsx as jsx41, jsxs as jsxs37 } from "react/jsx-runtime";
 var useIsoLayoutEffect3 = typeof window === "undefined" ? useEffect12 : useLayoutEffect4;
 function TourStep({ open, anchor, step, total, title, children, onBack, onNext, onExit, backLabel = "Back", nextLabel = "Next", progressLabel = (s, t) => `${s} of ${t}`, side = "below" }) {
   const card = useRef21(null);
-  const [rect, setRect] = useState17(null);
+  const [rect, setRect] = useState18(null);
   useFocusReturn(open, card);
   useIsoLayoutEffect3(() => {
     if (!open) return;
