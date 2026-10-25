@@ -1,5 +1,4 @@
-import { reactJsxDevRuntime as m } from './react-all.js';
-const x = m.default ?? m;
-export default x;
-export const Fragment = x.Fragment;
-export const jsxDEV = x.jsxDEV;
+import { reactJsxRuntime as r } from './react-all.js';
+export const Fragment = r.Fragment;
+export const jsxDEV = (type, props, key, isStaticChildren) => (isStaticChildren ? r.jsxs : r.jsx)(type, props, key);
+export default { Fragment, jsxDEV };
