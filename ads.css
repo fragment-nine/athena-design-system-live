@@ -933,6 +933,16 @@ button.ad-row__name:focus-visible { outline: none; box-shadow: var(--ring-select
 .ad-todo-check:disabled { opacity: var(--opacity-disabled); cursor: default; }
 .ad-row--compact { min-height: calc(var(--h-row) - var(--space-1)); }
 .ad-row--compact.ad-row--two { min-height: calc(var(--h-row-2) - var(--space-1)); }
+/* Assigned to you, not yet acknowledged: the ring is filled in its priority colour; one click acknowledges (ruled 2026-10-25). */
+.ad-todo-check--asked { background: var(--ad-ring); }
+.ad-todo-check--asked:hover { background: var(--accent); box-shadow: none; }
+/* The date line's other facts (ruled 2026-10-25): repeat, the past-deadline flag, the role, the deliverable. */
+.ad-row__fact { display: inline-flex; align-items: center; gap: var(--space-1); white-space: nowrap; color: var(--text-secondary); }
+.ad-row__fact--late svg { color: var(--status-error-ink); }
+/* Being dragged: it lifts as glass, the same as a dragged card (ruled 2026-10-25). */
+.ad-row[data-dragging] { background: var(--glass-bg); backdrop-filter: var(--blur-glass); -webkit-backdrop-filter: var(--blur-glass); box-shadow: var(--elev-float); border-radius: var(--radius-float); }
+/* The face, and under it the project's code in a list mixing projects. */
+.ad-row__who { display: inline-flex; flex-direction: column; align-items: flex-end; gap: var(--space-1); }
 
 /* src/components/Search/Search.css */
 /* CommandSearch (the Finding card): a glass card near the top, the typing line 40 tall with a hairline under it, no fill;
