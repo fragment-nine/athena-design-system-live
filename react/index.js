@@ -1499,13 +1499,15 @@ function TextScramble({
 
 // src/components/Status/Status.tsx
 import { jsx as jsx12, jsxs as jsxs9 } from "react/jsx-runtime";
-function Dot({ tone = "neutral", hue, priority, className, ...rest }) {
-  const colour = useHue(hue);
+var SETTINGS_COLOUR = /^project-(0[1-9]|1[0-2])$/;
+function Dot({ tone = "neutral", hue, priority, colour: picked, className, ...rest }) {
+  const shown = useHue(hue);
+  const colour = picked && SETTINGS_COLOUR.test(picked) ? `var(--${picked})` : shown;
   return /* @__PURE__ */ jsx12("span", { "aria-hidden": "true", ...rest, "data-coloured": colour ? true : void 0, style: colour ? { ["--ad-dot"]: colour } : void 0, className: cx("ad-dot", `ad-dot--${tone}`, priority && `ad-dot--p${priority}`, className) });
 }
-function Status({ label, tone = "neutral", className, ...rest }) {
+function Status({ label, tone = "neutral", colour, className, ...rest }) {
   return /* @__PURE__ */ jsxs9("span", { ...rest, className: cx("ad-status", className), children: [
-    /* @__PURE__ */ jsx12(Dot, { tone }),
+    /* @__PURE__ */ jsx12(Dot, { tone, colour }),
     /* @__PURE__ */ jsx12("span", { className: "ad-status__word", children: label })
   ] });
 }
