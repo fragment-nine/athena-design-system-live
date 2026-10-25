@@ -1069,6 +1069,7 @@ button.ad-row__name:focus-visible { outline: none; box-shadow: var(--ring-select
 .ad-setting__name { display: inline-flex; align-items: center; gap: var(--space-2); color: var(--text-primary); }
 /* A set-time field ("9:00 – 18:00") reads in mono. */
 /* "No access" sits quiet. */
+.ad-settings__title-row { display: flex; align-items: center; gap: var(--space-1); }
 
 /* src/components/Status/Status.css */
 /* Dot and Status */
