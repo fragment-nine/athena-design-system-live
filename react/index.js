@@ -2863,7 +2863,9 @@ function DropLine() {
 // src/components/Table/Table.tsx
 import { jsx as jsx35, jsxs as jsxs31 } from "react/jsx-runtime";
 var Arrow = ({ up }) => /* @__PURE__ */ jsx35(Icon, { name: up ? "arrow-up" : "arrow-down", size: "sm", className: "ad-table__arrow" });
-function Table({ columns, rows, rowId, caption, sort, onSort, picked, onPickedChange, onPickAllChange, pickLabel, pickAllLabel = "Pick all", onOpen, className }) {
+function Table({ columns, rows, rowId, caption, sort, onSort, picked, onPickedChange, onPickAllChange, pickLabel, pickAllLabel = "Pick all", onOpen, rowProps, group, depth, className }) {
+  const span = columns.length + (onPickedChange ? 1 : 0);
+  let lastGroup;
   const all = rows.length > 0 && rows.every((r) => picked?.has(rowId(r)));
   return /* @__PURE__ */ jsx35("div", { className: cx("ad-table-wrap", className), children: /* @__PURE__ */ jsxs31("table", { className: "ad-table", children: [
     /* @__PURE__ */ jsx35("caption", { className: "ad-sr", children: caption }),
@@ -2871,7 +2873,7 @@ function Table({ columns, rows, rowId, caption, sort, onSort, picked, onPickedCh
       onPickedChange && /* @__PURE__ */ jsx35("th", { scope: "col", className: "ad-table__pick", children: /* @__PURE__ */ jsx35(Checkbox, { "aria-label": pickAllLabel, checked: all, onChange: (on) => onPickAllChange?.(on) }) }),
       columns.map((c) => {
         const sorted = sort?.id === c.id ? sort.direction : void 0;
-        return /* @__PURE__ */ jsx35("th", { scope: "col", "aria-sort": sorted ?? (c.sortable ? "none" : void 0), className: cx(c.numeric && "ad-num"), style: c.width ? { width: c.width } : void 0, children: c.sortable && onSort ? /* @__PURE__ */ jsxs31("button", { type: "button", className: "ad-table__sort", onClick: () => onSort(c.id), children: [
+        return /* @__PURE__ */ jsx35("th", { scope: "col", "aria-sort": sorted ?? (c.sortable ? "none" : void 0), className: cx(c.numeric && "ad-num", c.frozen && `ad-table__frozen--${c.frozen}`), style: c.width ? { width: c.width } : void 0, children: c.sortable && onSort ? /* @__PURE__ */ jsxs31("button", { type: "button", className: "ad-table__sort", onClick: () => onSort(c.id), children: [
           c.label,
           sorted && /* @__PURE__ */ jsx35(Arrow, { up: sorted === "ascending" })
         ] }) : c.label }, c.id);
@@ -2880,18 +2882,37 @@ function Table({ columns, rows, rowId, caption, sort, onSort, picked, onPickedCh
     /* @__PURE__ */ jsx35("tbody", { children: rows.map((r) => {
       const id = rowId(r);
       const on = picked?.has(id);
-      return /* @__PURE__ */ jsxs31("tr", { "data-picked": on || void 0, className: cx(onOpen && "ad-table__row--opens"), onClick: (e) => {
+      const g = group?.(r);
+      const head = g != null && g !== lastGroup ? g : null;
+      lastGroup = g;
+      const d = depth?.(r) ?? 0;
+      const { className: _c, style: _s, ...hooks } = rowProps?.(r) ?? {};
+      const tr = /* @__PURE__ */ jsxs31("tr", { ...hooks, "data-picked": on || void 0, "data-depth": d || void 0, className: cx(onOpen && "ad-table__row--opens"), onClick: (e) => {
+        hooks.onClick?.(e);
         if (onOpen && !e.target.closest("input,button,a")) onOpen(r);
       }, children: [
         onPickedChange && /* @__PURE__ */ jsx35("td", { className: "ad-table__pick", children: /* @__PURE__ */ jsx35(Checkbox, { "aria-label": pickLabel?.(r) ?? id, checked: !!on, onChange: (v) => onPickedChange(id, v) }) }),
-        columns.map((c, i) => i === 0 && onOpen ? /* @__PURE__ */ jsx35("th", { scope: "row", className: "ad-table__name", children: /* @__PURE__ */ jsx35("button", { type: "button", className: "ad-table__open", onClick: () => onOpen(r), children: c.cell(r) }) }, c.id) : i === 0 ? /* @__PURE__ */ jsx35("th", { scope: "row", className: "ad-table__name", children: c.cell(r) }, c.id) : /* @__PURE__ */ jsx35("td", { className: cx(c.numeric && "ad-num", c.mono && "ad-mono"), children: c.cell(r) }, c.id))
+        columns.map((c, i) => {
+          const frozen = c.frozen && `ad-table__frozen--${c.frozen}`;
+          if (i > 0) return /* @__PURE__ */ jsx35("td", { className: cx(c.numeric && "ad-num", c.mono && "ad-mono", frozen), children: c.cell(r) }, c.id);
+          const words = onOpen ? /* @__PURE__ */ jsx35("button", { type: "button", className: "ad-table__open", onClick: () => onOpen(r), children: c.cell(r) }) : c.cell(r);
+          const meta = c.meta?.(r);
+          return /* @__PURE__ */ jsxs31("th", { scope: "row", className: cx("ad-table__name", frozen, meta != null && "ad-table__name--two"), style: d ? { ["--ad-depth"]: d } : void 0, children: [
+            d > 0 && /* @__PURE__ */ jsx35("span", { className: "ad-table__elbow", "aria-hidden": "true" }),
+            meta != null ? /* @__PURE__ */ jsxs31("span", { className: "ad-table__words", children: [
+              words,
+              /* @__PURE__ */ jsx35("span", { className: "ad-table__meta", children: meta })
+            ] }) : words
+          ] }, c.id);
+        })
       ] }, id);
+      return head != null ? [/* @__PURE__ */ jsx35("tr", { className: "ad-table__group", children: /* @__PURE__ */ jsx35("th", { scope: "colgroup", colSpan: span, children: head }) }, `group-${id}`), tr] : tr;
     }) })
   ] }) });
 }
 function SelectionBar({ count, countLabel = (n) => `${n} selected`, actions, className }) {
   const ordered2 = [...actions.filter((a) => !a.danger), ...actions.filter((a) => a.danger)];
-  const children = ordered2.map((a) => /* @__PURE__ */ jsx35(Button, { icon: a.icon, danger: a.danger, onClick: a.onSelect, children: a.label }, a.id));
+  const children = ordered2.map((a) => /* @__PURE__ */ jsx35(Button, { icon: a.icon, danger: a.danger, onClick: (e) => a.onSelect(e.currentTarget), children: a.label }, a.id));
   if (count <= 0) return null;
   return /* @__PURE__ */ jsx35(Portal, { children: /* @__PURE__ */ jsxs31("div", { className: cx("ad-float", "ad-selection-bar", className), role: "toolbar", "aria-label": countLabel(count), children: [
     /* @__PURE__ */ jsx35("span", { className: "ad-selection-bar__count", "aria-live": "polite", children: countLabel(count) }),
