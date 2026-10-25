@@ -1241,6 +1241,10 @@ button.ad-milestone:focus-visible { outline: none; box-shadow: var(--ring-select
 .ad-toolbar { display: flex; align-items: center; flex-wrap: wrap; gap: var(--space-2); min-height: var(--h-row); border-bottom: var(--border-w) solid var(--border); }
 .ad-toolbar__separator { width: var(--border-w); height: var(--icon-lg); margin: 0 var(--space-2); background: var(--border); }
 .ad-toolbar__end { margin-left: auto; display: flex; align-items: center; gap: var(--space-2); }
+/* The View pop-over's naming step and sort direction (built 2026-10-25 for Athena). */
+.ad-view-save { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-2); margin-top: var(--space-2); }
+.ad-view-save .ad-field-wrap { flex: 1; min-width: 0; }
+.ad-view-sort { display: flex; align-items: center; gap: var(--space-2); }
 
 /* src/components/Tooltip/Tooltip.css */
 /* Tooltip */

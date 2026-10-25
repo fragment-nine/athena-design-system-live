@@ -2528,7 +2528,7 @@ function Tabs({ tabs, value, onChange, ariaLabel, numbered = true, panelId, clas
 }
 
 // src/components/Toolbar/Toolbar.tsx
-import { forwardRef as forwardRef8 } from "react";
+import { forwardRef as forwardRef8, useRef as useRef18, useState as useState15 } from "react";
 
 // src/components/Writing/TokenInput.tsx
 import { useEffect as useEffect10, useLayoutEffect as useLayoutEffect3, useRef as useRef16, useState as useState14 } from "react";
@@ -2800,36 +2800,91 @@ var ViewButton = forwardRef8(function ViewButton2({ label = "View", open, opens,
 function ToolbarSeparator() {
   return /* @__PURE__ */ jsx31("span", { className: "ad-toolbar__separator", role: "separator", "aria-orientation": "vertical" });
 }
-function ViewPopover({ open, onClose, anchor, savedViews, onPickView, onSaveView, query, rules, groupBy, sortBy, labels: l = {} }) {
-  const L = { view: "View", savedViews: "Saved views", saveView: "Save this view\u2026", filter: "Filter", groupBy: "Group by", sortBy: "Sort by", ...l };
+function ViewPopover({ open, onClose, anchor, builtInViews = [], savedViews, currentView, onPickView, onStarView, viewActions, onSaveView, saveScopes, query, rules, groupBy, sortBy, labels: l = {} }) {
+  const L = { view: "View", builtInViews: "Views", savedViews: "Saved views", saveView: "Save this view\u2026", viewName: "View name", save: "Save", cancel: "Cancel", star: "Star", unstar: "Unstar", more: "More", filter: "Filter", groupBy: "Group by", sortBy: "Sort by", ascending: "Ascending", descending: "Descending", ...l };
   const SAVE = "__save";
+  const [naming, setNaming] = useState15(false);
+  const [name, setName] = useState15("");
+  const [scope, setScope] = useState15(saveScopes?.[0]?.value);
+  const [menuFor, setMenuFor] = useState15(null);
+  const menuAnchor = useRef18(null);
+  const viewsShown = builtInViews.length > 0 || savedViews != null;
+  const views = [
+    ...builtInViews.map((v) => ({ id: v.id, label: String(v.label), group: savedViews ? L.builtInViews : void 0 })),
+    ...(savedViews ?? []).map((v) => ({
+      id: v.id,
+      label: String(v.label),
+      group: builtInViews.length ? L.savedViews : void 0,
+      lead: onStarView ? /* @__PURE__ */ jsx31(IconButton, { label: v.starred === false ? L.star : L.unstar, "aria-pressed": v.starred !== false, onClick: (e) => {
+        e.stopPropagation();
+        onStarView(v.id, v.starred === false);
+      }, children: /* @__PURE__ */ jsx31(Icon, { job: "star", fill: v.starred !== false }) }) : /* @__PURE__ */ jsx31(Icon, { job: "star", fill: v.starred !== false }),
+      hint: viewActions ? /* @__PURE__ */ jsx31(IconButton, { label: `${L.more}: ${v.label}`, onClick: (e) => {
+        e.stopPropagation();
+        menuAnchor.current = e.currentTarget;
+        setMenuFor(v);
+      }, children: /* @__PURE__ */ jsx31(Icon, { job: "more" }) }) : void 0
+    })),
+    ...savedViews && onSaveView ? [{ id: SAVE, label: L.saveView, lead: /* @__PURE__ */ jsx31(Icon, { job: "plus" }) }] : []
+  ];
+  const finishSave = () => {
+    if (!name.trim() || !onSaveView) return;
+    onSaveView(name.trim(), scope);
+    setNaming(false);
+    setName("");
+  };
   return /* @__PURE__ */ jsxs29(Popover, { open, onClose, anchor, ariaLabel: L.view, children: [
-    /* @__PURE__ */ jsx31(PopoverSection, { label: L.savedViews, children: /* @__PURE__ */ jsx31(
-      PickList,
-      {
-        noSearch: true,
-        searchLabel: L.savedViews,
-        onPick: (id) => id === SAVE ? onSaveView() : onPickView(id),
-        options: [
-          ...savedViews.map((v) => ({ id: v.id, label: String(v.label), lead: /* @__PURE__ */ jsx31(Icon, { job: "star", fill: true }) })),
-          { id: SAVE, label: L.saveView, lead: /* @__PURE__ */ jsx31(Icon, { job: "plus" }) }
-        ]
-      }
-    ) }),
-    /* @__PURE__ */ jsxs29(PopoverSection, { label: L.filter, children: [
-      /* @__PURE__ */ jsx31(TokenInput, { read: { kind: "query", vocabulary: query.vocabulary }, label: L.filter, value: query.value, onChange: query.onChange, showResolved: false }),
-      /* @__PURE__ */ jsx31(RuleBuilder, { ...rules })
+    viewsShown && /* @__PURE__ */ jsxs29(PopoverSection, { label: savedViews && !builtInViews.length ? L.savedViews : L.builtInViews, children: [
+      /* @__PURE__ */ jsx31(
+        PickList,
+        {
+          noSearch: true,
+          searchLabel: L.savedViews,
+          value: currentView ?? null,
+          options: views,
+          onPick: (id) => id === SAVE ? setNaming(true) : onPickView?.(id)
+        }
+      ),
+      naming && /* @__PURE__ */ jsxs29("div", { className: "ad-view-save", children: [
+        /* @__PURE__ */ jsx31(TextField, { autoFocus: true, "aria-label": L.viewName, placeholder: L.viewName, value: name, onChange: (e) => setName(e.target.value), onKeyDown: (e) => {
+          if (e.key === "Enter") finishSave();
+          if (e.key === "Escape") {
+            e.stopPropagation();
+            setNaming(false);
+          }
+        } }),
+        saveScopes && /* @__PURE__ */ jsx31(Select, { "aria-label": L.view, value: scope, onChange: (e) => setScope(e.target.value), options: saveScopes }),
+        /* @__PURE__ */ jsxs29(ButtonSizeScope, { size: "row", children: [
+          /* @__PURE__ */ jsx31(Button, { onClick: () => setNaming(false), children: L.cancel }),
+          /* @__PURE__ */ jsx31(Button, { variant: "main", disabled: !name.trim(), onClick: finishSave, children: L.save })
+        ] })
+      ] }),
+      menuFor && viewActions && /* @__PURE__ */ jsx31(Menu, { open: true, onClose: () => setMenuFor(null), anchor: menuAnchor, ariaLabel: String(menuFor.label), items: viewActions(menuFor) })
     ] }),
-    /* @__PURE__ */ jsx31(PopoverSection, { label: L.groupBy, children: /* @__PURE__ */ jsx31(Select, { "aria-label": L.groupBy, value: groupBy.value, onChange: (e) => groupBy.onChange(e.target.value), options: groupBy.options }) }),
-    /* @__PURE__ */ jsx31(PopoverSection, { label: L.sortBy, children: /* @__PURE__ */ jsx31(Select, { "aria-label": L.sortBy, value: sortBy.value, onChange: (e) => sortBy.onChange(e.target.value), options: sortBy.options }) })
+    query && /* @__PURE__ */ jsxs29(PopoverSection, { label: L.filter, children: [
+      /* @__PURE__ */ jsx31(TokenInput, { read: { kind: "query", vocabulary: query.vocabulary }, label: L.filter, value: query.value, onChange: query.onChange, showResolved: false }),
+      rules && /* @__PURE__ */ jsx31(RuleBuilder, { ...rules })
+    ] }),
+    groupBy && /* @__PURE__ */ jsx31(PopoverSection, { label: L.groupBy, children: /* @__PURE__ */ jsx31(Select, { "aria-label": L.groupBy, value: groupBy.value, onChange: (e) => groupBy.onChange(e.target.value), options: groupBy.options }) }),
+    sortBy && /* @__PURE__ */ jsx31(PopoverSection, { label: L.sortBy, children: /* @__PURE__ */ jsxs29("div", { className: "ad-view-sort", children: [
+      /* @__PURE__ */ jsx31(Select, { "aria-label": L.sortBy, value: sortBy.value, onChange: (e) => sortBy.onChange(e.target.value), options: sortBy.options }),
+      sortBy.direction && /* @__PURE__ */ jsx31(ButtonSizeScope, { size: "row", children: /* @__PURE__ */ jsx31(
+        IconButton,
+        {
+          label: sortBy.direction.value === "ascending" ? L.ascending : L.descending,
+          onClick: () => sortBy.direction.onChange(sortBy.direction.value === "ascending" ? "descending" : "ascending"),
+          children: /* @__PURE__ */ jsx31(Icon, { job: sortBy.direction.value === "ascending" ? "arrow-up" : "arrow-down" })
+        }
+      ) })
+    ] }) })
   ] });
 }
 
 // src/components/ViewSwitch/ViewSwitch.tsx
-import { useRef as useRef18 } from "react";
+import { useRef as useRef19 } from "react";
 import { jsx as jsx32 } from "react/jsx-runtime";
 function ViewSwitch({ options, value, onChange, ariaLabel, className }) {
-  const box = useRef18(null);
+  const box = useRef19(null);
   const at = options.findIndex((o) => o.value === value);
   const onKeyDown2 = (e) => {
     const n = e.key === "ArrowRight" || e.key === "ArrowDown" ? (at + 1) % options.length : e.key === "ArrowLeft" || e.key === "ArrowUp" ? (at - 1 + options.length) % options.length : e.key === "Home" ? 0 : e.key === "End" ? options.length - 1 : null;
@@ -2842,10 +2897,10 @@ function ViewSwitch({ options, value, onChange, ariaLabel, className }) {
 }
 
 // src/components/Warnings/Warnings.tsx
-import { forwardRef as forwardRef9, useId as useId10, useState as useState15 } from "react";
+import { forwardRef as forwardRef9, useId as useId10, useState as useState16 } from "react";
 import { Fragment as Fragment9, jsx as jsx33, jsxs as jsxs30 } from "react/jsx-runtime";
 function AlertBar({ alerts, label = "Alerts", snoozeLabel = "Snooze", pillLabel = (p, n) => `${n} priority ${p}`, priorityLabel = (p) => `Priority ${p}`, defaultOpen = false, open, onOpenChange, className }) {
-  const [own, setOwn] = useState15(defaultOpen);
+  const [own, setOwn] = useState16(defaultOpen);
   const isOpen = open ?? own;
   const listId = useId10();
   if (!alerts.length) return null;
@@ -3302,10 +3357,10 @@ function Verdict({ word, sentence }) {
 }
 
 // src/components/Search/Search.tsx
-import { useRef as useRef19 } from "react";
+import { useRef as useRef20 } from "react";
 import { jsx as jsx40 } from "react/jsx-runtime";
 function CommandSearch({ open, onClose, query, onQuery, results, onPick, label = "Search everything", noMatch = "Nothing by that name" }) {
-  const box = useRef19(null);
+  const box = useRef20(null);
   const z = useLayer(open, onClose, [box], "dialog");
   usePageInert(open, [box]);
   useFocusReturn(open, box);
@@ -3328,12 +3383,12 @@ function CommandSearch({ open, onClose, query, onQuery, results, onPick, label =
 }
 
 // src/components/Guidance/Guidance.tsx
-import { useEffect as useEffect12, useLayoutEffect as useLayoutEffect4, useRef as useRef20, useState as useState16 } from "react";
+import { useEffect as useEffect12, useLayoutEffect as useLayoutEffect4, useRef as useRef21, useState as useState17 } from "react";
 import { jsx as jsx41, jsxs as jsxs37 } from "react/jsx-runtime";
 var useIsoLayoutEffect3 = typeof window === "undefined" ? useEffect12 : useLayoutEffect4;
 function TourStep({ open, anchor, step, total, title, children, onBack, onNext, onExit, backLabel = "Back", nextLabel = "Next", progressLabel = (s, t) => `${s} of ${t}`, side = "below" }) {
-  const card = useRef20(null);
-  const [rect, setRect] = useState16(null);
+  const card = useRef21(null);
+  const [rect, setRect] = useState17(null);
   useFocusReturn(open, card);
   useIsoLayoutEffect3(() => {
     if (!open) return;
