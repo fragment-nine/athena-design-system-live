@@ -1574,10 +1574,7 @@ function AvatarStack({ people, max = 3, size = "sm", plane = "base", className }
   const rest = people.length - shown.length;
   return /* @__PURE__ */ jsxs12("span", { className: cx("ad-avatar-stack", `ad-plane--${plane}`, className), role: "group", "aria-label": people.map((p) => p.name).join(", "), children: [
     shown.map((p, i) => /* @__PURE__ */ jsx15(Avatar, { ...p, initials: (p.initials ?? initials(p.name)).slice(0, 1), size, decorative: true, style: { zIndex: shown.length - i } }, p.id ?? `${p.name}-${i}`)),
-    rest > 0 && /* @__PURE__ */ jsxs12("span", { className: "ad-avatar-stack__more", "aria-hidden": "true", children: [
-      "+",
-      rest
-    ] })
+    rest > 0 && /* @__PURE__ */ jsx15("span", { className: cx("ad-avatar", `ad-avatar--${size}`, "ad-avatar-stack__more"), "aria-hidden": "true", children: "\u2026" })
   ] });
 }
 function Person({ name, initials: initials2, src, className }) {
@@ -3149,11 +3146,16 @@ function BoardLane({ title, mark, onTitle, titleLabel, children, className }) {
     /* @__PURE__ */ jsx36("div", { className: "ad-lane__cards", children })
   ] });
 }
-function BoardCardMeta({ date, icon, face, code, marks }) {
+function BoardCardMeta({ date, icon, face, code, marks, role, deliverable }) {
   return /* @__PURE__ */ jsxs32("div", { className: "ad-lane__card-meta", children: [
     date,
     icon && /* @__PURE__ */ jsx36("span", { "aria-hidden": "true", className: "ad-lane__card-icon", children: icon }),
     marks && /* @__PURE__ */ jsx36("span", { className: "ad-lane__card-marks", children: marks }),
+    role && /* @__PURE__ */ jsx36("span", { className: "ad-lane__card-fact", children: String(role) }),
+    deliverable && /* @__PURE__ */ jsxs32("span", { className: "ad-lane__card-fact", children: [
+      /* @__PURE__ */ jsx36(Icon, { job: "kind-deliverable", size: "sm" }),
+      String(deliverable)
+    ] }),
     code && /* @__PURE__ */ jsx36("span", { className: "ad-lane__card-code", children: code }),
     face && /* @__PURE__ */ jsx36("span", { className: "ad-lane__card-face", children: face })
   ] });

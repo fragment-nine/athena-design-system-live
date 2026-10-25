@@ -299,7 +299,7 @@
 .ad-plane--float { --ad-plane: var(--bg-float); }
 .ad-avatar-stack .ad-avatar { position: relative; box-shadow: 0 0 0 var(--bw-select) var(--ad-plane); }
 .ad-avatar-stack .ad-avatar + .ad-avatar { margin-left: calc(var(--avatar-overlap) * -1); }
-.ad-avatar-stack__more { margin-left: var(--space-2); font-family: var(--font-mono); font-size: var(--text-xs); color: var(--text-secondary); }
+.ad-avatar-stack__more { display: inline-flex; align-items: center; justify-content: center; background: var(--bg-raised); color: var(--text-secondary); font-family: var(--font-body); }
 
 .ad-person { display: inline-flex; align-items: center; gap: var(--space-2); font-family: var(--font-body); font-size: var(--text-base); line-height: var(--lh-tight); color: var(--text-primary); }
 .ad-person__name { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
@@ -323,6 +323,7 @@
 .ad-lane__name--press:hover { color: var(--accent); }
 .ad-lane__name--press:focus-visible { outline: none; box-shadow: var(--ring-select); }
 .ad-lane__card-marks, .ad-lane__card-code { display: inline-flex; align-items: center; gap: var(--space-1); }
+.ad-lane__card-fact { display: inline-flex; align-items: center; gap: var(--space-1); color: var(--text-secondary); white-space: nowrap; }
 
 /* src/components/Button/Button.css */
 /* Button and IconButton */
