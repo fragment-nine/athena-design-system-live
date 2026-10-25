@@ -1,0 +1,11 @@
+{
+  "imports": {
+    "react": "./vendor/react.js",
+    "react-dom": "./vendor/react-dom.js",
+    "react-dom/client": "./vendor/react-dom-client.js",
+    "react/jsx-runtime": "./vendor/react-jsx-runtime.js",
+    "react/jsx-dev-runtime": "./vendor/react-jsx-dev-runtime.js",
+    "@fragment-nine/athena-design-system/react": "./react/index.js",
+    "@fragment-nine/athena-design-system/language": "./language/index.js"
+  }
+}

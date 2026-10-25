@@ -1,0 +1,15 @@
+import { reactDom as m } from './react-all.js';
+const x = m.default ?? m;
+export default x;
+export const __SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED = x.__SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED;
+export const createPortal = x.createPortal;
+export const createRoot = x.createRoot;
+export const findDOMNode = x.findDOMNode;
+export const flushSync = x.flushSync;
+export const hydrate = x.hydrate;
+export const hydrateRoot = x.hydrateRoot;
+export const render = x.render;
+export const unmountComponentAtNode = x.unmountComponentAtNode;
+export const unstable_batchedUpdates = x.unstable_batchedUpdates;
+export const unstable_renderSubtreeIntoContainer = x.unstable_renderSubtreeIntoContainer;
+export const version = x.version;
