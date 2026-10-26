@@ -3621,6 +3621,27 @@ function MonthCalendar({ month, items, today: todayIn, weekStart = 1, locale = "
     })
   ] });
 }
+function YearCalendar({ year, today: todayIn, busy, onPressDay, weekStart = 1, locale = "en-US", className }) {
+  const today = dayOf(todayIn);
+  const y = year.getFullYear();
+  return /* @__PURE__ */ jsx41("section", { className: cx("ad-year", className), "aria-label": String(y), children: Array.from({ length: 12 }, (_, m) => {
+    const first = new Date(y, m, 1);
+    const start = weekStartOf(first, weekStart);
+    const last = new Date(y, m + 1, 0);
+    const cells = Math.ceil((diff(last, start) + 1) / 7) * 7;
+    return /* @__PURE__ */ jsxs37("div", { className: "ad-year__month", role: "group", "aria-label": first.toLocaleDateString(locale, { month: "long", year: "numeric" }), children: [
+      /* @__PURE__ */ jsx41("div", { className: "ad-year__name", "aria-hidden": "true", children: first.toLocaleDateString(locale, { month: "short" }).toUpperCase() }),
+      /* @__PURE__ */ jsx41("div", { className: "ad-year__days", children: Array.from({ length: cells }, (_2, i) => {
+        const d = addDays(start, i);
+        if (d.getMonth() !== m) return /* @__PURE__ */ jsx41("span", { className: "ad-year__day ad-year__day--outside", "aria-hidden": "true" }, i);
+        const holds = !!busy?.(d);
+        const attrs = { "data-busy": holds || void 0, "data-today": diff(d, today) === 0 || void 0 };
+        const name = d.toLocaleDateString(locale, { weekday: "long", month: "long", day: "numeric" });
+        return onPressDay ? /* @__PURE__ */ jsx41("button", { type: "button", ...attrs, className: "ad-year__day", "aria-label": name, onClick: () => onPressDay(d), children: d.getDate() }, i) : /* @__PURE__ */ jsx41("span", { ...attrs, className: "ad-year__day", children: d.getDate() }, i);
+      }) })
+    ] }, m);
+  }) });
+}
 function Booking({ name, time, unconfirmed, color, style, onOpen }) {
   const Tag2 = onOpen ? "button" : "div";
   const hue = useHue(color);
@@ -3640,17 +3661,40 @@ function WeekendShade({ children, className }) {
   return /* @__PURE__ */ jsx41("div", { className: cx(on && "ad-weekend", className), children });
 }
 var clockHour = (h) => String((h + 11) % 12 + 1);
-function TimeGrid({ startHour, endHour, bookings = [], columns, now, hourLabel = clockHour, ariaLabel, className }) {
+function TimeGrid({ startHour, endHour, bookings = [], columns, now, hourLabel = clockHour, onOpen, itemProps, columnProps, ariaLabel, className }) {
   const hours = Math.max(1, endHour - startHour);
   const at = (h) => `calc(var(--ad-hour) * ${Math.max(0, Math.min(hours, h - startHour))})`;
   const cols = columns ?? [{ id: "day", label: "", bookings }];
-  return /* @__PURE__ */ jsxs37("div", { className: cx("ad-time-grid", className), role: "group", "aria-label": ariaLabel, style: { ["--ad-hours"]: hours }, children: [
+  const hueOf = useHueOf();
+  const allDayRows = cols.some((c) => c.allDay) ? Math.max(1, ...cols.map((c) => c.allDay?.length ?? 0)) : 0;
+  return /* @__PURE__ */ jsxs37("div", { className: cx("ad-time-grid", className), role: "group", "aria-label": ariaLabel, style: { ["--ad-hours"]: hours, ["--ad-allday-rows"]: allDayRows }, children: [
     /* @__PURE__ */ jsxs37("div", { className: "ad-time-grid__gutter", "aria-hidden": "true", children: [
-      Array.from({ length: hours }, (_, i) => /* @__PURE__ */ jsx41("span", { className: "ad-time-grid__hour-label", style: { top: at(startHour + i) }, children: hourLabel(startHour + i) }, i)),
-      now && /* @__PURE__ */ jsx41(NowMarker, { time: now.time, style: { position: "absolute", top: at(now.at), right: 0, transform: "translateY(-50%)" } })
+      allDayRows > 0 && /* @__PURE__ */ jsx41("div", { className: "ad-time-grid__allday-space" }),
+      /* @__PURE__ */ jsxs37("div", { className: "ad-time-grid__hours", children: [
+        Array.from({ length: hours }, (_, i) => /* @__PURE__ */ jsx41("span", { className: "ad-time-grid__hour-label", style: { top: at(startHour + i) }, children: hourLabel(startHour + i) }, i)),
+        now && /* @__PURE__ */ jsx41(NowMarker, { time: now.time, style: { position: "absolute", top: at(now.at), right: 0, transform: "translateY(-50%)" } })
+      ] })
     ] }),
     cols.map((c) => /* @__PURE__ */ jsxs37("div", { className: "ad-time-grid__column", role: "group", "aria-label": c.label || void 0, children: [
-      c.label && /* @__PURE__ */ jsx41("span", { className: "ad-time-grid__day", children: c.label }),
+      c.label && /* @__PURE__ */ jsxs37("span", { className: "ad-time-grid__day", children: [
+        c.label,
+        c.marks != null && /* @__PURE__ */ jsx41("span", { className: "ad-time-grid__marks", children: c.marks })
+      ] }),
+      allDayRows > 0 && /* @__PURE__ */ jsx41("div", { ...hooksOf(columnProps?.(c.id)), className: "ad-time-grid__allday", children: (c.allDay ?? []).map((item) => {
+        const hooks = hooksOf(itemProps?.(item));
+        const cls = cx("ad-month__bar", "ad-time-grid__item", item.unconfirmed && "ad-month__bar--unconfirmed");
+        const style = { ["--ad-bar"]: hueOf(item.color) };
+        return onOpen ? /* @__PURE__ */ jsxs37("button", { type: "button", ...hooks, className: cls, style, onClick: (e) => {
+          hooks.onClick?.(e);
+          onOpen(item);
+        }, children: [
+          code(item),
+          /* @__PURE__ */ jsx41("span", { children: item.label })
+        ] }, item.id) : /* @__PURE__ */ jsxs37("span", { ...hooks, className: cls, style, children: [
+          code(item),
+          /* @__PURE__ */ jsx41("span", { children: item.label })
+        ] }, item.id);
+      }) }),
       /* @__PURE__ */ jsxs37("div", { className: "ad-time-grid__body", children: [
         Array.from({ length: hours }, (_, i) => /* @__PURE__ */ jsx41("div", { className: "ad-time-grid__hour", "aria-hidden": "true" }, i)),
         c.bookings.map(({ id, start, end, ...b }) => /* @__PURE__ */ jsx41("div", { className: "ad-time-grid__slot", style: { top: at(start), height: `calc(${at(end)} - ${at(start)})` }, children: /* @__PURE__ */ jsx41(Booking, { ...b, style: { height: "100%" } }) }, id))
@@ -4071,6 +4115,7 @@ export {
   ViewPopover,
   ViewSwitch,
   WeekendShade,
+  YearCalendar,
   ZoomCluster,
   cx,
   describeViolations,

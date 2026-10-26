@@ -433,13 +433,32 @@ button.ad-booking:focus-visible { outline: none; box-shadow: var(--ring-select);
 /* The time grid: hours down the left in mono, each day a column under its mono heading, hour hairlines across. */
 .ad-time-grid { --ad-hour: var(--space-8); display: grid; grid-auto-flow: column; grid-template-columns: max-content; grid-auto-columns: minmax(0, 1fr); padding-top: var(--space-6); font-family: var(--font-body); }
 .ad-time-grid { --ad-hours: 24; }
-.ad-time-grid__gutter { position: relative; width: calc(var(--space-8) + var(--space-3)); height: calc(var(--ad-hour) * var(--ad-hours)); }
+.ad-time-grid__gutter { position: relative; width: calc(var(--space-8) + var(--space-3)); }
 .ad-time-grid__hour-label { position: absolute; right: var(--space-2); transform: translateY(-50%); font-family: var(--font-mono); font-size: var(--text-xs); color: var(--text-muted); }
 .ad-time-grid__column { position: relative; border-left: var(--border-w) solid var(--border); }
 .ad-time-grid__day { position: absolute; bottom: 100%; left: var(--space-2); padding-bottom: var(--space-1); font-family: var(--font-mono); font-size: var(--text-xs); text-transform: uppercase; color: var(--text-secondary); white-space: nowrap; }
 .ad-time-grid__body { position: relative; height: calc(var(--ad-hour) * var(--ad-hours)); }
 .ad-time-grid__hour { box-sizing: border-box; height: var(--ad-hour); border-top: var(--border-w) solid var(--border); }
 .ad-time-grid__slot { position: absolute; left: var(--space-1); right: var(--space-1); display: flex; }
+/* The all-day lane over the hours (built 2026-10-25 for Athena): one short bar per thing with a date and no time, as tall as the
+   fullest day; the hours' gutter steps down by the same. */
+.ad-time-grid { --ad-allday-rows: 0; }
+.ad-time-grid__allday-space, .ad-time-grid__allday { height: calc(var(--ad-allday-rows) * (var(--h-bar) + var(--space-1)) + var(--space-1)); }
+.ad-time-grid__allday { display: flex; flex-direction: column; gap: var(--space-1); padding-top: var(--space-1); border-bottom: var(--border-w) solid var(--border); box-sizing: border-box; }
+.ad-time-grid__item { height: var(--h-bar); flex: none; }
+.ad-time-grid__hours { position: relative; height: calc(var(--ad-hour) * var(--ad-hours)); }
+.ad-time-grid__marks { display: inline-flex; align-items: center; gap: var(--space-1); margin-left: var(--space-1); vertical-align: middle; }
+/* YearCalendar: twelve small months in a grid; days in mono, grey, a day that holds work in bone with a dot under it, today ringed. */
+.ad-year { display: grid; grid-template-columns: repeat(auto-fill, minmax(calc(var(--space-6) * 7), 1fr)); gap: var(--space-6); }
+.ad-year__name { margin-bottom: var(--space-2); font-family: var(--font-display); font-weight: 600; font-size: var(--text-xs); letter-spacing: var(--track-label); color: var(--text-muted); }
+.ad-year__days { display: grid; grid-template-columns: repeat(7, 1fr); gap: var(--space-hair); }
+.ad-year__day { position: relative; display: grid; place-items: center; height: var(--space-6); padding: 0; border: 0; border-radius: var(--radius-round); background: transparent; font-family: var(--font-mono); font-size: var(--text-xs); color: var(--text-muted); }
+.ad-year__day[data-busy] { color: var(--text-primary); }
+.ad-year__day[data-busy]::after { content: ""; position: absolute; bottom: var(--space-hair); left: 50%; width: var(--space-hair); height: var(--space-hair); transform: translateX(-50%); border-radius: var(--radius-round); background: var(--text-primary); }
+.ad-year__day[data-today] { box-shadow: inset 0 0 0 var(--border-w) var(--text-primary); }
+button.ad-year__day { cursor: pointer; }
+button.ad-year__day:hover { color: var(--accent); }
+button.ad-year__day:focus-visible { outline: none; box-shadow: var(--ring-select); }
 
 /* src/components/Card/Card.css */
 /* Card: a board tile, or a dashboard widget as the Dashboard card draws it (small caps title, More at the right in 600). */
