@@ -2586,7 +2586,7 @@ function DatePicker({ value, onChange, today: todayIn, weekStart = 1, locale = "
     ] })
   ] });
 }
-function DateField({ onParsed, label, text: given, onText, format, icon, disabled, done, className, value, onChange, ...picker }) {
+function DateField({ onParsed, label, text: given, onText, format, icon, disabled, due, done, className, value, onChange, ...picker }) {
   const fmt = format ?? ((d) => monoDate(d));
   const read2 = (t) => {
     const r = readDate(t, picker.today, { weekStart: picker.weekStart });
@@ -2616,7 +2616,7 @@ function DateField({ onParsed, label, text: given, onText, format, icon, disable
       TextField,
       {
         ref: input,
-        className: value && text === fmt(value) ? cx("ad-datefield__field--date", isLate(value, picker.today, { done }) && "ad-datefield__field--late") : void 0,
+        className: value && text === fmt(value) ? cx("ad-datefield__field--date", due && isLate(value, picker.today, { done }) && "ad-datefield__field--late") : void 0,
         icon,
         "aria-label": label,
         placeholder: label,
