@@ -8,6 +8,7 @@ import {
   formatISO,
   formatTimeOfDay,
   initials,
+  isLate,
   monoDate,
   monthDay,
   nextWeekday,
@@ -17,7 +18,7 @@ import {
   readDate,
   sameDay,
   weekStartOf
-} from "../chunk-BNZYVZVS.js";
+} from "../chunk-Z7MYBYQG.js";
 import {
   describeViolations,
   scanIn
@@ -1798,7 +1799,7 @@ function RowDate({ due, today, until, done, what, icon }) {
   const first = dueLabel(due, today);
   if (!first.label) return null;
   const last = until ? dueLabel(until, today) : null;
-  const late = !done && (last ? last.late : first.late);
+  const late = isLate(due, today, { until, done });
   const words = last ? `${first.label} \u2013 ${last.label}` : first.label;
   const title = last ? `${first.title} \u2013 ${last.title}` : first.title;
   return /* @__PURE__ */ jsxs14("span", { className: cx("ad-row-date", late && "ad-row-date--late"), title, children: [
@@ -2585,7 +2586,7 @@ function DatePicker({ value, onChange, today: todayIn, weekStart = 1, locale = "
     ] })
   ] });
 }
-function DateField({ onParsed, label, text: given, onText, format, icon, disabled, className, value, onChange, ...picker }) {
+function DateField({ onParsed, label, text: given, onText, format, icon, disabled, done, className, value, onChange, ...picker }) {
   const fmt = format ?? ((d) => monoDate(d));
   const read2 = (t) => {
     const r = readDate(t, picker.today, { weekStart: picker.weekStart });
@@ -2615,7 +2616,7 @@ function DateField({ onParsed, label, text: given, onText, format, icon, disable
       TextField,
       {
         ref: input,
-        className: value && text === fmt(value) ? "ad-datefield__field--date" : void 0,
+        className: value && text === fmt(value) ? cx("ad-datefield__field--date", isLate(value, picker.today, { done }) && "ad-datefield__field--late") : void 0,
         icon,
         "aria-label": label,
         placeholder: label,

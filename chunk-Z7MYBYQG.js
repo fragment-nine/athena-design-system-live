@@ -409,6 +409,10 @@ function dueLabel(due, today, opts = {}) {
   if (d >= 2 && d <= 6) return { label: (opts.long ? w.weekdays : w.weekdaysShort)[due.getDay()], tone: "soon", title, late: false };
   return { label: monthDay(due, today, w), tone: d < 0 ? "late" : "later", title, late: d < 0 };
 }
+function isLate(due, today, opts = {}) {
+  if (opts.done || !due) return false;
+  return dueLabel(opts.until ?? due, today).late;
+}
 function dayHeading(day, today, w = ENGLISH) {
   const d = daysBetween(today, day);
   const name = d === 0 ? w.today : d === 1 ? w.tomorrow : d === -1 ? w.yesterday : w.weekdays[day.getDay()];
@@ -1810,6 +1814,7 @@ export {
   monoDate,
   weekdayDate,
   dueLabel,
+  isLate,
   dayHeading,
   relative,
   isToday,
@@ -1867,4 +1872,4 @@ export {
   querySplitter,
   queryTokens
 };
-//# sourceMappingURL=chunk-BNZYVZVS.js.map
+//# sourceMappingURL=chunk-Z7MYBYQG.js.map

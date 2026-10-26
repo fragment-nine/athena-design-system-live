@@ -1019,6 +1019,8 @@ button:hover > .ad-project-pill:not(.ad-project-pill--current) { color: var(--ac
 .ad-datepicker__day[data-picked] { background: var(--bg-hover); color: var(--text-primary); box-shadow: var(--ring-select); }
 .ad-datefield { display: inline-flex; flex-direction: column; }
 .ad-datefield__field--date .ad-field__input { font-family: var(--font-mono); }
+/* Late (ruled 2026-10-26): the date's words in the late red, as RowDate draws them. */
+.ad-datefield__field--late .ad-field__input { color: var(--status-error-ink); }
 .ad-datefield__drop.ad-popover { width: auto; padding: var(--space-2); }
 /* What is picked shows (built 2026-10-25 for Athena): one pick carries a check at the right; picking several draws the tick box before each row. Never coral. */
 .ad-picklist__check { display: inline-flex; margin-left: auto; color: var(--text-secondary); }
@@ -1246,7 +1248,9 @@ button.ad-row__name:focus-visible { outline: none; box-shadow: var(--ring-select
 .ad-dot--waiting { --ad-dot: var(--status-warn); }
 .ad-dot--good { --ad-dot: var(--status-good); }
 .ad-dot--problem { --ad-dot: var(--status-error); }
-.ad-status { display: inline-flex; align-items: center; gap: var(--space-2); font-family: var(--font-body); font-size: var(--text-base); color: var(--text-secondary); white-space: nowrap; }
+.ad-status { display: inline-flex; align-items: flex-start; gap: var(--space-2); font-family: var(--font-body); font-size: var(--text-base); color: var(--text-secondary); }
+/* The words may wrap (ruled 2026-10-26); the dot stays level with the FIRST line, centred on its line box. */
+.ad-status > .ad-dot { margin-top: calc((1lh - var(--dot-size)) / 2); }
 .ad-health { display: inline-flex; align-items: center; }
 /* A priority's dot: the ring's colours (P4 stays the neutral grey). */
 .ad-dot--p1 { --ad-dot: var(--priority-p1); }

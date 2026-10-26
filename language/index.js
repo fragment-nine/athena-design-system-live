@@ -57,6 +57,7 @@ import {
   inferYear,
   inferYearAhead,
   initials,
+  isLate,
   isQueryKeyword,
   isToday,
   isValidZone,
@@ -116,7 +117,7 @@ import {
   zoneAbbr,
   zoneHint,
   zonedWeekdayHour
-} from "../chunk-BNZYVZVS.js";
+} from "../chunk-Z7MYBYQG.js";
 
 // src/language/queryAssist.ts
 function recognizeQuery(text, vocab = {}) {
@@ -244,6 +245,7 @@ export {
   inferYear,
   inferYearAhead,
   initials,
+  isLate,
   isQueryKeyword,
   isToday,
   isValidZone,
