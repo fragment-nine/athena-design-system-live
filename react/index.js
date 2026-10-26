@@ -1506,8 +1506,19 @@ function TextScramble({
     return () => {
       clearTimeout(t);
       stop();
+      startedRef.current = false;
+      setDisplay(text);
     };
   }, [inView, run, delay, text]);
+  useEffect6(() => {
+    const t = setTimeout(() => {
+      if (!startedRef.current) {
+        setDisplay(text);
+        setMinWidth(void 0);
+      }
+    }, delay + tokenMs("--tick-scramble", 30) * 40);
+    return () => clearTimeout(t);
+  }, [text, delay]);
   return /* @__PURE__ */ jsxs8(Tag2, { ref: elRef, className, style, children: [
     /* @__PURE__ */ jsx11("span", { className: "ad-sr", children: text }),
     /* @__PURE__ */ jsx11("span", { ref: innerRef, "aria-hidden": "true", style: minWidth != null ? { display: "inline-block", minWidth } : void 0, children: display })
