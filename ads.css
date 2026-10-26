@@ -930,7 +930,7 @@ button:hover > .ad-project-pill:not(.ad-project-pill--current) { color: var(--ac
 .ad-page-header__aside { display: flex; flex-direction: column; gap: var(--space-1); min-width: 0; }
 .ad-page-header__description { margin: 0; font-family: var(--font-body); font-size: var(--text-base); line-height: var(--lh-tight); color: var(--text-secondary); }
 .ad-page-header__countdown { margin: 0; font-family: var(--font-mono); font-size: var(--text-xs); color: var(--text-muted); }
-.ad-tabs { display: flex; gap: var(--space-6); }
+.ad-tabs { display: flex; flex-wrap: wrap; gap: var(--space-2) var(--space-6); }
 .ad-tab {
   display: inline-flex; align-items: baseline; gap: var(--space-2); margin: 0; padding: 0 0 var(--space-2); border: 0;
   border-bottom: var(--border-w) solid transparent; background: transparent; cursor: pointer;
