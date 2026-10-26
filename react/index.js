@@ -2866,6 +2866,7 @@ function PageHeader({ title, icon, stamp, tabs, back, description, countdown: gi
         countdown && /* @__PURE__ */ jsx31("p", { className: "ad-page-header__countdown", children: countdown })
       ] }),
       anyEnd && /* @__PURE__ */ jsxs28(HeaderActions, { groupProps: { "aria-label": headerLabels?.group ?? "Screen actions" }, children: [
+        gear && /* @__PURE__ */ jsx31(ShowOptionsGear, { ...gear }),
         onSearch && /* @__PURE__ */ jsx31(IconButton, { label: headerLabels?.search ?? "Search", onClick: onSearch, children: /* @__PURE__ */ jsx31(Icon, { job: "search", size: "md" }) }),
         onPopOut && /* @__PURE__ */ jsx31(IconButton, { label: headerLabels?.popOut ?? "Pop out", onClick: onPopOut, children: /* @__PURE__ */ jsx31(Icon, { job: "external", size: "md" }) }),
         onHelp && /* @__PURE__ */ jsx31(IconButton, { label: headerLabels?.help ?? "Help", onClick: onHelp, children: /* @__PURE__ */ jsx31(Icon, { job: "help", size: "md" }) }),
@@ -2873,8 +2874,7 @@ function PageHeader({ title, icon, stamp, tabs, back, description, countdown: gi
           /* @__PURE__ */ jsx31(IconButton, { ref: menuAt, label: menu.label ?? "More", active: menuOpen, "aria-haspopup": "menu", "aria-expanded": menuOpen, onClick: () => setMenuOpen((o) => !o), children: /* @__PURE__ */ jsx31(Icon, { job: "more", size: "md" }) }),
           menu.marked && /* @__PURE__ */ jsx31("span", { className: "ad-page-header__mark", "aria-hidden": "true" }),
           /* @__PURE__ */ jsx31(Menu, { open: menuOpen, onClose: () => setMenuOpen(false), anchor: menuAt, ariaLabel: menu.label ?? "More", items: menu.items })
-        ] }),
-        gear && /* @__PURE__ */ jsx31(ShowOptionsGear, { ...gear })
+        ] })
       ] })
     ] })
   ] });
