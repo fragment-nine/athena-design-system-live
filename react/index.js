@@ -398,8 +398,9 @@ function useTooltip(text, { describes = true } = {}) {
     clearTimeout(timer.current);
     const go = () => {
       const r = el.getBoundingClientRect();
+      const gap = tokenPx("--space-2", 8, doc);
       setPlaced(null);
-      setAt({ top: r.bottom + tokenPx("--space-2", 8, doc), left: r.left + r.width / 2 });
+      setAt({ top: r.bottom + gap, left: r.left + r.width / 2, above: r.top - gap });
     };
     if (now) go();
     else timer.current = setTimeout(go, tokenMs("--delay-tip", 500));
@@ -411,8 +412,12 @@ function useTooltip(text, { describes = true } = {}) {
   useEffect3(() => {
     if (!at || !tip.current) return;
     const w = tip.current.offsetWidth;
+    const h = tip.current.offsetHeight;
     const edge = tokenPx("--space-2", 8, doc);
-    setPlaced(Math.min(Math.max(at.left, edge + w / 2), (doc?.defaultView ?? window).innerWidth - edge - w / 2));
+    const win = doc?.defaultView ?? window;
+    const left = Math.min(Math.max(at.left, edge + w / 2), win.innerWidth - edge - w / 2);
+    const top = at.top + h > win.innerHeight - edge && at.above - h >= edge ? at.above - h : at.top;
+    setPlaced({ left, top });
   }, [at]);
   useEffect3(() => {
     if (!at) return;
@@ -435,7 +440,7 @@ function useTooltip(text, { describes = true } = {}) {
     /** Touch has no hover: a tap shows it. */
     onClick: (e) => showFor(e.currentTarget, true)
   };
-  const node = at && text ? /* @__PURE__ */ jsx2(Portal, { children: /* @__PURE__ */ jsx2("div", { ref: tip, id, role: "tooltip", className: "ad-tooltip", style: { top: at.top, left: placed ?? at.left, visibility: placed == null ? "hidden" : void 0 }, children: text }) }) : null;
+  const node = at && text ? /* @__PURE__ */ jsx2(Portal, { children: /* @__PURE__ */ jsx2("div", { ref: tip, id, role: "tooltip", className: "ad-tooltip", style: { top: placed?.top ?? at.top, left: placed?.left ?? at.left, visibility: placed == null ? "hidden" : void 0 }, children: text }) }) : null;
   return { triggerProps, node };
 }
 function Tooltip({ text, children }) {
