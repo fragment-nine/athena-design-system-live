@@ -1660,6 +1660,14 @@ import { forwardRef as forwardRef5, useContext as useContext4, useState as useSt
 
 // src/components/Navigation/Navigation.tsx
 import { useState as useState7 } from "react";
+
+// src/components/dropLine.ts
+function dropLineProps(at, axis = "y") {
+  if (!at) return {};
+  return { "data-ad-drop": axis === "x" ? `${at}-x` : at };
+}
+
+// src/components/Navigation/Navigation.tsx
 import { jsx as jsx16, jsxs as jsxs13 } from "react/jsx-runtime";
 var X = () => /* @__PURE__ */ jsx16("span", { className: "ad-rail__x", "aria-hidden": "true" });
 function ProjectPill({ code: code2, current, color, onPress, pressLabel }) {
@@ -1690,7 +1698,7 @@ function SideMenu({ screens, projects, views = [], current, onSelect, onHome, on
   const [over, setOver] = useState7(null);
   const movable = (group, id, ids) => onReorder ? {
     draggable: true,
-    "data-drop": over === id && drag?.group === group && drag.id !== id ? "" : void 0,
+    ...dropLineProps(over === id && drag?.group === group && drag.id !== id ? "before" : null),
     onDragStart: (e) => {
       e.dataTransfer.effectAllowed = "move";
       setDrag({ group, id });
@@ -3411,10 +3419,6 @@ function BoardCardMeta({ date, icon, face, code: code2, marks, role, deliverable
 }
 function DropLine() {
   return /* @__PURE__ */ jsx37("div", { className: "ad-drop-line", "aria-hidden": "true" });
-}
-function dropLineProps(at, axis = "y") {
-  if (!at) return {};
-  return { "data-ad-drop": axis === "x" ? `${at}-x` : at };
 }
 
 // src/components/Table/Table.tsx
