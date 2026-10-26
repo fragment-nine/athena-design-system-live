@@ -149,6 +149,7 @@
   --w-brief: 330px;
   --w-tour: 320px;
   --h-bar: 24px;
+  --h-bar-dense: 17px;
   --blur-glass-radius: 22px;
   --border-w: 1px;
   --border-w-strong: 1.5px;
@@ -313,6 +314,11 @@
 
 .ad-person { display: inline-flex; align-items: center; gap: var(--space-2); font-family: var(--font-body); font-size: var(--text-base); line-height: var(--lh-tight); color: var(--text-primary); }
 .ad-person__name { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+/* Where the person is: a small dot at the lower right, ringed in the plane so it reads on the face. */
+.ad-avatar { position: relative; }
+.ad-avatar .ad-avatar__presence { position: absolute; right: calc(var(--space-hair) * -1); bottom: calc(var(--space-hair) * -1); box-shadow: 0 0 0 var(--border-w-strong) var(--bg-base); }
+.ad-avatar:has(.ad-avatar__presence) { overflow: visible; }
+.ad-avatar:has(.ad-avatar__presence) > img { border-radius: inherit; }
 
 /* src/components/Board/Board.css */
 /* Board, BoardLane, DropLine */
@@ -1265,6 +1271,8 @@ button.ad-row__name:focus-visible { outline: none; box-shadow: var(--ring-select
 .ad-period .ad-zoom__name { color: var(--text-primary); margin-right: var(--space-1); }
 .ad-period__sizes { display: inline-flex; gap: var(--space-1); margin-left: var(--space-2); }
 .ad-period__size[aria-checked="true"] { color: var(--text-primary); }
+/* Pinned: held at the top of the scroller on its own ground, above the lanes (built 2026-10-25 for Athena). */
+.ad-ruler--pinned { position: sticky; top: 0; z-index: 2; background: var(--bg-base); }
 
 /* src/components/Timeline/Timeline.css */
 /* Timeline marks, as the Bars and Page-Schedule cards draw them */
@@ -1303,6 +1311,13 @@ button.ad-bar { cursor: pointer; }
 .ad-bar--backup.ad-bar--selected, .ad-bar--backup:focus-visible { outline: var(--border-w-strong) dotted var(--line-strong); }
 .ad-bar__label { position: relative; z-index: 1; display: inline-flex; align-items: center; gap: var(--space-2); min-width: 0; margin-left: var(--ad-label-in); }
 .ad-bar--label-hidden .ad-bar__label, .ad-bar--label-hidden .ad-bar__outside { opacity: 0; }
+.ad-bar--dense { height: var(--h-bar-dense); padding: 0 var(--space-1); font-size: var(--text-xs); }
+/* Travel: the bar's own ground fades over one bar-height at that end; the name stays solid. */
+.ad-bar--fade-start, .ad-bar--fade-end, .ad-bar--fade-both { --ad-fade: var(--h-bar); }
+.ad-bar--dense.ad-bar--fade-start, .ad-bar--dense.ad-bar--fade-end, .ad-bar--dense.ad-bar--fade-both { --ad-fade: var(--h-bar-dense); }
+.ad-bar--fade-start { mask-image: linear-gradient(to right, transparent, var(--text-primary) var(--ad-fade)); }
+.ad-bar--fade-end { mask-image: linear-gradient(to left, transparent, var(--text-primary) var(--ad-fade)); }
+.ad-bar--fade-both { mask-image: linear-gradient(to right, transparent, var(--text-primary) var(--ad-fade), var(--text-primary) calc(100% - var(--ad-fade)), transparent); }
 .ad-bar--late:not(.ad-bar--selected):not(:focus-visible) { box-shadow: var(--glow-late); }
 .ad-bar--late:not(.ad-bar--selected):not(:focus-visible):hover { box-shadow: var(--glow-late), var(--glow-hover); }
 .ad-bar__name { overflow: hidden; text-overflow: ellipsis; }

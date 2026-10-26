@@ -1575,10 +1575,13 @@ function UnreadDot({ label = "unread", className }) {
 // src/components/Avatar/Avatar.tsx
 import { useState as useState6 } from "react";
 import { jsx as jsx15, jsxs as jsxs12 } from "react/jsx-runtime";
-function Avatar({ name, initials: initials2, src, size = "sm", decorative, className, style }) {
+function Avatar({ name, initials: initials2, src, size = "sm", decorative, presence, className, style }) {
   const [failed, setFailed] = useState6();
   const broken = !!src && failed === src;
-  return /* @__PURE__ */ jsx15("span", { role: decorative ? void 0 : "img", "aria-label": decorative ? void 0 : name, "aria-hidden": decorative || void 0, title: name, className: cx("ad-avatar", `ad-avatar--${size}`, className), style, children: src && !broken ? /* @__PURE__ */ jsx15("img", { src, alt: "", onError: () => setFailed(src) }) : /* @__PURE__ */ jsx15("span", { "aria-hidden": "true", children: initials2 ?? initials(name) }) });
+  return /* @__PURE__ */ jsxs12("span", { role: decorative ? void 0 : "img", "aria-label": decorative ? void 0 : presence ? `${name}, ${presence.label}` : name, "aria-hidden": decorative || void 0, title: presence ? `${name}, ${presence.label}` : name, className: cx("ad-avatar", `ad-avatar--${size}`, className), style, children: [
+    src && !broken ? /* @__PURE__ */ jsx15("img", { src, alt: "", onError: () => setFailed(src) }) : /* @__PURE__ */ jsx15("span", { "aria-hidden": "true", children: initials2 ?? initials(name) }),
+    presence && /* @__PURE__ */ jsx15(Dot, { colour: presence.colour, className: "ad-avatar__presence" })
+  ] });
 }
 function AvatarStack({ people, max = 3, size = "sm", plane = "base", className }) {
   if (!people.length) return null;
@@ -3362,7 +3365,7 @@ var strip = (h) => {
   const { className: _c, style: _s, ...rest } = h;
   return rest;
 };
-function Bar({ label, unconfirmed, deal, backup, color, selected, startLabel, endLabel, lead, children, thin, labelOutside, onOpen, ends, barProps, labelInset, labelHidden, late, className, style }) {
+function Bar({ label, unconfirmed, deal, backup, color, selected, startLabel, endLabel, lead, children, thin, labelOutside, onOpen, ends, barProps, labelInset, labelHidden, late, dense, fade, className, style }) {
   const asButton = !!onOpen && !ends;
   const Tag2 = asButton ? "button" : "div";
   const hue = useHue(color);
@@ -3389,7 +3392,7 @@ function Bar({ label, unconfirmed, deal, backup, color, selected, startLabel, en
         }
       },
       "aria-current": selected || void 0,
-      className: cx("ad-bar", unconfirmed && "ad-bar--unconfirmed", deal && "ad-bar--deal", backup && "ad-bar--backup", thin && "ad-bar--thin", labelOutside && "ad-bar--label-outside", selected && "ad-bar--selected", late && "ad-bar--late", labelHidden && "ad-bar--label-hidden", className),
+      className: cx("ad-bar", unconfirmed && "ad-bar--unconfirmed", deal && "ad-bar--deal", backup && "ad-bar--backup", thin && "ad-bar--thin", labelOutside && "ad-bar--label-outside", selected && "ad-bar--selected", late && "ad-bar--late", dense && "ad-bar--dense", fade && `ad-bar--fade-${fade}`, labelHidden && "ad-bar--label-hidden", className),
       style: { ...style, ["--ad-bar"]: hue, ...labelInset ? { ["--ad-label-in"]: `${Math.max(0, labelInset)}px` } : {} },
       children: [
         grip("start", ends?.start),
@@ -3487,7 +3490,7 @@ function Legend({ items }) {
 
 // src/components/Timeline/Ruler.tsx
 import { jsx as jsx40, jsxs as jsxs36 } from "react/jsx-runtime";
-function Ruler({ start, days, dayWidth, locale = "en-US", end, className }) {
+function Ruler({ start, days, dayWidth, locale = "en-US", end, pinned, className }) {
   const at = (i) => new Date(start.getFullYear(), start.getMonth(), start.getDate() + i);
   const months = [];
   const ticks = [];
@@ -3514,7 +3517,7 @@ function Ruler({ start, days, dayWidth, locale = "en-US", end, className }) {
     else if (monday) ticks.push({ x: i * dayWidth, major: true, label: weekEvery && weeks++ % weekEvery === 0 ? String(d.getDate()) : void 0 });
     else if (monthStart) ticks.push({ x: i * dayWidth, major: true });
   }
-  return /* @__PURE__ */ jsxs36("div", { className: cx("ad-ruler", className), style: { width: days * dayWidth }, children: [
+  return /* @__PURE__ */ jsxs36("div", { className: cx("ad-ruler", pinned && "ad-ruler--pinned", className), style: { width: days * dayWidth }, children: [
     /* @__PURE__ */ jsx40("div", { className: "ad-ruler__months", "aria-hidden": "true", children: months.map((m) => /* @__PURE__ */ jsx40("span", { className: "ad-ruler__month", style: { left: m.x }, children: m.label }, m.x)) }),
     /* @__PURE__ */ jsx40("div", { className: "ad-ruler__ticks", "aria-hidden": "true", children: ticks.map((t) => /* @__PURE__ */ jsx40("span", { className: cx("ad-ruler__tick", t.major && "ad-ruler__tick--major"), style: { left: t.x }, children: t.label && /* @__PURE__ */ jsx40("span", { className: "ad-ruler__day", children: t.label }) }, t.x)) }),
     end && /* @__PURE__ */ jsx40("div", { className: "ad-ruler__end", children: end })
