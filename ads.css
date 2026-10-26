@@ -959,11 +959,13 @@ button:hover > .ad-project-pill:not(.ad-project-pill--current) { color: var(--ac
 .ad-popover { padding: var(--space-4) var(--space-4) var(--space-4); max-height: calc(100vh - var(--space-4)); overflow-y: auto; }
 .ad-popover--card { width: var(--w-card); }
 .ad-popover--wide { width: var(--w-wide); }
+.ad-popover--menu { width: var(--w-menu); }
 .ad-popover__header { margin-right: var(--space-8); }
 .ad-popover__eyebrow, .ad-popover__section-label {
   margin: 0; font-family: var(--font-display); font-weight: 600; font-size: var(--text-xs);
   letter-spacing: var(--track-label); text-transform: uppercase; color: var(--text-muted);
 }
+.ad-popover__chip { margin-top: var(--space-1); display: flex; }
 .ad-popover__title-row { display: flex; align-items: center; gap: var(--space-3); margin-top: var(--space-1); }
 .ad-popover__title { margin: 0; font-family: var(--font-display); font-weight: 600; font-size: var(--text-20); line-height: var(--lh-tight); color: var(--text-primary); }
 .ad-popover__description { margin: var(--space-1) 0 0; font-size: var(--text-base); line-height: var(--lh-normal); color: var(--text-secondary); }

@@ -2009,14 +2009,15 @@ function PopoverCard({ onClose, width = "card", ariaLabel, noClose, closeLabel, 
     }
   );
 }
-function PopoverHeader({ eyebrow, title, lead, description, onRename, renameLabel, action }) {
+function PopoverHeader({ eyebrow, title, chip, lead, description, onRename, renameLabel, action }) {
   const own = useId5();
   const id = useContext6(TitleId) ?? own;
   return /* @__PURE__ */ jsxs17("header", { className: "ad-popover__header", children: [
-    eyebrow && /* @__PURE__ */ jsx20("div", { className: "ad-popover__eyebrow", children: eyebrow }),
-    /* @__PURE__ */ jsxs17("div", { className: "ad-popover__title-row", children: [
+    eyebrow && /* @__PURE__ */ jsx20("div", { id: title == null ? id : void 0, className: "ad-popover__eyebrow", children: eyebrow }),
+    chip != null && /* @__PURE__ */ jsx20("div", { className: "ad-popover__chip", children: chip }),
+    (title != null || lead != null || action != null) && /* @__PURE__ */ jsxs17("div", { className: "ad-popover__title-row", children: [
       lead,
-      /* @__PURE__ */ jsx20("h2", { id, className: "ad-popover__title", children: onRename ? /* @__PURE__ */ jsx20(InlineEdit, { size: "title", value: String(title), onCommit: onRename, ariaLabel: renameLabel ?? "Name" }) : title }),
+      title != null && /* @__PURE__ */ jsx20("h2", { id, className: "ad-popover__title", children: onRename ? /* @__PURE__ */ jsx20(InlineEdit, { size: "title", value: String(title), onCommit: onRename, ariaLabel: renameLabel ?? "Name" }) : title }),
       action && /* @__PURE__ */ jsx20("span", { className: "ad-popover__action", children: /* @__PURE__ */ jsx20(ButtonSizeScope, { size: "row", children: action }) })
     ] }),
     description && /* @__PURE__ */ jsx20("p", { className: "ad-popover__description", children: description })
