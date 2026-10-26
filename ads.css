@@ -123,6 +123,7 @@
   --switch-h: 20px;
   --w-menu: 240px;
   --w-card: 420px;
+  --h-touch: 44px;
   --w-pop-rail: 292px;
   --w-wide: 680px;
   --w-side: 228px;
@@ -879,7 +880,25 @@ button:hover > .ad-project-pill:not(.ad-project-pill--current) { color: var(--ac
 .ad-menu__label { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .ad-menu__trail { display: inline-flex; align-items: center; gap: var(--space-hair); }
 .ad-side .ad-menu__row > .ad-side__list, .ad-side .ad-menu__row > ul { padding: var(--space-1) 0 var(--space-1) var(--space-4); }
-.ad-menu__separator { height: var(--border-w); margin: var(--space-2) var(--space-1); background: var(--border); }
+.ad-menu__list { margin: 0; padding: 0; list-style: none; }
+.ad-menu__body { flex: 1; min-height: 0; overflow-y: auto; display: flex; flex-direction: column; }
+.ad-rail .ad-menu__body { align-items: center; }
+.ad-menu__brand { display: flex; align-items: center; gap: var(--space-1); padding: var(--space-2) var(--space-1); }
+.ad-rail .ad-menu__brand { flex-direction: column; }
+.ad-menu__mark { margin: 0; padding: 0 var(--space-1); border: 0; background: none; font-family: var(--font-display); font-weight: 600; font-size: var(--text-20); line-height: var(--lh-none); color: var(--text-primary); cursor: pointer; border-radius: var(--radius-page); }
+.ad-menu__mark:hover { color: var(--accent); }
+.ad-menu__mark:focus-visible { outline: none; box-shadow: var(--ring-select); }
+.ad-menu__brand > .ad-menu__trail { margin-left: auto; }
+.ad-rail .ad-menu__brand > .ad-menu__trail { margin-left: 0; }
+.ad-menu__code { flex: none; min-width: var(--w-col-xs); }
+/* The separator: a hairline inside a row-tall grab area. */
+.ad-menu__separator { position: relative; height: var(--space-4); margin: 0 var(--space-1); }
+.ad-menu__separator::before { content: ""; position: absolute; left: 0; right: 0; top: 50%; height: var(--border-w); background: var(--border); }
+/* On a touch screen every row and button in the menu is finger-sized. */
+@media (pointer: coarse) {
+  .ad-menu .ad-side__item, .ad-menu .ad-rail__item, .ad-menu__mark { min-height: var(--h-touch); }
+  .ad-menu__separator { height: var(--h-touch); }
+}
 .ad-menu__separator[draggable] { cursor: grab; }
 .ad-menu__row[draggable] { cursor: grab; }
 .ad-menu__row[data-drop] { box-shadow: inset 0 var(--border-w-strong) 0 var(--text-primary); }

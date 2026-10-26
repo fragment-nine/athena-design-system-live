@@ -4054,6 +4054,15 @@ var strip2 = (h) => {
   return rest;
 };
 var Folded = createContext7(false);
+function MenuBrand({ mark, label, onPress, end }) {
+  return /* @__PURE__ */ jsxs41("div", { className: "ad-menu__brand", children: [
+    /* @__PURE__ */ jsx47("button", { type: "button", className: "ad-menu__mark", "aria-label": label, title: label, onClick: onPress, children: mark }),
+    end != null && /* @__PURE__ */ jsx47("span", { className: "ad-menu__trail", children: /* @__PURE__ */ jsx47(ButtonSizeScope, { size: "row", children: end }) })
+  ] });
+}
+function MenuBody({ children, bodyProps }) {
+  return /* @__PURE__ */ jsx47("div", { ...strip2(bodyProps), className: "ad-menu__body", children });
+}
 function MenuFrame({ rail = false, ariaLabel, children, frameProps }) {
   return /* @__PURE__ */ jsx47(Folded.Provider, { value: rail, children: /* @__PURE__ */ jsx47("nav", { ...strip2(frameProps), "aria-label": ariaLabel, className: cx(rail ? "ad-rail" : "ad-side", "ad-menu"), children }) });
 }
@@ -4061,13 +4070,13 @@ function MenuList({ children, listProps }) {
   const rail = useContext9(Folded);
   return /* @__PURE__ */ jsx47("ul", { ...strip2(listProps), className: cx(rail ? "ad-rail__group" : "ad-side__list", "ad-menu__list"), children });
 }
-function MenuItem({ icon, label, current, onPress, trail, children, itemProps, ariaLabel }) {
+function MenuItem({ icon, label, current, onPress, trail, children, itemProps, ariaLabel, codeSlot }) {
   const rail = useContext9(Folded);
   const name = ariaLabel ?? (typeof label === "string" ? label : void 0);
   return /* @__PURE__ */ jsxs41("li", { ...strip2(itemProps), className: "ad-menu__row", children: [
     /* @__PURE__ */ jsxs41("div", { className: "ad-menu__line", children: [
       /* @__PURE__ */ jsxs41("button", { type: "button", className: rail ? "ad-rail__item" : "ad-side__item", "aria-current": current ? "page" : void 0, "aria-label": rail ? name : void 0, title: rail ? name : void 0, onClick: onPress, children: [
-        icon != null && /* @__PURE__ */ jsx47("span", { className: rail ? void 0 : "ad-side__icon", "aria-hidden": typeof label === "string" ? true : void 0, children: icon }),
+        icon != null && /* @__PURE__ */ jsx47("span", { className: rail ? void 0 : cx("ad-side__icon", codeSlot && "ad-menu__code"), "aria-hidden": typeof label === "string" ? true : void 0, children: icon }),
         !rail && /* @__PURE__ */ jsx47("span", { className: "ad-menu__label", children: label })
       ] }),
       !rail && trail != null && /* @__PURE__ */ jsx47("span", { className: "ad-menu__trail", children: /* @__PURE__ */ jsx47(ButtonSizeScope, { size: "row", children: trail }) })
@@ -4162,6 +4171,8 @@ export {
   LoadingRows,
   MarkerKey,
   Menu,
+  MenuBody,
+  MenuBrand,
   MenuFoot,
   MenuFrame,
   MenuItem,
