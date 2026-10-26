@@ -2732,7 +2732,7 @@ function TimeField({ value, onChange, label, step = 30, bareHoursArePm, classNam
 }
 
 // src/components/Card/Card.tsx
-import { createContext as createContext6, forwardRef as forwardRef6, useContext as useContext7 } from "react";
+import { createContext as createContext6, forwardRef as forwardRef6, useContext as useContext7, useState as useState16 } from "react";
 import { jsx as jsx28, jsxs as jsxs25 } from "react/jsx-runtime";
 var OpenCard = createContext6(void 0);
 var Card = forwardRef6(function Card2({ title, onMore, moreLabel = "More", children, onOpen, selected, dragging, picking, size = "tile", className, onClick, ...rest }, ref) {
@@ -2780,12 +2780,18 @@ function CardName({ children, lead, onRename, renameLabel }) {
 function Dials({ children }) {
   return /* @__PURE__ */ jsx28("div", { className: "ad-card__dials", children });
 }
+function Picture({ src, alt, ...rest }) {
+  const [failed, setFailed] = useState16(null);
+  const said = typeof alt === "string" ? alt.trim() : "";
+  const shown = !!src && !!said && failed !== src;
+  return /* @__PURE__ */ jsx28("span", { ...rest, className: "ad-picture", children: shown && /* @__PURE__ */ jsx28("img", { className: "ad-picture__img", src, alt: said, onError: () => setFailed(src) }) });
+}
 
 // src/components/PageHeader/PageHeader.tsx
-import { useId as useId10, useRef as useRef18, useState as useState17 } from "react";
+import { useId as useId10, useRef as useRef18, useState as useState18 } from "react";
 
 // src/components/ShowOptions/ShowOptions.tsx
-import { useRef as useRef17, useState as useState16 } from "react";
+import { useRef as useRef17, useState as useState17 } from "react";
 
 // src/components/Settings/Settings.tsx
 import { useId as useId9 } from "react";
@@ -2835,7 +2841,7 @@ var WORDS = {
   archive: "Show archive"
 };
 function ShowOptionsGear({ value, onChange, options = [...showOrder], labels: l = {} }) {
-  const [open, setOpen] = useState16(false);
+  const [open, setOpen] = useState17(false);
   const gear = useRef17(null);
   const now = { ...SHOW_DEFAULTS, ...value };
   const shown = showOrder.filter((o) => options.includes(o));
@@ -2857,7 +2863,7 @@ function countdownWords(c) {
 }
 function PageHeader({ title, icon, stamp, tabs, back, description, countdown: given, gear, onSearch, onPopOut, onHelp, menu, headerLabels, scramble = true, className }) {
   const anyEnd = gear || onSearch || onPopOut || onHelp || menu;
-  const [menuOpen, setMenuOpen] = useState17(false);
+  const [menuOpen, setMenuOpen] = useState18(false);
   const menuAt = useRef18(null);
   const shownStamp = typeof stamp === "string" && STATES.has(stamp);
   const countdown = given && typeof given === "object" && given.to instanceof Date ? countdownWords(given) : null;
@@ -2924,10 +2930,10 @@ function Tabs({ tabs, value, onChange, ariaLabel, numbered = true, panelId, clas
 }
 
 // src/components/Toolbar/Toolbar.tsx
-import { forwardRef as forwardRef8, useRef as useRef21, useState as useState19 } from "react";
+import { forwardRef as forwardRef8, useRef as useRef21, useState as useState20 } from "react";
 
 // src/components/Writing/TokenInput.tsx
-import { useEffect as useEffect12, useLayoutEffect as useLayoutEffect3, useRef as useRef19, useState as useState18 } from "react";
+import { useEffect as useEffect12, useLayoutEffect as useLayoutEffect3, useRef as useRef19, useState as useState19 } from "react";
 import { jsx as jsx32, jsxs as jsxs29 } from "react/jsx-runtime";
 var CHIP = { project: "project", date: "calendar", deadline: "calendar", priority: "flag", person: "user", recurrence: "repeat", reminder: "bell" };
 var DEPTS = /* @__PURE__ */ new Set(["lighting", "video", "eng", "sfx", "content", "scenic", "direction", "admin", "pm", "lasers"]);
@@ -3005,7 +3011,7 @@ function TokenInput({ value, onChange, read: read2, onSubmit, label, placeholder
   const blurred = useRef19(false);
   const composing = useRef19(false);
   const justComposed = useRef19(false);
-  const [moved, setMoved] = useState18(0);
+  const [moved, setMoved] = useState19(0);
   const tokens = readTokens(value, read2);
   const refresh = (leaving = false) => {
     const el = box.current;
@@ -3199,10 +3205,10 @@ function ToolbarSeparator() {
 function ViewPopover({ open, onClose, anchor, builtInViews = [], savedViews, currentView, onPickView, onStarView, viewActions, onSaveView, saveScopes, query, rules, groupBy, sortBy, show, labels: l = {} }) {
   const L = { show: "Show", view: "View", builtInViews: "Views", savedViews: "Saved views", saveView: "Save this view\u2026", viewName: "View name", save: "Save", cancel: "Cancel", star: "Star", unstar: "Unstar", more: "More", filter: "Filter", groupBy: "Group by", sortBy: "Sort by", ascending: "Ascending", descending: "Descending", ...l };
   const SAVE = "__save";
-  const [naming, setNaming] = useState19(false);
-  const [name, setName] = useState19("");
-  const [scope, setScope] = useState19(saveScopes?.[0]?.value);
-  const [menuFor, setMenuFor] = useState19(null);
+  const [naming, setNaming] = useState20(false);
+  const [name, setName] = useState20("");
+  const [scope, setScope] = useState20(saveScopes?.[0]?.value);
+  const [menuFor, setMenuFor] = useState20(null);
   const menuAnchor = useRef21(null);
   const viewsShown = builtInViews.length > 0 || savedViews != null;
   const views = [
@@ -3294,10 +3300,10 @@ function ViewSwitch({ options, value, onChange, ariaLabel, className }) {
 }
 
 // src/components/Warnings/Warnings.tsx
-import { forwardRef as forwardRef9, useId as useId11, useState as useState20 } from "react";
+import { forwardRef as forwardRef9, useId as useId11, useState as useState21 } from "react";
 import { Fragment as Fragment10, jsx as jsx36, jsxs as jsxs32 } from "react/jsx-runtime";
 function AlertBar({ alerts, label = "Alerts", snoozeLabel = "Snooze", pillLabel = (p, n) => `${n} priority ${p}`, priorityLabel = (p) => `Priority ${p}`, defaultOpen = false, open, onOpenChange, className }) {
-  const [own, setOwn] = useState20(defaultOpen);
+  const [own, setOwn] = useState21(defaultOpen);
   const isOpen = open ?? own;
   const listId = useId11();
   if (!alerts.length) return null;
@@ -3422,7 +3428,7 @@ function DropLine() {
 }
 
 // src/components/Table/Table.tsx
-import { useLayoutEffect as useLayoutEffect4, useRef as useRef23, useState as useState21 } from "react";
+import { useLayoutEffect as useLayoutEffect4, useRef as useRef23, useState as useState22 } from "react";
 import { jsx as jsx38, jsxs as jsxs34 } from "react/jsx-runtime";
 var Arrow = ({ up }) => /* @__PURE__ */ jsx38(Icon, { name: up ? "arrow-up" : "arrow-down", size: "sm", className: "ad-table__arrow" });
 function Table({ columns, rows, rowId, caption, sort, onSort, picked, onPickedChange, onPickAllChange, pickLabel, pickAllLabel = "Pick all", onOpen, rowProps, group, depth, nameColumn, className }) {
@@ -3431,7 +3437,7 @@ function Table({ columns, rows, rowId, caption, sort, onSort, picked, onPickedCh
   const all = rows.length > 0 && rows.every((r) => picked?.has(rowId(r)));
   const nameAt = Math.max(0, nameColumn ? columns.findIndex((c) => c.id === nameColumn) : 0);
   const headRow = useRef23(null);
-  const [held, setHeld] = useState21({});
+  const [held, setHeld] = useState22({});
   const heldKey = columns.filter((c) => c.frozen === "start").map((c) => c.id).join(" ");
   useLayoutEffect4(() => {
     const tr = headRow.current;
@@ -4017,12 +4023,12 @@ function CommandSearch({ open, onClose, query, onQuery, results, onPick, label =
 }
 
 // src/components/Guidance/Guidance.tsx
-import { useEffect as useEffect14, useLayoutEffect as useLayoutEffect5, useRef as useRef25, useState as useState22 } from "react";
+import { useEffect as useEffect14, useLayoutEffect as useLayoutEffect5, useRef as useRef25, useState as useState23 } from "react";
 import { jsx as jsx44, jsxs as jsxs39 } from "react/jsx-runtime";
 var useIsoLayoutEffect3 = typeof window === "undefined" ? useEffect14 : useLayoutEffect5;
 function TourStep({ open, anchor, step, total, title, children, onBack, onNext, onExit, backLabel = "Back", nextLabel = "Next", progressLabel = (s, t) => `${s} of ${t}`, side = "below" }) {
   const card = useRef25(null);
-  const [rect, setRect] = useState22(null);
+  const [rect, setRect] = useState23(null);
   const doc = useFloatingDocument() ?? document;
   useFocusReturn(open, card);
   useIsoLayoutEffect3(() => {
@@ -4350,6 +4356,7 @@ export {
   PersonPicker,
   PickField,
   PickList,
+  Picture,
   PixxBrief,
   Popover,
   PopoverCard,

@@ -268,6 +268,9 @@
 .ad-outline-backup { outline: var(--border-w-strong) dotted var(--line-strong); outline-offset: calc(var(--border-w-strong) * -1); }
 /* The ground: Dark Matter with the brand's grain plate at grain-opacity. The one texture: never on a card, a control or glass. */
 .ad-ground { position: relative; isolation: isolate; background: var(--bg-base); }
+/* The ground carries the body type (moved from Athena's body, ruled 2026-10-26): the app's own words inside it read right
+   without the app naming a face. Every piece still sets its own type over this. */
+.ad-ground { font-family: var(--font-body); font-weight: 400; font-size: var(--text-base); line-height: var(--lh-tight); letter-spacing: var(--track-normal); color: var(--text-primary); }
 .ad-ground::before { content: ''; position: absolute; inset: 0; z-index: -1; pointer-events: none; background: url('assets/textures/grain.jpg') center / cover no-repeat; opacity: var(--grain-opacity); mix-blend-mode: screen; }
 /* Windows high contrast (forced-colors). The system replaces every colour and drops box-shadow, so the
    focus ring — drawn everywhere as `outline: none; box-shadow: var(--ring-select)` — disappears and the
@@ -297,6 +300,8 @@
 ::-webkit-scrollbar-track { background: var(--bg-base); }
 ::-webkit-scrollbar-thumb { background: var(--line-strong); border: var(--bw-select) solid var(--bg-base); border-radius: var(--radius-float); }
 ::-webkit-scrollbar-thumb:hover { background: var(--scroll-thumb-hover); }
+/* Selected text, for the whole page, as the scrollbar is (kept from Athena, ruled 2026-10-26): coral behind on-accent ink. */
+::selection { background: var(--accent); color: var(--on-accent); }
 /* The one drop line (ruled 2026-10-26, Jeremy: coral everywhere; dropLine.ts): bw-select of drop-line along the edge where the
    dragged row will land, above it (before) or below it (after); sideways for a row of chips (before-x, after-x). On a table
    row it is drawn inside its cells, since a row cannot carry a shadow. The doubled selector lets it stand in for a piece's own
@@ -556,6 +561,10 @@ button.ad-card__name:focus-visible { outline: none; box-shadow: var(--ring-selec
 .ad-card__name-row { display: flex; align-items: flex-start; gap: var(--space-2); margin-bottom: var(--space-2); }
 .ad-card__name-row .ad-card__name { margin-bottom: 0; flex: 1; min-width: 0; }
 .ad-card__lead { display: inline-flex; flex: none; }
+/* Picture (ruled 2026-10-26): the Roadmap's picture of finished work, as Athena draws it (.rm-shot), moved here. The frame
+   carries the Card's corner and nothing else; the picture fills it from the top left, the card tone behind it while it loads. */
+.ad-picture { display: block; width: 100%; height: 100%; overflow: hidden; border-radius: var(--radius-page); }
+.ad-picture__img { display: block; width: 100%; height: 100%; object-fit: cover; object-position: top left; background: var(--bg-surface); }
 
 /* src/components/Charts/Charts.css */
 /* AmountBars, BudgetBar, ProgressBar, OverTime, Dial, Verdict, as the Charts and Dashboard cards draw them */
@@ -1580,6 +1589,11 @@ button.ad-milestone:focus-visible { outline: none; box-shadow: var(--ring-select
 .ad-toolbar { display: flex; align-items: center; flex-wrap: wrap; gap: var(--space-2); min-height: var(--h-row); border-bottom: var(--border-w) solid var(--border); }
 .ad-toolbar__separator { width: var(--border-w); height: var(--icon-lg); margin: 0 var(--space-2); background: var(--border); }
 .ad-toolbar__end { margin-left: auto; display: flex; align-items: center; gap: var(--space-2); }
+/* Under a finger (a phone), the toolbar's buttons grow to the touch size, so a phone bar never shrinks under h-touch (ruled 2026-10-26). */
+@media (pointer: coarse) {
+  .ad-toolbar .ad-button--bar { height: var(--h-touch); }
+  .ad-toolbar .ad-icon-button--bar { width: var(--h-touch); height: var(--h-touch); }
+}
 /* The View pop-over's naming step and sort direction (built 2026-10-25 for Athena). */
 .ad-view-save { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-2); margin-top: var(--space-2); }
 .ad-view-save .ad-field-wrap { flex: 1; min-width: 0; }
