@@ -2414,10 +2414,10 @@ function PickField({ options, value, onPick, label, placeholder, search, disable
 import { useEffect as useEffect10, useId as useId8, useMemo as useMemo2, useRef as useRef15, useState as useState13 } from "react";
 import { jsx as jsx26, jsxs as jsxs23 } from "react/jsx-runtime";
 var EN = { today: "Today", tomorrow: "Tomorrow", nextWeek: "Next week", inTwoWeeks: "In two weeks", previousMonth: "Previous month", nextMonth: "Next month", noDate: "No date", repeat: "Repeat" };
-function DatePicker({ value, onChange, today: todayIn, weekStart = 1, locale = "en-US", labels: l, quickPicks, shadeWeekends = true, onClear, repeat, className }) {
+function DatePicker({ value, onChange, today: todayIn, weekStart = 1, locale = "en-US", labels: l, quickPicks, shadeWeekends = true, onClear, repeat, openOn, dayMarks, marksKey, className }) {
   const labels = { ...EN, ...l };
   const today = dayOf(todayIn);
-  const [focus, setFocus] = useState13(dayOf(value ?? today));
+  const [focus, setFocus] = useState13(dayOf(value ?? openOn ?? today));
   const grid = useRef15(null);
   const moved = useRef15(false);
   const said = (words, fallback) => readDate(words, today, { weekStart })?.date ?? fallback;
@@ -2485,7 +2485,7 @@ function DatePicker({ value, onChange, today: todayIn, weekStart = 1, locale = "
       /* @__PURE__ */ jsx26("div", { role: "row", className: "ad-datepicker__week", children: weekdays.map((w, i) => /* @__PURE__ */ jsx26("span", { role: "columnheader", "aria-label": w.long, className: "ad-datepicker__dow", children: w.short }, i)) }),
       Array.from({ length: weeks }, (_, r) => r).map((r) => /* @__PURE__ */ jsx26("div", { role: "row", className: "ad-datepicker__week", children: days.slice(r * 7, r * 7 + 7).map((d) => {
         const wk = d.getDay() === 0 || d.getDay() === 6;
-        return /* @__PURE__ */ jsx26("span", { role: "gridcell", "aria-selected": sameDay(d, value), children: /* @__PURE__ */ jsx26(
+        return /* @__PURE__ */ jsx26("span", { role: "gridcell", "aria-selected": sameDay(d, value), children: /* @__PURE__ */ jsxs23(
           "button",
           {
             type: "button",
@@ -2501,11 +2501,18 @@ function DatePicker({ value, onChange, today: todayIn, weekStart = 1, locale = "
               onChange(d);
             },
             className: "ad-datepicker__day",
-            children: d.getDate()
+            children: [
+              d.getDate(),
+              dayMarks && (() => {
+                const m = dayMarks(d);
+                return m != null ? /* @__PURE__ */ jsx26("span", { className: "ad-datepicker__mark", "aria-hidden": "true", children: m }) : null;
+              })()
+            ]
           }
         ) }, formatISO(d));
       }) }, r))
     ] }),
+    marksKey != null && /* @__PURE__ */ jsx26("div", { className: "ad-datepicker__key", children: marksKey }),
     repeat && /* @__PURE__ */ jsxs23("button", { type: "button", className: "ad-datepicker__repeat", onClick: (e) => repeat.onPress(e.currentTarget), children: [
       /* @__PURE__ */ jsx26(Icon, { name: "repeat", size: "sm" }),
       /* @__PURE__ */ jsx26("span", { children: labels.repeat }),
@@ -2513,7 +2520,7 @@ function DatePicker({ value, onChange, today: todayIn, weekStart = 1, locale = "
     ] })
   ] });
 }
-function DateField({ onParsed, label, text: given, onText, format, icon, className, value, onChange, ...picker }) {
+function DateField({ onParsed, label, text: given, onText, format, icon, disabled, className, value, onChange, ...picker }) {
   const fmt = format ?? ((d) => monoDate(d));
   const read2 = (t) => {
     const r = readDate(t, picker.today, { weekStart: picker.weekStart });
@@ -2553,8 +2560,11 @@ function DateField({ onParsed, label, text: given, onText, format, icon, classNa
         "aria-expanded": open,
         "aria-controls": open ? dropId : void 0,
         parsed: result ? result.readback : void 0,
+        disabled,
         onChange: (e) => setText(e.target.value),
-        onClick: () => setOpen(true),
+        onClick: () => {
+          if (!disabled) setOpen(true);
+        },
         onKeyDown: (e) => {
           if (e.key === "ArrowDown") {
             e.preventDefault();
@@ -2570,7 +2580,7 @@ function DateField({ onParsed, label, text: given, onText, format, icon, classNa
         }
       }
     ),
-    /* @__PURE__ */ jsx26(Popover, { open, onClose: () => {
+    /* @__PURE__ */ jsx26(Popover, { open: open && !disabled, onClose: () => {
       const d = input.current?.ownerDocument ?? document;
       const a = d.activeElement;
       if (!a || a === d.body || drop.current?.contains(a)) input.current?.focus({ preventScroll: true });

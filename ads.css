@@ -1032,6 +1032,9 @@ button:hover > .ad-project-pill:not(.ad-project-pill--current) { color: var(--ac
 /* TimeField (built 2026-10-25 for Athena): the field, and the half-hour list dropping from it. */
 .ad-timefield { display: inline-flex; flex-direction: column; }
 .ad-timefield__drop { width: var(--w-menu); max-height: calc(var(--h-btn) * 8); }
+/* A mark under a day (how busy it is, a clash), and the key for them under the month (built 2026-10-25 for Athena). */
+.ad-datepicker__mark { position: absolute; bottom: var(--space-hair); left: 50%; transform: translateX(-50%); display: inline-flex; line-height: 0; }
+.ad-datepicker__key { margin-top: var(--space-2); }
 
 /* src/components/Popover/Popover.css */
 /* Popover and its pieces */
