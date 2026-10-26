@@ -469,6 +469,9 @@ var Place = createContext3("md");
 function ButtonSizeScope({ size, children }) {
   return /* @__PURE__ */ jsx3(Place.Provider, { value: size, children });
 }
+function useButtonSize() {
+  return useContext3(Place);
+}
 var Button = forwardRef(function Button2({ variant = "quiet", icon, danger, active, block, className, type = "button", children, ...rest }, ref) {
   const size = useContext3(Place);
   delete rest.size;
@@ -1155,11 +1158,18 @@ var JOBS = {
 
 // src/components/Icon/Icon.tsx
 import { jsx as jsx4 } from "react/jsx-runtime";
-function Icon({ name, job, size = "md", fill, label, className }) {
+var ITEM_TYPES = /* @__PURE__ */ new Set(["phase", "milestone", "deliverable", "todo", "travel"]);
+function Icon(props) {
+  const { name, job, size = "md", fill, label, tint, className, resolved } = props;
+  if (tint && ITEM_TYPES.has(tint) && resolved === void 0) return /* @__PURE__ */ jsx4(TintedIcon, { ...props });
   const glyph = job ? JOBS[job] : name;
   const paths = fill && FILL[glyph] || REGULAR[glyph];
   if (!paths) throw new Error(`Icon: "${String(job ?? name)}" is not a glyph or a job in the icon map (assets/icons/README.md). One set: nothing outside it is drawn.`);
-  return /* @__PURE__ */ jsx4("svg", { viewBox: "0 0 256 256", className: cx("ad-icon", `ad-icon--${size}`, className), role: label ? "img" : void 0, "aria-label": label, "aria-hidden": label ? void 0 : true, focusable: "false", children: paths.map((d, i) => /* @__PURE__ */ jsx4("path", { fill: "currentColor", d }, i)) });
+  return /* @__PURE__ */ jsx4("svg", { viewBox: "0 0 256 256", className: cx("ad-icon", `ad-icon--${size}`, className), role: label ? "img" : void 0, "aria-label": label, "aria-hidden": label ? void 0 : true, focusable: "false", "data-tint": resolved ? tint : void 0, style: resolved ? { color: resolved } : void 0, children: paths.map((d, i) => /* @__PURE__ */ jsx4("path", { fill: "currentColor", d }, i)) });
+}
+function TintedIcon(props) {
+  const resolved = useHue(`item-${props.tint}`) ?? null;
+  return Icon({ ...props, resolved });
 }
 
 // src/components/GroupHeading/GroupHeading.tsx
@@ -1534,9 +1544,13 @@ function TextScramble({
 import { jsx as jsx12, jsxs as jsxs9 } from "react/jsx-runtime";
 var pickColours = ["grey", "blue", "teal", "green", "amber", "orange", "red", "purple", "white"];
 var PICKABLE = new Set(pickColours);
+function useNamedColour(name) {
+  const isPick = !!name && PICKABLE.has(name);
+  const shown = useHue(isPick ? void 0 : name);
+  return isPick ? `var(--pick-${name})` : shown;
+}
 function Dot({ tone = "neutral", hue, priority, colour: picked, className, ...rest }) {
-  const shown = useHue(hue);
-  const colour = picked && PICKABLE.has(picked) ? `var(--pick-${picked})` : shown;
+  const colour = useNamedColour(picked && PICKABLE.has(picked) ? picked : hue);
   return /* @__PURE__ */ jsx12("span", { "aria-hidden": "true", ...rest, "data-coloured": colour ? true : void 0, style: colour ? { ["--ad-dot"]: colour } : void 0, className: cx("ad-dot", `ad-dot--${tone}`, priority && `ad-dot--p${priority}`, className) });
 }
 function Status({ label, tone = "neutral", colour, className, ...rest }) {
@@ -1550,6 +1564,18 @@ function Health({ state, reason, labels: l = {} }) {
   const word = state === "at-risk" ? l.atRisk ?? "At risk" : l.offTrack ?? "Off track";
   const said = reason ? `${word}: ${String(reason)}` : word;
   return /* @__PURE__ */ jsx12("span", { role: "img", "aria-label": said, title: said, className: "ad-health", children: /* @__PURE__ */ jsx12(Dot, { tone: state === "at-risk" ? "waiting" : "problem" }) });
+}
+function SideStripe({ colour, side = "left", inline, children }) {
+  const drawn = useNamedColour(colour);
+  return /* @__PURE__ */ jsx12(
+    "span",
+    {
+      "data-coloured": drawn ? true : void 0,
+      style: drawn ? { ["--ad-stripe"]: drawn } : void 0,
+      className: cx("ad-side-stripe", `ad-side-stripe--${side}`, inline && "ad-side-stripe--inline"),
+      children
+    }
+  );
 }
 
 // src/components/Department/Department.tsx
@@ -1739,7 +1765,7 @@ var Row = forwardRef5(function Row2({ name, meta, lead, status, dates, tags, peo
       },
       className: cx("ad-row", meta != null && "ad-row--two", compactRows && "ad-row--compact", heading && "ad-row--heading", onOpen && "ad-row--opens", className),
       children: [
-        lead != null && /* @__PURE__ */ jsx17("span", { className: "ad-row__lead", children: lead }),
+        lead != null && /* @__PURE__ */ jsx17("span", { className: "ad-row__lead", children: /* @__PURE__ */ jsx17(ButtonSizeScope, { size: "row", children: lead }) }),
         /* @__PURE__ */ jsxs14("span", { className: "ad-row__body", children: [
           onRename ? /* @__PURE__ */ jsx17(InlineEdit, { value: String(name), onCommit: onRename, ariaLabel: renameLabel ?? "Name", className: "ad-row__name" }) : onOpen ? /* @__PURE__ */ jsx17("button", { type: "button", className: "ad-row__name ad-open", "aria-current": selected || void 0, onClick: (e) => {
             e.stopPropagation();
@@ -1756,6 +1782,11 @@ var Row = forwardRef5(function Row2({ name, meta, lead, status, dates, tags, peo
       ]
     }
   );
+});
+var DragHandle = forwardRef5(function DragHandle2({ label, handleProps }, ref) {
+  const size = useButtonSize();
+  const { className: _c, style: _s, ...hooks } = handleProps ?? {};
+  return /* @__PURE__ */ jsx17("button", { ref, type: "button", ...hooks, "aria-label": label, className: cx("ad-drag-handle", `ad-drag-handle--${size}`), children: /* @__PURE__ */ jsx17(Icon, { job: "drag" }) });
 });
 function RowPress({ label, onPress, children }) {
   return /* @__PURE__ */ jsx17("button", { type: "button", "aria-label": label, onClick: (e) => {
@@ -2258,7 +2289,7 @@ function UndoNote({ open, noteId, message, actionLabel = "Undo", onAction, onClo
 // src/components/Pickers/PickList.tsx
 import { useId as useId7, useMemo, useRef as useRef13, useState as useState11 } from "react";
 import { jsx as jsx24, jsxs as jsxs21 } from "react/jsx-runtime";
-function PickList({ options, value, onPick, searchLabel, noMatch = "Nothing matches", noSearch, query, onQuery, className }) {
+function PickList({ options, value, onPick, searchLabel, noMatch = "Nothing matches", noSearch, query, onQuery, footer, className }) {
   const [own, setOwn] = useState11("");
   const q = query ?? own;
   const setQ = (v) => {
@@ -2284,6 +2315,7 @@ function PickList({ options, value, onPick, searchLabel, noMatch = "Nothing matc
     requestAnimationFrame(() => listRef.current?.querySelector(`[data-active]`)?.scrollIntoView({ block: "nearest" }));
   };
   const onKeyDown2 = (e) => {
+    if (e.target.closest?.(".ad-picklist__actions, .ad-picklist__footer")) return;
     const n = nextIndex(e.key, Math.min(at, live.length - 1), live.length);
     if (n != null && (e.key === "ArrowDown" || e.key === "ArrowUp" || noSearch)) {
       e.preventDefault();
@@ -2348,15 +2380,17 @@ function PickList({ options, value, onPick, searchLabel, noMatch = "Nothing matc
                 !many && picked.has(o.id) && /* @__PURE__ */ jsx24("span", { className: "ad-picklist__check", "aria-hidden": "true", children: /* @__PURE__ */ jsx24(Icon, { name: "check", size: "sm" }) })
               ]
             }
-          )
+          ),
+          o.actions != null && picked.has(o.id) && /* @__PURE__ */ jsx24("div", { role: "group", "aria-label": o.label, className: "ad-picklist__actions", children: /* @__PURE__ */ jsx24(ButtonSizeScope, { size: "row", children: o.actions }) })
         ] }, o.id);
       })
-    ] })
+    ] }),
+    footer != null && /* @__PURE__ */ jsx24("div", { className: "ad-picklist__footer", children: footer })
   ] });
 }
 
 // src/components/Pickers/Pickers.tsx
-import { useRef as useRef14, useState as useState12 } from "react";
+import { cloneElement as cloneElement2, isValidElement as isValidElement2, useRef as useRef14, useState as useState12 } from "react";
 import { Fragment as Fragment8, jsx as jsx25, jsxs as jsxs22 } from "react/jsx-runtime";
 function PersonPicker({ people, ...rest }) {
   return /* @__PURE__ */ jsx25(PickList, { ...rest, options: people.map((p) => ({ id: p.id, label: p.name, keywords: p.email, lead: /* @__PURE__ */ jsx25(Avatar, { name: p.name, initials: p.initials, src: p.src }) })) });
@@ -2367,19 +2401,54 @@ function ProjectPicker({ projects, ...rest }) {
 function StatusPicker({ statuses, noSearch = true, ...rest }) {
   return /* @__PURE__ */ jsx25(PickList, { ...rest, noSearch, options: statuses.map((s) => ({ id: s.id, label: s.label, lead: /* @__PURE__ */ jsx25(Dot, { tone: s.tone }) })) });
 }
-function PickField({ options, value, onPick, label, placeholder, search, disabled, className }) {
+function PickField({ options, value, onPick, label, placeholder, search, disabled, className, trigger, marks, footer }) {
   const [open, setOpen] = useState12(false);
   const anchor = useRef14(null);
   const box = useRef14(null);
   const style = usePlacement(open, anchor, box, "drop");
+  const opener = () => (anchor.current?.matches("button, [tabindex]") ? anchor.current : anchor.current?.querySelector("button, [tabindex]")) ?? null;
   const close = () => {
     setOpen(false);
-    anchor.current?.focus({ preventScroll: true });
+    opener()?.focus({ preventScroll: true });
   };
   const z = useLayer(open, close, [box, anchor]);
   const many = Array.isArray(value);
   const picked = options.filter((o) => many ? value.includes(o.id) : o.id === value);
   const face = picked.length === 1 ? picked[0] : null;
+  const cap = marks === true ? 3 : typeof marks === "number" && marks > 0 ? Math.floor(marks) : 0;
+  const asMarks = cap > 0 && picked.length > 1;
+  const words = picked.map((o) => o.label).join(", ");
+  const list = open && /* @__PURE__ */ jsx25(Portal, { children: /* @__PURE__ */ jsx25("div", { ref: box, style: { ...style, zIndex: z }, className: "ad-float ad-pick-field__list", children: /* @__PURE__ */ jsx25(
+    PickList,
+    {
+      options,
+      value,
+      searchLabel: label,
+      noSearch: !(search ?? options.length > 8),
+      footer,
+      onPick: (id) => {
+        onPick(id);
+        if (!many) close();
+      }
+    }
+  ) }) });
+  if (trigger && isValidElement2(trigger)) {
+    const own = trigger;
+    return /* @__PURE__ */ jsxs22(Fragment8, { children: [
+      /* @__PURE__ */ jsx25(
+        "span",
+        {
+          ref: anchor,
+          className: "ad-pick-field__trigger",
+          onClick: (e) => {
+            if (!disabled && !e.defaultPrevented) setOpen((o) => !o);
+          },
+          children: cloneElement2(own, { "aria-haspopup": "listbox", "aria-expanded": open })
+        }
+      ),
+      list
+    ] });
+  }
   return /* @__PURE__ */ jsxs22(Fragment8, { children: [
     /* @__PURE__ */ jsxs22(
       "button",
@@ -2394,24 +2463,15 @@ function PickField({ options, value, onPick, label, placeholder, search, disable
         className: cx("ad-field", "ad-pick-field", disabled && "ad-field--disabled", className),
         children: [
           face?.lead != null && /* @__PURE__ */ jsx25("span", { className: "ad-pick-field__lead", "aria-hidden": "true", children: face.lead }),
-          /* @__PURE__ */ jsx25("span", { className: cx("ad-pick-field__words", picked.length === 0 && "ad-pick-field__words--empty"), children: picked.length ? picked.map((o) => o.label).join(", ") : placeholder ?? label }),
+          asMarks ? /* @__PURE__ */ jsx25("span", { className: "ad-pick-field__words", title: words, children: /* @__PURE__ */ jsxs22("span", { className: "ad-pick-field__marks", "aria-hidden": "true", children: [
+            picked.slice(0, cap).map((o) => /* @__PURE__ */ jsx25("span", { className: "ad-pick-field__mark", children: o.lead ?? /* @__PURE__ */ jsx25(Dot, {}) }, o.id)),
+            picked.length > cap && /* @__PURE__ */ jsx25("span", { className: "ad-pick-field__more", children: "\u2026" })
+          ] }) }) : /* @__PURE__ */ jsx25("span", { className: cx("ad-pick-field__words", picked.length === 0 && "ad-pick-field__words--empty"), children: picked.length ? words : placeholder ?? label }),
           /* @__PURE__ */ jsx25(Icon, { name: "caret-down", className: "ad-pick-field__caret" })
         ]
       }
     ),
-    open && /* @__PURE__ */ jsx25(Portal, { children: /* @__PURE__ */ jsx25("div", { ref: box, style: { ...style, zIndex: z }, className: "ad-float ad-pick-field__list", children: /* @__PURE__ */ jsx25(
-      PickList,
-      {
-        options,
-        value,
-        searchLabel: label,
-        noSearch: !(search ?? options.length > 8),
-        onPick: (id) => {
-          onPick(id);
-          if (!many) close();
-        }
-      }
-    ) }) })
+    list
   ] });
 }
 
@@ -3259,7 +3319,7 @@ function AlertBarHead({ open, onToggle, label = "Alerts", counts, pillLabel = (p
 function AlertList({ children, id, hidden, ariaLabel, listProps }) {
   return /* @__PURE__ */ jsx36("div", { ...strip(listProps), id, hidden, role: "list", "aria-label": ariaLabel, children });
 }
-function AlertRow({ priority, priorityLabel = `Priority ${priority}`, sentence, number, actions, end, children, rowProps }) {
+function AlertRow({ priority, priorityLabel = `Priority ${priority}`, sentence, number, actions, end, children, rowProps, muted }) {
   const line = /* @__PURE__ */ jsxs32(Fragment10, { children: [
     /* @__PURE__ */ jsx36("span", { className: cx("ad-alert__ring", `ad-alert__ring--p${priority}`), role: "img", "aria-label": priorityLabel }),
     /* @__PURE__ */ jsx36("span", { className: "ad-alert__sentence", children: sentence }),
@@ -3269,9 +3329,10 @@ function AlertRow({ priority, priorityLabel = `Priority ${priority}`, sentence, 
       end != null && /* @__PURE__ */ jsx36("span", { className: "ad-alert__end", children: end })
     ] }) })
   ] });
-  if (children == null || children === false) return /* @__PURE__ */ jsx36("div", { ...strip(rowProps), role: "listitem", className: "ad-alert", children: line });
+  const look = cx("ad-alert", muted && "ad-alert--muted");
+  if (children == null || children === false) return /* @__PURE__ */ jsx36("div", { ...strip(rowProps), role: "listitem", className: look, children: line });
   return /* @__PURE__ */ jsxs32("div", { ...strip(rowProps), role: "listitem", className: "ad-alert-item", children: [
-    /* @__PURE__ */ jsx36("div", { className: "ad-alert", children: line }),
+    /* @__PURE__ */ jsx36("div", { className: look, children: line }),
     /* @__PURE__ */ jsx36("div", { className: "ad-alert__under", children })
   ] });
 }
@@ -4197,6 +4258,7 @@ export {
   Dialog,
   Dials,
   Dot,
+  DragHandle,
   DropLine,
   DualUnit,
   EmptyState,
@@ -4273,6 +4335,7 @@ export {
   SettingsSection,
   ShowOptionsGear,
   SideMenu,
+  SideStripe,
   Status,
   StatusPicker,
   Switch,
