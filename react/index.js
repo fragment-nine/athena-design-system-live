@@ -1962,23 +1962,52 @@ function EmptyState({ sentence, add, clear, className }) {
 
 // src/components/Popover/Popover.tsx
 import { createContext as createContext5, useContext as useContext6, useId as useId5, useRef as useRef8 } from "react";
-import { jsx as jsx20, jsxs as jsxs17 } from "react/jsx-runtime";
+import { Fragment as Fragment7, jsx as jsx20, jsxs as jsxs17 } from "react/jsx-runtime";
 var TitleId = createContext5(void 0);
 function CloseButton({ onClose, label = "Close" }) {
   return /* @__PURE__ */ jsx20("button", { type: "button", className: "ad-close", "aria-label": label, title: label, onClick: onClose });
 }
 function Popover({ open, onClose, anchor, placement = "drop", width = "card", ariaLabel, noClose, closeLabel, keepFocus, id, children, foot, className }) {
   const box = useRef8(null);
-  const titleId = useId5();
   const style = usePlacement(open, anchor, box, placement);
   const z = useLayer(open, onClose, [box, anchor]);
   useFocusReturn(open && !keepFocus, box, "box");
   if (!open) return null;
-  return /* @__PURE__ */ jsx20(Portal, { children: /* @__PURE__ */ jsxs17("div", { ref: box, id, role: "dialog", "aria-label": ariaLabel, "aria-labelledby": ariaLabel ? void 0 : titleId, tabIndex: -1, style: { ...style, zIndex: z }, className: cx("ad-float", "ad-popover", `ad-popover--${width}`, foot != null && "ad-popover--with-foot", className), children: [
-    !noClose && /* @__PURE__ */ jsx20(CloseButton, { onClose, label: closeLabel }),
-    /* @__PURE__ */ jsx20(TitleId.Provider, { value: titleId, children: foot == null ? children : /* @__PURE__ */ jsx20("div", { className: "ad-popover__body", children }) }),
-    foot != null && /* @__PURE__ */ jsx20("div", { className: "ad-popover__foot", children: /* @__PURE__ */ jsx20(ButtonSizeScope, { size: "row", children: foot }) })
-  ] }) });
+  return /* @__PURE__ */ jsx20(Portal, { children: /* @__PURE__ */ jsx20(PopoverCard, { cardRef: box, id, onClose, width, ariaLabel, noClose, closeLabel, foot, className, style: { ...style, zIndex: z }, children }) });
+}
+function PopoverCard({ onClose, width = "card", ariaLabel, noClose, closeLabel, id, header, children, rail, foot, sheet, style, cardRef, cardProps, className }) {
+  const titleId = useId5();
+  const { className: _c, style: _s, ...hooks } = cardProps ?? {};
+  const framed = header != null || rail != null || foot != null;
+  const pos = {};
+  if (style) {
+    for (const k of ["position", "top", "left", "right", "bottom", "inset", "maxHeight", "zIndex", "visibility"]) if (style[k] !== void 0) pos[k] = style[k];
+  }
+  return /* @__PURE__ */ jsxs17(
+    "div",
+    {
+      ...hooks,
+      ref: cardRef,
+      id,
+      role: "dialog",
+      "aria-label": ariaLabel,
+      "aria-labelledby": ariaLabel ? void 0 : titleId,
+      tabIndex: -1,
+      style: pos,
+      className: cx("ad-float", "ad-popover", `ad-popover--${width}`, framed && "ad-popover--with-foot", rail != null && "ad-popover--rail", sheet && "ad-popover--sheet", className),
+      children: [
+        !noClose && /* @__PURE__ */ jsx20(CloseButton, { onClose, label: closeLabel }),
+        /* @__PURE__ */ jsx20(TitleId.Provider, { value: titleId, children: !framed ? children : /* @__PURE__ */ jsxs17(Fragment7, { children: [
+          header != null && /* @__PURE__ */ jsx20("div", { className: "ad-popover__head", children: header }),
+          rail != null ? /* @__PURE__ */ jsxs17("div", { className: "ad-popover__cols", children: [
+            /* @__PURE__ */ jsx20("div", { className: "ad-popover__body", children }),
+            /* @__PURE__ */ jsx20("div", { className: "ad-popover__body ad-popover__rail", children: rail })
+          ] }) : /* @__PURE__ */ jsx20("div", { className: "ad-popover__body", children })
+        ] }) }),
+        foot != null && /* @__PURE__ */ jsx20("div", { className: "ad-popover__foot", children: /* @__PURE__ */ jsx20(ButtonSizeScope, { size: "row", children: foot }) })
+      ]
+    }
+  );
 }
 function PopoverHeader({ eyebrow, title, lead, description, onRename, renameLabel, action }) {
   const own = useId5();
@@ -2298,7 +2327,7 @@ function PickList({ options, value, onPick, searchLabel, noMatch = "Nothing matc
 
 // src/components/Pickers/Pickers.tsx
 import { useRef as useRef13, useState as useState12 } from "react";
-import { Fragment as Fragment7, jsx as jsx25, jsxs as jsxs22 } from "react/jsx-runtime";
+import { Fragment as Fragment8, jsx as jsx25, jsxs as jsxs22 } from "react/jsx-runtime";
 function PersonPicker({ people, ...rest }) {
   return /* @__PURE__ */ jsx25(PickList, { ...rest, options: people.map((p) => ({ id: p.id, label: p.name, keywords: p.email, lead: /* @__PURE__ */ jsx25(Avatar, { name: p.name, initials: p.initials, src: p.src }) })) });
 }
@@ -2321,7 +2350,7 @@ function PickField({ options, value, onPick, label, placeholder, search, disable
   const many = Array.isArray(value);
   const picked = options.filter((o) => many ? value.includes(o.id) : o.id === value);
   const face = picked.length === 1 ? picked[0] : null;
-  return /* @__PURE__ */ jsxs22(Fragment7, { children: [
+  return /* @__PURE__ */ jsxs22(Fragment8, { children: [
     /* @__PURE__ */ jsxs22(
       "button",
       {
@@ -2645,7 +2674,7 @@ import { useRef as useRef16, useState as useState15 } from "react";
 
 // src/components/Settings/Settings.tsx
 import { useId as useId9 } from "react";
-import { Fragment as Fragment8, jsx as jsx29, jsxs as jsxs26 } from "react/jsx-runtime";
+import { Fragment as Fragment9, jsx as jsx29, jsxs as jsxs26 } from "react/jsx-runtime";
 function SettingsLayout({ nav, children, className }) {
   return /* @__PURE__ */ jsxs26("div", { className: cx("ad-settings", className), children: [
     nav,
@@ -2663,7 +2692,7 @@ function SettingsNavItem({ icon, label, current, onSelect }) {
 }
 function SettingsSection({ title, help, number, fold, children }) {
   const rows = useId9();
-  const words = /* @__PURE__ */ jsxs26(Fragment8, { children: [
+  const words = /* @__PURE__ */ jsxs26(Fragment9, { children: [
     fold && /* @__PURE__ */ jsx29(Icon, { name: "caret-down", className: "ad-settings__chevron" }),
     number != null && /* @__PURE__ */ jsx29("span", { className: "ad-settings__numeral", children: String(number).padStart(2, "0") }),
     title
@@ -2687,7 +2716,7 @@ function AccessRow({ face, name, className, ...rest }) {
 }
 
 // src/components/ShowOptions/ShowOptions.tsx
-import { Fragment as Fragment9, jsx as jsx30, jsxs as jsxs27 } from "react/jsx-runtime";
+import { Fragment as Fragment10, jsx as jsx30, jsxs as jsxs27 } from "react/jsx-runtime";
 var showOrder = ["compactRows", "projectColours", "itemColours", "departmentColours", "weekendShading", "people", "archive"];
 var WORDS = {
   compactRows: "Compact rows",
@@ -2704,7 +2733,7 @@ function ShowOptionsGear({ value, onChange, options = [...showOrder], labels: l 
   const now = { ...SHOW_DEFAULTS, ...value };
   const shown = showOrder.filter((o) => options.includes(o));
   const gearLabel = l.gear ?? "Show options";
-  return /* @__PURE__ */ jsxs27(Fragment9, { children: [
+  return /* @__PURE__ */ jsxs27(Fragment10, { children: [
     /* @__PURE__ */ jsx30(IconButton, { ref: gear, label: gearLabel, active: open, "aria-expanded": open, "aria-haspopup": "dialog", onClick: () => setOpen(!open), children: /* @__PURE__ */ jsx30(Icon, { job: "settings" }) }),
     /* @__PURE__ */ jsx30(Popover, { open, onClose: () => setOpen(false), anchor: gear, ariaLabel: gearLabel, children: /* @__PURE__ */ jsx30(PopoverSection, { label: gearLabel, children: shown.map((o) => /* @__PURE__ */ jsx30(SettingRow, { label: l[o] ?? WORDS[o], children: /* @__PURE__ */ jsx30(Switch, { checked: now[o], "aria-label": l[o] ?? WORDS[o], onChange: (on) => onChange({ ...now, [o]: on }) }) }, o)) }) })
   ] });
@@ -3149,7 +3178,7 @@ function ViewSwitch({ options, value, onChange, ariaLabel, className }) {
 
 // src/components/Warnings/Warnings.tsx
 import { forwardRef as forwardRef9, useId as useId11, useState as useState19 } from "react";
-import { Fragment as Fragment10, jsx as jsx36, jsxs as jsxs32 } from "react/jsx-runtime";
+import { Fragment as Fragment11, jsx as jsx36, jsxs as jsxs32 } from "react/jsx-runtime";
 function AlertBar({ alerts, label = "Alerts", snoozeLabel = "Snooze", pillLabel = (p, n) => `${n} priority ${p}`, priorityLabel = (p) => `Priority ${p}`, defaultOpen = false, open, onOpenChange, className }) {
   const [own, setOwn] = useState19(defaultOpen);
   const isOpen = open ?? own;
@@ -3198,7 +3227,7 @@ function NotificationList({ days, unreadLabel = "Unread" }) {
       /* @__PURE__ */ jsx36("span", { className: "ad-notifications__date", children: d.date })
     ] }),
     d.items.map((n) => {
-      const body = /* @__PURE__ */ jsxs32(Fragment10, { children: [
+      const body = /* @__PURE__ */ jsxs32(Fragment11, { children: [
         n.unread ? /* @__PURE__ */ jsx36("span", { className: "ad-notification__unread", role: "img", "aria-label": unreadLabel }) : /* @__PURE__ */ jsx36("span", { className: "ad-notification__read" }),
         n.face && /* @__PURE__ */ jsx36("span", { className: "ad-notification__face", children: n.face }),
         /* @__PURE__ */ jsx36("span", { className: "ad-notification__sentence", children: n.sentence }),
@@ -3623,7 +3652,7 @@ function TimeGrid({ startHour, endHour, bookings = [], columns, now, hourLabel =
 }
 
 // src/components/Charts/Charts.tsx
-import { Fragment as Fragment11, jsx as jsx42, jsxs as jsxs38 } from "react/jsx-runtime";
+import { Fragment as Fragment12, jsx as jsx42, jsxs as jsxs38 } from "react/jsx-runtime";
 function AmountBars({ items, max, ariaLabel, className }) {
   const top = max ?? Math.max(1, ...items.map((i) => i.value));
   return /* @__PURE__ */ jsx42("div", { className: cx("ad-amounts", className), role: "list", "aria-label": ariaLabel, children: items.map((i) => /* @__PURE__ */ jsxs38("div", { className: "ad-amounts__row", role: "listitem", children: [
@@ -3647,7 +3676,7 @@ function BudgetBar({ fraction, figure, note = "worked", remainder, end, ariaLabe
       /* @__PURE__ */ jsx42("span", { children: note }),
       /* @__PURE__ */ jsxs38("span", { children: [
         remainder,
-        end && /* @__PURE__ */ jsxs38(Fragment11, { children: [
+        end && /* @__PURE__ */ jsxs38(Fragment12, { children: [
           " \xB7 ",
           end
         ] })
@@ -3786,7 +3815,7 @@ function PixxBrief({ open, face, greeting, children, onSnooze, onGotIt, snoozeLa
 }
 
 // src/components/Furniture/Furniture.tsx
-import { Fragment as Fragment12, jsx as jsx45, jsxs as jsxs40 } from "react/jsx-runtime";
+import { Fragment as Fragment13, jsx as jsx45, jsxs as jsxs40 } from "react/jsx-runtime";
 function TitleBlock({ code: code2, number, venue, pageNumber, page }) {
   return /* @__PURE__ */ jsxs40("footer", { className: "ad-title-block", children: [
     /* @__PURE__ */ jsxs40("span", { className: "ad-title-block__cell ad-title-block__code", children: [
@@ -3803,7 +3832,7 @@ function TitleBlock({ code: code2, number, venue, pageNumber, page }) {
 }
 function Contents({ entries, ariaLabel = "Contents" }) {
   return /* @__PURE__ */ jsx45("ol", { className: "ad-contents", "aria-label": ariaLabel, children: entries.map((e, i) => {
-    const inner = /* @__PURE__ */ jsxs40(Fragment12, { children: [
+    const inner = /* @__PURE__ */ jsxs40(Fragment13, { children: [
       /* @__PURE__ */ jsx45("span", { className: "ad-contents__numeral", children: String(i + 1).padStart(2, "0") }),
       /* @__PURE__ */ jsxs40("span", { className: "ad-contents__body", children: [
         /* @__PURE__ */ jsx45("span", { className: "ad-contents__name", children: e.name }),
@@ -3980,6 +4009,7 @@ export {
   PickList,
   PixxBrief,
   Popover,
+  PopoverCard,
   PopoverHeader,
   PopoverSection,
   Portal,
