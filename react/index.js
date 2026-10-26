@@ -1653,10 +1653,10 @@ function Person({ name, initials: initials2, src, className }) {
 }
 
 // src/components/List/List.tsx
-import { createContext as createContext4, useContext as useContext5, useEffect as useEffect7, useId as useId4, useState as useState8 } from "react";
+import { createContext as createContext4, useContext as useContext5, useEffect as useEffect7, useId as useId4, useState as useState9 } from "react";
 
 // src/components/Row/Row.tsx
-import { forwardRef as forwardRef5, useContext as useContext4 } from "react";
+import { forwardRef as forwardRef5, useContext as useContext4, useState as useState8 } from "react";
 
 // src/components/Navigation/Navigation.tsx
 import { useState as useState7 } from "react";
@@ -1818,6 +1818,7 @@ function RowFigure({ children, icon }) {
   ] });
 }
 function TodoCheck({ checked, onChange, priority = 4, ariaLabel, disabled, unacknowledged, onAcknowledge, acknowledgeLabel }) {
+  const [pop, setPop] = useState8(false);
   if (unacknowledged && !checked) {
     return /* @__PURE__ */ jsx17("button", { type: "button", "aria-label": acknowledgeLabel ?? ariaLabel, disabled, onClick: () => onAcknowledge?.(), className: cx("ad-todo-check", `ad-todo-check--p${priority}`, "ad-todo-check--asked") });
   }
@@ -1829,7 +1830,12 @@ function TodoCheck({ checked, onChange, priority = 4, ariaLabel, disabled, unack
       "aria-checked": checked,
       "aria-label": ariaLabel,
       disabled,
-      onClick: () => onChange(!checked),
+      onClick: () => {
+        setPop(!checked);
+        onChange(!checked);
+      },
+      onAnimationEnd: () => setPop(false),
+      "data-pop": pop && checked || void 0,
       className: cx("ad-todo-check", `ad-todo-check--p${priority}`),
       children: /* @__PURE__ */ jsx17(Icon, { name: "check" })
     }
@@ -1934,7 +1940,7 @@ function useInList() {
   return useContext5(InList);
 }
 function ListSection({ title, children, collapsible, collapsed, onCollapsedChange, day, bar, className, ...heading }) {
-  const [own, setOwn] = useState8(!!collapsible && !heading.needsYou);
+  const [own, setOwn] = useState9(!!collapsible && !heading.needsYou);
   useEffect7(() => {
     if (heading.needsYou) setOwn(false);
   }, [heading.needsYou]);
@@ -1978,8 +1984,8 @@ var noise = (n, row, tick) => Array.from({ length: n }, (_, i) => {
   return h >>> 13 & 1 ? "1" : "0";
 }).join("");
 function LoadingRows({ label, rows = 3, oneLine, delay }) {
-  const [shown, setShown] = useState8(delay === 0);
-  const [tick, setTick] = useState8(0);
+  const [shown, setShown] = useState9(delay === 0);
+  const [tick, setTick] = useState9(0);
   useEffect7(() => {
     if (shown) return;
     const t = setTimeout(() => setShown(true), delay ?? tokenMs("--delay-loading", 1e3));
@@ -2110,7 +2116,7 @@ function PopoverSection({ label, children, end }) {
 // src/components/Dialog/Dialog.tsx
 import { useId as useId6, useRef as useRef10 } from "react";
 import { jsx as jsx21, jsxs as jsxs18 } from "react/jsx-runtime";
-function Dialog({ open, onClose, title, children, actions, role = "dialog", width = "dialog", closeLabel, className }) {
+function Dialog({ open, onClose, title, children, actions, role = "dialog", width = "dialog", closeLabel, blur, className }) {
   const box = useRef10(null);
   const titleId = useId6();
   const bodyId = useId6();
@@ -2119,7 +2125,7 @@ function Dialog({ open, onClose, title, children, actions, role = "dialog", widt
   useFocusReturn(open, box, "box");
   if (!open) return null;
   return /* @__PURE__ */ jsxs18(Portal, { children: [
-    /* @__PURE__ */ jsx21("div", { className: "ad-scrim", "aria-hidden": "true", style: { zIndex: z - 1 } }),
+    /* @__PURE__ */ jsx21("div", { className: cx("ad-scrim", blur && "ad-scrim--blur"), "aria-hidden": "true", style: { zIndex: z - 1 } }),
     /* @__PURE__ */ jsxs18(
       "div",
       {
@@ -2157,7 +2163,7 @@ function ConfirmDialog({ open, act, thing, detail, onConfirm, onKeep, labels: l 
 }
 
 // src/components/Menu/Menu.tsx
-import { useEffect as useEffect8, useRef as useRef11, useState as useState9 } from "react";
+import { useEffect as useEffect8, useRef as useRef11, useState as useState10 } from "react";
 import { jsx as jsx22, jsxs as jsxs19 } from "react/jsx-runtime";
 function ordered(items) {
   const danger = items.filter((i) => i.kind !== "separator" && i.danger);
@@ -2171,7 +2177,7 @@ function Menu({ open, onClose, anchor, items: given, ariaLabel, placement = "dro
   const style = usePlacement(open, anchor, box, placement);
   const z = useLayer(open, onClose, [box, anchor]);
   const live = items.filter((i) => i.kind !== "separator" && !i.disabled);
-  const [at, setAt] = useState9(0);
+  const [at, setAt] = useState10(0);
   const doc = useFloatingDocument() ?? document;
   useEffect8(() => {
     if (!open) return;
@@ -2254,10 +2260,10 @@ function Menu({ open, onClose, anchor, items: given, ariaLabel, placement = "dro
 }
 
 // src/components/UndoNote/UndoNote.tsx
-import { useEffect as useEffect9, useRef as useRef12, useState as useState10 } from "react";
+import { useEffect as useEffect9, useRef as useRef12, useState as useState11 } from "react";
 import { jsx as jsx23, jsxs as jsxs20 } from "react/jsx-runtime";
 function UndoNote({ open, noteId, message, actionLabel = "Undo", onAction, onClose, className }) {
-  const [held, setHeld] = useState10(false);
+  const [held, setHeld] = useState11(false);
   const latest = useRef12(onClose);
   latest.current = onClose;
   useEffect9(() => {
@@ -2288,10 +2294,10 @@ function UndoNote({ open, noteId, message, actionLabel = "Undo", onAction, onClo
 }
 
 // src/components/Pickers/PickList.tsx
-import { useId as useId7, useMemo, useRef as useRef13, useState as useState11 } from "react";
+import { useId as useId7, useMemo, useRef as useRef13, useState as useState12 } from "react";
 import { jsx as jsx24, jsxs as jsxs21 } from "react/jsx-runtime";
 function PickList({ options, value, onPick, searchLabel, noMatch = "Nothing matches", noSearch, query, onQuery, footer, className }) {
-  const [own, setOwn] = useState11("");
+  const [own, setOwn] = useState12("");
   const q = query ?? own;
   const setQ = (v) => {
     setOwn(v);
@@ -2307,7 +2313,7 @@ function PickList({ options, value, onPick, searchLabel, noMatch = "Nothing matc
   }, [options, q, onQuery]);
   const live = shown.filter((o) => !o.disabled);
   const start = Math.max(0, live.findIndex((o) => picked.has(o.id)));
-  const [at, setAt] = useState11(start);
+  const [at, setAt] = useState12(start);
   const cur = live[Math.min(at, live.length - 1)];
   const listRef = useRef13(null);
   const optId = (o) => `${listId}-${o.id}`;
@@ -2391,7 +2397,7 @@ function PickList({ options, value, onPick, searchLabel, noMatch = "Nothing matc
 }
 
 // src/components/Pickers/Pickers.tsx
-import { cloneElement as cloneElement2, isValidElement as isValidElement2, useRef as useRef14, useState as useState12 } from "react";
+import { cloneElement as cloneElement2, isValidElement as isValidElement2, useRef as useRef14, useState as useState13 } from "react";
 import { Fragment as Fragment8, jsx as jsx25, jsxs as jsxs22 } from "react/jsx-runtime";
 function PersonPicker({ people, ...rest }) {
   return /* @__PURE__ */ jsx25(PickList, { ...rest, options: people.map((p) => ({ id: p.id, label: p.name, keywords: p.email, lead: /* @__PURE__ */ jsx25(Avatar, { name: p.name, initials: p.initials, src: p.src }) })) });
@@ -2403,7 +2409,7 @@ function StatusPicker({ statuses, noSearch = true, ...rest }) {
   return /* @__PURE__ */ jsx25(PickList, { ...rest, noSearch, options: statuses.map((s) => ({ id: s.id, label: s.label, lead: /* @__PURE__ */ jsx25(Dot, { tone: s.tone }) })) });
 }
 function PickField({ options, value, onPick, label, placeholder, search, disabled, className, trigger, marks, footer }) {
-  const [open, setOpen] = useState12(false);
+  const [open, setOpen] = useState13(false);
   const anchor = useRef14(null);
   const box = useRef14(null);
   const style = usePlacement(open, anchor, box, "drop");
@@ -2477,13 +2483,13 @@ function PickField({ options, value, onPick, label, placeholder, search, disable
 }
 
 // src/components/Pickers/DatePicker.tsx
-import { useEffect as useEffect10, useId as useId8, useMemo as useMemo2, useRef as useRef15, useState as useState13 } from "react";
+import { useEffect as useEffect10, useId as useId8, useMemo as useMemo2, useRef as useRef15, useState as useState14 } from "react";
 import { jsx as jsx26, jsxs as jsxs23 } from "react/jsx-runtime";
 var EN = { today: "Today", tomorrow: "Tomorrow", nextWeek: "Next week", inTwoWeeks: "In two weeks", previousMonth: "Previous month", nextMonth: "Next month", noDate: "No date", repeat: "Repeat" };
 function DatePicker({ value, onChange, today: todayIn, weekStart = 1, locale = "en-US", labels: l, quickPicks, shadeWeekends = true, onClear, repeat, openOn, dayMarks, marksKey, className }) {
   const labels = { ...EN, ...l };
   const today = dayOf(todayIn);
-  const [focus, setFocus] = useState13(dayOf(value ?? openOn ?? today));
+  const [focus, setFocus] = useState14(dayOf(value ?? openOn ?? today));
   const grid = useRef15(null);
   const moved = useRef15(false);
   const said = (words, fallback) => readDate(words, today, { weekStart })?.date ?? fallback;
@@ -2592,13 +2598,13 @@ function DateField({ onParsed, label, text: given, onText, format, icon, disable
     const r = readDate(t, picker.today, { weekStart: picker.weekStart });
     return r && { date: r.date, readback: r.readback, extra: r.recurrence };
   };
-  const [own, setOwn] = useState13(value ? fmt(value) : "");
+  const [own, setOwn] = useState14(value ? fmt(value) : "");
   const text = given ?? own;
   const setText = (t) => {
     if (given === void 0) setOwn(t);
     onText?.(t);
   };
-  const [open, setOpen] = useState13(false);
+  const [open, setOpen] = useState14(false);
   const dropId = useId8();
   const anchor = useRef15(null);
   const drop = useRef15(null);
@@ -2660,12 +2666,12 @@ function DateField({ onParsed, label, text: given, onText, format, icon, disable
 }
 
 // src/components/Pickers/TimeField.tsx
-import { useEffect as useEffect11, useRef as useRef16, useState as useState14 } from "react";
+import { useEffect as useEffect11, useRef as useRef16, useState as useState15 } from "react";
 import { jsx as jsx27, jsxs as jsxs24 } from "react/jsx-runtime";
 function TimeField({ value, onChange, label, step = 30, bareHoursArePm, className }) {
   const shown = value == null ? "" : formatTimeOfDay(value);
-  const [text, setText] = useState14(shown);
-  const [open, setOpen] = useState14(false);
+  const [text, setText] = useState15(shown);
+  const [open, setOpen] = useState15(false);
   const anchor = useRef16(null);
   useEffect11(() => setText(shown), [shown]);
   const read2 = text.trim() && text !== shown ? parseTimeOfDay(text, void 0, { bareHoursArePm }) : null;
@@ -2768,10 +2774,10 @@ function Dials({ children }) {
 }
 
 // src/components/PageHeader/PageHeader.tsx
-import { useId as useId10, useRef as useRef18, useState as useState16 } from "react";
+import { useId as useId10, useRef as useRef18, useState as useState17 } from "react";
 
 // src/components/ShowOptions/ShowOptions.tsx
-import { useRef as useRef17, useState as useState15 } from "react";
+import { useRef as useRef17, useState as useState16 } from "react";
 
 // src/components/Settings/Settings.tsx
 import { useId as useId9 } from "react";
@@ -2821,7 +2827,7 @@ var WORDS = {
   archive: "Show archive"
 };
 function ShowOptionsGear({ value, onChange, options = [...showOrder], labels: l = {} }) {
-  const [open, setOpen] = useState15(false);
+  const [open, setOpen] = useState16(false);
   const gear = useRef17(null);
   const now = { ...SHOW_DEFAULTS, ...value };
   const shown = showOrder.filter((o) => options.includes(o));
@@ -2843,7 +2849,7 @@ function countdownWords(c) {
 }
 function PageHeader({ title, icon, stamp, tabs, back, description, countdown: given, gear, onSearch, onPopOut, onHelp, menu, headerLabels, scramble = true, className }) {
   const anyEnd = gear || onSearch || onPopOut || onHelp || menu;
-  const [menuOpen, setMenuOpen] = useState16(false);
+  const [menuOpen, setMenuOpen] = useState17(false);
   const menuAt = useRef18(null);
   const shownStamp = typeof stamp === "string" && STATES.has(stamp);
   const countdown = given && typeof given === "object" && given.to instanceof Date ? countdownWords(given) : null;
@@ -2910,10 +2916,10 @@ function Tabs({ tabs, value, onChange, ariaLabel, numbered = true, panelId, clas
 }
 
 // src/components/Toolbar/Toolbar.tsx
-import { forwardRef as forwardRef8, useRef as useRef21, useState as useState18 } from "react";
+import { forwardRef as forwardRef8, useRef as useRef21, useState as useState19 } from "react";
 
 // src/components/Writing/TokenInput.tsx
-import { useEffect as useEffect12, useLayoutEffect as useLayoutEffect3, useRef as useRef19, useState as useState17 } from "react";
+import { useEffect as useEffect12, useLayoutEffect as useLayoutEffect3, useRef as useRef19, useState as useState18 } from "react";
 import { jsx as jsx32, jsxs as jsxs29 } from "react/jsx-runtime";
 var CHIP = { project: "project", date: "calendar", deadline: "calendar", priority: "flag", person: "user", recurrence: "repeat", reminder: "bell" };
 var DEPTS = /* @__PURE__ */ new Set(["lighting", "video", "eng", "sfx", "content", "scenic", "direction", "admin", "pm", "lasers"]);
@@ -2991,7 +2997,7 @@ function TokenInput({ value, onChange, read: read2, onSubmit, label, placeholder
   const blurred = useRef19(false);
   const composing = useRef19(false);
   const justComposed = useRef19(false);
-  const [moved, setMoved] = useState17(0);
+  const [moved, setMoved] = useState18(0);
   const tokens = readTokens(value, read2);
   const refresh = (leaving = false) => {
     const el = box.current;
@@ -3185,10 +3191,10 @@ function ToolbarSeparator() {
 function ViewPopover({ open, onClose, anchor, builtInViews = [], savedViews, currentView, onPickView, onStarView, viewActions, onSaveView, saveScopes, query, rules, groupBy, sortBy, show, labels: l = {} }) {
   const L = { show: "Show", view: "View", builtInViews: "Views", savedViews: "Saved views", saveView: "Save this view\u2026", viewName: "View name", save: "Save", cancel: "Cancel", star: "Star", unstar: "Unstar", more: "More", filter: "Filter", groupBy: "Group by", sortBy: "Sort by", ascending: "Ascending", descending: "Descending", ...l };
   const SAVE = "__save";
-  const [naming, setNaming] = useState18(false);
-  const [name, setName] = useState18("");
-  const [scope, setScope] = useState18(saveScopes?.[0]?.value);
-  const [menuFor, setMenuFor] = useState18(null);
+  const [naming, setNaming] = useState19(false);
+  const [name, setName] = useState19("");
+  const [scope, setScope] = useState19(saveScopes?.[0]?.value);
+  const [menuFor, setMenuFor] = useState19(null);
   const menuAnchor = useRef21(null);
   const viewsShown = builtInViews.length > 0 || savedViews != null;
   const views = [
@@ -3280,10 +3286,10 @@ function ViewSwitch({ options, value, onChange, ariaLabel, className }) {
 }
 
 // src/components/Warnings/Warnings.tsx
-import { forwardRef as forwardRef9, useId as useId11, useState as useState19 } from "react";
+import { forwardRef as forwardRef9, useId as useId11, useState as useState20 } from "react";
 import { Fragment as Fragment10, jsx as jsx36, jsxs as jsxs32 } from "react/jsx-runtime";
 function AlertBar({ alerts, label = "Alerts", snoozeLabel = "Snooze", pillLabel = (p, n) => `${n} priority ${p}`, priorityLabel = (p) => `Priority ${p}`, defaultOpen = false, open, onOpenChange, className }) {
-  const [own, setOwn] = useState19(defaultOpen);
+  const [own, setOwn] = useState20(defaultOpen);
   const isOpen = open ?? own;
   const listId = useId11();
   if (!alerts.length) return null;
@@ -3406,9 +3412,13 @@ function BoardCardMeta({ date, icon, face, code: code2, marks, role, deliverable
 function DropLine() {
   return /* @__PURE__ */ jsx37("div", { className: "ad-drop-line", "aria-hidden": "true" });
 }
+function dropLineProps(at, axis = "y") {
+  if (!at) return {};
+  return { "data-ad-drop": axis === "x" ? `${at}-x` : at };
+}
 
 // src/components/Table/Table.tsx
-import { useLayoutEffect as useLayoutEffect4, useRef as useRef23, useState as useState20 } from "react";
+import { useLayoutEffect as useLayoutEffect4, useRef as useRef23, useState as useState21 } from "react";
 import { jsx as jsx38, jsxs as jsxs34 } from "react/jsx-runtime";
 var Arrow = ({ up }) => /* @__PURE__ */ jsx38(Icon, { name: up ? "arrow-up" : "arrow-down", size: "sm", className: "ad-table__arrow" });
 function Table({ columns, rows, rowId, caption, sort, onSort, picked, onPickedChange, onPickAllChange, pickLabel, pickAllLabel = "Pick all", onOpen, rowProps, group, depth, nameColumn, className }) {
@@ -3417,7 +3427,7 @@ function Table({ columns, rows, rowId, caption, sort, onSort, picked, onPickedCh
   const all = rows.length > 0 && rows.every((r) => picked?.has(rowId(r)));
   const nameAt = Math.max(0, nameColumn ? columns.findIndex((c) => c.id === nameColumn) : 0);
   const headRow = useRef23(null);
-  const [held, setHeld] = useState20({});
+  const [held, setHeld] = useState21({});
   const heldKey = columns.filter((c) => c.frozen === "start").map((c) => c.id).join(" ");
   useLayoutEffect4(() => {
     const tr = headRow.current;
@@ -3732,7 +3742,7 @@ var hooksOf = (h) => {
   return rest;
 };
 var diff = (a, b) => daysBetween(b, a);
-function MonthCalendar({ month, items, today: todayIn, weekStart = 1, locale = "en-US", onOpen, dayProps, itemProps, marks, className }) {
+function MonthCalendar({ month, items, today: todayIn, weekStart = 1, locale = "en-US", onOpen, dayProps, itemProps, marks, ringDay, className }) {
   const today = dayOf(todayIn);
   const hueOf = useHueOf();
   const shadeWeekends = useShow().weekendShading;
@@ -3766,7 +3776,7 @@ function MonthCalendar({ month, items, today: todayIn, weekStart = 1, locale = "
           const d = addDays(ws, i);
           const wk = d.getDay() === 0 || d.getDay() === 6;
           const mark = marks?.(d);
-          return /* @__PURE__ */ jsx41("div", { "aria-hidden": dayProps ? void 0 : true, ...hooksOf(dayProps?.(d)), style: { gridColumn: i + 1 }, className: "ad-month__cell", "data-outside": d.getMonth() !== first.getMonth() || void 0, "data-weekend": shadeWeekends && wk || void 0, children: /* @__PURE__ */ jsxs37("span", { className: "ad-month__day", children: [
+          return /* @__PURE__ */ jsx41("div", { "aria-hidden": dayProps ? void 0 : true, ...hooksOf(dayProps?.(d)), style: { gridColumn: i + 1 }, className: "ad-month__cell", "data-outside": d.getMonth() !== first.getMonth() || void 0, "data-weekend": shadeWeekends && wk || void 0, "data-ring": diff(d, today) === 0 || ringDay?.(d) || void 0, children: /* @__PURE__ */ jsxs37("span", { className: "ad-month__day", children: [
             /* @__PURE__ */ jsx41("span", { className: "ad-month__num", "data-today": diff(d, today) === 0 || void 0, children: d.getDate() }),
             mark != null && /* @__PURE__ */ jsx41("span", { className: "ad-month__marks", children: mark })
           ] }) }, i);
@@ -4003,12 +4013,12 @@ function CommandSearch({ open, onClose, query, onQuery, results, onPick, label =
 }
 
 // src/components/Guidance/Guidance.tsx
-import { useEffect as useEffect14, useLayoutEffect as useLayoutEffect5, useRef as useRef25, useState as useState21 } from "react";
+import { useEffect as useEffect14, useLayoutEffect as useLayoutEffect5, useRef as useRef25, useState as useState22 } from "react";
 import { jsx as jsx44, jsxs as jsxs39 } from "react/jsx-runtime";
 var useIsoLayoutEffect3 = typeof window === "undefined" ? useEffect14 : useLayoutEffect5;
 function TourStep({ open, anchor, step, total, title, children, onBack, onNext, onExit, backLabel = "Back", nextLabel = "Next", progressLabel = (s, t) => `${s} of ${t}`, side = "below" }) {
   const card = useRef25(null);
-  const [rect, setRect] = useState21(null);
+  const [rect, setRect] = useState22(null);
   const doc = useFloatingDocument() ?? document;
   useFocusReturn(open, card);
   useIsoLayoutEffect3(() => {
@@ -4397,6 +4407,7 @@ export {
   ZoomCluster,
   cx,
   describeViolations,
+  dropLineProps,
   hueNames,
   pickColours,
   projectHue,

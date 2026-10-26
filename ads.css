@@ -24,6 +24,8 @@
   --text-faint: #817d77;
   --border: rgba(216, 211, 210, 0.07);
   --line-strong: rgba(216, 211, 210, 0.15);
+  --scroll-thumb-hover: #7a7b74;
+  --drop-line: var(--accent);
   --bitrate-grey: #666666;
   --crop: rgba(216, 211, 210, 0.55);
   --tint-hover: rgba(216, 211, 210, 0.07);
@@ -35,6 +37,8 @@
   --status-error: #cf5340;
   --status-error-ink: #dc8274;
   --status-error-bg: rgba(207, 83, 64, 0.15);
+  --word-pill: #5a1a26;
+  --word-pill-ink: #f3d6da;
   --status-warn: #d9a441;
   --status-good: #6f9c6a;
   --status-info-blue: #6f9fc4;
@@ -92,6 +96,12 @@
   --glow-today: 0 0 6px rgba(225, 109, 72, 0.45);
   --glow-late: 0 0 6px rgba(207, 83, 64, 0.4);
   --glow-clash: 0 0 0 1px #cf5340, 0 0 8px rgba(207, 83, 64, 0.15);
+  --ring-today: 0 0 0 2px #d8d3d2;
+  --ring-celebrate: 0 0 0 5px rgba(111, 156, 106, 0.28);
+  --ring-rest: 0 0 0 0 transparent;
+  --shadow-pixx: drop-shadow(0 3px 6px rgba(0, 0, 0, 0.5));
+  --shadow-pixx-open: drop-shadow(0 0 2px #e16d48) drop-shadow(0 3px 6px rgba(0, 0, 0, 0.5));
+  --shadow-pixx-empty: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.5));
 }
 :root {
   --space-hair: 2px;
@@ -156,6 +166,12 @@
   --h-bar-dense: 17px;
   --h-over-mark: 16px;
   --blur-glass-radius: 22px;
+  --blur-drill-radius: 3px;
+  --w-scrollbar: 10px;
+  --word-pill-r: 3.5px;
+  --word-pill-corner: 4px;
+  --word-pill-inset: 1px;
+  --word-pill-edge: 5px;
   --border-w: 1px;
   --border-w-strong: 1.5px;
   --w-stripe: 3px;
@@ -167,6 +183,8 @@
   --opacity-dim: 0.75;
   --grain-opacity: 0.25;
   --opacity-stamp: 0.55;
+  --tint-presence-strip: 40%;
+  --tint-presence-wash: 18%;
   /* Sizes are 12 / 14 / 20 / 28, plus the two display sizes. 12 is the floor. */
   --text-xs: 12px;
   --text-base: 14px;
@@ -190,6 +208,8 @@
   --dur-undo: 4s;
   --delay-tip: 0.5s;
   --delay-loading: 1s;
+  --dur-check-pop: 260ms;
+  --ease-check-pop: cubic-bezier(0.34, 1.56, 0.64, 1);
   /* Low to high. Floating pieces from the library stack themselves: each one opened sits 2 above whatever is open already (a menu inside a dialog sits over the dialog and its dim layer), never below its own floor. An app adds local 1–6 inside a component and nothing else. */
   --z-sticky: 40;
   --z-float: 90;
@@ -271,6 +291,23 @@
 /* Shared by every component. */
 /* Read aloud, not shown. */
 .ad-sr { position: absolute; width: var(--border-w); height: var(--border-w); padding: 0; margin: calc(var(--border-w) * -1); overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
+/* The scrollbar, for the whole page (kept from Athena, ruled 2026-10-26): w-scrollbar thin, a line-strong thumb with a bw-select
+   edge in the ground colour and radius-float corners, on a bg-base track; scroll-thumb-hover under the cursor. */
+::-webkit-scrollbar { width: var(--w-scrollbar); height: var(--w-scrollbar); }
+::-webkit-scrollbar-track { background: var(--bg-base); }
+::-webkit-scrollbar-thumb { background: var(--line-strong); border: var(--bw-select) solid var(--bg-base); border-radius: var(--radius-float); }
+::-webkit-scrollbar-thumb:hover { background: var(--scroll-thumb-hover); }
+/* The drag landing line (kept from Athena, ruled 2026-10-26; dropLineProps): bw-select of drop-line along the edge where the
+   dragged row will land, above it (before) or below it (after); sideways for a row of chips (before-x, after-x). On a table
+   row it is drawn inside its cells, since a row cannot carry a shadow. The doubled selector lets it stand in for a piece's own
+   resting edge (a tag's hairline) while something is about to land there. */
+[data-ad-drop][data-ad-drop="before"] { box-shadow: 0 calc(var(--bw-select) * -1) 0 0 var(--drop-line); }
+[data-ad-drop][data-ad-drop="after"] { box-shadow: 0 var(--bw-select) 0 0 var(--drop-line); }
+[data-ad-drop][data-ad-drop="before-x"] { box-shadow: calc(var(--bw-select) * -1) 0 0 0 var(--drop-line); }
+[data-ad-drop][data-ad-drop="after-x"] { box-shadow: var(--bw-select) 0 0 0 var(--drop-line); }
+tr[data-ad-drop][data-ad-drop] { box-shadow: none; }
+tr[data-ad-drop="before"] > :is(td, th) { box-shadow: inset 0 var(--bw-select) 0 0 var(--drop-line); }
+tr[data-ad-drop="after"] > :is(td, th) { box-shadow: inset 0 calc(var(--bw-select) * -1) 0 0 var(--drop-line); }
 
 /* src/components/floating/floating.css */
 /* The shared floating surface: neutral glass, one bright pixel along the top, 8 corner. And the loudbox X. */
@@ -397,6 +434,8 @@
 }
 .ad-month__cell { grid-row: 1 / -1; display: flex; flex-direction: column; justify-content: space-between; padding: var(--space-1) var(--space-1); border-right: var(--border-w) solid var(--border); border-bottom: var(--border-w) solid var(--border); }
 .ad-month__cell[data-weekend] { background-image: var(--hatch-fine); }
+/* Today's cell, and a cell the app rings (a drop target), wear Athena's 2px bone ring (kept 2026-10-26), drawn over its neighbours' hairlines. */
+.ad-month__cell[data-ring] { position: relative; z-index: 1; box-shadow: var(--ring-today); }
 .ad-month__cell[data-outside] .ad-month__num { color: var(--text-faint); }
 .ad-month__day { display: flex; align-items: center; gap: var(--space-2); align-self: stretch; }
 .ad-month__marks { display: inline-flex; align-items: center; gap: var(--space-1); margin-left: auto; color: var(--text-secondary); }
@@ -474,7 +513,8 @@ button.ad-booking:focus-visible { outline: none; box-shadow: var(--ring-select);
 .ad-year__day { position: relative; display: grid; place-items: center; height: var(--space-6); padding: 0; border: 0; border-radius: var(--radius-round); background: transparent; font-family: var(--font-mono); font-size: var(--text-xs); color: var(--text-muted); }
 .ad-year__day[data-busy] { color: var(--text-primary); }
 .ad-year__day[data-busy]::after { content: ""; position: absolute; bottom: var(--space-hair); left: 50%; width: var(--space-hair); height: var(--space-hair); transform: translateX(-50%); border-radius: var(--radius-round); background: var(--text-primary); }
-.ad-year__day[data-today] { box-shadow: inset 0 0 0 var(--border-w) var(--text-primary); }
+/* Today: Athena's 2px bone ring (ring-today, kept 2026-10-26). */
+.ad-year__day[data-today] { box-shadow: var(--ring-today); }
 button.ad-year__day { cursor: pointer; }
 button.ad-year__day:hover { color: var(--accent); }
 button.ad-year__day:focus-visible { outline: none; box-shadow: var(--ring-select); }
@@ -586,6 +626,8 @@ button.ad-card__name:focus-visible { outline: none; box-shadow: var(--ring-selec
 /* src/components/Dialog/Dialog.css */
 /* Dialog */
 .ad-scrim { position: fixed; inset: 0; background: var(--scrim); animation: ad-fade-in var(--dur) var(--ease-out); }
+/* The drill card's backdrop (kept from Athena, ruled 2026-10-26): the page behind blurs blur-drill-radius under the dim. */
+.ad-scrim--blur { backdrop-filter: blur(var(--blur-drill-radius)); -webkit-backdrop-filter: blur(var(--blur-drill-radius)); }
 .ad-dialog { position: fixed; top: 12vh; left: 50%; transform: translateX(-50%); max-width: calc(100vw - var(--space-8)); padding: var(--space-4); }
 .ad-dialog--dialog { width: var(--w-dialog); }
 .ad-dialog--card { width: var(--w-card); }
@@ -1150,6 +1192,14 @@ button.ad-row__name:focus-visible { outline: none; box-shadow: var(--ring-select
 .ad-todo-check[aria-checked="true"] { background: var(--text-muted); box-shadow: none; color: var(--bg-base); }
 .ad-todo-check:focus-visible { outline: none; box-shadow: inset 0 0 0 var(--border-w-strong) var(--ad-ring), var(--ring-select); }
 .ad-todo-check:disabled { opacity: var(--opacity-disabled); cursor: default; }
+/* The celebrate pop the moment a todo is ticked off (kept from Athena, ruled 2026-10-26): it swells and the green glow ring flares and fades. */
+@keyframes ad-check-pop {
+  0% { transform: scale(1); box-shadow: var(--ring-rest); }
+  40% { transform: scale(1.34); box-shadow: var(--ring-celebrate); }
+  100% { transform: scale(1); box-shadow: var(--ring-rest); }
+}
+.ad-todo-check[data-pop] { animation: ad-check-pop var(--dur-check-pop) var(--ease-check-pop); }
+@media (prefers-reduced-motion: reduce) { .ad-todo-check[data-pop] { animation: none; } }
 .ad-row--compact { min-height: calc(var(--h-row) - var(--space-1)); }
 .ad-row--compact.ad-row--two { min-height: calc(var(--h-row-2) - var(--space-1)); }
 /* Assigned to you, not yet acknowledged: the ring is filled in its priority colour; one click acknowledges (ruled 2026-10-25). */
@@ -1632,11 +1682,24 @@ button.ad-notification:focus-visible { outline: none; box-shadow: var(--ring-sel
 }
 .ad-token-input--query .ad-token-input__box { font-family: var(--font-mono); color: var(--text-secondary); }
 .ad-token-input__box[data-empty]::before { content: attr(data-placeholder); color: var(--text-muted); pointer-events: none; }
-.ad-token-input__box .ad-token { margin: 0 var(--space-hair); line-height: var(--lh-tight); }
+/* In the box the pill is drawn in place behind the letters (kept from Athena, ruled 2026-10-26): no padding and no margin, so the
+   words keep their place and neighbours keep a clear gap. */
+.ad-token-input__box .ad-token { margin: 0; padding: 0; line-height: var(--lh-tight); }
 /* The filter box's suggestions span the box. */
 .ad-token-input--query .ad-picklist { width: 100%; }
 .ad-token-input__resolved { display: flex; flex-wrap: wrap; gap: var(--space-2); }
-.ad-token { display: inline-block; padding: 0 var(--space-2); border-radius: var(--radius-page); background: var(--status-error-bg); color: var(--status-error-ink); font-family: var(--font-body); font-size: inherit; line-height: var(--lh-normal); white-space: nowrap; }
+/* The understood-word pill, Athena's (kept 2026-10-26): word-pill crimson behind word-pill-ink letters, drawn as background layers
+   (a full-height middle from word-pill-edge, a band word-pill-inset in from each side, four round corners) so nothing is clipped. */
+.ad-token {
+  display: inline-block; padding: 0 var(--space-2); border-radius: 0; color: var(--word-pill-ink); font-family: var(--font-body); font-size: inherit; line-height: var(--lh-normal); white-space: nowrap;
+  background:
+    linear-gradient(var(--word-pill), var(--word-pill)) var(--word-pill-edge) 0 / calc(100% - 2 * var(--word-pill-edge)) 100% no-repeat,
+    linear-gradient(var(--word-pill), var(--word-pill)) var(--word-pill-inset) var(--word-pill-corner) / calc(100% - 2 * var(--word-pill-inset)) calc(100% - 2 * var(--word-pill-corner)) no-repeat,
+    radial-gradient(circle at 100% 100%, var(--word-pill) var(--word-pill-r), transparent var(--word-pill-corner)) var(--word-pill-inset) 0 / var(--word-pill-corner) var(--word-pill-corner) no-repeat,
+    radial-gradient(circle at 0 100%, var(--word-pill) var(--word-pill-r), transparent var(--word-pill-corner)) calc(100% - var(--word-pill-inset)) 0 / var(--word-pill-corner) var(--word-pill-corner) no-repeat,
+    radial-gradient(circle at 100% 0, var(--word-pill) var(--word-pill-r), transparent var(--word-pill-corner)) var(--word-pill-inset) 100% / var(--word-pill-corner) var(--word-pill-corner) no-repeat,
+    radial-gradient(circle at 0 0, var(--word-pill) var(--word-pill-r), transparent var(--word-pill-corner)) calc(100% - var(--word-pill-inset)) 100% / var(--word-pill-corner) var(--word-pill-corner) no-repeat;
+}
 .ad-note-label { margin: 0 0 var(--space-2); font-family: var(--font-display); font-weight: 600; font-size: var(--text-xs); letter-spacing: var(--track-label); text-transform: uppercase; color: var(--text-muted); }
 .ad-note-box {
   display: block; box-sizing: border-box; width: 100%; min-height: calc(var(--h-row) * 1.5); margin: 0; padding: var(--space-3) var(--space-3); border: 0; border-radius: var(--radius-page);
