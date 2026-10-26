@@ -3220,26 +3220,59 @@ function AlertBar({ alerts, label = "Alerts", snoozeLabel = "Snooze", pillLabel 
   const isOpen = open ?? own;
   const listId = useId11();
   if (!alerts.length) return null;
-  const counts = [1, 2, 3, 4].map((p) => [p, alerts.filter((a) => a.priority === p).length]).filter(([, n]) => n > 0);
+  const counts = [1, 2, 3, 4].map((p) => [p, alerts.filter((a) => a.priority === p).length]);
   const toggle = () => {
     setOwn(!isOpen);
     onOpenChange?.(!isOpen);
   };
   return /* @__PURE__ */ jsxs32("section", { className: cx("ad-alert-bar", className), "aria-label": label, children: [
-    /* @__PURE__ */ jsxs32("button", { type: "button", className: "ad-alert-bar__head", "aria-expanded": isOpen, "aria-controls": listId, onClick: toggle, children: [
-      /* @__PURE__ */ jsx36(Icon, { name: isOpen ? "caret-down" : "caret-right", size: "sm", className: "ad-alert-bar__caret" }),
-      /* @__PURE__ */ jsx36("span", { className: "ad-alert-bar__word", children: label }),
-      counts.map(([p, n]) => /* @__PURE__ */ jsx36(CountPill, { priority: p, count: n, label: pillLabel(p, n) }, p))
-    ] }),
-    /* @__PURE__ */ jsx36("div", { id: listId, hidden: !isOpen, role: "list", children: alerts.map((a) => /* @__PURE__ */ jsxs32("div", { role: "listitem", className: "ad-alert", children: [
-      /* @__PURE__ */ jsx36("span", { className: cx("ad-alert__ring", `ad-alert__ring--p${a.priority}`), role: "img", "aria-label": priorityLabel(a.priority) }),
-      /* @__PURE__ */ jsx36("span", { className: "ad-alert__sentence", children: a.sentence }),
-      a.number && /* @__PURE__ */ jsx36("span", { className: "ad-alert__number", children: a.number }),
-      /* @__PURE__ */ jsx36("span", { className: "ad-alert__actions", children: /* @__PURE__ */ jsxs32(ButtonSizeScope, { size: "row", children: [
-        a.action && /* @__PURE__ */ jsx36(Button, { onClick: a.action.onSelect, children: a.action.label }),
-        a.onSnooze && /* @__PURE__ */ jsx36(Button, { onClick: a.onSnooze, children: snoozeLabel })
-      ] }) })
-    ] }, a.id)) })
+    /* @__PURE__ */ jsx36(AlertBarHead, { open: isOpen, onToggle: toggle, label, counts, pillLabel, controls: listId }),
+    /* @__PURE__ */ jsx36(AlertList, { id: listId, hidden: !isOpen, children: alerts.map((a) => /* @__PURE__ */ jsx36(
+      AlertRow,
+      {
+        priority: a.priority,
+        priorityLabel: priorityLabel(a.priority),
+        sentence: a.sentence,
+        number: a.number,
+        actions: /* @__PURE__ */ jsxs32(Fragment10, { children: [
+          a.action && /* @__PURE__ */ jsx36(Button, { onClick: a.action.onSelect, children: a.action.label }),
+          a.onSnooze && /* @__PURE__ */ jsx36(Button, { onClick: a.onSnooze, children: snoozeLabel })
+        ] })
+      },
+      a.id
+    )) })
+  ] });
+}
+var strip = (h) => {
+  if (!h) return {};
+  const { className: _c, style: _s, ...rest } = h;
+  return rest;
+};
+function AlertBarHead({ open, onToggle, label = "Alerts", counts, pillLabel = (p, n) => `${n} priority ${p}`, controls, headProps }) {
+  const shown = [...counts].filter(([, n]) => n > 0).sort(([a], [b]) => a - b);
+  return /* @__PURE__ */ jsxs32("button", { ...strip(headProps), type: "button", className: "ad-alert-bar__head", "aria-expanded": open, "aria-controls": controls, onClick: onToggle, children: [
+    /* @__PURE__ */ jsx36(Icon, { name: open ? "caret-down" : "caret-right", size: "sm", className: "ad-alert-bar__caret" }),
+    /* @__PURE__ */ jsx36("span", { className: "ad-alert-bar__word", children: label }),
+    shown.map(([p, n]) => /* @__PURE__ */ jsx36(CountPill, { priority: p, count: n, label: pillLabel(p, n) }, p))
+  ] });
+}
+function AlertList({ children, id, hidden, ariaLabel, listProps }) {
+  return /* @__PURE__ */ jsx36("div", { ...strip(listProps), id, hidden, role: "list", "aria-label": ariaLabel, children });
+}
+function AlertRow({ priority, priorityLabel = `Priority ${priority}`, sentence, number, actions, end, children, rowProps }) {
+  const line = /* @__PURE__ */ jsxs32(Fragment10, { children: [
+    /* @__PURE__ */ jsx36("span", { className: cx("ad-alert__ring", `ad-alert__ring--p${priority}`), role: "img", "aria-label": priorityLabel }),
+    /* @__PURE__ */ jsx36("span", { className: "ad-alert__sentence", children: sentence }),
+    number != null && number !== "" && /* @__PURE__ */ jsx36("span", { className: "ad-alert__number", children: number }),
+    /* @__PURE__ */ jsx36("span", { className: "ad-alert__actions", children: /* @__PURE__ */ jsxs32(ButtonSizeScope, { size: "row", children: [
+      actions,
+      end != null && /* @__PURE__ */ jsx36("span", { className: "ad-alert__end", children: end })
+    ] }) })
+  ] });
+  if (children == null || children === false) return /* @__PURE__ */ jsx36("div", { ...strip(rowProps), role: "listitem", className: "ad-alert", children: line });
+  return /* @__PURE__ */ jsxs32("div", { ...strip(rowProps), role: "listitem", className: "ad-alert-item", children: [
+    /* @__PURE__ */ jsx36("div", { className: "ad-alert", children: line }),
+    /* @__PURE__ */ jsx36("div", { className: "ad-alert__under", children })
   ] });
 }
 function CountPill({ priority, count, label }) {
@@ -3392,7 +3425,7 @@ function SelectionBar({ count, countLabel = (n) => `${n} selected`, actions, cla
 
 // src/components/Timeline/Timeline.tsx
 import { jsx as jsx39, jsxs as jsxs35 } from "react/jsx-runtime";
-var strip = (h) => {
+var strip2 = (h) => {
   if (!h) return {};
   const { className: _c, style: _s, ...rest } = h;
   return rest;
@@ -3401,9 +3434,9 @@ function Bar({ label, unconfirmed, deal, backup, color, selected, startLabel, en
   const asButton = !!onOpen && !ends;
   const Tag2 = asButton ? "button" : "div";
   const hue = useHue(color);
-  const hooks = strip(barProps);
+  const hooks = strip2(barProps);
   const name = /* @__PURE__ */ jsx39("span", { className: "ad-bar__name", children: label });
-  const grip = (side, h) => h && /* @__PURE__ */ jsx39("span", { "aria-hidden": h["aria-label"] ? void 0 : true, ...strip(h), className: `ad-bar__grip ad-bar__grip--${side}` });
+  const grip = (side, h) => h && /* @__PURE__ */ jsx39("span", { "aria-hidden": h["aria-label"] ? void 0 : true, ...strip2(h), className: `ad-bar__grip ad-bar__grip--${side}` });
   return /* @__PURE__ */ jsxs35(
     Tag2,
     {
@@ -4063,7 +4096,7 @@ function AdsScope({ project, children }) {
 // src/components/Navigation/MenuPieces.tsx
 import { createContext as createContext7, useContext as useContext9 } from "react";
 import { jsx as jsx47, jsxs as jsxs41 } from "react/jsx-runtime";
-var strip2 = (h) => {
+var strip3 = (h) => {
   if (!h) return {};
   const { className: _c, style: _s, ...rest } = h;
   return rest;
@@ -4076,19 +4109,19 @@ function MenuBrand({ mark, label, onPress, end }) {
   ] });
 }
 function MenuBody({ children, bodyProps }) {
-  return /* @__PURE__ */ jsx47("div", { ...strip2(bodyProps), className: "ad-menu__body", children });
+  return /* @__PURE__ */ jsx47("div", { ...strip3(bodyProps), className: "ad-menu__body", children });
 }
 function MenuFrame({ rail = false, ariaLabel, children, frameProps }) {
-  return /* @__PURE__ */ jsx47(Folded.Provider, { value: rail, children: /* @__PURE__ */ jsx47("nav", { ...strip2(frameProps), "aria-label": ariaLabel, className: cx(rail ? "ad-rail" : "ad-side", "ad-menu"), children }) });
+  return /* @__PURE__ */ jsx47(Folded.Provider, { value: rail, children: /* @__PURE__ */ jsx47("nav", { ...strip3(frameProps), "aria-label": ariaLabel, className: cx(rail ? "ad-rail" : "ad-side", "ad-menu"), children }) });
 }
 function MenuList({ children, listProps }) {
   const rail = useContext9(Folded);
-  return /* @__PURE__ */ jsx47("ul", { ...strip2(listProps), className: cx(rail ? "ad-rail__group" : "ad-side__list", "ad-menu__list"), children });
+  return /* @__PURE__ */ jsx47("ul", { ...strip3(listProps), className: cx(rail ? "ad-rail__group" : "ad-side__list", "ad-menu__list"), children });
 }
 function MenuItem({ icon, label, current, onPress, trail, children, itemProps, ariaLabel, codeSlot }) {
   const rail = useContext9(Folded);
   const name = ariaLabel ?? (typeof label === "string" ? label : void 0);
-  return /* @__PURE__ */ jsxs41("li", { ...strip2(itemProps), className: "ad-menu__row", children: [
+  return /* @__PURE__ */ jsxs41("li", { ...strip3(itemProps), className: "ad-menu__row", children: [
     /* @__PURE__ */ jsxs41("div", { className: "ad-menu__line", children: [
       /* @__PURE__ */ jsxs41("button", { type: "button", className: rail ? "ad-rail__item" : "ad-side__item", "aria-current": current ? "page" : void 0, "aria-label": rail ? name : void 0, title: rail ? name : void 0, onClick: onPress, children: [
         icon != null && /* @__PURE__ */ jsx47("span", { className: rail ? void 0 : cx("ad-side__icon", codeSlot && "ad-menu__code"), "aria-hidden": typeof label === "string" ? true : void 0, children: icon }),
@@ -4100,7 +4133,7 @@ function MenuItem({ icon, label, current, onPress, trail, children, itemProps, a
   ] });
 }
 function MenuSeparator({ itemProps, ariaLabel }) {
-  return /* @__PURE__ */ jsx47("li", { ...strip2(itemProps), role: "separator", "aria-label": ariaLabel, className: "ad-menu__separator" });
+  return /* @__PURE__ */ jsx47("li", { ...strip3(itemProps), role: "separator", "aria-label": ariaLabel, className: "ad-menu__separator" });
 }
 function MenuFoot({ children }) {
   const rail = useContext9(Folded);
@@ -4130,6 +4163,9 @@ export {
   AdsProvider,
   AdsScope,
   AlertBar,
+  AlertBarHead,
+  AlertList,
+  AlertRow,
   AmountBars,
   Avatar,
   AvatarStack,
