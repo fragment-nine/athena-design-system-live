@@ -3325,7 +3325,7 @@ var strip = (h) => {
   const { className: _c, style: _s, ...rest } = h;
   return rest;
 };
-function Bar({ label, unconfirmed, deal, backup, color, selected, startLabel, endLabel, lead, children, thin, labelOutside, onOpen, ends, barProps, className, style }) {
+function Bar({ label, unconfirmed, deal, backup, color, selected, startLabel, endLabel, lead, children, thin, labelOutside, onOpen, ends, barProps, labelInset, labelHidden, late, className, style }) {
   const asButton = !!onOpen && !ends;
   const Tag2 = asButton ? "button" : "div";
   const hue = useHue(color);
@@ -3352,8 +3352,8 @@ function Bar({ label, unconfirmed, deal, backup, color, selected, startLabel, en
         }
       },
       "aria-current": selected || void 0,
-      className: cx("ad-bar", unconfirmed && "ad-bar--unconfirmed", deal && "ad-bar--deal", backup && "ad-bar--backup", thin && "ad-bar--thin", labelOutside && "ad-bar--label-outside", selected && "ad-bar--selected", className),
-      style: { ...style, ["--ad-bar"]: hue },
+      className: cx("ad-bar", unconfirmed && "ad-bar--unconfirmed", deal && "ad-bar--deal", backup && "ad-bar--backup", thin && "ad-bar--thin", labelOutside && "ad-bar--label-outside", selected && "ad-bar--selected", late && "ad-bar--late", labelHidden && "ad-bar--label-hidden", className),
+      style: { ...style, ["--ad-bar"]: hue, ...labelInset ? { ["--ad-label-in"]: `${Math.max(0, labelInset)}px` } : {} },
       children: [
         grip("start", ends?.start),
         startLabel && /* @__PURE__ */ jsx39("span", { className: "ad-bar__end ad-bar__end--start", children: startLabel }),

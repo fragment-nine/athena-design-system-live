@@ -1258,7 +1258,7 @@ button.ad-row__name:focus-visible { outline: none; box-shadow: var(--ring-select
 /* src/components/Timeline/Timeline.css */
 /* Timeline marks, as the Bars and Page-Schedule cards draw them */
 .ad-bar {
-  --ad-bar: var(--bg-hover);
+  --ad-bar: var(--bg-hover); --ad-label-in: 0px;
   position: relative; display: flex; align-items: center; box-sizing: border-box; width: 100%; height: var(--h-bar); margin: 0; padding: 0 var(--space-2);
   border: 0; border-radius: var(--radius-page); background: var(--ad-bar); color: var(--text-primary);
   font-family: var(--font-body); font-size: var(--text-base); text-align: left; white-space: nowrap;
@@ -1288,7 +1288,10 @@ button.ad-bar { cursor: pointer; }
 /* Selected or focused, a deal or backup keeps its outline: the ring is the selection, the dashes are still what it is. */
 .ad-bar--deal.ad-bar--selected, .ad-bar--deal:focus-visible { outline: var(--border-w-strong) dashed var(--text-muted); }
 .ad-bar--backup.ad-bar--selected, .ad-bar--backup:focus-visible { outline: var(--border-w-strong) dotted var(--line-strong); }
-.ad-bar__label { position: relative; z-index: 1; display: inline-flex; align-items: center; gap: var(--space-2); min-width: 0; }
+.ad-bar__label { position: relative; z-index: 1; display: inline-flex; align-items: center; gap: var(--space-2); min-width: 0; margin-left: var(--ad-label-in); }
+.ad-bar--label-hidden .ad-bar__label, .ad-bar--label-hidden .ad-bar__outside { opacity: 0; }
+.ad-bar--late:not(.ad-bar--selected):not(:focus-visible) { box-shadow: var(--glow-late); }
+.ad-bar--late:not(.ad-bar--selected):not(:focus-visible):hover { box-shadow: var(--glow-late), var(--glow-hover); }
 .ad-bar__name { overflow: hidden; text-overflow: ellipsis; }
 .ad-bar__outside { position: absolute; top: 0; bottom: 0; left: calc(100% + var(--space-4)); /* clear of the deadline mark, which straddles the bar end */ display: inline-flex; align-items: center; color: var(--text-primary); }
 .ad-bar--label-outside .ad-bar__outside .ad-bar__name { overflow: visible; }
