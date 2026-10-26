@@ -3642,13 +3642,42 @@ function YearCalendar({ year, today: todayIn, busy, onPressDay, weekStart = 1, l
     ] }, m);
   }) });
 }
-function Booking({ name, time, unconfirmed, color, style, onOpen }) {
-  const Tag2 = onOpen ? "button" : "div";
+function Booking({ name, time, unconfirmed, color, style, onOpen, bookingProps, ends, actions }) {
+  const asButton = !!onOpen && !ends && actions == null;
+  const Tag2 = asButton ? "button" : "div";
   const hue = useHue(color);
-  return /* @__PURE__ */ jsxs37(Tag2, { type: onOpen ? "button" : void 0, onClick: onOpen, className: cx("ad-booking", unconfirmed && "ad-booking--unconfirmed"), style: { ...style, ["--ad-bar"]: hue }, children: [
-    /* @__PURE__ */ jsx41("span", { className: "ad-booking__name", children: name }),
-    /* @__PURE__ */ jsx41("span", { className: "ad-booking__time", children: time })
-  ] });
+  const hooks = hooksOf(bookingProps);
+  const grip = (side, h) => h && /* @__PURE__ */ jsx41("span", { "aria-hidden": h["aria-label"] ? void 0 : true, ...hooksOf(h), className: `ad-booking__grip ad-booking__grip--${side}` });
+  const inControl = (t) => !!t.closest(".ad-booking__grip, .ad-booking__actions");
+  return /* @__PURE__ */ jsxs37(
+    Tag2,
+    {
+      ...hooks,
+      type: asButton ? "button" : void 0,
+      role: onOpen && !asButton ? "button" : hooks.role,
+      tabIndex: onOpen && !asButton ? 0 : hooks.tabIndex,
+      onClick: (e) => {
+        hooks.onClick?.(e);
+        if (!inControl(e.target)) onOpen?.();
+      },
+      onKeyDown: (e) => {
+        hooks.onKeyDown?.(e);
+        if (onOpen && !asButton && e.target === e.currentTarget && (e.key === "Enter" || e.key === " ")) {
+          e.preventDefault();
+          onOpen();
+        }
+      },
+      className: cx("ad-booking", unconfirmed && "ad-booking--unconfirmed", !asButton && onOpen && "ad-booking--press"),
+      style: { ...style, ["--ad-bar"]: hue },
+      children: [
+        grip("start", ends?.start),
+        /* @__PURE__ */ jsx41("span", { className: "ad-booking__name", children: name }),
+        /* @__PURE__ */ jsx41("span", { className: "ad-booking__time", children: time }),
+        actions != null && /* @__PURE__ */ jsx41("span", { className: "ad-booking__actions", children: /* @__PURE__ */ jsx41(ButtonSizeScope, { size: "row", children: actions }) }),
+        grip("end", ends?.end)
+      ]
+    }
+  );
 }
 function NowMarker({ time, style }) {
   return /* @__PURE__ */ jsxs37("span", { className: "ad-now", style, children: [
