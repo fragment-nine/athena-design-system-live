@@ -1810,13 +1810,13 @@ function TodoRow({ name, priority, done, onTick, due, today, dept, who, selected
       String(repeat)
     ] }),
     pastDeadline && /* @__PURE__ */ jsx17("span", { className: "ad-row__fact ad-row__fact--late", role: "img", "aria-label": pastDeadlineLabel, children: /* @__PURE__ */ jsx17(Icon, { job: "flag", size: "sm" }) }),
-    role && /* @__PURE__ */ jsx17("span", { className: "ad-row__fact", children: String(role) }),
-    deliverable && (onPressDeliverable ? /* @__PURE__ */ jsx17(RowPress, { label: pressLabels?.deliverable ?? `Open ${deliverable}`, onPress: onPressDeliverable, children: /* @__PURE__ */ jsxs14("span", { className: "ad-row__fact", children: [
+    role && /* @__PURE__ */ jsx17("span", { className: "ad-row__fact ad-row__fact--cut", title: String(role), children: /* @__PURE__ */ jsx17("span", { className: "ad-row__fact-word", children: String(role) }) }),
+    deliverable && (onPressDeliverable ? /* @__PURE__ */ jsx17(RowPress, { label: pressLabels?.deliverable ?? `Open ${deliverable}`, onPress: onPressDeliverable, children: /* @__PURE__ */ jsxs14("span", { className: "ad-row__fact ad-row__fact--cut", title: String(deliverable), children: [
       /* @__PURE__ */ jsx17(Icon, { job: "kind-deliverable", size: "sm" }),
-      String(deliverable)
-    ] }) }) : /* @__PURE__ */ jsxs14("span", { className: "ad-row__fact", children: [
+      /* @__PURE__ */ jsx17("span", { className: "ad-row__fact-word", children: String(deliverable) })
+    ] }) }) : /* @__PURE__ */ jsxs14("span", { className: "ad-row__fact ad-row__fact--cut", title: String(deliverable), children: [
       /* @__PURE__ */ jsx17(Icon, { job: "kind-deliverable", size: "sm" }),
-      String(deliverable)
+      /* @__PURE__ */ jsx17("span", { className: "ad-row__fact-word", children: String(deliverable) })
     ] }))
   ] }) : void 0;
   return /* @__PURE__ */ jsx17(
