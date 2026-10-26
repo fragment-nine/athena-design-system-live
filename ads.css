@@ -853,7 +853,8 @@ button:hover > .ad-project-pill:not(.ad-project-pill--current) { color: var(--ac
 .ad-page-header__title + .ad-page-header__end, .ad-page-header__aside + .ad-page-header__end { margin-left: auto; }
 /* The project state, pinned to the top right of the header and out of the flow (the Page-Schedule card). */
 .ad-page-header__stamp { position: absolute; top: 0; right: 0; pointer-events: none; white-space: nowrap; text-transform: uppercase; color: var(--text-primary); opacity: var(--opacity-stamp); }
-.ad-page-header__tabs { margin-bottom: var(--space-4); }
+.ad-page-header__tabs { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-2) var(--space-6); margin-bottom: var(--space-4); }
+.ad-page-header__stamp--line { position: static; flex: none; margin-left: auto; }
 .ad-page-header__aside { display: flex; flex-direction: column; gap: var(--space-1); min-width: 0; }
 .ad-page-header__description { margin: 0; font-family: var(--font-body); font-size: var(--text-base); line-height: var(--lh-tight); color: var(--text-secondary); }
 .ad-page-header__countdown { margin: 0; font-family: var(--font-mono); font-size: var(--text-xs); color: var(--text-muted); }

@@ -2756,14 +2756,18 @@ function PageHeader({ title, icon, stamp, tabs, back, description, countdown: gi
   const anyEnd = gear || onSearch || onPopOut || onHelp || menu;
   const [menuOpen, setMenuOpen] = useState16(false);
   const menuAt = useRef17(null);
+  const shownStamp = typeof stamp === "string" && STATES.has(stamp);
   const countdown = given && typeof given === "object" && given.to instanceof Date ? countdownWords(given) : null;
   return /* @__PURE__ */ jsxs28("header", { className: cx("ad-page-header", className), children: [
-    typeof stamp === "string" && STATES.has(stamp) && /* @__PURE__ */ jsx31("div", { className: "ad-type-stamp ad-page-header__stamp", children: stamp }),
+    !tabs && shownStamp && /* @__PURE__ */ jsx31("div", { className: "ad-type-stamp ad-page-header__stamp", children: stamp }),
     back && /* @__PURE__ */ jsx31(ButtonSizeScope, { size: "bar", children: /* @__PURE__ */ jsxs28("button", { type: "button", className: "ad-page-header__back", onClick: back.onBack, children: [
       /* @__PURE__ */ jsx31(Icon, { job: "chevron-left", size: "sm" }),
       back.label
     ] }) }),
-    tabs && /* @__PURE__ */ jsx31("div", { className: "ad-page-header__tabs", children: tabs }),
+    tabs && /* @__PURE__ */ jsxs28("div", { className: "ad-page-header__tabs", children: [
+      tabs,
+      shownStamp && /* @__PURE__ */ jsx31("div", { className: "ad-type-stamp ad-page-header__stamp ad-page-header__stamp--line", children: stamp })
+    ] }),
     /* @__PURE__ */ jsxs28("div", { className: "ad-page-header__row", children: [
       /* @__PURE__ */ jsxs28("h1", { className: "ad-page-header__title", children: [
         icon && /* @__PURE__ */ jsx31("span", { className: "ad-page-header__icon", "aria-hidden": "true", children: icon }),
