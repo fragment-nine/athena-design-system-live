@@ -456,6 +456,14 @@ var AGO = {
   /** A notification's "now", "40m", "3h", "2d". */
   feed: { round: "round", nowBelowMs: MINUTE_MS, now: ENGLISH.now, short: true, suffix: "", steps: [{ unit: "minute", below: 60 }, { unit: "hour", below: 24 }, { unit: "day", below: Infinity }] }
 };
+function countdown(due, today, opts = {}) {
+  const w = opts.words ?? ENGLISH;
+  if (!due) return { label: "", title: "", late: false };
+  const n = daysBetween(today, due);
+  const title = exactDate(due, w);
+  const label = n === 0 ? w.today.toLowerCase() : n > 0 ? `in ${n}d` : `${-n}d ago`;
+  return { label, title, late: isLate(due, today, { done: opts.done }) };
+}
 
 // src/language/clock.ts
 function clockTime(at, zone) {
@@ -1820,6 +1828,7 @@ export {
   isToday,
   timeAgo,
   AGO,
+  countdown,
   clockTime,
   clockHM,
   clockCompact,
@@ -1872,4 +1881,4 @@ export {
   querySplitter,
   queryTokens
 };
-//# sourceMappingURL=chunk-Z7MYBYQG.js.map
+//# sourceMappingURL=chunk-B45Z4YRZ.js.map

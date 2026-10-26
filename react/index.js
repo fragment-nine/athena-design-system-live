@@ -1,6 +1,7 @@
 import {
   addDays,
   addMonthsClamped,
+  countdown,
   dayHeading,
   dayOf,
   daysBetween,
@@ -18,7 +19,7 @@ import {
   readDate,
   sameDay,
   weekStartOf
-} from "../chunk-Z7MYBYQG.js";
+} from "../chunk-B45Z4YRZ.js";
 import {
   describeViolations,
   scanIn
@@ -1228,7 +1229,7 @@ var TextField = forwardRef2(function TextField2({ icon, end, parsed, error, mono
 var TextArea = forwardRef2(function TextArea2({ className, ...rest }, ref) {
   return /* @__PURE__ */ jsx7("textarea", { ref, ...rest, className: cx("ad-field", "ad-textarea", className) });
 });
-var InlineEdit = forwardRef2(function InlineEdit2({ value, onCommit, ariaLabel, placeholder, size = "body", disabled, className }, ref) {
+var InlineEdit = forwardRef2(function InlineEdit2({ value, onCommit, ariaLabel, placeholder, size = "body", onType, onLeaveDown, disabled, className }, ref) {
   const [draft, setDraft] = useState4(value);
   const editing = useRef5(false);
   const cancelled = useRef5(false);
@@ -1257,9 +1258,17 @@ var InlineEdit = forwardRef2(function InlineEdit2({ value, onCommit, ariaLabel, 
       onFocus: () => {
         editing.current = true;
       },
-      onChange: (e) => setDraft(e.target.value),
+      onChange: (e) => {
+        setDraft(e.target.value);
+        onType?.(e.target.value);
+      },
       onBlur: commit,
       onKeyDown: (e) => {
+        if (onLeaveDown && (e.key === "Enter" || e.key === "ArrowDown")) {
+          e.preventDefault();
+          onLeaveDown(e.key);
+          return;
+        }
         if (e.key === "Enter") e.currentTarget.blur();
         if (e.key === "Escape") {
           e.stopPropagation();
@@ -1803,7 +1812,19 @@ function RowPress({ label, onPress, children }) {
     onPress(e.currentTarget);
   }, className: "ad-row__press", children });
 }
-function RowDate({ due, today, until, done, what, icon }) {
+function RowDate({ due, today, until, done, what, icon, countdown: countdown2 }) {
+  if (countdown2) {
+    const c = countdown(due, today, { done });
+    if (!c.label) return null;
+    return /* @__PURE__ */ jsxs14("span", { className: cx("ad-row-date", "ad-row-date--countdown", `ad-row-date--countdown-${countdown2}`, c.late && "ad-row-date--late"), title: c.title, children: [
+      icon && /* @__PURE__ */ jsx17("span", { "aria-hidden": "true", className: "ad-row-date__icon", children: icon }),
+      what && /* @__PURE__ */ jsxs14("span", { className: "ad-sr", children: [
+        what,
+        ": "
+      ] }),
+      c.label
+    ] });
+  }
   const first = dueLabel(due, today);
   if (!first.label) return null;
   const last = until ? dueLabel(until, today) : null;
@@ -2124,7 +2145,7 @@ function PopoverSection({ label, children, end }) {
 // src/components/Dialog/Dialog.tsx
 import { useId as useId6, useRef as useRef10 } from "react";
 import { jsx as jsx21, jsxs as jsxs18 } from "react/jsx-runtime";
-function Dialog({ open, onClose, title, children, actions, role = "dialog", width = "dialog", closeLabel, blur, className }) {
+function Dialog({ open, onClose, title, children, body, actions, role = "dialog", width = "dialog", closeLabel, blur, className }) {
   const box = useRef10(null);
   const titleId = useId6();
   const bodyId = useId6();
@@ -2145,11 +2166,12 @@ function Dialog({ open, onClose, title, children, actions, role = "dialog", widt
         tabIndex: -1,
         style: { zIndex: z },
         onKeyDown: (e) => trapTab(e, box.current),
-        className: cx("ad-float", "ad-dialog", `ad-dialog--${width}`, className),
+        className: cx("ad-float", "ad-dialog", `ad-dialog--${width}`, body != null && "ad-dialog--rich", className),
         children: [
           /* @__PURE__ */ jsx21(CloseButton, { onClose, label: closeLabel }),
           /* @__PURE__ */ jsx21("h2", { id: titleId, className: "ad-dialog__title", children: String(title) }),
           children && /* @__PURE__ */ jsx21("div", { id: bodyId, className: "ad-dialog__body", children: String(children) }),
+          body != null && /* @__PURE__ */ jsx21("div", { className: "ad-dialog__rich", children: body }),
           Array.isArray(actions) && actions.length > 0 && /* @__PURE__ */ jsx21("div", { className: "ad-dialog__actions", children: [...actions.filter((a) => !a.main), ...actions.filter((a) => a.main).slice(0, 1)].map((a) => /* @__PURE__ */ jsx21(Button, { block: true, variant: a.main ? "main" : "quiet", onClick: a.onSelect, children: a.label }, a.label)) })
         ]
       }
@@ -2179,7 +2201,7 @@ function ordered(items) {
   const all = danger.length ? [...rest, { kind: "separator", id: "__danger" }, ...danger] : rest;
   return all.filter((i, n) => i.kind !== "separator" || n > 0 && n < all.length - 1 && all[n - 1].kind !== "separator");
 }
-function Menu({ open, onClose, anchor, items: given, ariaLabel, placement = "drop", className }) {
+function Menu({ open, onClose, anchor, items: given, ariaLabel, placement = "drop", keepCursor, active, onActiveChange, className }) {
   const items = ordered(given);
   const box = useRef11(null);
   const style = usePlacement(open, anchor, box, placement);
@@ -2188,7 +2210,7 @@ function Menu({ open, onClose, anchor, items: given, ariaLabel, placement = "dro
   const [at, setAt] = useState10(0);
   const doc = useFloatingDocument() ?? document;
   useEffect8(() => {
-    if (!open) return;
+    if (!open || keepCursor) return;
     setAt(0);
     const before = doc.activeElement;
     return () => {
@@ -2196,11 +2218,12 @@ function Menu({ open, onClose, anchor, items: given, ariaLabel, placement = "dro
     };
   }, [open]);
   useEffect8(() => {
-    if (!open) return;
+    if (!open || keepCursor) return;
     const id = requestAnimationFrame(() => box.current?.querySelector(`[data-index="${at}"]`)?.focus({ preventScroll: true }));
     return () => cancelAnimationFrame(id);
   }, [open, at]);
   if (!open) return null;
+  const lit = keepCursor ? active ?? 0 : at;
   const choose = (i) => {
     const item = live[i];
     if (!item) return;
@@ -2235,36 +2258,52 @@ function Menu({ open, onClose, anchor, items: given, ariaLabel, placement = "dro
     }
   };
   let index = -1;
-  return /* @__PURE__ */ jsx22(Portal, { children: /* @__PURE__ */ jsx22("div", { ref: box, role: "menu", "aria-label": ariaLabel, style: { ...style, zIndex: z }, onKeyDown: onKeyDown2, className: cx("ad-float", "ad-menu", className), children: items.map((item) => {
-    if (item.kind === "separator") return /* @__PURE__ */ jsx22("div", { role: "separator", className: "ad-menu__separator" }, item.id);
-    const i = item.disabled ? -1 : ++index;
-    return /* @__PURE__ */ jsxs19(
-      "button",
-      {
-        type: "button",
-        role: item.checked != null ? "menuitemcheckbox" : "menuitem",
-        "aria-checked": item.checked,
-        "aria-description": item.sub,
-        "aria-disabled": item.disabled || void 0,
-        tabIndex: i === at ? 0 : -1,
-        "data-index": i,
-        "data-active": i === at || void 0,
-        onMouseEnter: () => i >= 0 && setAt(i),
-        onClick: () => i >= 0 && choose(i),
-        className: cx("ad-menu__item", item.danger && "ad-menu__item--danger", item.sub && "ad-menu__item--two"),
-        children: [
-          item.icon && /* @__PURE__ */ jsx22("span", { className: "ad-menu__icon", "aria-hidden": "true", children: item.icon }),
-          item.sub ? /* @__PURE__ */ jsxs19("span", { className: "ad-menu__words", children: [
-            /* @__PURE__ */ jsx22("span", { className: "ad-menu__label", children: item.label }),
-            /* @__PURE__ */ jsx22("span", { className: "ad-menu__sub", children: item.sub })
-          ] }) : /* @__PURE__ */ jsx22("span", { className: "ad-menu__label", children: item.label }),
-          item.shortcut && /* @__PURE__ */ jsx22("kbd", { className: "ad-menu__shortcut", children: item.shortcut }),
-          item.checked && /* @__PURE__ */ jsx22("span", { className: "ad-menu__check", "aria-hidden": "true", children: /* @__PURE__ */ jsx22(Icon, { job: "check", size: "sm" }) })
-        ]
-      },
-      item.id
-    );
-  }) }) });
+  return /* @__PURE__ */ jsx22(Portal, { children: /* @__PURE__ */ jsx22(
+    "div",
+    {
+      ref: box,
+      role: "menu",
+      "aria-label": ariaLabel,
+      style: { ...style, zIndex: z },
+      onKeyDown: keepCursor ? void 0 : onKeyDown2,
+      onMouseDown: keepCursor ? (e) => e.preventDefault() : void 0,
+      className: cx("ad-float", "ad-menu", className),
+      children: items.map((item) => {
+        if (item.kind === "separator") return /* @__PURE__ */ jsx22("div", { role: "separator", className: "ad-menu__separator" }, item.id);
+        const i = item.disabled ? -1 : ++index;
+        return /* @__PURE__ */ jsxs19(
+          "button",
+          {
+            type: "button",
+            role: item.checked != null ? "menuitemcheckbox" : "menuitem",
+            "aria-checked": item.checked,
+            "aria-description": item.sub,
+            "aria-disabled": item.disabled || void 0,
+            tabIndex: !keepCursor && i === at ? 0 : -1,
+            "data-index": i,
+            "data-active": i === lit || void 0,
+            onMouseEnter: () => {
+              if (i < 0) return;
+              if (keepCursor) onActiveChange?.(i);
+              else setAt(i);
+            },
+            onClick: () => i >= 0 && choose(i),
+            className: cx("ad-menu__item", item.danger && "ad-menu__item--danger", item.sub && "ad-menu__item--two"),
+            children: [
+              item.icon && /* @__PURE__ */ jsx22("span", { className: "ad-menu__icon", "aria-hidden": "true", children: item.icon }),
+              item.sub ? /* @__PURE__ */ jsxs19("span", { className: "ad-menu__words", children: [
+                /* @__PURE__ */ jsx22("span", { className: "ad-menu__label", children: item.label }),
+                /* @__PURE__ */ jsx22("span", { className: "ad-menu__sub", children: item.sub })
+              ] }) : /* @__PURE__ */ jsx22("span", { className: "ad-menu__label", children: item.label }),
+              item.shortcut && /* @__PURE__ */ jsx22("kbd", { className: "ad-menu__shortcut", children: item.shortcut }),
+              item.checked && /* @__PURE__ */ jsx22("span", { className: "ad-menu__check", "aria-hidden": "true", children: /* @__PURE__ */ jsx22(Icon, { job: "check", size: "sm" }) })
+            ]
+          },
+          item.id
+        );
+      })
+    }
+  ) });
 }
 
 // src/components/UndoNote/UndoNote.tsx
@@ -2866,7 +2905,7 @@ function PageHeader({ title, icon, stamp, tabs, back, description, countdown: gi
   const [menuOpen, setMenuOpen] = useState18(false);
   const menuAt = useRef18(null);
   const shownStamp = typeof stamp === "string" && STATES.has(stamp);
-  const countdown = given && typeof given === "object" && given.to instanceof Date ? countdownWords(given) : null;
+  const countdown2 = given && typeof given === "object" && given.to instanceof Date ? countdownWords(given) : null;
   return /* @__PURE__ */ jsxs28("header", { className: cx("ad-page-header", className), children: [
     !tabs && shownStamp && /* @__PURE__ */ jsx31("div", { className: "ad-type-stamp ad-page-header__stamp", children: stamp }),
     back && /* @__PURE__ */ jsx31(ButtonSizeScope, { size: "bar", children: /* @__PURE__ */ jsxs28("button", { type: "button", className: "ad-page-header__back", onClick: back.onBack, children: [
@@ -2882,9 +2921,9 @@ function PageHeader({ title, icon, stamp, tabs, back, description, countdown: gi
         icon && /* @__PURE__ */ jsx31("span", { className: "ad-page-header__icon", "aria-hidden": "true", children: icon }),
         scramble ? /* @__PURE__ */ jsx31(TextScramble, { text: title }) : title
       ] }),
-      (description || countdown) && /* @__PURE__ */ jsxs28("div", { className: "ad-page-header__aside", children: [
+      (description || countdown2) && /* @__PURE__ */ jsxs28("div", { className: "ad-page-header__aside", children: [
         description && /* @__PURE__ */ jsx31("p", { className: "ad-page-header__description", children: String(description) }),
-        countdown && /* @__PURE__ */ jsx31("p", { className: "ad-page-header__countdown", children: countdown })
+        countdown2 && /* @__PURE__ */ jsx31("p", { className: "ad-page-header__countdown", children: countdown2 })
       ] }),
       anyEnd && /* @__PURE__ */ jsxs28(HeaderActions, { groupProps: { "aria-label": headerLabels?.group ?? "Screen actions" }, children: [
         gear && /* @__PURE__ */ jsx31(ShowOptionsGear, { ...gear }),
@@ -3501,14 +3540,47 @@ function Table({ columns, rows, rowId, caption, sort, onSort, picked, onPickedCh
     }) })
   ] }) });
 }
-function SelectionBar({ count, countLabel = (n) => `${n} selected`, actions, className }) {
+function SelectionBar({ count, countLabel = (n) => `${n} selected`, actions, lead, onClear, clearLabel = "Clear", className }) {
+  const [open, setOpen] = useState22(null);
+  const anchor = useRef23(null);
   const ordered2 = [...actions.filter((a) => !a.danger), ...actions.filter((a) => a.danger)];
-  const children = ordered2.map((a) => /* @__PURE__ */ jsx38(Button, { icon: a.icon, danger: a.danger, onClick: (e) => a.onSelect(e.currentTarget), children: a.label }, a.id));
   if (count <= 0) return null;
-  return /* @__PURE__ */ jsx38(Portal, { children: /* @__PURE__ */ jsxs34("div", { className: cx("ad-float", "ad-selection-bar", className), role: "toolbar", "aria-label": countLabel(count), children: [
-    /* @__PURE__ */ jsx38("span", { className: "ad-selection-bar__count", "aria-live": "polite", children: countLabel(count) }),
-    /* @__PURE__ */ jsx38(ButtonSizeScope, { size: "bar", children })
-  ] }) });
+  const shown = ordered2.find((a) => a.id === open && a.picker);
+  const close = () => setOpen(null);
+  return /* @__PURE__ */ jsxs34(Portal, { children: [
+    /* @__PURE__ */ jsxs34("div", { className: cx("ad-float", "ad-selection-bar", className), role: "toolbar", "aria-label": countLabel(count), children: [
+      /* @__PURE__ */ jsx38("span", { className: "ad-selection-bar__count", "aria-live": "polite", children: countLabel(count) }),
+      lead != null && /* @__PURE__ */ jsx38("span", { className: "ad-selection-bar__lead", children: lead }),
+      /* @__PURE__ */ jsxs34(ButtonSizeScope, { size: "bar", children: [
+        ordered2.map((a) => {
+          const button = /* @__PURE__ */ jsxs34(
+            Button,
+            {
+              icon: a.icon,
+              danger: a.danger,
+              active: !!a.picker && open === a.id,
+              "aria-haspopup": a.picker ? "dialog" : void 0,
+              "aria-expanded": a.picker ? open === a.id : void 0,
+              onClick: (e) => {
+                if (a.picker) {
+                  anchor.current = e.currentTarget.parentElement;
+                  setOpen((o) => o === a.id ? null : a.id);
+                } else a.onSelect?.(e.currentTarget);
+              },
+              children: [
+                a.label,
+                a.picker && /* @__PURE__ */ jsx38(Icon, { name: "caret-down", size: "sm" })
+              ]
+            },
+            a.id
+          );
+          return a.picker ? /* @__PURE__ */ jsx38("span", { className: "ad-selection-bar__slot", children: button }, a.id) : button;
+        }),
+        onClear && /* @__PURE__ */ jsx38(Button, { onClick: onClear, children: clearLabel })
+      ] })
+    ] }),
+    shown && /* @__PURE__ */ jsx38(Popover, { open: true, onClose: close, anchor, width: shown.pickerWidth ?? "menu", noClose: true, ariaLabel: shown.label, children: shown.picker(close) })
+  ] });
 }
 
 // src/components/Timeline/Timeline.tsx
@@ -3643,6 +3715,26 @@ function OverMark({ left, width, label, "aria-label": ariaLabel, markProps }) {
         /* @__PURE__ */ jsx39("span", { className: "ad-over-mark__figure", children: m[1] }),
         /* @__PURE__ */ jsx39("span", { children: m[3] })
       ] }) : /* @__PURE__ */ jsx39("span", { children: label }))
+    }
+  );
+}
+var px = (n, min = 0) => `${Math.max(min, Number.isFinite(n) ? n : min)}px`;
+function DragBand({ left, width, inLane }) {
+  return /* @__PURE__ */ jsx39("span", { "aria-hidden": "true", className: cx("ad-drag-band", inLane && "ad-drag-band--lane"), style: { left: px(left), width: px(width, 1) } });
+}
+function GroupBand({ children, bandProps }) {
+  return /* @__PURE__ */ jsx39("div", { ...strip3(bandProps), className: "ad-group-band", children });
+}
+function LaneWash({ left, width, colour, edge, label, unconfirmed }) {
+  const drawn = useNamedColour(colour);
+  return /* @__PURE__ */ jsx39(
+    "span",
+    {
+      "aria-hidden": "true",
+      "data-coloured": drawn ? true : void 0,
+      className: cx("ad-lane-wash", edge && "ad-lane-wash--edge", edge && unconfirmed && "ad-lane-wash--unconfirmed"),
+      style: { left: px(left), width: px(width, 1), ...drawn ? { ["--ad-wash"]: drawn } : {} },
+      children: edge && label && /* @__PURE__ */ jsx39("span", { className: "ad-lane-wash__label", children: label })
     }
   );
 }
@@ -3831,7 +3923,7 @@ function YearCalendar({ year, today: todayIn, busy, onPressDay, weekStart = 1, l
     ] }, m);
   }) });
 }
-function Booking({ name, time, unconfirmed, color, style, onOpen, bookingProps, ends, actions }) {
+function Booking({ name, time, unconfirmed, color, style, onOpen, bookingProps, ends, actions, labelOutside }) {
   const asButton = !!onOpen && !ends && actions == null;
   const Tag2 = asButton ? "button" : "div";
   const hue = useHue(color);
@@ -3856,12 +3948,12 @@ function Booking({ name, time, unconfirmed, color, style, onOpen, bookingProps, 
           onOpen();
         }
       },
-      className: cx("ad-booking", unconfirmed && "ad-booking--unconfirmed", !asButton && onOpen && "ad-booking--press"),
+      className: cx("ad-booking", unconfirmed && "ad-booking--unconfirmed", !asButton && onOpen && "ad-booking--press", labelOutside && "ad-booking--outside"),
       style: { ...style, ["--ad-bar"]: hue },
       children: [
         grip("start", ends?.start),
         /* @__PURE__ */ jsx41("span", { className: "ad-booking__name", children: name }),
-        /* @__PURE__ */ jsx41("span", { className: "ad-booking__time", children: time }),
+        !labelOutside && /* @__PURE__ */ jsx41("span", { className: "ad-booking__time", children: time }),
         actions != null && /* @__PURE__ */ jsx41("span", { className: "ad-booking__actions", children: /* @__PURE__ */ jsx41(ButtonSizeScope, { size: "row", children: actions }) }),
         grip("end", ends?.end)
       ]
@@ -3879,7 +3971,7 @@ function WeekendShade({ children, className }) {
   return /* @__PURE__ */ jsx41("div", { className: cx(on && "ad-weekend", className), children });
 }
 var clockHour = (h) => String((h + 11) % 12 + 1);
-function TimeGrid({ startHour, endHour, bookings = [], columns, now, hourLabel = clockHour, onOpen, itemProps, columnProps, ariaLabel, className }) {
+function TimeGrid({ startHour, endHour, bookings = [], columns, now, hourLabel = clockHour, onOpen, itemProps, columnProps, ariaLabel, bandHours, className }) {
   const hours = Math.max(1, endHour - startHour);
   const at = (h) => `calc(var(--ad-hour) * ${Math.max(0, Math.min(hours, h - startHour))})`;
   const cols = columns ?? [{ id: "day", label: "", bookings }];
@@ -3914,39 +4006,188 @@ function TimeGrid({ startHour, endHour, bookings = [], columns, now, hourLabel =
         ] }, item.id);
       }) }),
       /* @__PURE__ */ jsxs37("div", { className: "ad-time-grid__body", children: [
-        Array.from({ length: hours }, (_, i) => /* @__PURE__ */ jsx41("div", { className: "ad-time-grid__hour", "aria-hidden": "true" }, i)),
+        Array.from({ length: hours }, (_, i) => /* @__PURE__ */ jsx41("div", { className: cx("ad-time-grid__hour", bandHours && i % 2 === 1 && "ad-time-grid__hour--band"), "aria-hidden": "true" }, i)),
         c.bookings.map(({ id, start, end, ...b }) => /* @__PURE__ */ jsx41("div", { className: "ad-time-grid__slot", style: { top: at(start), height: `calc(${at(end)} - ${at(start)})` }, children: /* @__PURE__ */ jsx41(Booking, { ...b, style: { height: "100%" } }) }, id))
       ] })
     ] }, c.id))
   ] });
 }
 
+// src/components/Map/Map.tsx
+import { useEffect as useEffect14, useMemo as useMemo3, useRef as useRef24, useState as useState23 } from "react";
+
+// src/components/Map/worldGeo.ts
+var GEO_LAT_MAX = 84;
+var GEO_LAT_MIN = -56;
+function decode(s) {
+  return s.split(";").map((r) => r.split(" ").map((pt) => {
+    const i = pt.indexOf(",");
+    return [+pt.slice(0, i), +pt.slice(i + 1)];
+  }));
+}
+var LAND_SRC = "-180,69 -177.5,68.2 -174.9,67.2 -175,66.6 -174.3,66.3 -174.6,67.1 -171.9,66.9 -169.9,66 -170.9,65.5 -172.5,65.4 -172.6,64.5 -173.9,64.3 -174.7,64.6 -176,64.9 -176.2,65.4 -177.2,65.5 -178.4,65.4 -178.9,65.7 -178.7,66.1 -179.9,65.9 -179.4,65.4 -180,65 -181.3,64.5 -182.6,64.6 -181.7,64.1 -180.6,63 -180.8,62.3 -182.6,62.5 -185.4,61.8 -186.3,61.7 -189.3,60.3 -189.7,59.9 -191.1,60.6 -193.7,59.8 -194.2,60.2 -195.1,59.7 -196.5,59.9 -196.8,59.2 -198,58.2 -197.9,57.8 -196.8,57.6 -196.9,56.2 -197.9,56.1 -198.3,55.3 -197.9,54.9 -199.6,54.3 -200,53.2 -201.5,53 -201.8,51.9 -203.2,51 -203.6,51.7 -204.6,55.4 -204.1,56.8 -203.2,57.4 -203.2,57.8 -201.6,58.1 -199.9,59.3 -198.1,60.3 -196.3,61.1 -195.5,62.6 -196.7,62.5 -197.3,61.6 -199.9,60.5 -200.7,61.8 -203.3,61.4 -205.8,59.8 -205,59.1 -208.7,58.8 -208.7,59.5 -210.2,59.7 -211.5,59.2 -214.5,59.3 -217.8,59 -224.9,54.7 -223.3,54.6 -222.8,54 -221.8,53.8 -221.2,54.3 -220.1,54.2 -218.7,53.1 -218.6,52.2 -219.4,51.2 -219.5,50 -219.9,48.4 -221.4,47 -221.8,46.3 -225.1,43.4 -226.5,42.8 -227.1,42.8 -227.7,43.3 -229.6,42.3 -230.3,41.6 -230.3,40.9 -231.4,40.2 -232.5,39.8 -232.6,39.2 -231.6,38.6 -230.8,37.4 -230.5,36.8 -230.5,35.6 -230.9,35.1 -232.6,34.5 -233.5,34.4 -233.4,35.7 -233.9,36.7 -233.1,36.9 -233.8,37.7 -235.3,38.1 -234.6,39.4 -235.7,39.9 -237.1,39.6 -237.9,39.2 -238.9,38.9 -238.4,39.4 -238.6,39.8 -237.8,40.4 -238.4,40.9 -240.4,39.9 -241,39.3 -242,39.2 -242.5,38.7 -241.9,38.1 -241.1,37.9 -241.1,37.4 -240.3,37.2 -239.2,37.9 -237.6,37.5 -237.5,36.9 -238.9,36.7 -239.4,36.1 -240.3,35.6 -240.8,34.9 -239.8,34.4 -239.4,33.4 -238.1,31.7 -238.1,30.9 -238.7,30.7 -238.5,30.1 -237.9,29.8 -238.3,28.2 -238.9,28.1 -240.4,25.7 -241.3,24.5 -244.1,22.8 -245.2,22.7 -245.8,22.2 -246.2,22.5 -246.8,22.1 -248.2,21.6 -249.2,21.4 -249.6,20.3 -250.1,20.3 -250.4,21 -250.1,21.4 -251.5,21.7 -253.3,20.7 -254.1,19.8 -254.3,19.1 -252.6,16.7 -251.7,16.1 -251.1,15.3 -250.7,13.4 -250.8,11.7 -252.8,10.4 -253.6,9.5 -254.8,8.6 -255.2,9.2 -254.9,9.9 -255.7,10.5 -256.5,10.6 -257.4,12.2 -258.3,12.6 -259.2,12.6 -259,13.4 -259.9,13.4 -260,12.3 -260.8,10 -260.8,9.2 -260.1,9.2 -259.5,7.4 -259,6.9 -258.4,6.7 -257,5.5 -256.6,4.9 -256.5,2.8 -256.1,2.5 -255.8,1.3 -256.5,1.2 -258.6,2.8 -259.3,3.9 -259.8,5.3 -259.7,6 -260.5,7.3 -261.5,8.4 -261.9,8.3 -261.4,9.9 -261.5,10.7 -261.2,11.4 -261.6,12 -261.5,13.1 -261.9,13.6 -262.4,16.1 -262.8,16.9 -264.6,15.7 -265.8,16 -265.5,17.3 -265.7,18.2 -266.5,19.4 -267.9,21.2 -268.2,22.2 -268.6,22.8 -269.5,22.8 -269.7,21.8 -271,22.1 -271.1,21.7 -273,21.5 -273,20.7 -273.5,20.2 -274.9,19.5 -276.1,18.3 -277.8,17 -277.8,16.6 -279.7,15.9 -280,15.1 -279.7,13 -280.1,12.1 -280.1,10.4 -280.7,10.3 -281.1,9.5 -280.8,9.2 -281.7,8.9 -282.5,8 -283.4,8.9 -284.3,11.3 -285.1,12.7 -285.6,14.6 -286.5,16 -287.2,19.2 -287.4,21.4 -288.8,20.8 -289.5,20.9 -290.8,22.1 -290.4,22.5 -291.8,23.7 -292.6,23.9 -292.9,24.7 -293.6,25.4 -295.5,25.2 -298.5,25.1 -302.6,25.7 -303,27 -303.5,27.1 -305.3,26.5 -306.5,26.8 -307.5,27.6 -308.5,27.9 -309.9,30.1 -310.4,30 -311.1,30.3 -311.4,29.9 -312,30 -311.9,29.3 -311.2,27.7 -309.8,26.7 -309.9,25.9 -309.2,24.8 -309.3,25.5 -308.7,26.1 -308.4,25.8 -308.6,24.6 -308.2,24 -307.4,24.2 -306,24.1 -303.6,26.4 -303.6,24.9 -302.6,23.9 -301.3,23.6 -300.2,22.3 -301.5,20.4 -302,20.5 -302.3,19.7 -302.2,19.1 -303.4,18.6 -303.7,17.9 -304.3,17.9 -304.7,17.2 -305.8,17 -307.6,16.4 -307.8,15.6 -310.4,14.7 -311.3,14 -312.1,14 -312.6,13.6 -314.4,13.3 -315,12.7 -316.5,12.6 -317.1,14.8 -317.3,16.8 -318.2,17.8 -319.1,19.5 -320.2,20.3 -320.9,21.3 -320.9,22.6 -321.5,23.7 -322.5,24.3 -322.8,25.1 -324.9,28.1 -325.4,28.1 -325,29.4 -326.1,27.6 -326.9,28.4 -327.6,29.9 -327.3,28.7 -325.9,26.1 -324.3,23.9 -324.5,23.1 -323.1,22 -322.8,21 -323,20.8 -322.5,18.6 -321.6,18 -320.7,15.9 -318.8,14.5 -316.7,12.4 -317.3,11.7 -316.5,11.3 -315.9,10.4 -313.4,10.8 -311.6,11.4 -310.7,11.4 -308.9,12 -309,10.6 -309.4,9.2 -310.5,6.8 -311.4,5.3 -313.4,2.9 -316.9,0.3 -318,-0.9 -318.4,-1.7 -319.7,-2.6 -320.4,-4.3 -320.8,-4.7 -321.3,-5.9 -321.2,-6.5 -320.6,-6.8 -320.8,-8.5 -320,-10.1 -319.5,-10.8 -319.6,-11.8 -319.4,-14.2 -319.2,-14.7 -319.9,-16.1 -320.5,-16.7 -322.6,-17.6 -323.7,-18.7 -325.2,-19.8 -325.3,-20.5 -324.4,-22.1 -324.4,-23.7 -325,-24.5 -327,-25.4 -327.4,-25.7 -327.1,-26.2 -327.5,-28.3 -328.7,-29.4 -329.9,-31.1 -331.8,-32.8 -334.2,-33.9 -335.3,-34 -336.4,-33.8 -337.4,-33.9 -340.4,-34.8 -341.8,-33.9 -342.1,-32.6 -341.8,-32.4 -341.8,-31.7 -342.4,-30.7 -343.7,-28.6 -344.4,-27.8 -344.8,-27.1 -345.6,-23.9 -345.7,-22.1 -346.6,-20.9 -347.4,-19 -348.2,-18.1 -348.4,-16.7 -347.8,-14.4 -347.3,-13.1 -346.4,-12 -346.3,-10.7 -347.1,-9.2 -346.8,-8.6 -347.3,-6.9 -348.1,-5 -348.9,-4 -350.6,-2.1 -351.2,-1.1 -350.5,1 -350.7,1.2 -350.2,3.1 -351.1,3.9 -351.5,4.8 -353.3,4.2 -354.1,4.3 -355,5.6 -355.7,6.3 -357.3,6.3 -358.9,5.9 -362,4.7 -364,5.2 -365.8,5 -367.5,4.3 -369,4.8 -370.8,6.1 -371.4,6.8 -372.4,7.3 -372.9,7.8 -373.2,8.9 -374.6,10.2 -374.8,10.9 -376.1,11.5 -376.6,12.2 -376.7,13.6 -377.6,14.7 -377.2,14.9 -376.5,16.1 -376.1,18.1 -376.4,19.6 -376.3,20.1 -377.1,21 -377,21.9 -376.3,22.7 -376,23.7 -375.1,24.5 -374.4,26.3 -373.8,26.6 -373.1,27.6 -372.6,28 -371.7,28.1 -370.4,29.1 -369.6,29.9 -369.8,31.2 -369.3,32.6 -368.7,33.2 -366.9,34.1 -365.9,35.8 -365.2,35.8 -364.6,35.3 -363.6,35.4 -362.2,35.2 -361.2,35.7 -360.1,35.9 -358.5,36.6 -355.2,36.9 -354.7,36.7 -353.7,37.1 -351.6,36.9 -350.5,37.4 -349.8,37.2 -349.8,36.7 -349,37.1 -349.4,36.4 -349.1,35.7 -349.2,34.8 -349.8,34.3 -349.7,33.8 -349.1,33.8 -348.9,33.3 -347.3,32.8 -346.1,32.7 -344.8,32.3 -344.3,31.4 -342,30.8 -340.9,30.3 -339.9,31 -340.2,31.8 -339.1,32.7 -338.5,32.8 -337.1,32.6 -336.8,32.2 -335.1,31.9 -334.8,31.6 -333.5,31.6 -331.1,30.9 -329.9,31.5 -328.3,31.4 -326.2,31 -325.7,31.2 -325,32.8 -324,34.6 -323.9,35.8 -324.4,36.6 -325.3,36.8 -326,36.2 -327.5,36.1 -328.3,36.6 -329.4,36.7 -329.6,36.3 -330.3,36.1 -331.3,36.7 -332.4,36.7 -333,37.7 -333.7,38.2 -333.2,39 -333.8,39.5 -332.7,40.4 -331.2,40.5 -330.8,41.2 -328.9,41.1 -327.7,41.7 -326.5,42 -324.8,42 -323.1,41.3 -321.7,40.9 -319.6,41 -318.4,41.5 -318.5,42.6 -319.7,43.1 -321.3,44.3 -322.5,44.7 -323.3,45.2 -322.6,45.4 -321.8,46.2 -322.3,46.6 -320.9,47 -320.9,47.3 -322.6,47 -323.2,46.7 -324.2,46.6 -325,46.3 -325,45.7 -324.5,45.4 -323.5,45.5 -323.7,45.1 -324.8,44.9 -326.1,44.4 -326.7,44.6 -326.5,45 -327.5,45.3 -326.4,45.9 -326.7,46.1 -328.3,46.3 -328.3,46.7 -329.3,46.6 -330.4,45.3 -331.2,44.9 -331.4,43.7 -332.3,42.6 -331.9,41.6 -331,41.3 -331.2,41.1 -332.4,41 -333.6,40.2 -333.9,40.8 -335.1,40.9 -336.3,40.7 -335.6,40.1 -336.7,40 -337.2,40.5 -337.1,39.7 -336.6,39.2 -337,39 -336,38.2 -336,37.7 -336.9,37.9 -336.6,37.4 -337.2,37.3 -336.8,36.4 -337.5,36.4 -338.3,36.8 -338.9,38.3 -340.6,40.3 -340.5,41.7 -341.1,42.3 -344,43.5 -344.8,44.2 -345.1,45.1 -345.7,45.2 -346,44.8 -346.1,45.6 -346.9,45.7 -347.7,45.4 -347.7,44.6 -347.4,44.1 -346.5,43.6 -346,42.8 -344.9,42 -344.1,42 -344.1,41.5 -342.5,40.9 -341.6,40.4 -341.7,39.8 -342.3,40.3 -343.1,40.4 -343.5,39.8 -342.8,39.4 -343.9,38 -344.3,37.9 -343.9,39 -344.6,40 -346.4,41.2 -347.1,41.3 -349.5,42.9 -349.8,43.9 -351.1,44.4 -353.5,43.1 -355.4,43.4 -356.9,43.1 -357,41.9 -357.9,41.2 -359.2,41 -360.3,39.3 -359.9,38.7 -360.5,38.3 -360.7,37.6 -361.4,37.4 -362.1,36.7 -364.4,36.7 -365.4,35.9 -365.9,36 -366.5,36.9 -367.5,37.1 -367.9,36.8 -368.9,36.9 -368.8,38.3 -369.5,38.7 -368.8,40.8 -369,42.6 -369.4,43 -368,43.7 -364.3,43.4 -361.9,43.4 -361.4,44 -361.2,46 -362.2,47.1 -363,47.6 -364.5,48 -364.6,48.7 -363.3,48.9 -361.6,48.6 -361.9,49.8 -361,49.3 -358.7,50.1 -358.4,50.9 -356.7,51.3 -356.2,51.6 -355.3,53.1 -353.9,53.5 -353.1,53.5 -352.1,53.7 -351.9,53.5 -351.2,54 -351.9,55.5 -351.9,56.5 -351.5,57.1 -350.6,57.2 -349.4,57.7 -349.6,56.6 -349.1,56.5 -350.4,55.5 -350.1,54.6 -349.1,54.4 -349.1,54 -347.5,54.5 -345.9,53.8 -345.2,54.1 -342.4,54.9 -341.3,54.4 -340.3,54.4 -340.1,54.9 -338.7,55.2 -338.9,56.8 -338.4,57.4 -337.5,57.8 -336.7,57 -335.9,57 -335.6,58.4 -336.6,58.6 -336.7,59.2 -334.1,59.6 -332,59.5 -330.9,60 -331.9,60.5 -333.7,60.4 -337.1,59.8 -337.7,60.4 -338.7,60.7 -338.5,61.7 -338.9,62.6 -337.6,63.8 -335.3,64.9 -334.6,65.1 -334.7,65.5 -336.1,66 -337.8,65.7 -338.8,65 -338.6,64.4 -342.2,62.7 -342.9,61.3 -342.2,60.6 -341.2,60.1 -342.1,59 -343.2,58.7 -343.6,57 -344.1,56.1 -345.3,56.2 -345.9,55.4 -347.1,55.4 -347.4,56.3 -348.2,57.4 -349,58.9 -349.6,59.5 -351.6,58.3 -352.9,58.1 -354.3,58.6 -354.7,59.7 -355,62 -354.1,62.6 -351.4,63.5 -349.5,64.5 -345.2,67.8 -340.8,69.8 -338.6,70.3 -337,70.2 -335.5,71 -333.6,71 -331.8,71.2 -328.7,70.5 -330,70.2 -328.9,69.6 -327.9,69.9 -326.2,69.3 -323.5,69.1 -319.7,67.9 -318.9,67.5 -318.9,66.8 -320,66.3 -321.6,66 -326.1,66.8 -326.8,66.6 -325.2,65.9 -325.1,64.4 -323,63.9 -322.9,64.3 -323.5,64.8 -322.8,65.1 -320.4,64.5 -319.6,64.8 -320.2,65.5 -317.9,66.5 -317,66.4 -316,66.1 -315.5,66.8 -316.3,67.4 -315.8,68 -316.5,68.6 -313.7,68.2 -313.2,67.7 -314.4,67.6 -314.4,67 -313.7,66.7 -312.1,66.9 -311.9,67.5 -306.3,68.9 -305.5,68.8 -306.5,68.2 -305.3,68.1 -304.6,68.4 -302.7,68.5 -301.2,68.9 -300.1,68.3 -298.9,68.9 -300,69.5 -299.4,69.9 -296.5,69.5 -295.1,69.2 -291.5,68.1 -290.8,68.6 -291.9,69.4 -293.1,69.5 -292.7,69.9 -293.3,71 -291.5,71.9 -290.8,72.8 -290.1,73 -287.4,72.8 -287.2,72.2 -288.2,71.4 -287.5,71.1 -287.2,70.4 -287.4,69 -286.3,68.4 -286.8,67.7 -288.7,66.3 -287.6,66.2 -287.2,66.5 -286.1,66.8 -285.8,67.3 -284.9,67.8 -285.5,68.3 -285.1,69 -286.2,69.1 -286.4,69.6 -285.6,70.6 -286.9,71.4 -285.1,72.1 -285.3,72.8 -284.8,72.9 -284.3,72.3 -284.7,71.3 -283.6,71.2 -284.1,71.9 -282.4,72.3 -280.3,72.3 -278.5,71.7 -279.4,72.6 -279.5,73.6 -277.7,73.9 -275.3,73.8 -273.2,73.9 -274,74.5 -272.8,75.1 -271.7,75.1 -269.7,75.6 -267.1,75.8 -266.8,76 -264.1,76.1 -263.3,75.9 -261.1,76.4 -259.2,76.4 -259,76.9 -258,77.3 -255.6,77.7 -253.9,77.4 -255.3,77.1 -253,77 -252.8,76.5 -251.8,76.7 -248.9,76.7 -246.7,76.2 -245.9,75.8 -246.1,75.3 -249.8,74.5 -250.6,74.2 -247.9,73.8 -247,74 -246.5,73.3 -246,73.6 -244.4,73.8 -241.2,73.6 -241,73.1 -236.8,73 -236.7,73.7 -234.6,73.6 -233,73.6 -231.4,73 -230.9,72.4 -231.5,72 -230.3,71.2 -228.7,70.8 -227.7,71.8 -226.1,71.4 -224.4,71.7 -222.5,71.3 -221.8,71.6 -220.1,71.5 -220.9,72.4 -219.5,72.8 -210.5,72.2 -209.6,71.6 -207,70.8 -203,71 -201,70.9 -200.2,70.5 -200.3,69.7 -199.1,69.4 -197.7,69.6 -195.9,69.7 -194.1,69.5 -192.2,69.6 -190.4,68.7 -189.2,69 -190,69.7 -189.5,70.1 -186.4,69.8 -184.3,69.9 -181.4,69.4 -180,69;-90.5,69.5 -90.5,68.5 -89.2,69.3 -88,68.6 -88.3,67.9 -87.3,67.2 -86.3,67.9 -85.6,68.8 -85.5,69.9 -82.6,69.7 -81.3,69.2 -81.2,68.7 -82,68.1 -81.3,67.6 -81.4,67.1 -83.3,66.4 -84.7,66.3 -85.8,66.6 -86.1,66.1 -87.3,64.8 -88.5,64.1 -89.9,64 -90.7,63.6 -90.8,63 -91.9,62.8 -93.2,62 -94.2,60.9 -94.6,60.1 -94.7,58.9 -93.2,58.8 -92.3,57.1 -90.9,57.3 -89,56.9 -87.3,56 -85,55.3 -82.3,55.1 -82.4,54.3 -82.1,53.3 -81.4,52.2 -79.9,51.2 -79.1,51.5 -78.6,52.6 -79.1,54.1 -79.8,54.7 -78.2,55.1 -77.1,55.8 -76.5,56.5 -76.6,57.2 -77.3,58.1 -78.5,58.8 -77.3,59.9 -77.8,60.8 -78.1,62.3 -77.4,62.6 -74.7,62.2 -73.8,62.4 -71.7,61.5 -71.4,61.1 -69.6,61.1 -69.6,60.2 -69.3,59 -68.4,58.8 -67.7,58.2 -66.2,58.8 -65.2,59.9 -64.6,60.3 -61.4,57 -61.8,56.3 -60.5,55.8 -59.6,55.2 -58,54.9 -57.3,54.6 -56.9,53.8 -56.2,53.6 -55.8,53.3 -55.7,52.1 -57.1,51.4 -58.8,51.1 -60,50.2 -61.7,50.1 -63.9,50.3 -66.4,50.2 -67.2,49.5 -68.5,49.1 -71.1,46.8 -70.3,47 -68.7,48.3 -66.6,49.1 -65.1,49.2 -64.2,48.7 -65.1,48.1 -64.5,46.2 -63.2,45.7 -61.5,45.9 -60.5,47 -60.5,46.3 -59.8,45.9 -61,45.3 -63.3,44.7 -64.2,44.3 -65.4,43.5 -66.1,43.6 -66.2,44.5 -64.4,45.3 -67.1,45.1 -67,44.8 -68,44.3 -70.1,43.7 -70.8,42.9 -70.5,41.8 -70,41.6 -72.9,41.2 -73.7,40.9 -72.2,41.1 -71.9,40.9 -74,40.6 -74.2,39.7 -74.9,38.9 -75.5,39.5 -75.1,38.4 -75.9,37.2 -75.7,37.9 -76.5,38.7 -76.3,37 -76,36.9 -75.7,35.6 -76.4,34.8 -77.4,34.5 -78.1,33.9 -78.6,33.9 -79.2,33.2 -80.3,32.5 -81.3,31.4 -81.5,30.7 -81,29.2 -80.1,26.9 -80.4,25.2 -81.2,25.2 -81.7,25.9 -82.9,27.9 -82.7,28.6 -83.7,29.9 -84.1,30.1 -85.1,29.6 -86.4,30.4 -88.4,30.4 -89.6,30.2 -89.4,29.2 -90.9,29.1 -91.6,29.7 -92.5,29.6 -93.2,29.8 -94.7,29.5 -95.6,28.7 -96.6,28.3 -97.4,27.4 -97.1,25.9 -97.7,24.3 -97.9,22.4 -97.2,20.6 -95.9,18.8 -94.8,18.6 -94.4,18.1 -91.4,18.9 -90.8,19.3 -90.3,21 -88.5,21.5 -87.1,21.5 -86.8,20.8 -87.4,20.3 -87.4,19.5 -87.8,18.3 -88.1,18.5 -88.4,16.5 -88.9,15.9 -86.4,15.8 -86,16 -84.4,15.8 -83.1,15 -83.6,13.1 -83.5,12.4 -83.9,11.4 -83.4,10.4 -82.2,9.2 -81.4,8.8 -79.9,9.3 -79.6,9.6 -78.1,9.2 -77.4,8.7 -76.8,8.6 -75.7,9.4 -75.5,10.6 -74.2,11.3 -73.4,11.2 -71.8,12.4 -71.1,12.1 -71.4,11.5 -71.9,11.4 -71.6,10.4 -72.1,9.9 -71.7,9.1 -71.3,9.1 -71,9.9 -71.4,11 -70.2,11.4 -69.9,12.2 -69.6,11.5 -68.9,11.4 -68.2,10.6 -66.2,10.6 -65.7,10.2 -64.9,10.1 -64.3,10.6 -61.9,10.7 -62.7,10.4 -62.4,9.9 -61.6,9.9 -60.8,9.4 -60.7,8.6 -60.2,8.6 -59.1,8 -58.1,6.8 -57.1,6 -55.9,5.8 -55,6 -52.9,5.4 -51.3,4.2 -50.5,1.9 -50,1.7 -49.9,1 -50.7,0.2 -50.4,-0.1 -48.6,-0.2 -48.6,-1.2 -47.8,-0.6 -44.9,-1.6 -44.4,-2.1 -44.6,-2.7 -43.4,-2.4 -41.5,-2.9 -40,-2.9 -38.5,-3.7 -37.2,-4.8 -35.6,-5.1 -35.2,-5.5 -34.7,-7.3 -35.1,-9 -37,-11 -37.7,-12.2 -39,-13.8 -38.9,-15.7 -39.3,-17.9 -39.6,-18.3 -39.8,-19.6 -40.8,-20.9 -40.9,-21.9 -41.8,-22.4 -42,-23 -43.1,-23 -44.6,-23.4 -45.4,-23.8 -46.5,-24.1 -47.6,-24.9 -48.5,-25.9 -48.5,-27.2 -48.9,-28.7 -49.6,-29.2 -50.7,-31 -52.3,-32.2 -52.7,-33.2 -53.8,-34.4 -54.9,-35 -56.2,-34.9 -57.1,-34.4 -57.8,-34.5 -58.4,-33.9 -58.5,-34.4 -57.2,-35.3 -57.4,-36 -56.7,-36.4 -56.8,-36.9 -57.7,-38.2 -59.2,-38.7 -61.2,-38.9 -62.3,-38.8 -62.1,-39.4 -62.3,-40.2 -62.1,-40.7 -62.7,-41 -63.8,-41.2 -64.7,-40.8 -65.1,-41.1 -65,-42.1 -64.3,-42.4 -63.8,-42 -63.5,-42.6 -64.4,-42.9 -65.2,-43.5 -65.6,-45 -66.5,-45 -67.3,-45.6 -67.6,-46.3 -66.6,-47 -65.6,-47.2 -66,-48.1 -67.2,-48.7 -67.8,-49.9 -68.7,-50.3 -69.1,-50.7 -68.8,-51.8 -68.2,-52.4 -69.5,-52.3 -70.8,-52.9 -71,-53.8 -72.6,-53.5 -74.9,-52.3 -75.3,-51.6 -75,-51 -75.5,-50.4 -75.6,-48.7 -75.2,-47.7 -74.1,-46.9 -75.6,-46.6 -74.7,-45.8 -74.4,-44.1 -73.2,-44.5 -72.7,-42.4 -73.4,-42.1 -73.7,-43.4 -74.3,-43.2 -73.7,-39.9 -73.2,-39.3 -73.6,-37.2 -73.2,-37.1 -71.9,-33.9 -71.4,-32.4 -71.7,-30.9 -71.4,-30.1 -71.5,-28.9 -70.9,-27.6 -70.7,-25.7 -70.1,-21.4 -70.2,-19.8 -70.4,-18.3 -71.4,-17.8 -71.5,-17.4 -73.4,-16.4 -75.2,-15.3 -76,-14.6 -76.4,-13.8 -76.3,-13.5 -77.1,-12.2 -79,-8.4 -79.8,-7.2 -81.3,-6.1 -80.9,-5.7 -81.4,-4.7 -81.1,-4 -80.3,-3.4 -79.8,-2.7 -80,-2.2 -80.4,-2.7 -81,-2.2 -80.9,-1.1 -80.6,-0.9 -80,0.4 -80.1,0.8 -78.9,1.4 -78.4,2.6 -77.9,2.7 -77.1,3.8 -77.5,4.1 -77.3,4.7 -77.5,5.6 -77.5,6.7 -78.2,7.5 -78.2,8.3 -79.1,9 -80.5,8.1 -80,7.5 -80.9,7.2 -81.1,7.8 -81.7,8.1 -83,8.2 -83.7,8.7 -83.6,9.1 -84.9,9.8 -85.1,9.6 -85.8,10.1 -85.7,11.1 -87.7,12.9 -87.8,13.4 -88.5,13.2 -91.2,13.9 -92.2,14.5 -93.4,15.6 -94.7,16.2 -96.6,15.7 -98,16.1 -98.9,16.6 -100.8,17.2 -101.9,17.9 -103.5,18.3 -103.9,18.7 -105,19.3 -105.7,20.4 -105.3,21.4 -106,22.8 -106.9,23.8 -107.9,24.5 -108.4,25.2 -109.4,25.8 -109.3,26.4 -110.4,27.2 -110.6,27.9 -111.2,27.9 -112.2,29 -113.2,30.8 -113.1,31.2 -114.8,31.8 -114.9,31.4 -114.7,30.2 -113,28.4 -112.8,27.8 -111.6,26.7 -110.7,24.8 -110.7,24.3 -110.2,24.3 -109.4,23.4 -110,22.8 -110.3,23.4 -112.2,24.7 -112.3,26 -113.5,26.8 -114.5,27.1 -115.1,27.7 -114.6,27.7 -114.2,28.6 -115.5,29.6 -116.7,31.6 -117.3,33 -118.5,34 -120.4,34.4 -120.7,35.2 -121.7,36.2 -122.5,37.6 -123.7,39 -123.9,39.8 -124.4,40.3 -124.2,42 -124.5,42.8 -124.1,43.7 -123.9,45.5 -124.1,46.9 -124.7,48.2 -124.6,48.4 -123.1,48 -122.6,47.1 -122.3,47.4 -122.5,48.2 -123,49 -125.6,50.4 -127.4,50.8 -128,51.7 -127.8,52.3 -129.1,52.8 -129.3,53.6 -130.5,54.3 -130.5,54.8 -132,55.5 -132.2,56.4 -133.5,57.2 -134.1,58.1 -136.6,58.2 -137.8,58.5 -139.9,59.5 -142.6,60.1 -144,60 -145.9,60.5 -147.1,60.9 -148.2,60.7 -148,60 -149.7,59.7 -151.7,59.2 -151.9,59.7 -151.4,60.7 -150.3,61 -150.6,61.3 -151.9,60.7 -152.6,60.1 -154,59.4 -153.3,58.9 -154.2,58.1 -156.3,57.4 -156.6,57 -158.1,56.5 -158.4,56 -159.6,55.6 -160.3,55.6 -163.1,54.7 -164.8,54.4 -164.9,54.6 -162.9,55.3 -161.8,55.9 -160.6,56 -160.1,56.4 -157.7,57.6 -157.6,58.3 -157,58.9 -159.1,58.4 -159.7,58.9 -160,58.6 -160.4,59.1 -161.4,58.7 -162,58.7 -161.9,59.6 -162.5,60 -163.8,59.8 -165.3,60.5 -165.4,61.1 -166.1,61.5 -165.7,62.1 -164.6,63.1 -163.1,63.1 -162.3,63.5 -161.5,63.5 -160.8,63.8 -161.5,64.4 -160.8,64.8 -162.5,64.6 -162.8,64.3 -163.5,64.6 -165,64.4 -166.4,64.7 -166.8,65.1 -168.1,65.7 -166.7,66.1 -164.5,66.6 -163.7,66.6 -163.8,66.1 -161.7,66.1 -162.5,66.7 -163.7,67.1 -165.4,68 -166.8,68.4 -166.2,68.9 -164.4,68.9 -163.2,69.4 -162.9,69.9 -161.9,70.3 -159,70.9 -158.1,70.8 -156.6,71.4 -155.1,71.1 -154.3,70.7 -153.9,70.9 -152.2,70.8 -152.3,70.6 -150.7,70.4 -149.7,70.5 -147.6,70.2 -144.9,70 -143.6,70.2 -142.1,69.9 -139.1,69.5 -137.5,69 -136.5,68.9 -134.4,69.6 -132.9,69.5 -131.4,69.9 -129.8,70.2 -129.1,69.8 -128.4,70 -128.1,70.5 -127.4,70.4 -125.8,69.5 -124.4,70.2 -124.3,69.4 -123.1,69.6 -122.7,69.9 -121.5,69.8 -119.9,69.4 -116.2,68.8 -115.2,68.9 -113.9,68.4 -115.3,67.9 -113.5,67.7 -110.8,67.8 -109.9,68 -108.9,67.4 -107.8,67.9 -108.8,68.3 -108.2,68.7 -106.1,68.8 -104.3,68 -103.2,68.1 -101.5,67.6 -99.9,67.8 -98.4,67.8 -98.6,68.4 -97.7,68.6 -96.1,68.2 -96.1,67.3 -95.5,68.1 -94.7,68.1 -94.2,69.1 -95.3,69.7 -96.5,70.1 -96.4,71.2 -95.2,71.9 -93.9,71.8 -92.9,71.3 -91.5,70.2 -92.4,69.7 -90.5,69.5;-27.1,83.5 -20.8,82.7 -22.7,82.3 -31.9,82.2 -31.4,82 -27.9,82.1 -24.8,81.8 -22.9,82.1 -22.1,81.7 -23.2,81.2 -20.6,81.5 -15.8,81.9 -12.8,81.7 -12.2,81.3 -16.3,80.6 -16.8,80.3 -20,80.2 -17.7,80.1 -19.7,78.8 -19.7,77.6 -18.5,77 -20,76.9 -21.7,76.6 -19.8,76.1 -19.6,75.2 -20.7,75.2 -19.4,74.3 -21.6,74.2 -20.4,73.8 -20.8,73.5 -23.6,73.3 -22.3,72.6 -22.3,72.2 -24.3,72.6 -24.8,72.3 -23.4,72.1 -22.1,71.5 -21.8,70.7 -23.5,70.5 -25.5,71.4 -25.2,70.8 -26.4,70.2 -22.3,70.1 -25,69.3 -27.7,68.5 -30.7,68.1 -31.8,68.1 -32.8,67.7 -34.2,66.7 -36.4,66 -39.8,65.5 -40.7,64.8 -40.7,64.1 -41.2,63.5 -42.8,62.7 -42.4,61.9 -43.4,60.1 -44.8,60 -46.3,60.9 -48.3,60.9 -49.2,61.4 -49.9,62.4 -51.6,63.6 -52.1,64.3 -52.3,65.2 -53.7,66.1 -53.3,66.8 -54,67.2 -53,68.4 -51.5,68.7 -50.9,69.9 -53.5,69.3 -54.7,69.6 -54.8,70.3 -54.4,70.8 -53.4,70.8 -51.4,70.6 -54,71.5 -55,71.4 -55.8,71.7 -54.7,72.6 -55.3,73 -57.3,74.7 -58.6,75.1 -58.6,75.5 -61.3,76.1 -63.4,76.2 -68.5,76.1 -71.4,77 -68.8,77.3 -66.8,77.4 -71,77.6 -73.3,78 -73.2,78.4 -65.7,79.4 -65.3,79.8 -68,80.1 -67.1,80.5 -63.7,81.2 -62.2,81.3 -62.6,81.8 -60.3,82 -57.2,82.2 -54.1,82.2 -53,81.9 -50.4,82.4 -48,82.1 -46.6,82 -44.5,81.7 -46.9,82.2 -46.8,82.6 -43.4,83.2 -39.9,83.2 -38.6,83.5 -35.1,83.6 -27.1,83.5;143.6,-13.8 143.9,-14.5 144.6,-14.2 145.4,-15 145.3,-15.4 145.6,-16.8 146.2,-17.8 146.4,-19 147.5,-19.5 148.8,-20.4 149.7,-22.3 150.1,-22.1 150.7,-22.4 150.9,-23.5 152.9,-25.3 153.1,-26.1 153.1,-27.3 153.6,-28.1 153.5,-29 153.1,-30.4 152.9,-31.6 152.4,-32.6 151.7,-33 151,-34.3 150.1,-36.4 150,-37.4 149.4,-37.8 148.3,-37.8 147.4,-38.2 146.3,-39 144.9,-38.4 145,-37.9 143.6,-38.8 140.6,-38 140,-37.4 139.6,-36.1 139.1,-35.7 138.1,-35.6 138.4,-35.1 138.2,-34.4 137.7,-35.1 136.8,-35.3 137.4,-34.7 137.9,-33.6 137.8,-32.9 137,-33.8 136.4,-34.1 136,-34.9 135.2,-34.5 135.2,-33.9 134.1,-32.8 134.3,-32.6 133,-32 132.3,-32 131.3,-31.5 129.5,-31.6 127.1,-32.3 126.1,-32.2 124.2,-33 123.7,-33.9 122.2,-34 121.3,-33.8 119.9,-34 118,-35.1 116.6,-35 115,-34.2 115,-33.6 115.5,-33.5 115.8,-32.2 115.2,-30.6 115,-29.5 114.6,-28.5 114.2,-28.1 114,-27.3 113.4,-25.6 114.2,-26.3 114.2,-25.8 113.4,-24.4 113.8,-23.1 113.7,-22.5 114.1,-21.8 114.2,-22.5 114.6,-21.8 116.7,-20.7 117.4,-20.7 120.9,-19.7 122.2,-18.2 122.3,-17.3 123,-16.4 123.4,-17.3 123.9,-17.1 123.5,-16.6 123.8,-16.1 124.3,-16.3 124.4,-15.6 125.7,-14.2 127.1,-13.8 128.4,-14.9 129.6,-15 129.4,-14.4 130.6,-12.5 131.2,-12.2 132.6,-12.1 132.6,-11.6 131.8,-11.3 132.4,-11.1 133.6,-11.8 135.3,-12.2 136.5,-11.9 137,-12.4 135.4,-14.7 135.5,-15 137.1,-15.9 139.3,-17.4 140.2,-17.7 140.9,-17.4 141.7,-15 141.5,-13.7 141.7,-12.4 142.1,-11 142.5,-10.7 142.9,-11.8 143.5,-12.8 143.6,-13.8;-180,-16.6 -180.6,-16.8 -181.3,-17 -181.4,-16.6 -180.6,-16.4 -180,-16.1 -180,-16.6;-86.6,73.2 -85.8,72.5 -84.9,73.3 -82.3,73.8 -80.6,72.7 -80.8,72.1 -78.8,72.4 -77.8,72.8 -75.6,72.2 -74.2,71.8 -74.1,71.3 -72.2,71.6 -71.2,70.9 -68.8,70.5 -67.9,70.1 -67,69.2 -68.8,68.7 -66.5,68.1 -64.9,67.8 -63.4,66.9 -61.9,66.9 -62.2,66.2 -63.9,65 -65.1,65.4 -66.7,66.4 -68,66.3 -68.1,65.7 -67.1,65.1 -65.3,64.4 -64.7,63.4 -65,62.7 -66.3,62.9 -68.8,63.7 -66.3,62.3 -66.2,61.9 -68.9,62.3 -71,62.9 -72.2,63.4 -71.9,63.7 -74.8,64.7 -74.8,64.4 -77.7,64.2 -78.6,64.6 -77.9,65.3 -74,65.5 -74.3,65.8 -73.9,66.3 -72.7,67.3 -73.3,68.1 -74.8,68.6 -76.9,68.9 -76.2,69.1 -77.3,69.8 -78.2,69.8 -79,70.2 -79.5,69.9 -81.3,69.7 -84.9,70 -88.7,70.4 -89.5,70.8 -88.5,71.2 -89.9,71.2 -90.2,72.2 -89.4,73.1 -88.4,73.5 -85.8,73.8 -86.6,73.2;-180,71.5 -180,70.8 -181.1,70.8 -181.3,71.1 -180,71.5;-68.5,83.1 -63.7,82.9 -61.9,82.6 -61.9,82.4 -64.3,81.9 -66.8,81.7 -67.7,81.5 -65.5,81.5 -67.8,80.9 -69.5,80.6 -71.2,79.8 -73.2,79.6 -73.9,79.4 -76.9,79.3 -75.5,79.2 -76.2,79 -75.4,78.5 -76.3,78.2 -77.9,77.9 -78.4,77.5 -79.8,77.2 -79.6,77 -77.9,77 -77.9,76.8 -80.6,76.2 -83.2,76.5 -86.1,76.3 -89.5,76.5 -89.6,77 -87.8,77.2 -88.3,77.9 -87.6,78 -85,77.5 -86.3,78.2 -88,78.4 -87.2,78.8 -85.4,79 -85.1,79.3 -86.5,79.7 -86.9,80.3 -84.2,80.2 -83.4,80.1 -81.8,80.5 -84.1,80.6 -87.6,80.5 -89.4,80.9 -91.4,81.6 -91.6,81.9 -90.1,82.1 -87,82.3 -85.5,82.7 -84.3,82.6 -83.2,82.3 -82.4,82.9 -79.3,83.1 -76.3,83.2 -75.7,83.1 -72.8,83.2 -68.5,83.1;134.1,-1.2 134.4,-2.8 135.5,-3.4 136.3,-2.3 137.4,-1.7 138.3,-1.7 139.9,-2.4 141,-2.6 142.7,-3.3 144.6,-3.9 145.8,-4.9 146,-5.5 147.6,-6.1 147.9,-6.6 147,-6.7 147.2,-7.4 148.1,-8 148.7,-9.1 149.3,-9.1 149.3,-9.5 150.8,-10.3 150,-10.7 149.8,-10.4 147.9,-10.1 146.6,-8.9 146,-8.1 144.7,-7.6 143.3,-8.2 143.4,-9 142.6,-9.3 141,-9.1 140.1,-8.3 139.1,-8.1 138.9,-8.4 137.6,-8.4 138,-7.6 138.7,-7.3 138.4,-6.2 137.9,-5.4 136,-4.5 135.2,-4.5 133.7,-3.5 133,-4.1 132.8,-3.3 132,-2.8 133.7,-2.2 132.2,-2.2 131.8,-1.6 130.9,-1.4 130.5,-0.9 131.9,-0.7 132.4,-0.4 134,-0.8 134.1,-1.2;141,37.1 140.6,36.3 140.8,35.8 140.3,35.1 139,34.7 137.2,34.6 135.8,33.5 135.1,33.8 135.1,34.6 133.3,34.4 132.2,33.9 131,33.9 132,33.1 131.3,31.5 130.7,31 130.2,31.4 130.4,32.3 129.8,32.6 129.4,33.3 130.4,33.6 130.9,34.2 131.9,34.8 132.6,35.4 134.6,35.7 135.7,35.5 136.7,37.3 137.4,36.8 139.4,38.2 140.1,39.4 139.9,40.6 140.3,41.2 141.4,41.4 141.9,40 141.9,39.2 141,38.2 141,37.1;105.8,-5.9 104.7,-5.9 103.9,-5 102.6,-4.2 101.4,-2.8 100.1,-0.7 99.3,0.2 98.6,1.8 97.7,2.5 97.2,3.3 96.4,3.9 95.4,5 95.3,5.5 97.5,5.2 98.4,4.3 99.7,3.2 100.6,2.1 101.7,2.1 102.5,1.4 103.1,0.6 103.8,0.1 103.4,-0.7 104.4,-1.1 104.9,-2.3 105.6,-2.4 106.1,-3.1 105.9,-4.3 105.8,-5.9;117.9,1.8 119,0.9 117.8,0.8 117.5,0.1 117.5,-0.8 116.6,-1.5 116.5,-2.5 116.1,-4 116,-3.7 114.9,-4.1 114.5,-3.5 113.3,-3.1 112.1,-3.5 111.7,-3 110.2,-2.9 110.1,-1.6 109.6,-1.3 109.1,-0.5 109.1,1.3 109.7,2 110.4,1.7 111.2,1.9 111.4,2.7 113,3.1 114.2,4.5 116.2,6.1 116.7,6.9 117.1,6.9 117.7,6 119.2,5.4 119.1,5 118.4,5 118.6,4.5 117.9,4.1 117.3,3.2 118,2.3 117.9,1.8;57.5,70.7 56.9,70.6 53.7,70.8 53.4,71.2 51.6,71.5 51.5,72 52.5,72.2 52.4,72.8 54.4,73.6 53.5,73.8 55.9,74.6 55.6,75.1 57.9,75.6 61.2,76.3 64.5,76.4 66.2,76.8 68.2,76.9 68.9,76.5 68.2,76.2 61.6,75.3 58.5,74.3 55.4,72.4 55.6,71.5 57.5,70.7;50.1,-13.6 50.5,-15.2 50.2,-16 49.9,-15.4 49.9,-16.5 49.5,-17.1 49.4,-18 47.1,-24.9 45.4,-25.6 44,-25 43.3,-22.1 43.4,-21.3 44.4,-20.1 44.5,-19.4 44,-18.3 44,-17.4 44.4,-16.2 46.3,-15.8 47.7,-14.6 48.8,-13.1 49.2,-12 50.1,-13.6;-114.2,73.1 -114.7,72.7 -112.4,73 -111.1,72.5 -109.9,73 -109,72.6 -108.2,71.7 -107.7,72.1 -108.4,73.1 -107.5,73.2 -105.4,72.7 -104.5,71 -101,70 -101.1,69.6 -102.7,69.5 -102.1,69.1 -102.4,68.8 -106,69.2 -107.1,69.1 -109,68.8 -113.3,68.5 -113.9,69 -115.2,69.3 -116.1,69.2 -117.3,70 -115.1,70.2 -113.7,70.2 -112.4,70.4 -114.3,70.6 -117.9,70.5 -118.4,70.9 -116.1,71.3 -117.7,71.3 -119.4,71.6 -117.9,72.7 -115.2,73.3 -114.2,73.1;-3,58.6 -4.1,57.6 -2,57.7 -2.2,56.9 -3.1,56 -2.1,55.9 -1.1,54.6 -0.4,54.5 0.5,52.9 1.7,52.7 1.6,52.1 1,51.8 1.4,51.3 0.5,50.8 -0.8,50.8 -2.5,50.5 -3,50.7 -3.6,50.2 -4.5,50.3 -5.2,50 -5.8,50.2 -4.3,51.2 -3.4,51.4 -5,51.6 -5.3,52 -4.2,52.3 -4.8,52.8 -4.6,53.5 -3.1,53.4 -2.9,54 -3.6,54.6 -4.8,54.8 -4.7,55.5 -5,55.8 -5.6,55.3 -5.6,56.3 -6.2,56.8 -5.8,57.8 -5,58.6 -3,58.6;-94.7,77.1 -93.6,76.8 -91.6,76.8 -90.7,76.5 -91,76.1 -89.2,75.6 -86.4,75.5 -84.8,75.7 -82.8,75.8 -81.1,75.7 -80.1,75.3 -79.8,74.9 -80.5,74.7 -81.9,74.4 -83.2,74.6 -86.1,74.4 -88.1,74.4 -92.4,74.8 -92.9,75.9 -93.9,76.3 -96,76.4 -97.1,76.8 -96.7,77.2 -94.7,77.1;173,-40.9 173.2,-41.3 174,-40.9 174.2,-41.8 172.7,-43.4 173.1,-43.9 172.3,-43.9 171.5,-44.2 170.6,-45.9 169.3,-46.6 168.4,-46.6 167.8,-46.3 166.7,-46.2 166.5,-45.9 167,-45.1 168.3,-44.1 168.9,-43.9 170.5,-43 172,-41.5 172.1,-41 172.8,-40.5 173,-40.9;125.2,1.4 124.4,0.4 123.7,0.2 122.7,0.4 120.2,0.2 120,-0.5 120.9,-1.4 121.5,-1 123.3,-0.6 122.4,-1.5 121.5,-1.9 122.5,-3.2 122.3,-3.5 123.2,-4.7 123.2,-5.3 122.6,-5.6 122.2,-5.3 122.7,-4.5 121.7,-4.9 121.6,-4.2 120.9,-3.6 121,-2.6 120.3,-2.9 120.4,-5.5 119.8,-5.7 119.4,-5.4 119.7,-4.5 119.5,-3.5 119.1,-3.5 118.8,-2.8 120,0.6 120.9,1.3 121.7,1 124.1,0.9 125.1,1.6 125.2,1.4;174.6,-36.2 175.3,-37.2 175.4,-36.5 175.8,-36.8 176,-37.6 177.4,-38 178,-37.6 178.5,-37.7 178,-39.2 177.2,-39.1 177,-39.9 176,-41.3 175.2,-41.7 174.7,-41.3 175.2,-40.5 174.9,-39.9 173.8,-39.5 173.9,-39.1 174.6,-38.8 174.7,-37.4 174.3,-36.5 173.1,-35.2 172.6,-34.5 173,-34.5 173.6,-35 174.3,-35.3 174.6,-36.2;-120.5,71.4 -123.1,70.9 -123.6,71.3 -125.9,71.9 -124.8,73 -123.9,73.7 -124.9,74.3 -121.5,74.4 -120.1,74.2 -117.6,74.2 -115.5,73.5 -116.8,73.2 -119.2,72.5 -120.5,71.8 -120.5,71.4;18.3,79.7 21.5,79 19,78.6 18.5,77.8 17.6,77.6 17.1,76.8 15.9,76.8 13.8,77.4 14.7,77.7 13.2,78 11.2,78.9 10.4,79.7 13.2,80 13.7,79.7 15.1,79.7 15.5,80 17,80.1 18.3,79.7;-79.7,22.8 -79.3,22.4 -78.3,22.5 -76.5,21.2 -75.6,21 -74.2,20.3 -74.3,20.1 -75.6,19.9 -77.8,19.9 -77.1,20.4 -78.1,20.7 -78.7,21.6 -79.3,21.6 -80.5,22 -81.8,22.2 -81.8,22.6 -82.8,22.7 -84.1,21.9 -85,21.9 -84.2,22.6 -82.3,23.2 -80.6,23.1 -79.7,22.8;-87,79.7 -85.8,79.3 -87.2,79 -89,78.3 -90.8,78.2 -92.9,78.3 -94,78.8 -93.9,79.1 -93.1,79.4 -95,79.4 -96.1,79.7 -96.7,80.2 -95.3,80.9 -94.3,81 -94.7,81.2 -92.4,81.3 -91.1,80.7 -87.8,80.3 -87,79.7;-56.1,50.7 -56.8,49.8 -56.1,50.1 -55.5,49.9 -55.8,49.6 -54.9,49.3 -54.5,49.6 -53.5,49.2 -53.8,48.5 -53.1,48.7 -52.6,47.5 -53.1,46.7 -54.2,46.8 -54,47.6 -54.2,47.8 -55.4,46.9 -56,46.9 -55.3,47.4 -56.3,47.6 -59.3,47.6 -58.8,48.3 -59.2,48.5 -58.4,49.1 -57.4,50.7 -56.7,51.3 -55.4,51.6 -56.1,50.7;-14.5,66.5 -14.7,65.8 -13.6,65.1 -14.9,64.4 -18.7,63.5 -22.8,64 -21.8,64.4 -24,64.9 -22.2,65.1 -22.2,65.4 -24.3,65.6 -23.7,66.3 -22.1,66.4 -20.6,65.7 -19.1,66.3 -17.8,66 -16.2,66.5 -14.5,66.5;-67.8,-53.8 -66.5,-54.5 -65.1,-54.7 -65.5,-55.2 -66.5,-55.2 -67,-54.9 -67.3,-55.3 -68.1,-55.6 -69.2,-55.5 -71,-55.1 -73.3,-54 -74.7,-52.8 -73.8,-53 -72.4,-53.7 -71.1,-54.1 -70.3,-52.9 -69.3,-52.5 -68.6,-52.6 -67.8,-53.8;108.6,-6.8 110.5,-6.9 110.8,-6.5 112.6,-6.9 113,-7.6 114.5,-7.8 115.7,-8.4 114.6,-8.8 113.5,-8.3 111.5,-8.3 109.4,-7.7 108.3,-7.8 106.5,-7.4 106.3,-6.9 105.4,-6.9 106.1,-5.9 107.3,-6 108.5,-6.4 108.6,-6.8;-108.2,76.2 -107.8,75.8 -105.9,76 -105.7,75.5 -106.3,75 -109.7,74.9 -112.2,74.4 -113.7,74.4 -113.9,74.7 -111.8,75.2 -116.3,75 -117.7,75.2 -116.3,76.2 -115.4,76.5 -112.6,76.1 -110.8,75.5 -109.1,75.5 -110.5,76.4 -109.6,76.8 -108.6,76.7 -108.2,76.2;143.6,50.7 144.7,49 143.2,49.3 142.6,47.9 143.5,46.8 143.5,46.1 142.7,46.7 142.1,46 141.9,46.8 141.9,48.9 142.1,49.6 142.2,51 141.6,51.9 141.7,53.3 142.6,53.8 142.2,54.2 142.7,54.4 143.3,52.7 143.2,51.8 143.6,50.7;121.3,18.5 121.9,18.2 122.5,17.1 122.3,16.3 121.7,15.9 121.5,15.1 121.7,14.3 122.7,14.3 124,13.8 124.1,12.5 122.9,13.6 122.7,13.2 122,13.8 121.1,13.6 120.6,13.9 120.1,15 119.9,16.4 120.3,16 120.4,17.6 120.7,18.5 121.3,18.5;143.9,44.2 144.6,44 145.3,44.4 145.5,43.3 144.1,43 143.2,42 141.6,42.7 141.1,41.6 140,41.6 139.8,42.6 140.3,43.3 141.4,43.4 142,45.6 143.1,44.5 143.9,44.2;99.9,78.9 97.8,78.8 95,79 93.3,79.4 92.5,80.1 91.2,80.3 93.8,81 95.9,81.3 97.9,80.7 100.2,79.8 99.9,78.9;126.4,8.4 126.5,7.2 126.2,6.3 125.8,7.3 125.4,6.8 125.7,6 125.4,5.6 124.2,6.2 123.9,6.9 124.2,7.4 123.6,7.8 122.1,6.9 121.9,7.2 122.3,8 123.5,8.7 123.8,8.2 124.6,8.5 124.8,9 125.5,9 125.4,9.8 126.2,9.3 126.4,8.4;-85.2,65.7 -85,65.2 -84.5,65.4 -81.6,64.5 -81.6,64 -80.8,64.1 -80.1,63.7 -81,63.4 -82.5,63.7 -83.1,64.1 -84.1,63.6 -85.5,63.1 -85.9,63.6 -87.2,63.5 -86.4,64 -85.9,65.7 -85.2,65.7;-100.4,73.8 -99.2,73.6 -97.4,73.8 -97.1,73.5 -98.1,73 -96.5,72.6 -96.7,71.7 -98.4,71.3 -99.3,71.4 -100,71.7 -102.5,72.5 -102.5,72.8 -100.4,72.7 -101.5,73.4 -100.4,73.8;-6.8,52.3 -8.6,51.7 -10,51.8 -9.2,52.9 -9.7,53.9 -7.6,55.1 -6.7,55.2 -5.7,54.6 -6.2,53.9 -6,53.2 -6.8,52.3;-72.6,19.9 -71.7,19.7 -70.8,19.9 -69.2,19.3 -68.3,18.6 -68.7,18.2 -70,18.4 -71,18.3 -71.4,17.6 -71.7,18 -73.5,18.2 -73.9,18 -74.4,18.7 -72.7,18.4 -72.3,18.7 -72.8,19.5 -73.4,19.6 -72.6,19.9;25.4,80.4 27.4,80.1 25.9,79.5 23,79.4 20.1,79.6 19.9,79.8 18.5,79.9 17.4,80.3 20.5,80.6 21.9,80.4 22.9,80.7 25.4,80.4;145.1,75.6 144.3,74.8 140.6,74.8 139,74.6 137,75.3 137.5,75.9 138.8,76.1 141.5,76.1 145.1,75.6;-93.2,72.8 -94.3,72 -95.4,72.1 -96,72.9 -96,73.4 -95.5,73.9 -94.5,74.1 -92.4,74.1 -90.5,73.9 -92,73 -93.2,72.8;-123.5,48.5 -124,48.4 -125.7,48.8 -127,49.8 -128.1,50 -128.4,50.8 -125.8,50.3 -124.9,49.5 -123.9,49.1 -123.5,48.5;-116.2,77.6 -116.3,76.9 -117.1,76.5 -118,76.5 -119.9,76.1 -121.5,75.9 -122.9,76.1 -121.2,76.9 -119.1,77.5 -117.6,77.5 -116.2,77.6;145.4,-40.8 146.4,-41.1 147.7,-40.8 148.3,-40.9 148.4,-42.1 147.9,-43.2 147.6,-42.9 146.9,-43.6 146,-43.5 145.4,-42.7 145.3,-42 144.7,-41.2 144.7,-40.7 145.4,-40.8;-98.5,76.7 -97.7,76.3 -97.7,75.7 -98.2,75 -99.8,74.9 -100.9,75.1 -100.9,75.6 -102.5,75.6 -102.6,76.3 -101.5,76.3 -100,76.6 -98.5,76.7;152,-5.5 150.2,-6.3 149.7,-6.3 148.3,-5.7 148.4,-5.4 150.8,-5.5 151.6,-4.8 151.5,-4.2 152.3,-4.3 152,-5.5;-100.1,78.3 -99.7,77.9 -101.3,78 -102.9,78.3 -105.2,78.4 -104.2,78.7 -105.4,78.9 -105.5,79.3 -103.5,79.2 -100.8,78.8 -100.1,78.3;105.1,78.3 99.4,77.9 101.3,79.2 102.8,79.3 105.4,78.7 105.1,78.3;81.2,6.2 80.3,6 79.9,6.8 79.7,8.2 80.1,9.8 80.8,9.3 81.8,7.5 81.6,6.5 81.2,6.2;118.5,9.3 117.2,8.4 117.7,9.1 119,10.4 119.5,11.4 119.7,10.6 118.5,9.3;167.1,-22.2 166.7,-22.4 165.5,-21.7 164.2,-20.4 164,-20.1 165,-20.5 167.1,-22.2;124.4,-10.1 123.6,-10.4 124,-9.3 125.1,-8.7 127,-8.3 127,-8.7 125.1,-9.4 124.4,-10.1;121.2,22.8 120.7,22 120.2,22.8 120.1,23.6 120.7,24.5 121.5,25.3 122,25 121.2,22.8;51.1,80.5 48.9,80.3 47.6,80 46.5,80.2 47.1,80.6 44.8,80.6 46.8,80.8 48.3,80.8 48.5,80.5 50,80.9 51.5,80.7 51.1,80.5;-95.6,69.1 -96.3,68.8 -97.6,69.1 -98.4,69 -99.8,69.4 -98.2,70.1 -96.6,69.7 -95.6,69.1;153.1,-4.5 152.8,-4.8 152.4,-3.8 151.4,-3 150.7,-2.7 150.9,-2.5 152.2,-3.2 153,-4 153.1,-4.5;15.5,38.2 15.2,37.4 15.1,36.6 14.3,37 12.4,37.6 12.6,38.1 13.7,38 15.5,38.2;-76.3,73.1 -76.3,72.8 -78.4,72.9 -79.5,72.7 -80.9,73.3 -80.4,73.8 -78.1,73.7 -76.3,73.1;110.3,18.7 109.5,18.2 108.7,18.5 108.6,19.4 109.1,19.8 110.8,20.1 111,19.7 110.3,18.7;-58.5,-51.1 -57.7,-51.5 -58,-51.9 -59.4,-52.2 -59.8,-51.8 -60.7,-52.3 -61.2,-51.8 -60,-51.3 -59.2,-51.5 -58.5,-51.1;24.7,77.9 22.5,77.4 20.7,77.7 21.4,77.9 20.8,78.3 22.9,78.5 23.3,78.1 24.7,77.9;134.6,34.1 134.8,33.8 134.2,33.2 133.8,33.5 133.3,33.3 133,32.7 132.4,33 132.4,33.5 132.9,34.1 133.5,33.9 133.9,34.4 134.6,34.1;128.7,1.1 128.6,0.3 128.1,0.4 128.1,-0.9 127.7,-0.3 127.4,1 127.9,2.2 128,1.6 128.7,1.1;9.2,41.2 9.8,40.5 9.7,39.2 8.8,38.9 8.4,39.2 8.4,40.4 8.2,41 9.2,41.2;124,10.3 123,9 122.4,9.7 122.9,10.9 123.5,10.9 123.3,10.3 124.1,11.2 124,10.3;150.7,75.1 149.6,74.7 148,74.8 146.1,75.2 146.4,75.5 150.7,75.1;125.5,12.2 125.8,11 125,11.3 125.3,10.4 124.8,10.1 124.8,10.8 124.3,11.5 124.9,11.4 124.3,12.6 125.2,12.5 125.5,12.2;-93.6,75 -94.2,74.6 -95.6,74.7 -96.8,74.9 -96.3,75.4 -94.9,75.6 -93.6,75;-95.8,78.1 -97.3,77.8 -98.1,78.1 -98.6,78.9 -96.8,78.8 -95.6,78.4 -95.8,78.1;-153,57.1 -154,56.7 -154.7,57.5 -153.2,58 -152.1,57.6 -153,57.1;130.5,-3.1 130.8,-3.9 130,-3.4 127.9,-3.4 128.1,-2.8 129.4,-2.8 130.5,-3.1;-110.2,77.7 -112.1,77.4 -113.5,77.7 -112.7,78.1 -111.3,78.2 -109.9,78 -110.2,77.7;34.6,35.7 34,35 33,34.6 32.3,35.1 34.6,35.7;122.9,-8.1 122.8,-8.7 121.3,-8.9 119.9,-8.8 119.9,-8.4 120.7,-8.2 121.3,-8.5 122.9,-8.1;-171.7,63.8 -170.5,63.7 -168.7,63.3 -169.5,63 -170.7,63.4 -171.8,63.4 -171.7,63.8;143.6,73.2 142.1,73.2 139.9,73.4 140.8,73.8 142.1,73.9 143.5,73.5 143.6,73.2;117.9,-8.1 118.9,-8.3 119.1,-8.7 116.7,-9 117.1,-8.5 117.9,-8.1;23.7,35.7 24.2,35.4 26.3,35.3 26.2,35 24.7,34.9 23.5,35.3 23.7,35.7;-104.5,73.4 -105.4,72.8 -106.9,73.5 -105.3,73.6 -104.5,73.4;-61.8,49.1 -63.6,49.4 -64.5,49.9 -62.9,49.7 -61.8,49.1;-180,71.5 -179,71.6 -177.6,71.3 -178.7,70.9 -180,70.8 -180,71.5;-109.7,78.6 -110.9,78.4 -112.5,78.4 -111.5,78.9 -109.7,78.6;-93.8,77.5 -96.2,77.6 -96.4,77.8 -94.4,77.8 -93.8,77.5";
+var BORDER_SRC = "40.3,-10.3 39.5,-10.9 36.5,-11.7 34.6,-11.5 33.7,-9.4 32.8,-9.2 30.7,-8.3 29.6,-6.5 29.3,-4.5 30.8,-3.4 30.5,-2.4 30.4,-1.1 33.9,-1 37.7,-3.1 37.8,-3.7 39.2,-4.7;-17,21.4 -14.8,21.5 -13.9,23.7 -12.5,24.8 -11.4,26.9 -8.8,27.1 -8.7,27.7 -8.7,27.4 -8.7,25.9 -12,25.9 -11.9,23.4 -12.9,23.3 -12.9,21.3 -16.8,21.3 -17.1,21;-130.5,54.8 -130,55.9 -131.7,56.6 -133.4,58.4 -135.5,59.8 -137.5,58.9 -139,60 -141,60.3 -141,69.7;-67.1,45.1 -67.8,45.7 -67.8,47.1 -69.2,47.4 -70.7,45.5 -71.5,45 -74.9,45 -76.8,43.6 -79.2,43.5 -78.9,42.9 -82.4,41.7 -83.1,42.1 -82.1,43.6 -82.6,45.3 -84.9,46.9 -88.4,48.3 -89.6,48 -91.6,48.1 -95.2,49 -122.8,49;-97.1,25.9 -99,26.4 -99.5,27.5 -101,29.4 -102.5,29.8 -103.1,29 -104.5,29.6 -105,30.6 -106.5,31.8 -108.2,31.8 -108.2,31.3 -111,31.3 -114.8,32.5 -117.1,32.5;49.1,46.4 48.1,47.7 46.5,48.4 47.6,50.5 48.6,49.9 48.7,50.6 50.8,51.7 52.3,51.7 55.7,50.6 58.4,51.1 59.6,50.5 61.3,50.8 61.6,51.3 60,52 61.7,53 61.4,54 65.2,54.4 69.1,55.4 70.9,55.2 71.2,54.1 73.5,54 73.4,53.5 76.5,54.2 77.8,53.4 80,50.9 80.6,51.4 81.9,50.8 83.4,51.1 85.5,49.7 86.8,49.8 87.4,49.2 85.8,48.5 85.2,47 83.2,47.3 82.5,45.5 80,44.9 80.9,43.2 80.3,42.4 79.1,42.9 76,43 74.2,43.3 73.5,42.5 71.8,42.8 71,42.3 69.1,41.4 68.6,40.7 66.7,41.2 66,42 66.1,43 64.9,43.7 62,43.5 61.1,44.4 58.5,45.6 55.9,45 56,41.3 54.1,42.3 52.5,41.8;71,42.3 70.4,41.5 73.1,40.9 71,40.2 70.7,41 69.3,40.7 68.5,39.5 67.4,39.1 68.4,38.2 67.8,37.1 66.5,37.4 66.5,38 64.2,38.9 62.4,40.1 61.9,41.1 60.1,41.4 60,42.2 58.6,42.8 56,41.3;141,-9.1 141,-2.6;125,-8.9 125.1,-9.4;109.7,2 110.5,0.8 112.9,1.5 114.6,1.4 115.9,4.3 117.9,4.1;-67,-54.9 -68.6,-54.9 -68.6,-52.6;-68.6,-52.3 -71.9,-52 -72.3,-50.7 -73.3,-50.4 -73.4,-49.3 -72.6,-48.9 -71.2,-44.8 -71.8,-44.2 -72.2,-42.3 -71.4,-38.9 -70.8,-38.6 -71.1,-36.7 -70.4,-36 -69.8,-34.2 -70.5,-31.4 -69.9,-30.3 -69.7,-28.5 -68.3,-26.9 -68.4,-24.5 -67.3,-24 -67.1,-22.7 -66.3,-21.8 -65,-22.1 -64.4,-22.8 -64,-22 -62.7,-22.2 -60.8,-23.9 -57.8,-25.2 -58.6,-27.1 -56.5,-27.5 -54.8,-26.6 -54.6,-25.7 -53.6,-26.1 -53.6,-26.9 -55.2,-27.9 -57.6,-30.2 -58.4,-33.9;-70.4,-18.3 -69.6,-17.6 -68.4,-19.4 -68.8,-20.4 -67.8,-22.9 -67.1,-22.7;30.7,-8.3 28.7,-8.5 28.4,-11.8 29.7,-13.3 28.9,-13.2 27.2,-11.6 26.6,-11.9 23.9,-10.9 22.2,-11.1 21.7,-7.3 19.4,-7.2 19,-8 17.5,-8.1 16.3,-5.9 13.4,-5.9 12.3,-6.1;12.2,-5.8 13,-4.8 14.6,-5 16,-3.5 16.4,-1.7 17.5,-0.7 17.9,1.7 18.5,3.5 19.5,5 22.4,4 22.7,4.6 24.4,5.1 27.4,5.2 28,4.4 29.7,4.6 30.8,3.5 31.2,2.2 29.9,0.6 29.6,-1.3 29,-2.8 29.3,-4.5;41.6,-1.7 41,-0.9 41,2.8 41.9,3.9 43.7,5 45,5 47.8,8 48.9,9.5 48.9,11.4;33.9,-1 33.9,0.1 35,1.9 34,4.3 35.3,5.5 36.2,4.4 38.1,3.6 39.6,3.4 40.8,4.3 41.9,3.9;38.4,18 36.9,17 36.4,14.4 35.9,12.6 34.3,10.6 34,8.7 33.7,10.3 33.2,10.7 33.2,12.2 32.1,12 32.4,11.1 31.4,9.8 30,10.3 29,9.4 26.5,9.6 25.8,10.4 25.1,10.3 24.6,8.2 23.5,9 23.6,10.1 22.9,11.1 22.3,12.6 22.3,14.3 23,15.7 23.9,15.6 23.8,19.6 25,20 25,22 36.9,22;22.9,11.1 21.7,10.6 21,9.5 18.8,9 18,7.9 15.3,7.4 15,8.8 14,9.5 15.5,10 14.5,12.9 13.5,14.4 14,15.7 15.2,16.6 15.9,20.4 15.1,21.3 14.9,22.9 15.9,23.4 23.8,19.6;-71.7,19.7 -71.7,18;21.3,55.2 22.8,54.9 22.7,54.3 19.7,54.4;130.8,42.2 130.6,42.4 131.1,42.9 131,45 133.1,45.1 135,48.5 132.5,47.8 131,47.8 130.6,48.7 129.4,49.4 127.7,49.8 125.9,52.8 123.6,53.5 121,53.3 120.2,52.8 120.7,52 117.9,49.5 116.7,49.9 114.4,50.2 112.9,49.5 110.7,49.1 108.5,49.3 106.9,50.3 103.7,50.1 102.3,50.5 102.1,51.3 98.9,52 97.8,51 98.2,50.4 97.3,49.7 94.8,50 92.2,50.8 88.8,49.5 87.8,49.3 87.4,49.2;48.6,41.8 47.8,41.2 46.4,41.9 45.5,42.5 42.4,43.2 40,43.4;38.2,47.1 39.7,47.9 40.1,49.6 35.4,50.6 33.8,52.3 31.8,52.1 31.3,53.1 32.7,53.4 30.8,54.8 30.9,55.6 28.2,56.2 27.3,57.5 28,59.5;28.1,60.5 31.1,62.4 31.5,62.9 30,63.6 30.4,64.2 29.5,64.9 30.2,65.8 29.1,66.9 30,67.7 28.4,68.4 28.6,69.1 31.1,69.6;33.4,46 35,45.7;28.6,69.1 29,69.8 27.7,70.2 26.2,69.8 24.7,68.6 20.6,69.1 19.9,68.4 18,68.6 16.8,68 13.6,64.8 13.6,64 12.6,64.1 11.9,63.1 12,61.8 12.6,61.3 12.3,60.1 11,58.9;16.3,-28.6 16.8,-28.1 18.5,-29 19.9,-28.5 19.9,-24.8 20.9,-26.8 21.6,-26.7 23.3,-25.3 24.2,-25.7 25.7,-25.5 27.1,-23.6 29.4,-22.1 31.2,-22.3 31.9,-24.4 31.8,-25.8 31,-25.7 30.7,-26.7 31.3,-27.3 32.1,-26.7 32.8,-26.7;29,-29 28.5,-28.6 27,-29.9 27.8,-30.6 28.8,-30.1 29,-29;-88.3,18.5 -89.1,17.8 -91,17.8 -91.5,17.3 -90.5,16.1 -91.7,16.1 -92.2,14.5;-57.6,-30.2 -57,-30.1 -53.8,-32 -53.2,-32.7 -53.4,-33.8;-54.6,-25.7 -54.3,-24 -55.4,-24 -55.6,-22.7 -56.5,-22.1 -57.9,-22.1 -58.2,-20.2 -57.5,-18.2 -58.3,-17.3 -58.2,-16.3 -60.2,-16.3 -60.5,-13.8 -63.2,-12.6 -64.3,-12.5 -65.4,-11.6 -65.3,-9.8 -66.6,-9.9 -68.3,-11 -69.5,-11 -70.5,-11 -70.5,-9.5 -72.2,-10.1 -74,-7.5 -73.1,-6.6 -72.9,-5.3 -70.8,-4.3 -69.9,-4.3 -69.4,-1.6 -70,0.5 -69.8,1.7 -67.9,1.7 -66.9,1.3 -66.3,0.7 -64.2,1.5 -63.4,2.4 -64.3,2.5 -64.6,4.1 -63.1,3.8 -61,4.5 -60.7,5.2 -60,5 -59.5,4 -60,2.8 -59,1.3 -56.5,1.9 -56,2.5 -54.5,2.3 -53.4,2.1 -52.6,2.5 -51.7,4.2;-58.2,-20.2 -59.1,-19.4 -61.8,-19.6 -62.7,-22.2;-69.6,-17.6 -69,-16.5 -69.4,-15.7 -68.7,-12.6 -69.5,-11;-80.3,-3.4 -80.4,-4.4 -79.2,-5 -77.8,-3 -76.6,-2.6 -75.5,-1.6 -75.4,-0.2 -73.7,-1.3 -73.1,-2.3 -70.8,-2.3 -70,-2.7 -70.7,-3.7 -69.9,-4.3;-75.4,-0.2 -77.4,0.4 -78.9,1.4;-77.9,7.2 -77.4,8.7;-71.3,11.8 -72.9,10.5 -73.3,9.2 -72.8,9.1 -72,7 -70.1,7 -69.4,6.1 -67.3,6.1 -67.8,4.5 -67.3,3.3 -67.8,2.8 -66.9,1.3;-83,8.2 -82.5,9.6;-85.7,11.1 -83.7,10.9;-87.3,13 -84.9,14.8 -83.1,15;-87.8,13.4 -89.4,14.4 -88.2,15.7;-90.1,13.7 -89.4,14.4;-89.1,17.8 -88.9,15.9;-59.8,8.4 -60.6,7.8 -60.3,7 -61.4,6 -60.7,5.2;-57.1,6 -58,4.1 -56.5,1.9;-54,5.8 -54.5,4.9 -54,3.6 -54.5,2.3;2.5,51.1 4.3,49.9 5.7,49.5 6.2,49.5 8.1,49 7.5,47.6 6,46.7 6.8,46 6.7,45 7.4,43.7;3,42.5 1.8,42.3 -1.5,43 -1.9,43.4;29.4,-22.1 28,-21.5 27.7,-20.5 26.2,-19.3 25.3,-17.7 27,-17.9 29.5,-15.6 30.3,-15.5 32.8,-16.7 32.2,-21.1 31.2,-22.3;19.9,-24.8 19.9,-21.8 20.9,-21.8 20.9,-18.3 23.2,-17.9 23.6,-18.3 25.1,-17.7 25.3,-17.7;11.7,-17.3 12.8,-16.9 14.2,-17.4 18.3,-17.3 19,-17.8 21.4,-17.9 23.2,-17.5 25.1,-17.7;-16.5,16.1 -14.6,16.6 -13.4,16 -12.2,14.6 -11.5,12.4 -13.7,12.6 -16.7,12.4;-16.8,13.2 -14,13.8 -16.7,13.6;-12.2,14.6 -11.7,15.4 -5.5,15.5 -5.5,16.3 -6.5,25 -4.9,25 3.1,19.7 3.2,19.1 4.3,19.2 4.3,16.9 3.6,15.6 0.4,14.9 -0.5,15.1 -2,14.6 -3.5,13.3 -4,13.5 -5.2,11.7 -5.4,10.4 -8,10.2 -9.1,12.3 -10.2,11.8 -11.5,12.4;-8.7,27.4 -4.9,25;1.9,6.1 1.7,9.1 0.9,11 2.2,11.9 3.6,11.7 3.7,10.1 2.7,8.5 2.7,6.3;14.5,12.9 14.2,12.5 13.3,13.6 12.3,13 10.1,13.3 9,12.8 7.8,13.3 6.8,13.1 5.4,13.9 4.4,13.7 3.6,11.7;2.2,11.9 2.2,12.6 1,12.9 0.4,14.9;4.3,19.2 5.7,19.6 8.6,21.6 12,23.5 14.9,22.9;14.2,12.5 14.4,11.6 13.6,10.8 11.7,7 10.1,7 9.2,6.4 8.5,4.8;15.3,7.4 14.5,6.2 14.5,4.7 16,2.3 15.9,1.7 13.1,2.3 11.3,2.3 9.6,2.3;1.1,5.9 0.5,7.4 0.4,10.2 0,11 0.9,11;-2.9,5 -3.2,6.3 -2.6,8.2 -2.8,9.6 -2.9,11 0,11;-5.4,10.4 -4.3,9.6 -2.8,9.6;-7.7,4.4 -7.6,5.7 -8.6,6.5 -8.4,7.7 -7.8,8.6 -8,10.2;-8.4,7.7 -8.9,7.3 -10.2,8.4 -11.1,10 -12.4,9.8 -13.2,8.9;-15.1,11 -13.7,11.8 -13.7,12.6;-11.4,6.8 -10.2,8.4;18.5,3.5 17.1,3.7 16,2.3;24.6,8.2 27.4,5.2;13,-4.8 11.9,-5;11.1,-4 11.9,-3.4 11.5,-2.8 14,-2.5 14.4,-1.3 13.8,0 14.3,1.2 13.3,1.3 13.1,2.3;9.5,1 11.3,1.1 11.3,2.3;32.8,-9.2 33.5,-10.5 33.3,-12.4 32.7,-13.7 33.2,-14 30.2,-14.8 30.3,-15.5;23.2,-17.5 21.9,-16.1 21.9,-12.9 24,-12.9 23.9,-10.9;34.6,-11.5 34.6,-13.6 35.7,-14.6 35.8,-15.9 35,-16.8 34.4,-16.2 34.5,-14.6 33.2,-14;32.1,-26.7 31.8,-25.8;29,-2.8 30.5,-2.4;35.1,33.1 35.8,33.3 35.7,32.7 35.5,32.4 35.4,31.5 34.9,29.5 34.3,31.2;36,34.6 36.6,34.2 35.8,33.3;35.5,32.4 35.4,31.5;11.5,33.1 11.4,32.4 9.9,31.4 9.5,30.3 9.1,32.1 7.6,33.3 8.1,34.7 8.4,36.9;-8.7,27.7 -8.7,28.8 -5.2,30 -3.7,30.9 -3.6,31.6 -1.3,32.3 -2.2,35.2;9.5,30.3 9.9,29 9.7,26.5 9.3,26.1 10.3,24.4 10.8,24.6 12,23.5;35.7,32.7 36.8,32.3 38.8,33.4 39.2,32.2 37,31.5 38,30.5 36.1,29.2 35,29.4;56.1,26.1 56.3,25.7;56.4,24.9 55.9,24.9 55.2,22.7 55,22.5 52,23 51.6,24.2;51.4,24.6 50.8,24.8;48.4,28.6 46.6,29.1 47.3,30.1 48,30;38.8,33.4 41,34.4 41.3,36.4 42.3,37.2 44.8,37.2 46.2,35.1 45.4,34 46.1,33 47.3,32.5 47.7,31 48.6,29.9;46.6,29.1 44.7,29.2 41.9,31.2 39.2,32.2;53.1,16.7 52,19 55,20 55.7,22 55.2,22.7;102.6,12.2 102.3,13.4 103,14.2 105.2,14.3 106,13.9 106.5,14.6 107.4,14.2 107.5,12.3 105.8,11.6 106.2,11 104.3,10.5;102.1,6.2 101.2,5.7 100.1,6.5;98.6,9.9 99.6,11.9 99.1,13.8 98.2,15.1 98.9,16.2 97.4,18.4 98.3,19.7 100.1,20.4 101.3,19.5 101.1,17.5 102.1,18.1 104,18.2 104.8,16.4 105.6,15.6 105.2,14.3;100.1,20.4 101.2,21.4 101.8,21.2 102.2,22.5 103.2,20.8 104.4,20.8 104.8,19.9 103.9,19.3 105.1,18.7 107.6,15.2 107.4,14.2;92.4,20.7 92.7,22 93.2,22.3 93.3,24.1 94.1,23.9 95.1,26.6 96.4,27.3 97.1,27.1 97.3,28.3 98.7,27.5 98.7,25.9 97.7,25.1 97.6,23.9 98.7,24.1 99.5,22.9 99.2,22.1 101.2,21.4;102.2,22.5 104.5,22.8 105.3,23.4 106.7,22.8 106.6,22.2 108,21.6;128.4,38.6 126.2,37.7;124.3,39.9 126.9,41.8 130.6,42.4;116.7,49.9 115.5,48.1 115.7,47.7 118.1,48.1 119.8,47 119.7,46.7 117.4,46.7 116,45.7 113.5,44.8 111.9,45.1 111.8,43.7 109.2,42.5 106.1,42.1 105,41.6 101.8,42.5 96.3,42.7 95.3,44.2 93.5,45 90.9,45.3 91,46.9 90.3,47.7 88,48.6 87.8,49.3;92.7,22 92.1,23.6 91.2,23.5 92.4,25 89.9,25.3 89.8,26 88.6,26.4 88.9,25.2 88.1,24.5 89,22.1;68.2,23.7 68.8,24.4 71,24.4 70.2,26.5 69.5,26.9 70.6,28 71.8,27.9 74.4,31 75.3,32.3 74.5,32.8 73.7,34.3 74.2,34.7 76.9,34.7 77.8,35.5 78.9,34.3 79.2,32.5 78.5,32.6 78.7,31.5 81.1,30.2 80.1,28.8 83.3,27.4 85.3,26.7 88.1,26.4 88.1,27.9 88.8,27.3 89.7,26.7 92,26.8 91.7,27.8 92.5,27.9 94.6,29.3 96.1,29.5 96.2,28.4 97.3,28.3;88.8,27.3 90,28.3 91.7,27.8;81.1,30.2 81.5,30.4 84.2,28.8 85.8,28.2 88.1,27.9;61.5,25.1 61.9,26.2 63.3,26.8 62.7,28.3 60.9,29.8 62.5,29.3 65,29.5 66.3,29.9 66.9,31.3 68.9,31.6 69.9,34 70.9,34 71.6,35.2 71.8,36.5 75.2,37.1 76.2,35.9 77.8,35.5;67.8,37.1 70.1,37.6 70.8,38.5 71.8,36.7 73.3,37.5 75,37.4 75.2,37.1;60.9,29.8 61.8,30.7 60.9,31.5 60.5,33.7 61.2,35.6 62.2,35.3 64.5,36.3 65.7,37.7 66.5,37.4;71,40.2 69.6,40.1 69.5,39.5 71.8,39.3 73.7,39.4 73.9,38.5 74.9,38.4 75,37.4;80.3,42.4 78.2,41.2 76.9,41.1 76.5,40.4 75.5,40.6 73.7,39.4;61.2,35.6 61.1,36.5 57.3,38 55.5,38 53.9,37.2;44.8,37.2 44.2,38 44.1,39.4 44.8,39.7 46.1,38.7 46.5,38.8 47.7,39.5 48.9,38.3;36.1,35.8 37.1,36.6 39.5,36.7 42.3,37.2;46.1,38.7 44.8,39.7 43.7,40.3 43.6,41.1 45,41.2 46.5,39.5 46.5,38.8;20.6,69.1 23.5,67.9 23.9,66;31.8,52.1 30.6,51.3 26.3,51.8 23.5,51.6 23.5,53.9 25.5,54.3 26.5,55.6 28.2,56.2;29.6,45.3 28.2,45.5 28.9,46.4 30,46.4 29.1,47.8 27.5,48.5 26.6,48.2 24.9,47.7 22.7,47.9 22.1,48.4 22.6,49.1 24,50.7 23.5,51.6;22.6,49.1 21.6,49.5 19.8,49.2 18.9,49.5 17.6,50.4 16.7,50.2 15,51.1 14.1,53 14.1,53.8;22.7,54.3 23.5,53.9;22.7,47.9 21,46.3 20.2,46.1 18.8,45.9 16.6,46.5 16.2,46.9;17,48.1 16.2,46.9 13.8,46.5 12.2,47.1 10.4,46.9 9.6,47.5 13,47.6 13.6,48.9 15.3,49 17,48.6 17,48.1 17.9,47.8 20.8,48.6 22.1,48.4;28.2,45.5 28.1,46.8 26.6,48.2;28.6,43.7 27.2,44.2 25.6,43.7 22.9,43.8 22.7,44.2 21.6,44.8 20.2,46.1;21.1,56 22.2,56.3 24.9,56.4 26.5,55.6;24.3,57.8 25.2,58 27.3,57.5;15,51.1 12.2,50.3 13.6,48.9;9.6,47.5 7.5,47.6;6.2,49.5 6,50.1 6.2,50.8 6.9,53.5;8.5,55 9.9,55;28,42 26.1,41.8 26.1,41.3 24.5,41.6 23,41.3 22.4,42.3 23,43.2 22.7,44.2;26.1,41.8 26.1,40.8;20.2,39.6 21,40.8 23,41.3;41.6,41.5 43.6,41.1;19.4,41.9 20.1,42.6 20.6,41.9 21,40.8;18.8,45.9 19,44.9 17,45.2 15.7,44.8 17.7,43 18.6,42.6 18.4,42.5;13.7,45.5 15.3,45.5 16.6,46.5;10.4,46.9 7.8,45.8 6.8,46;5.7,49.5 6,50.1;3.3,51.3 5,51.5 6.2,50.8;-9,41.9 -6.7,41.9 -7.5,37.1;-7.6,55.1 -7.6,54.1 -6.2,53.9;13.8,46.5 13.9,45.6;45,41.2 46.6,41.2 46.4,41.9;114.2,4.5 115.3,4.3 115.5,5.4;17,48.6 18.9,49.5;43.1,12.7 42.4,12.5 40.9,14.1 37.9,15 37.6,14.2 36.4,14.4;42.8,16.3 43.4,17.6 47.5,17.1 49.1,18.6 52,19;34,35.1 32.7,35.1;25,22 25,29.2 24.7,30 25.2,31.6;35.3,5.5 33.6,7.7 34,8.7;42.4,12.5 41.8,11.1 42.8,10.9 42.6,10.6 43.7,9.2 46.9,8 47.8,8;43.1,11.5 42.8,10.9;30.4,-1.1 29.6,-1.3;30.8,3.5 33.4,3.8 34,4.3;19,44.9 19.2,43.5 18.6,42.6;20.6,41.9 21.6,42.2 22.4,42.3;21.6,42.2 20.8,43.3 20.3,42.8 19.2,43.5;20.3,42.8 20.1,42.6";
+var LAND = decode(LAND_SRC);
+var BORDERS = decode(BORDER_SRC);
+
+// src/components/Map/Map.tsx
+import { jsx as jsx42, jsxs as jsxs38 } from "react/jsx-runtime";
+var DAY_MS = 864e5;
+var millerY = (lat) => {
+  const p = Math.max(-89.5, Math.min(89.5, lat)) * Math.PI / 180;
+  return 1.25 * Math.log(Math.tan(Math.PI / 4 + 0.4 * p));
+};
+var Y_TOP = millerY(GEO_LAT_MAX);
+var Y_BOT = millerY(GEO_LAT_MIN);
+var VBW = 720;
+var VBH = Math.round(VBW * (Y_TOP - Y_BOT) / (2 * Math.PI));
+var px2 = (lng) => (lng + 180) / 360 * VBW;
+var py = (lat) => (Y_TOP - millerY(lat)) / (Y_TOP - Y_BOT) * VBH;
+function toPath(ring, off, close) {
+  let d = "";
+  for (let i = 0; i < ring.length; i++) d += `${i ? "L" : "M"}${px2(ring[i][0] + off).toFixed(1)},${py(ring[i][1]).toFixed(1)}`;
+  return close ? `${d} Z` : d;
+}
+function offsetsFor(ring) {
+  let mn = Infinity, mx = -Infinity;
+  for (const [lng] of ring) {
+    if (lng < mn) mn = lng;
+    if (lng > mx) mx = lng;
+  }
+  const out = [0];
+  if (mx > 180) out.push(-360);
+  if (mn < -180) out.push(360);
+  return out;
+}
+var LAND_PATHS = LAND.flatMap((r) => offsetsFor(r).map((o) => toPath(r, o, true)));
+var BORDER_PATHS = BORDERS.flatMap((r) => offsetsFor(r).map((o) => toPath(r, o, false)));
+function nightPath(at) {
+  const start = Date.UTC(at.getUTCFullYear(), 0, 0);
+  const doy = (Date.UTC(at.getUTCFullYear(), at.getUTCMonth(), at.getUTCDate()) - start) / DAY_MS;
+  const dec = -23.44 * Math.cos(2 * Math.PI / 365 * (doy + 10));
+  if (Math.abs(dec) < 0.6) return null;
+  const utcH = at.getUTCHours() + at.getUTCMinutes() / 60;
+  const subsolarLng = 15 * (12 - utcH);
+  const tanDec = Math.tan(dec * Math.PI / 180);
+  const pts = [];
+  for (let lng = -180; lng <= 180; lng += 3) {
+    const H = (lng - subsolarLng) * Math.PI / 180;
+    let lat = Math.atan(-Math.cos(H) / tanDec) * 180 / Math.PI;
+    if (!Number.isFinite(lat)) lat = 0;
+    pts.push(`${px2(lng).toFixed(1)},${py(Math.max(GEO_LAT_MIN, Math.min(GEO_LAT_MAX, lat))).toFixed(1)}`);
+  }
+  const y = dec > 0 ? VBH : 0;
+  return `M${pts.join("L")}L${VBW},${y}L0,${y}Z`;
+}
+var LABEL_ALL_FROM = 760;
+var LABEL_SOME_FROM = 380;
+var PICKS = new Set(pickColours);
+function WorldMap({ pins, at, ariaLabel, onPin, hoverCard, pinProps }) {
+  const [hover, setHover] = useState23(null);
+  const night = useMemo3(() => nightPath(at), [at]);
+  const wrap = useRef24(null);
+  const [w, setW] = useState23(0);
+  useEffect14(() => {
+    const el = wrap.current;
+    if (!el) return;
+    setW(el.getBoundingClientRect().width);
+    if (typeof ResizeObserver === "undefined") return;
+    const ro = new ResizeObserver((e) => setW(e[0].contentRect.width));
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, []);
+  const labelEvery = w >= LABEL_ALL_FROM ? 1 : w >= LABEL_SOME_FROM ? 3 : 0;
+  const seen = /* @__PURE__ */ new Map();
+  const placed = pins.map((p) => {
+    const bx = px2(p.lng), by = py(p.lat);
+    const key = `${Math.round(bx / 6)},${Math.round(by / 6)}`;
+    const n = seen.get(key) ?? 0;
+    seen.set(key, n + 1);
+    const ang = n * (Math.PI * 2 / 6) - Math.PI / 2;
+    return { pin: p, cx: bx + (n ? Math.cos(ang) * 11 : 0), cy: by + (n ? Math.sin(ang) * 11 : 0), colour: p.colour && PICKS.has(p.colour) ? `var(--pick-${p.colour})` : "var(--status-neutral)" };
+  });
+  const hovered = placed.find((p) => p.pin.id === hover) ?? null;
+  const meridians = Array.from({ length: 25 }, (_, i) => -180 + i * 15);
+  const parallels = [60, 40, 20, 0, -20, -40];
+  return /* @__PURE__ */ jsxs38("div", { ref: wrap, className: "ad-world-map", children: [
+    /* @__PURE__ */ jsxs38("svg", { viewBox: `0 0 ${VBW} ${VBH}`, width: "100%", role: "img", "aria-label": ariaLabel, className: "ad-world-map__svg", children: [
+      /* @__PURE__ */ jsx42("g", { children: LAND_PATHS.map((d, i) => /* @__PURE__ */ jsx42("path", { d, className: "ad-world-map__land" }, i)) }),
+      /* @__PURE__ */ jsx42("g", { children: BORDER_PATHS.map((d, i) => /* @__PURE__ */ jsx42("path", { d, className: "ad-world-map__border" }, i)) }),
+      night && /* @__PURE__ */ jsx42("path", { d: night, className: "ad-world-map__night", "data-night": "" }),
+      /* @__PURE__ */ jsx42("g", { children: parallels.map((lat) => /* @__PURE__ */ jsx42("line", { x1: 0, y1: py(lat), x2: VBW, y2: py(lat), className: lat === 0 ? "ad-world-map__equator" : "ad-world-map__parallel" }, lat)) }),
+      /* @__PURE__ */ jsx42("g", { children: meridians.map((lng, i) => {
+        const hour = Math.round(lng / 15);
+        const show = labelEvery > 0 && Math.abs(hour) < 12 && (hour === 0 || i % labelEvery === 0);
+        return /* @__PURE__ */ jsxs38("g", { children: [
+          /* @__PURE__ */ jsx42("line", { x1: px2(lng), y1: 0, x2: px2(lng), y2: VBH, className: hour === 0 ? "ad-world-map__utc" : "ad-world-map__meridian" }),
+          show && /* @__PURE__ */ jsx42("text", { x: px2(lng), y: 11, textAnchor: "middle", className: "ad-world-map__tz", "data-tz": hour, children: hour === 0 ? "UTC" : `${hour > 0 ? "+" : "\u2212"}${Math.abs(hour)}` })
+        ] }, lng);
+      }) }),
+      /* @__PURE__ */ jsx42("g", { children: placed.filter((p) => p.pin.route).map(({ pin, colour }) => /* @__PURE__ */ jsx42("line", { x1: px2(pin.route.from[0]), y1: py(pin.route.from[1]), x2: px2(pin.route.to[0]), y2: py(pin.route.to[1]), className: "ad-world-map__route", style: { stroke: colour } }, `route-${pin.id}`)) }),
+      hovered && /* @__PURE__ */ jsx42("circle", { cx: hovered.cx, cy: hovered.cy, className: "ad-world-map__hover", style: { fill: hovered.colour } }),
+      placed.map(({ pin, cx: x, cy: y, colour }) => {
+        const on = hover === pin.id;
+        const hooks = pinProps?.(pin) ?? {};
+        return /* @__PURE__ */ jsxs38(
+          "g",
+          {
+            ...hooks,
+            role: onPin ? "button" : void 0,
+            tabIndex: onPin ? 0 : void 0,
+            "aria-label": pin.name,
+            className: cx("ad-world-map__pin", onPin && "ad-world-map__pin--press", on && "ad-world-map__pin--on", pin.assumed && "ad-world-map__pin--assumed"),
+            onMouseEnter: () => setHover(pin.id),
+            onMouseLeave: () => setHover((h) => h === pin.id ? null : h),
+            onFocus: () => setHover(pin.id),
+            onBlur: () => setHover((h) => h === pin.id ? null : h),
+            onClick: () => onPin?.(pin.id),
+            onKeyDown: (e) => {
+              if (onPin && (e.key === "Enter" || e.key === " ")) {
+                e.preventDefault();
+                onPin(pin.id);
+              }
+            },
+            style: { ["--ad-pin"]: colour },
+            children: [
+              /* @__PURE__ */ jsx42("circle", { cx: x, cy: y, className: "ad-world-map__halo" }),
+              /* @__PURE__ */ jsx42("circle", { cx: x, cy: y, className: "ad-world-map__dot" }),
+              /* @__PURE__ */ jsx42("text", { x, y: y + 2.6, textAnchor: "middle", className: "ad-world-map__initials", "aria-hidden": "true", children: pin.initials })
+            ]
+          },
+          pin.id
+        );
+      })
+    ] }),
+    hovered && hoverCard && /* @__PURE__ */ jsx42("div", { className: "ad-float ad-world-map__card", style: { left: `${Math.min(72, hovered.cx / VBW * 100)}%`, top: `${hovered.cy / VBH * 100}%` }, children: hoverCard(hovered.pin) })
+  ] });
+}
+
 // src/components/Charts/Charts.tsx
-import { Fragment as Fragment12, jsx as jsx42, jsxs as jsxs38 } from "react/jsx-runtime";
+import { Fragment as Fragment12, jsx as jsx43, jsxs as jsxs39 } from "react/jsx-runtime";
 function AmountBars({ items, max, ariaLabel, className }) {
   const top = max ?? Math.max(1, ...items.map((i) => i.value));
-  return /* @__PURE__ */ jsx42("div", { className: cx("ad-amounts", className), role: "list", "aria-label": ariaLabel, children: items.map((i) => /* @__PURE__ */ jsxs38("div", { className: "ad-amounts__row", role: "listitem", children: [
-    /* @__PURE__ */ jsx42("span", { className: "ad-amounts__label", children: i.label }),
-    /* @__PURE__ */ jsxs38("span", { className: "ad-amounts__track", children: [
-      /* @__PURE__ */ jsx42("span", { className: "ad-amounts__bar", style: { width: `${Math.max(0, i.value / top) * 100}%` } }),
-      /* @__PURE__ */ jsx42("span", { className: "ad-amounts__value", children: i.display })
+  return /* @__PURE__ */ jsx43("div", { className: cx("ad-amounts", className), role: "list", "aria-label": ariaLabel, children: items.map((i) => /* @__PURE__ */ jsxs39("div", { className: "ad-amounts__row", role: "listitem", children: [
+    /* @__PURE__ */ jsx43("span", { className: "ad-amounts__label", children: i.label }),
+    /* @__PURE__ */ jsxs39("span", { className: "ad-amounts__track", children: [
+      /* @__PURE__ */ jsx43("span", { className: "ad-amounts__bar", style: { width: `${Math.max(0, i.value / top) * 100}%` } }),
+      /* @__PURE__ */ jsx43("span", { className: "ad-amounts__value", children: i.display })
     ] })
   ] }, i.id)) });
 }
 function BudgetBar({ fraction, figure, note = "worked", remainder, end, ariaLabel, planned, marks = [], className }) {
   const done = Math.max(0, Math.min(1, fraction));
-  return /* @__PURE__ */ jsxs38("div", { className: cx("ad-budget", className), children: [
-    /* @__PURE__ */ jsx42("div", { className: "ad-budget__figure", children: figure }),
-    /* @__PURE__ */ jsxs38("div", { className: "ad-progress", role: "meter", "aria-label": ariaLabel, "aria-valuemin": 0, "aria-valuemax": Math.max(100, Math.round(fraction * 100)), "aria-valuenow": Math.round(fraction * 100), children: [
-      planned != null && /* @__PURE__ */ jsx42("span", { className: "ad-progress__planned", style: { width: `${Math.max(0, Math.min(1, planned)) * 100}%` } }),
-      /* @__PURE__ */ jsx42("span", { className: "ad-progress__done", style: { width: `${done * 100}%` } }),
-      marks.map((m) => /* @__PURE__ */ jsx42("span", { className: "ad-progress__mark", role: "img", "aria-label": m.label, title: m.label, style: { left: `${Math.max(0, Math.min(1, m.at)) * 100}%` } }, m.label))
+  return /* @__PURE__ */ jsxs39("div", { className: cx("ad-budget", className), children: [
+    /* @__PURE__ */ jsx43("div", { className: "ad-budget__figure", children: figure }),
+    /* @__PURE__ */ jsxs39("div", { className: "ad-progress", role: "meter", "aria-label": ariaLabel, "aria-valuemin": 0, "aria-valuemax": Math.max(100, Math.round(fraction * 100)), "aria-valuenow": Math.round(fraction * 100), children: [
+      planned != null && /* @__PURE__ */ jsx43("span", { className: "ad-progress__planned", style: { width: `${Math.max(0, Math.min(1, planned)) * 100}%` } }),
+      /* @__PURE__ */ jsx43("span", { className: "ad-progress__done", style: { width: `${done * 100}%` } }),
+      marks.map((m) => /* @__PURE__ */ jsx43("span", { className: "ad-progress__mark", role: "img", "aria-label": m.label, title: m.label, style: { left: `${Math.max(0, Math.min(1, m.at)) * 100}%` } }, m.label))
     ] }),
-    /* @__PURE__ */ jsxs38("div", { className: "ad-budget__foot", children: [
-      /* @__PURE__ */ jsx42("span", { children: note }),
-      /* @__PURE__ */ jsxs38("span", { children: [
+    /* @__PURE__ */ jsxs39("div", { className: "ad-budget__foot", children: [
+      /* @__PURE__ */ jsx43("span", { children: note }),
+      /* @__PURE__ */ jsxs39("span", { children: [
         remainder,
-        end && /* @__PURE__ */ jsxs38(Fragment12, { children: [
+        end && /* @__PURE__ */ jsxs39(Fragment12, { children: [
           " \xB7 ",
           end
         ] })
@@ -3955,21 +4196,21 @@ function BudgetBar({ fraction, figure, note = "worked", remainder, end, ariaLabe
   ] });
 }
 function ProgressBar({ fraction, ariaLabel, thin }) {
-  return /* @__PURE__ */ jsx42("div", { className: cx("ad-progress", thin && "ad-progress--thin"), role: "progressbar", "aria-label": ariaLabel, "aria-valuemin": 0, "aria-valuemax": 100, "aria-valuenow": Math.round(fraction * 100), children: /* @__PURE__ */ jsx42("span", { className: "ad-progress__done", style: { width: `${Math.max(0, Math.min(1, fraction)) * 100}%` } }) });
+  return /* @__PURE__ */ jsx43("div", { className: cx("ad-progress", thin && "ad-progress--thin"), role: "progressbar", "aria-label": ariaLabel, "aria-valuemin": 0, "aria-valuemax": 100, "aria-valuenow": Math.round(fraction * 100), children: /* @__PURE__ */ jsx43("span", { className: "ad-progress__done", style: { width: `${Math.max(0, Math.min(1, fraction)) * 100}%` } }) });
 }
 function OverTime({ periods, currentId, grid = [], ariaLabel, className }) {
   const top = Math.max(1, ...periods.map((p) => p.value), ...grid.map((g) => g.value));
-  return /* @__PURE__ */ jsxs38("figure", { className: cx("ad-overtime", className), "aria-label": ariaLabel, children: [
-    /* @__PURE__ */ jsxs38("div", { className: "ad-overtime__plot", children: [
-      grid.map((g) => /* @__PURE__ */ jsx42("div", { className: "ad-overtime__grid", style: { bottom: `${g.value / top * 100}%` }, children: /* @__PURE__ */ jsx42("span", { children: g.display }) }, g.value)),
-      /* @__PURE__ */ jsx42("div", { className: "ad-overtime__columns", role: "list", children: periods.map((p) => {
+  return /* @__PURE__ */ jsxs39("figure", { className: cx("ad-overtime", className), "aria-label": ariaLabel, children: [
+    /* @__PURE__ */ jsxs39("div", { className: "ad-overtime__plot", children: [
+      grid.map((g) => /* @__PURE__ */ jsx43("div", { className: "ad-overtime__grid", style: { bottom: `${g.value / top * 100}%` }, children: /* @__PURE__ */ jsx43("span", { children: g.display }) }, g.value)),
+      /* @__PURE__ */ jsx43("div", { className: "ad-overtime__columns", role: "list", children: periods.map((p) => {
         const cur = p.id === currentId;
-        return /* @__PURE__ */ jsx42("div", { className: "ad-overtime__slot", role: "listitem", "aria-label": `${p.label}: ${p.display}`, children: /* @__PURE__ */ jsx42("div", { className: cx("ad-overtime__column", cur && "ad-overtime__column--current"), style: { height: `${p.value / top * 100}%` }, children: cur && /* @__PURE__ */ jsx42("span", { className: "ad-overtime__cap", children: p.display }) }) }, p.id);
+        return /* @__PURE__ */ jsx43("div", { className: "ad-overtime__slot", role: "listitem", "aria-label": `${p.label}: ${p.display}`, children: /* @__PURE__ */ jsx43("div", { className: cx("ad-overtime__column", cur && "ad-overtime__column--current"), style: { height: `${p.value / top * 100}%` }, children: cur && /* @__PURE__ */ jsx43("span", { className: "ad-overtime__cap", children: p.display }) }) }, p.id);
       }) })
     ] }),
-    /* @__PURE__ */ jsxs38("div", { className: "ad-overtime__labels", "aria-hidden": "true", children: [
-      /* @__PURE__ */ jsx42("span", { children: periods[0]?.label }),
-      periods.length > 1 && /* @__PURE__ */ jsx42("span", { children: periods[periods.length - 1].label })
+    /* @__PURE__ */ jsxs39("div", { className: "ad-overtime__labels", "aria-hidden": "true", children: [
+      /* @__PURE__ */ jsx43("span", { children: periods[0]?.label }),
+      periods.length > 1 && /* @__PURE__ */ jsx43("span", { children: periods[periods.length - 1].label })
     ] })
   ] });
 }
@@ -3978,34 +4219,34 @@ function Dial({ fraction, label, className }) {
   const c = 2 * Math.PI * r;
   const f = Math.max(0, Math.min(1, Number.isFinite(fraction) ? fraction : 0));
   const display = `${Math.round(f * 100)}%`;
-  return /* @__PURE__ */ jsxs38("figure", { className: cx("ad-dial", className), children: [
-    /* @__PURE__ */ jsxs38("div", { className: "ad-dial__face", role: "meter", "aria-valuemin": 0, "aria-valuemax": 100, "aria-valuenow": Math.round(f * 100), "aria-label": String(label), children: [
-      /* @__PURE__ */ jsxs38("svg", { viewBox: "0 0 70 70", "aria-hidden": "true", children: [
-        /* @__PURE__ */ jsx42("circle", { className: "ad-dial__track", cx: "35", cy: "35", r }),
-        /* @__PURE__ */ jsx42("circle", { className: "ad-dial__arc", cx: "35", cy: "35", r, strokeDasharray: `${c * f} ${c}`, transform: "rotate(-90 35 35)" })
+  return /* @__PURE__ */ jsxs39("figure", { className: cx("ad-dial", className), children: [
+    /* @__PURE__ */ jsxs39("div", { className: "ad-dial__face", role: "meter", "aria-valuemin": 0, "aria-valuemax": 100, "aria-valuenow": Math.round(f * 100), "aria-label": String(label), children: [
+      /* @__PURE__ */ jsxs39("svg", { viewBox: "0 0 70 70", "aria-hidden": "true", children: [
+        /* @__PURE__ */ jsx43("circle", { className: "ad-dial__track", cx: "35", cy: "35", r }),
+        /* @__PURE__ */ jsx43("circle", { className: "ad-dial__arc", cx: "35", cy: "35", r, strokeDasharray: `${c * f} ${c}`, transform: "rotate(-90 35 35)" })
       ] }),
-      /* @__PURE__ */ jsx42("span", { className: "ad-dial__value", children: display })
+      /* @__PURE__ */ jsx43("span", { className: "ad-dial__value", children: display })
     ] }),
-    /* @__PURE__ */ jsx42("figcaption", { className: "ad-dial__label", children: label })
+    /* @__PURE__ */ jsx43("figcaption", { className: "ad-dial__label", children: label })
   ] });
 }
 function Verdict({ word, sentence }) {
-  return /* @__PURE__ */ jsxs38("div", { className: "ad-verdict", children: [
-    /* @__PURE__ */ jsx42("p", { className: "ad-verdict__word", children: String(word).split(/\s+/)[0] }),
-    /* @__PURE__ */ jsx42("p", { className: "ad-verdict__sentence", children: String(sentence) })
+  return /* @__PURE__ */ jsxs39("div", { className: "ad-verdict", children: [
+    /* @__PURE__ */ jsx43("p", { className: "ad-verdict__word", children: String(word).split(/\s+/)[0] }),
+    /* @__PURE__ */ jsx43("p", { className: "ad-verdict__sentence", children: String(sentence) })
   ] });
 }
 
 // src/components/Search/Search.tsx
-import { useRef as useRef24 } from "react";
-import { jsx as jsx43 } from "react/jsx-runtime";
+import { useRef as useRef25 } from "react";
+import { jsx as jsx44 } from "react/jsx-runtime";
 function CommandSearch({ open, onClose, query, onQuery, results, onPick, label = "Search everything", noMatch = "Nothing by that name" }) {
-  const box = useRef24(null);
+  const box = useRef25(null);
   const z = useLayer(open, onClose, [box], "dialog");
   usePageInert(open, [box]);
   useFocusReturn(open, box);
   if (!open) return null;
-  return /* @__PURE__ */ jsx43(Portal, { children: /* @__PURE__ */ jsx43("div", { ref: box, role: "dialog", "aria-modal": "true", "aria-label": label, onKeyDown: (e) => trapTab(e, box.current), style: { zIndex: z }, className: "ad-float ad-search", children: /* @__PURE__ */ jsx43(
+  return /* @__PURE__ */ jsx44(Portal, { children: /* @__PURE__ */ jsx44("div", { ref: box, role: "dialog", "aria-modal": "true", "aria-label": label, onKeyDown: (e) => trapTab(e, box.current), style: { zIndex: z }, className: "ad-float ad-search", children: /* @__PURE__ */ jsx44(
     PickList,
     {
       searchLabel: label,
@@ -4016,19 +4257,19 @@ function CommandSearch({ open, onClose, query, onQuery, results, onPick, label =
         onPick(id);
         onClose();
       },
-      options: results.map((r) => ({ id: r.id, label: r.label, group: r.group, lead: r.icon, hint: r.code ? /* @__PURE__ */ jsx43(Tag, { children: r.code }) : void 0 })),
+      options: results.map((r) => ({ id: r.id, label: r.label, group: r.group, lead: r.icon, hint: r.code ? /* @__PURE__ */ jsx44(Tag, { children: r.code }) : void 0 })),
       className: "ad-search__list"
     }
   ) }) });
 }
 
 // src/components/Guidance/Guidance.tsx
-import { useEffect as useEffect14, useLayoutEffect as useLayoutEffect5, useRef as useRef25, useState as useState23 } from "react";
-import { jsx as jsx44, jsxs as jsxs39 } from "react/jsx-runtime";
-var useIsoLayoutEffect3 = typeof window === "undefined" ? useEffect14 : useLayoutEffect5;
+import { useEffect as useEffect15, useLayoutEffect as useLayoutEffect5, useRef as useRef26, useState as useState24 } from "react";
+import { jsx as jsx45, jsxs as jsxs40 } from "react/jsx-runtime";
+var useIsoLayoutEffect3 = typeof window === "undefined" ? useEffect15 : useLayoutEffect5;
 function TourStep({ open, anchor, step, total, title, children, onBack, onNext, onExit, backLabel = "Back", nextLabel = "Next", progressLabel = (s, t) => `${s} of ${t}`, side = "below" }) {
-  const card = useRef25(null);
-  const [rect, setRect] = useState23(null);
+  const card = useRef26(null);
+  const [rect, setRect] = useState24(null);
   const doc = useFloatingDocument() ?? document;
   useFocusReturn(open, card);
   useIsoLayoutEffect3(() => {
@@ -4056,74 +4297,74 @@ function TourStep({ open, anchor, step, total, title, children, onBack, onNext, 
   const pad = tokenPx("--space-1", 4);
   const notchMax = tokenPx("--space-8", 32);
   const cardStyle = side === "below" ? { top: rect.bottom + pad + gap, left: Math.max(pad * 4, rect.left), ["--ad-notch-x"]: `${Math.round(Math.min(rect.width / 2, notchMax) - gap / 2)}px` } : { top: Math.max(pad * 4, rect.top), left: rect.right + pad + gap, ["--ad-notch-y"]: `${Math.round(Math.min(rect.height / 2, notchMax) - gap / 2)}px` };
-  return /* @__PURE__ */ jsxs39(Portal, { children: [
-    /* @__PURE__ */ jsx44("div", { className: "ad-spotlight", "aria-hidden": "true", style: { top: rect.top - pad, left: rect.left - pad, width: rect.width + pad * 2, height: rect.height + pad * 2 } }),
-    /* @__PURE__ */ jsxs39("div", { ref: card, role: "dialog", "aria-label": typeof title === "string" ? title : void 0, tabIndex: -1, className: cx("ad-tour-card", `ad-tour-card--${side}`), style: cardStyle, children: [
-      /* @__PURE__ */ jsx44("div", { className: "ad-tour-card__ticks", "aria-label": progressLabel(step, total), role: "img", children: Array.from({ length: total }, (_, i) => /* @__PURE__ */ jsx44("i", { "data-done": i < step || void 0 }, i)) }),
-      /* @__PURE__ */ jsx44("h2", { className: "ad-tour-card__title", children: title }),
-      /* @__PURE__ */ jsx44("div", { className: "ad-tour-card__text", children }),
-      /* @__PURE__ */ jsx44("div", { className: "ad-tour-card__foot", children: /* @__PURE__ */ jsxs39(ButtonSizeScope, { size: "bar", children: [
-        onBack && step > 1 && /* @__PURE__ */ jsx44(Button, { onClick: onBack, children: backLabel }),
-        /* @__PURE__ */ jsx44(Button, { variant: "main", onClick: onNext, "data-autofocus": true, children: nextLabel })
+  return /* @__PURE__ */ jsxs40(Portal, { children: [
+    /* @__PURE__ */ jsx45("div", { className: "ad-spotlight", "aria-hidden": "true", style: { top: rect.top - pad, left: rect.left - pad, width: rect.width + pad * 2, height: rect.height + pad * 2 } }),
+    /* @__PURE__ */ jsxs40("div", { ref: card, role: "dialog", "aria-label": typeof title === "string" ? title : void 0, tabIndex: -1, className: cx("ad-tour-card", `ad-tour-card--${side}`), style: cardStyle, children: [
+      /* @__PURE__ */ jsx45("div", { className: "ad-tour-card__ticks", "aria-label": progressLabel(step, total), role: "img", children: Array.from({ length: total }, (_, i) => /* @__PURE__ */ jsx45("i", { "data-done": i < step || void 0 }, i)) }),
+      /* @__PURE__ */ jsx45("h2", { className: "ad-tour-card__title", children: title }),
+      /* @__PURE__ */ jsx45("div", { className: "ad-tour-card__text", children }),
+      /* @__PURE__ */ jsx45("div", { className: "ad-tour-card__foot", children: /* @__PURE__ */ jsxs40(ButtonSizeScope, { size: "bar", children: [
+        onBack && step > 1 && /* @__PURE__ */ jsx45(Button, { onClick: onBack, children: backLabel }),
+        /* @__PURE__ */ jsx45(Button, { variant: "main", onClick: onNext, "data-autofocus": true, children: nextLabel })
       ] }) })
     ] })
   ] });
 }
 function PixxBrief({ open, face, greeting, children, onSnooze, onGotIt, snoozeLabel = "Snooze", gotItLabel = "Got it" }) {
   if (!open) return null;
-  return /* @__PURE__ */ jsx44(Portal, { children: /* @__PURE__ */ jsxs39("section", { className: "ad-float ad-brief", "aria-label": typeof greeting === "string" ? greeting : "Pixx", role: "complementary", children: [
-    /* @__PURE__ */ jsxs39("div", { className: "ad-brief__head", children: [
-      /* @__PURE__ */ jsx44("img", { className: "ad-brief__face", src: face, alt: "" }),
-      /* @__PURE__ */ jsx44("h2", { className: "ad-brief__greeting", children: greeting })
+  return /* @__PURE__ */ jsx45(Portal, { children: /* @__PURE__ */ jsxs40("section", { className: "ad-float ad-brief", "aria-label": typeof greeting === "string" ? greeting : "Pixx", role: "complementary", children: [
+    /* @__PURE__ */ jsxs40("div", { className: "ad-brief__head", children: [
+      /* @__PURE__ */ jsx45("img", { className: "ad-brief__face", src: face, alt: "" }),
+      /* @__PURE__ */ jsx45("h2", { className: "ad-brief__greeting", children: greeting })
     ] }),
-    /* @__PURE__ */ jsx44("div", { className: "ad-brief__text", children }),
-    /* @__PURE__ */ jsxs39("div", { className: "ad-brief__foot", children: [
-      /* @__PURE__ */ jsx44(Button, { onClick: onSnooze, children: snoozeLabel }),
-      /* @__PURE__ */ jsx44(Button, { onClick: onGotIt, children: gotItLabel })
+    /* @__PURE__ */ jsx45("div", { className: "ad-brief__text", children }),
+    /* @__PURE__ */ jsxs40("div", { className: "ad-brief__foot", children: [
+      /* @__PURE__ */ jsx45(Button, { onClick: onSnooze, children: snoozeLabel }),
+      /* @__PURE__ */ jsx45(Button, { onClick: onGotIt, children: gotItLabel })
     ] })
   ] }) });
 }
 
 // src/components/Furniture/Furniture.tsx
-import { Fragment as Fragment13, jsx as jsx45, jsxs as jsxs40 } from "react/jsx-runtime";
+import { Fragment as Fragment13, jsx as jsx46, jsxs as jsxs41 } from "react/jsx-runtime";
 function TitleBlock({ code: code2, number, venue, pageNumber, page }) {
-  return /* @__PURE__ */ jsxs40("footer", { className: "ad-title-block", children: [
-    /* @__PURE__ */ jsxs40("span", { className: "ad-title-block__cell ad-title-block__code", children: [
+  return /* @__PURE__ */ jsxs41("footer", { className: "ad-title-block", children: [
+    /* @__PURE__ */ jsxs41("span", { className: "ad-title-block__cell ad-title-block__code", children: [
       code2,
-      number && /* @__PURE__ */ jsx45("span", { className: "ad-title-block__number", children: number })
+      number && /* @__PURE__ */ jsx46("span", { className: "ad-title-block__number", children: number })
     ] }),
-    /* @__PURE__ */ jsx45("span", { className: "ad-title-block__cell ad-title-block__venue", children: venue }),
-    /* @__PURE__ */ jsx45("span", { className: "ad-title-block__cell ad-title-block__run", "aria-hidden": "true" }),
-    /* @__PURE__ */ jsxs40("span", { className: "ad-title-block__cell ad-title-block__page", children: [
-      /* @__PURE__ */ jsx45("span", { className: "ad-title-block__page-number", children: pageNumber }),
+    /* @__PURE__ */ jsx46("span", { className: "ad-title-block__cell ad-title-block__venue", children: venue }),
+    /* @__PURE__ */ jsx46("span", { className: "ad-title-block__cell ad-title-block__run", "aria-hidden": "true" }),
+    /* @__PURE__ */ jsxs41("span", { className: "ad-title-block__cell ad-title-block__page", children: [
+      /* @__PURE__ */ jsx46("span", { className: "ad-title-block__page-number", children: pageNumber }),
       page
     ] })
   ] });
 }
 function Contents({ entries, ariaLabel = "Contents" }) {
-  return /* @__PURE__ */ jsx45("ol", { className: "ad-contents", "aria-label": ariaLabel, children: entries.map((e, i) => {
-    const inner = /* @__PURE__ */ jsxs40(Fragment13, { children: [
-      /* @__PURE__ */ jsx45("span", { className: "ad-contents__numeral", children: String(i + 1).padStart(2, "0") }),
-      /* @__PURE__ */ jsxs40("span", { className: "ad-contents__body", children: [
-        /* @__PURE__ */ jsx45("span", { className: "ad-contents__name", children: e.name }),
-        e.summary && /* @__PURE__ */ jsx45("span", { className: "ad-contents__summary", children: e.summary })
+  return /* @__PURE__ */ jsx46("ol", { className: "ad-contents", "aria-label": ariaLabel, children: entries.map((e, i) => {
+    const inner = /* @__PURE__ */ jsxs41(Fragment13, { children: [
+      /* @__PURE__ */ jsx46("span", { className: "ad-contents__numeral", children: String(i + 1).padStart(2, "0") }),
+      /* @__PURE__ */ jsxs41("span", { className: "ad-contents__body", children: [
+        /* @__PURE__ */ jsx46("span", { className: "ad-contents__name", children: e.name }),
+        e.summary && /* @__PURE__ */ jsx46("span", { className: "ad-contents__summary", children: e.summary })
       ] })
     ] });
-    return /* @__PURE__ */ jsx45("li", { className: "ad-contents__entry", "data-needs-you": e.needsYou || void 0, children: e.onOpen ? /* @__PURE__ */ jsx45("button", { type: "button", className: "ad-contents__button", onClick: e.onOpen, children: inner }) : /* @__PURE__ */ jsx45("div", { className: "ad-contents__button", children: inner }) }, e.id);
+    return /* @__PURE__ */ jsx46("li", { className: "ad-contents__entry", "data-needs-you": e.needsYou || void 0, children: e.onOpen ? /* @__PURE__ */ jsx46("button", { type: "button", className: "ad-contents__button", onClick: e.onOpen, children: inner }) : /* @__PURE__ */ jsx46("div", { className: "ad-contents__button", children: inner }) }, e.id);
   }) });
 }
 function Caption({ children, bracket = "none", className }) {
-  return /* @__PURE__ */ jsxs40("span", { className: cx("ad-caption", className), children: [
+  return /* @__PURE__ */ jsxs41("span", { className: cx("ad-caption", className), children: [
     bracket !== "none" && "[ ",
     children,
     bracket === "closed" && " ]"
   ] });
 }
 function DualUnit({ primary, secondary }) {
-  return /* @__PURE__ */ jsxs40("span", { className: "ad-dual", children: [
+  return /* @__PURE__ */ jsxs41("span", { className: "ad-dual", children: [
     primary,
     " ",
-    /* @__PURE__ */ jsxs40("span", { className: "ad-caption", children: [
+    /* @__PURE__ */ jsxs41("span", { className: "ad-caption", children: [
       "[ ",
       secondary,
       " ]"
@@ -4131,18 +4372,18 @@ function DualUnit({ primary, secondary }) {
   ] });
 }
 function Frame({ rail, children, className }) {
-  return /* @__PURE__ */ jsxs40("div", { className: cx("ad-frame", className), children: [
+  return /* @__PURE__ */ jsxs41("div", { className: cx("ad-frame", className), children: [
     rail,
-    /* @__PURE__ */ jsx45("div", { className: "ad-frame__page", children })
+    /* @__PURE__ */ jsx46("div", { className: "ad-frame__page", children })
   ] });
 }
 function Ground({ children, className, style }) {
-  return /* @__PURE__ */ jsx45("div", { className: cx("ad-ground", className), style, children });
+  return /* @__PURE__ */ jsx46("div", { className: cx("ad-ground", className), style, children });
 }
 
 // src/runtime/AdsProvider.tsx
-import { useContext as useContext8, useEffect as useEffect15, useMemo as useMemo3 } from "react";
-import { jsx as jsx46 } from "react/jsx-runtime";
+import { useContext as useContext8, useEffect as useEffect16, useMemo as useMemo4 } from "react";
+import { jsx as jsx47 } from "react/jsx-runtime";
 var MODE = typeof process !== "undefined" && process.env && process.env.NODE_ENV || "development";
 var pending = [];
 var warned = /* @__PURE__ */ new Set();
@@ -4169,11 +4410,11 @@ ${describeViolations(all)}`);
 }
 function AdsProvider({ strict = false, show, children }) {
   const on = strict && MODE !== "production";
-  useEffect15(() => {
+  useEffect16(() => {
     if (!on) return;
     report(scanIn(document.body), true);
   });
-  useEffect15(() => {
+  useEffect16(() => {
     if (!on) return;
     const look = () => report(scanIn(document.body), false);
     const watch = new MutationObserver(look);
@@ -4190,20 +4431,20 @@ function AdsProvider({ strict = false, show, children }) {
   const project = o.projectColours === true;
   const item = o.itemColours === true;
   const department = o.departmentColours === true;
-  const value = useMemo3(() => ({ project, item, department, inProject: outer.inProject }), [project, item, department, outer.inProject]);
+  const value = useMemo4(() => ({ project, item, department, inProject: outer.inProject }), [project, item, department, outer.inProject]);
   const key = JSON.stringify(o);
-  const options = useMemo3(() => o, [key]);
-  return /* @__PURE__ */ jsx46(HueSwitches.Provider, { value, children: /* @__PURE__ */ jsx46(Show.Provider, { value: options, children }) });
+  const options = useMemo4(() => o, [key]);
+  return /* @__PURE__ */ jsx47(HueSwitches.Provider, { value, children: /* @__PURE__ */ jsx47(Show.Provider, { value: options, children }) });
 }
 function AdsScope({ project, children }) {
   const outer = useContext8(HueSwitches);
-  const value = useMemo3(() => ({ ...outer, inProject: true }), [outer]);
-  return /* @__PURE__ */ jsx46(HueSwitches.Provider, { value, children: /* @__PURE__ */ jsx46("div", { "data-ads-project": project, style: { display: "contents" }, children }) });
+  const value = useMemo4(() => ({ ...outer, inProject: true }), [outer]);
+  return /* @__PURE__ */ jsx47(HueSwitches.Provider, { value, children: /* @__PURE__ */ jsx47("div", { "data-ads-project": project, style: { display: "contents" }, children }) });
 }
 
 // src/components/Navigation/MenuPieces.tsx
 import { createContext as createContext7, useContext as useContext9 } from "react";
-import { jsx as jsx47, jsxs as jsxs41 } from "react/jsx-runtime";
+import { jsx as jsx48, jsxs as jsxs42 } from "react/jsx-runtime";
 var strip4 = (h) => {
   if (!h) return {};
   const { className: _c, style: _s, ...rest } = h;
@@ -4211,57 +4452,57 @@ var strip4 = (h) => {
 };
 var Folded = createContext7(false);
 function MenuBrand({ mark, label, onPress, end }) {
-  return /* @__PURE__ */ jsxs41("div", { className: "ad-menu__brand", children: [
-    /* @__PURE__ */ jsx47("button", { type: "button", className: "ad-menu__mark", "aria-label": label, title: label, onClick: onPress, children: mark }),
-    end != null && /* @__PURE__ */ jsx47("span", { className: "ad-menu__trail", children: /* @__PURE__ */ jsx47(ButtonSizeScope, { size: "row", children: end }) })
+  return /* @__PURE__ */ jsxs42("div", { className: "ad-menu__brand", children: [
+    /* @__PURE__ */ jsx48("button", { type: "button", className: "ad-menu__mark", "aria-label": label, title: label, onClick: onPress, children: mark }),
+    end != null && /* @__PURE__ */ jsx48("span", { className: "ad-menu__trail", children: /* @__PURE__ */ jsx48(ButtonSizeScope, { size: "row", children: end }) })
   ] });
 }
 function MenuBody({ children, bodyProps }) {
-  return /* @__PURE__ */ jsx47("div", { ...strip4(bodyProps), className: "ad-menu__body", children });
+  return /* @__PURE__ */ jsx48("div", { ...strip4(bodyProps), className: "ad-menu__body", children });
 }
 function MenuFrame({ rail = false, ariaLabel, children, frameProps }) {
-  return /* @__PURE__ */ jsx47(Folded.Provider, { value: rail, children: /* @__PURE__ */ jsx47("nav", { ...strip4(frameProps), "aria-label": ariaLabel, className: cx(rail ? "ad-rail" : "ad-side", "ad-menu"), children }) });
+  return /* @__PURE__ */ jsx48(Folded.Provider, { value: rail, children: /* @__PURE__ */ jsx48("nav", { ...strip4(frameProps), "aria-label": ariaLabel, className: cx(rail ? "ad-rail" : "ad-side", "ad-menu"), children }) });
 }
 function MenuList({ children, listProps }) {
   const rail = useContext9(Folded);
-  return /* @__PURE__ */ jsx47("ul", { ...strip4(listProps), className: cx(rail ? "ad-rail__group" : "ad-side__list", "ad-menu__list"), children });
+  return /* @__PURE__ */ jsx48("ul", { ...strip4(listProps), className: cx(rail ? "ad-rail__group" : "ad-side__list", "ad-menu__list"), children });
 }
 function MenuItem({ icon, label, current, onPress, trail, children, itemProps, ariaLabel, codeSlot }) {
   const rail = useContext9(Folded);
   const name = ariaLabel ?? (typeof label === "string" ? label : void 0);
-  return /* @__PURE__ */ jsxs41("li", { ...strip4(itemProps), className: "ad-menu__row", children: [
-    /* @__PURE__ */ jsxs41("div", { className: "ad-menu__line", children: [
-      /* @__PURE__ */ jsxs41("button", { type: "button", className: rail ? "ad-rail__item" : "ad-side__item", "aria-current": current ? "page" : void 0, "aria-label": rail ? name : void 0, title: rail ? name : void 0, onClick: onPress, children: [
-        icon != null && /* @__PURE__ */ jsx47("span", { className: rail ? void 0 : cx("ad-side__icon", codeSlot && "ad-menu__code"), "aria-hidden": typeof label === "string" ? true : void 0, children: icon }),
-        !rail && /* @__PURE__ */ jsx47("span", { className: "ad-menu__label", children: label })
+  return /* @__PURE__ */ jsxs42("li", { ...strip4(itemProps), className: "ad-menu__row", children: [
+    /* @__PURE__ */ jsxs42("div", { className: "ad-menu__line", children: [
+      /* @__PURE__ */ jsxs42("button", { type: "button", className: rail ? "ad-rail__item" : "ad-side__item", "aria-current": current ? "page" : void 0, "aria-label": rail ? name : void 0, title: rail ? name : void 0, onClick: onPress, children: [
+        icon != null && /* @__PURE__ */ jsx48("span", { className: rail ? void 0 : cx("ad-side__icon", codeSlot && "ad-menu__code"), "aria-hidden": typeof label === "string" ? true : void 0, children: icon }),
+        !rail && /* @__PURE__ */ jsx48("span", { className: "ad-menu__label", children: label })
       ] }),
-      !rail && trail != null && /* @__PURE__ */ jsx47("span", { className: "ad-menu__trail", children: /* @__PURE__ */ jsx47(ButtonSizeScope, { size: "row", children: trail }) })
+      !rail && trail != null && /* @__PURE__ */ jsx48("span", { className: "ad-menu__trail", children: /* @__PURE__ */ jsx48(ButtonSizeScope, { size: "row", children: trail }) })
     ] }),
     children
   ] });
 }
 function MenuSeparator({ itemProps, ariaLabel }) {
-  return /* @__PURE__ */ jsx47("li", { ...strip4(itemProps), role: "separator", "aria-label": ariaLabel, className: "ad-menu__separator" });
+  return /* @__PURE__ */ jsx48("li", { ...strip4(itemProps), role: "separator", "aria-label": ariaLabel, className: "ad-menu__separator" });
 }
 function MenuFoot({ children }) {
   const rail = useContext9(Folded);
-  return /* @__PURE__ */ jsx47("div", { className: cx(rail ? "ad-rail__foot" : "ad-side__foot", "ad-menu__foot"), children });
+  return /* @__PURE__ */ jsx48("div", { className: cx(rail ? "ad-rail__foot" : "ad-side__foot", "ad-menu__foot"), children });
 }
 function MenuPerson({ name, role, src, initials: initials2, onPress, pressLabel, end }) {
   const rail = useContext9(Folded);
-  const face = /* @__PURE__ */ jsx47(Avatar, { name, src, initials: initials2, size: "md", decorative: !!onPress });
-  return /* @__PURE__ */ jsxs41("div", { className: "ad-menu__person", children: [
-    onPress ? /* @__PURE__ */ jsx47("button", { type: "button", className: "ad-menu__face", "aria-label": pressLabel ?? name, title: pressLabel ?? name, onClick: onPress, children: face }) : face,
-    !rail && /* @__PURE__ */ jsxs41("span", { className: "ad-menu__who", children: [
-      /* @__PURE__ */ jsx47("span", { className: "ad-menu__name", children: name }),
-      role && /* @__PURE__ */ jsx47("span", { className: "ad-menu__role", children: role })
+  const face = /* @__PURE__ */ jsx48(Avatar, { name, src, initials: initials2, size: "md", decorative: !!onPress });
+  return /* @__PURE__ */ jsxs42("div", { className: "ad-menu__person", children: [
+    onPress ? /* @__PURE__ */ jsx48("button", { type: "button", className: "ad-menu__face", "aria-label": pressLabel ?? name, title: pressLabel ?? name, onClick: onPress, children: face }) : face,
+    !rail && /* @__PURE__ */ jsxs42("span", { className: "ad-menu__who", children: [
+      /* @__PURE__ */ jsx48("span", { className: "ad-menu__name", children: name }),
+      role && /* @__PURE__ */ jsx48("span", { className: "ad-menu__role", children: role })
     ] }),
-    !rail && end != null && /* @__PURE__ */ jsx47("span", { className: "ad-menu__trail", children: /* @__PURE__ */ jsx47(ButtonSizeScope, { size: "row", children: end }) })
+    !rail && end != null && /* @__PURE__ */ jsx48("span", { className: "ad-menu__trail", children: /* @__PURE__ */ jsx48(ButtonSizeScope, { size: "row", children: end }) })
   ] });
 }
 function MenuNote({ children }) {
   const rail = useContext9(Folded);
-  return rail ? null : /* @__PURE__ */ jsx47("p", { className: "ad-menu__note", children });
+  return rail ? null : /* @__PURE__ */ jsx48("p", { className: "ad-menu__note", children });
 }
 export {
   AccessRow,
@@ -4305,6 +4546,7 @@ export {
   Dialog,
   Dials,
   Dot,
+  DragBand,
   DragHandle,
   DropLine,
   DualUnit,
@@ -4319,12 +4561,14 @@ export {
   FormSection,
   Frame,
   Ground,
+  GroupBand,
   GroupHeading,
   HeaderActions,
   Health,
   Icon,
   IconButton,
   InlineEdit,
+  LaneWash,
   Legend,
   List,
   ListSection,
@@ -4414,6 +4658,7 @@ export {
   ViewPopover,
   ViewSwitch,
   WeekendShade,
+  WorldMap,
   YearCalendar,
   ZoomCluster,
   cx,

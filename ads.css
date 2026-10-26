@@ -172,6 +172,19 @@
   --word-pill-corner: 4px;
   --word-pill-inset: 1px;
   --word-pill-edge: 5px;
+  --map-line: 0.5;
+  --map-line-land: 0.7;
+  --map-line-utc: 0.8;
+  --map-line-route: 1;
+  --map-dash-route: 3;
+  --map-dash-guess: 2 1.5;
+  --map-pin-r: 5;
+  --map-pin-r-on: 6;
+  --map-halo-r: 7;
+  --map-halo-r-on: 9;
+  --map-hover-r: 16;
+  --map-pin-line: 1.5;
+  --h-dialog-cap: 82vh;
   --border-w: 1px;
   --border-w-strong: 1.5px;
   --w-stripe: 3px;
@@ -185,6 +198,17 @@
   --opacity-stamp: 0.55;
   --tint-presence-strip: 40%;
   --tint-presence-wash: 18%;
+  --tint-lane-wash: 8%;
+  --tint-lane-edge: 45%;
+  --map-op-land: 0.95;
+  --map-op-border: 0.5;
+  --map-op-parallel: 0.3;
+  --map-op-meridian: 0.32;
+  --map-op-utc: 0.5;
+  --map-op-label: 0.85;
+  --map-op-route: 0.6;
+  --map-op-halo: 0.22;
+  --map-op-hover: 0.16;
   /* Sizes are 12 / 14 / 20 / 28, plus the two display sizes. 12 is the floor. */
   --text-xs: 12px;
   --text-base: 14px;
@@ -210,6 +234,8 @@
   --delay-loading: 1s;
   --dur-check-pop: 260ms;
   --ease-check-pop: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --dur-ack-pulse: 2.4s;
+  --ease-ack-pulse: ease-in-out;
   /* Low to high. Floating pieces from the library stack themselves: each one opened sits 2 above whatever is open already (a menu inside a dialog sits over the dialog and its dim layer), never below its own floor. An app adds local 1–6 inside a component and nothing else. */
   --z-sticky: 40;
   --z-float: 90;
@@ -528,6 +554,11 @@ button.ad-booking:focus-visible { outline: none; box-shadow: var(--ring-select);
 button.ad-year__day { cursor: pointer; }
 button.ad-year__day:hover { color: var(--accent); }
 button.ad-year__day:focus-visible { outline: none; box-shadow: var(--ring-select); }
+/* A block too short for its name (ruled 2026-10-26, Athena's day planner): the name lifts just above it, never clipped. */
+.ad-booking--outside { overflow: visible; }
+.ad-booking--outside .ad-booking__name { position: absolute; left: 0; bottom: 100%; max-width: 100%; padding-bottom: var(--space-hair); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; pointer-events: none; }
+/* Every other hour on the inset plane (ruled 2026-10-26, Athena's time grid). */
+.ad-time-grid__hour--band { background: var(--bg-inset); }
 
 /* src/components/Card/Card.css */
 /* Card: a board tile, or a dashboard widget as the Dashboard card draws it (small caps title, More at the right in 600). */
@@ -651,6 +682,9 @@ button.ad-card__name:focus-visible { outline: none; box-shadow: var(--ring-selec
 .ad-dialog__body p { margin: 0; }
 .ad-dialog__actions { display: flex; gap: var(--space-2); }
 .ad-dialog__actions > * { flex: 1; }
+/* A rich body (ruled 2026-10-26, Athena's DialogLayout): pieces 16 apart; the body alone scrolls past h-dialog-cap. */
+.ad-dialog--rich { display: flex; flex-direction: column; max-height: var(--h-dialog-cap); box-sizing: border-box; }
+.ad-dialog__rich { flex: 1 1 auto; min-height: 0; overflow-y: auto; display: flex; flex-direction: column; gap: var(--space-4); margin: 0 calc(var(--space-1) * -1) var(--space-4); padding: var(--space-1); }
 @media (prefers-reduced-motion: reduce) { .ad-scrim { animation: none; } }
 
 /* src/components/EmptyState/EmptyState.css */
@@ -726,6 +760,10 @@ button.ad-card__name:focus-visible { outline: none; box-shadow: var(--ring-selec
 .ad-inline-edit:focus-visible { box-shadow: var(--ring-select); }
 .ad-inline-edit::placeholder { color: var(--text-muted); }
 .ad-inline-edit:disabled { background: transparent; cursor: default; }
+/* A canvas page's own title (ruled 2026-10-26, kept from Athena's .pa-bare--title): the words alone, no fill, no ring. */
+.ad-inline-edit--page { font-family: var(--font-body); font-weight: 600; font-size: var(--text-28); line-height: var(--lh-tight); padding: var(--space-1) 0; margin: 0; border-radius: 0; }
+.ad-inline-edit--page:hover, .ad-inline-edit--page:focus { background: transparent; }
+.ad-inline-edit--page:focus-visible { box-shadow: none; }
 
 /* src/components/Furniture/Furniture.css */
 /* TitleBlock, Contents, Caption, DualUnit, Ground */
@@ -864,6 +902,33 @@ button.ad-contents__button:focus-visible { outline: none; box-shadow: var(--ring
 .ad-list-columns__edge:hover { box-shadow: inset calc(var(--border-w) * -1) 0 0 var(--text-muted); }
 .ad-row__cells { --ad-col: auto; display: inline-flex; align-items: center; flex: none; }
 .ad-row__cell { flex: none; width: var(--ad-col); padding: 0 var(--space-2); box-sizing: border-box; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: var(--text-base); color: var(--text-secondary); }
+
+/* src/components/Map/Map.css */
+/* WorldMap (ruled 2026-10-26, Jeremy): Athena's Where-is-everyone map as it draws it (widgets.css .wx-map-*), in map units. */
+.ad-world-map { position: relative; }
+.ad-world-map__svg { display: block; }
+.ad-world-map__land { fill: var(--bg-hover); stroke: var(--line-strong); stroke-linejoin: round; stroke-width: var(--map-line-land); opacity: var(--map-op-land); }
+.ad-world-map__border { fill: none; stroke: var(--line-strong); stroke-width: var(--map-line); opacity: var(--map-op-border); }
+.ad-world-map__night { fill: var(--bg-inset); pointer-events: none; }
+.ad-world-map__parallel { stroke: var(--line-strong); stroke-width: var(--map-line); opacity: var(--map-op-parallel); }
+.ad-world-map__equator { stroke: var(--line-strong); stroke-width: var(--map-line-land); opacity: var(--map-op-border); }
+.ad-world-map__meridian { stroke: var(--line-strong); stroke-width: var(--map-line); opacity: var(--map-op-meridian); }
+.ad-world-map__utc { stroke: var(--text-faint); stroke-width: var(--map-line-utc); opacity: var(--map-op-utc); }
+.ad-world-map__tz { fill: var(--text-faint); font-family: var(--font-body); font-weight: 400; font-size: var(--text-xs); font-variant-numeric: tabular-nums; opacity: var(--map-op-label); pointer-events: none; }
+.ad-world-map__route { stroke-width: var(--map-line-route); stroke-dasharray: var(--map-dash-route) var(--map-dash-route); opacity: var(--map-op-route); }
+.ad-world-map__hover { r: var(--map-hover-r); opacity: var(--map-op-hover); pointer-events: none; }
+.ad-world-map__pin { --ad-pin: var(--status-neutral); }
+.ad-world-map__pin--press { cursor: pointer; }
+.ad-world-map__pin:focus-visible { outline: none; }
+.ad-world-map__pin:focus-visible .ad-world-map__dot { stroke: var(--text-secondary); stroke-width: var(--bw-select); }
+.ad-world-map__halo { fill: var(--ad-pin); r: var(--map-halo-r); opacity: var(--map-op-halo); }
+.ad-world-map__pin--on .ad-world-map__halo { r: var(--map-halo-r-on); }
+.ad-world-map__dot { fill: var(--ad-pin); stroke: var(--bg-surface); r: var(--map-pin-r); stroke-width: var(--map-pin-line); }
+.ad-world-map__pin--on .ad-world-map__dot { r: var(--map-pin-r-on); }
+.ad-world-map__pin--assumed .ad-world-map__dot { fill: var(--bg-surface); stroke: var(--ad-pin); stroke-dasharray: var(--map-dash-guess); }
+.ad-world-map__initials { fill: var(--bg-surface); font-family: var(--font-body); font-weight: 600; font-size: var(--text-xs); pointer-events: none; }
+.ad-world-map__pin--assumed .ad-world-map__initials { fill: var(--ad-pin); }
+.ad-world-map__card { position: absolute; transform: translate(var(--space-3), -50%); display: flex; align-items: center; gap: var(--space-2); padding: var(--space-2); pointer-events: none; }
 
 /* src/components/Menu/Menu.css */
 /* Menu */
@@ -1187,6 +1252,10 @@ button.ad-row__name:focus-visible { outline: none; box-shadow: var(--ring-select
 .ad-row__trail { gap: var(--space-1); }
 .ad-row-date { display: inline-flex; align-items: center; gap: var(--space-1); font-family: var(--font-mono); font-size: var(--text-xs); color: var(--text-secondary); white-space: nowrap; }
 .ad-row-date--late { color: var(--status-error-ink); }
+/* The countdown (ruled 2026-10-26, Athena's milestone card): body face, regular, text-secondary; red once passed. */
+.ad-row-date--countdown { font-family: var(--font-body); font-weight: 400; }
+.ad-row-date--countdown-base { font-size: var(--text-base); }
+.ad-row-date--countdown-small { font-size: var(--text-xs); }
 .ad-row-date__icon { display: inline-flex; }
 .ad-row-date__icon svg { width: var(--icon-sm); height: var(--icon-sm); }
 
@@ -1217,6 +1286,11 @@ button.ad-row__name:focus-visible { outline: none; box-shadow: var(--ring-select
 /* Assigned to you, not yet acknowledged: the ring is filled in its priority colour; one click acknowledges (ruled 2026-10-25). */
 .ad-todo-check--asked { background: var(--ad-ring); }
 .ad-todo-check--asked:hover { background: var(--accent); box-shadow: none; }
+/* Not acknowledged yet: a slow blink until it is (ruled 2026-10-26, Jeremy, kept from Athena's lb-ack-pulse): full, down to
+   opacity-disabled at the half, back, every dur-ack-pulse. Still under reduce-motion: the filled ring alone says it. */
+@keyframes ad-ack-pulse { 0%, 100% { opacity: 1; } 50% { opacity: var(--opacity-disabled); } }
+.ad-todo-check--asked { animation: ad-ack-pulse var(--dur-ack-pulse) var(--ease-ack-pulse) infinite; }
+@media (prefers-reduced-motion: reduce) { .ad-todo-check--asked { animation: none; opacity: 1; } }
 /* The date line's other facts (ruled 2026-10-25): repeat, the past-deadline flag, the role, the deliverable. */
 .ad-row__fact { display: inline-flex; align-items: center; gap: var(--space-1); white-space: nowrap; color: var(--text-secondary); }
 /* A detail line too long for the row: the date and department stay whole; the role and the deliverable shrink and end in "…" (their
@@ -1401,6 +1475,8 @@ button.ad-row__name:focus-visible { outline: none; box-shadow: var(--ring-select
 .ad-table th.ad-table__name--two { height: var(--h-row-2); }
 .ad-table__words { display: inline-flex; flex-direction: column; gap: var(--space-hair); }
 .ad-table__meta { font-family: var(--font-mono); font-size: var(--text-xs); font-weight: 400; color: var(--text-secondary); }
+.ad-selection-bar__lead { display: inline-flex; align-items: center; gap: var(--space-2); }
+.ad-selection-bar__slot { align-self: stretch; display: inline-flex; align-items: center; }
 
 /* src/components/Tag/Tag.css */
 /* Tag, FilterTag, UnreadDot. (TokenPill's look is .ad-token, in Writing.css: one red pill.) */
@@ -1583,6 +1659,16 @@ button.ad-milestone:focus-visible { outline: none; box-shadow: var(--ring-select
 .ad-chart-key__swatch--pencilled { background: transparent; background-image: var(--hatch); box-shadow: inset 0 0 0 var(--border-w) var(--line-strong); }
 .ad-chart-key__swatch--deal { background: transparent; outline: var(--border-w) dashed var(--text-muted); outline-offset: calc(var(--border-w) * -1); }
 .ad-chart-key__swatch--backup { background: transparent; outline: var(--border-w) dotted var(--line-strong); outline-offset: calc(var(--border-w) * -1); }
+/* DragBand (ruled 2026-10-26; Athena's GridSelBand): the span a new item will cover while it is dragged out. */
+.ad-drag-band { position: absolute; top: 0; bottom: 0; box-sizing: border-box; background: var(--tint-selected); border-left: var(--border-w) dashed var(--accent); border-right: var(--border-w) dashed var(--accent); pointer-events: none; z-index: 1; }
+.ad-drag-band--lane { top: var(--space-1); bottom: var(--space-1); }
+/* GroupBand (ruled 2026-10-26; Athena's gridBand): a group's heading row on the inset plane under a hairline. */
+.ad-group-band { background: var(--bg-inset); border-top: var(--border-w) solid var(--border); }
+/* LaneWash (ruled 2026-10-26; Athena's ScheduleBar wash): a named colour at tint-lane-wash behind the lanes. */
+.ad-lane-wash { --ad-wash: var(--text-muted); position: absolute; top: 0; bottom: 0; box-sizing: border-box; border-radius: var(--radius-page); background: color-mix(in srgb, var(--ad-wash) var(--tint-lane-wash), transparent); pointer-events: none; overflow: hidden; }
+.ad-lane-wash--edge { border-left: var(--bw-select) solid color-mix(in srgb, var(--ad-wash) var(--tint-lane-edge), transparent); }
+.ad-lane-wash--unconfirmed { border-left-style: dashed; }
+.ad-lane-wash__label { position: absolute; top: var(--space-8); left: var(--space-1); white-space: nowrap; overflow: hidden; font-family: var(--font-body); font-size: var(--text-xs); font-weight: 400; color: var(--text-faint); }
 
 /* src/components/Toolbar/Toolbar.css */
 /* Toolbar */
