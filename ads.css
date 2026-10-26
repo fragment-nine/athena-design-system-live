@@ -639,6 +639,12 @@ button.ad-card__name:focus-visible { outline: none; box-shadow: var(--ring-selec
 /* The label beside its field (a form, a pop-over field): no hairline, the field right after the words. */
 .ad-field-row--beside { min-height: var(--h-field); border-bottom: 0; }
 .ad-field-row--beside .ad-field-row__control { margin-left: 0; }
+/* The field side takes the width left after the name and shrinks inside it (fixed 2026-10-26: in the todo card (--w-card) a long
+   project ran past the card's edge and the Repeat button beside the date was clipped). A field gives way first, its own
+   words ending in "…"; a button beside it keeps its whole label. Nothing runs past the row. */
+.ad-field-row--beside .ad-field-row__control { flex: 1 1 0; min-width: 0; max-width: 100%; gap: var(--space-2); }
+.ad-field-row--beside .ad-field-row__control > * { min-width: 0; max-width: 100%; }
+.ad-field-row--beside .ad-field-row__control > :is(.ad-button, .ad-icon-button) { flex: none; }
 /* One straight column (ruled 2026-10-26): the names sit in a fixed column, so every field starts on one vertical line; a longer
    name wraps inside it. */
 .ad-field-row--beside .ad-field-row__label { flex: none; box-sizing: border-box; width: var(--w-field-name); line-height: var(--lh-tight); overflow-wrap: normal; word-break: normal; }
@@ -1018,7 +1024,7 @@ button:hover > .ad-project-pill:not(.ad-project-pill--current) { color: var(--ac
 .ad-datepicker__day[aria-current="date"] { color: var(--text-primary); }
 .ad-datepicker__day[aria-current="date"]::after { content: ""; position: absolute; bottom: var(--space-hair); left: 50%; width: var(--space-1); height: var(--space-1); transform: translateX(-50%); border-radius: var(--radius-round); background: var(--text-primary); }
 .ad-datepicker__day[data-picked] { background: var(--bg-hover); color: var(--text-primary); box-shadow: var(--ring-select); }
-.ad-datefield { display: inline-flex; flex-direction: column; }
+.ad-datefield { display: inline-flex; flex-direction: column; min-width: 0; max-width: 100%; }
 .ad-datefield__field--date .ad-field__input { font-family: var(--font-mono); }
 /* Late (ruled 2026-10-26): the date's words in the late red, as RowDate draws them. */
 .ad-datefield__field--late .ad-field__input { color: var(--status-error-ink); }
