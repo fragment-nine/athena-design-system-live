@@ -551,7 +551,7 @@ button.ad-card__name:focus-visible { outline: none; box-shadow: var(--ring-selec
    another figure falls (the original budget against the revised estimate). */
 .ad-progress { position: relative; }
 .ad-progress__planned { position: absolute; left: 0; top: 0; bottom: 0; background: var(--bg-hover); }
-.ad-progress__done { position: relative; }
+.ad-progress__done { z-index: 1; } /* the worked part sits over the planned layer; it keeps its absolute place from the rule above */
 .ad-progress__mark { position: absolute; top: calc(var(--space-hair) * -1); bottom: calc(var(--space-hair) * -1); width: var(--border-w-strong); background: var(--text-primary); transform: translateX(-50%); }
 
 /* src/components/Checkbox/Checkbox.css */
