@@ -397,6 +397,8 @@
   border: 0; border-radius: var(--radius-page); background: var(--ad-bar); color: var(--text-primary); font-family: var(--font-body); font-size: var(--text-xs); text-align: left; overflow: hidden;
 }
 .ad-month__bar > span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.ad-month__bar { gap: var(--space-1); }
+.ad-month__bar > .ad-project-pill { flex-shrink: 0; }
 button.ad-month__bar { cursor: pointer; }
 button.ad-month__bar:hover { box-shadow: var(--glow-hover); }
 button.ad-month__bar:hover > span { color: var(--accent); }

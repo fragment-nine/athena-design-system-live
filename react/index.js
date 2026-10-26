@@ -1599,14 +1599,14 @@ import { forwardRef as forwardRef5, useContext as useContext4 } from "react";
 import { useState as useState7 } from "react";
 import { jsx as jsx16, jsxs as jsxs13 } from "react/jsx-runtime";
 var X = () => /* @__PURE__ */ jsx16("span", { className: "ad-rail__x", "aria-hidden": "true" });
-function ProjectPill({ code, current, color, onPress, pressLabel }) {
+function ProjectPill({ code: code2, current, color, onPress, pressLabel }) {
   const hue = useHue(color);
   const shown = hue && !current ? hue : void 0;
-  if (onPress) return /* @__PURE__ */ jsx16("button", { type: "button", "aria-label": pressLabel ?? code, onClick: (e) => {
+  if (onPress) return /* @__PURE__ */ jsx16("button", { type: "button", "aria-label": pressLabel ?? code2, onClick: (e) => {
     e.stopPropagation();
     onPress();
-  }, className: cx("ad-project-pill", "ad-project-pill--press", current && "ad-project-pill--current"), style: shown ? { ["--ad-pill"]: shown } : void 0, "data-coloured": shown ? true : void 0, children: code });
-  return /* @__PURE__ */ jsx16("span", { className: cx("ad-project-pill", current && "ad-project-pill--current"), style: shown ? { ["--ad-pill"]: shown } : void 0, "data-coloured": shown ? true : void 0, children: code });
+  }, className: cx("ad-project-pill", "ad-project-pill--press", current && "ad-project-pill--current"), style: shown ? { ["--ad-pill"]: shown } : void 0, "data-coloured": shown ? true : void 0, children: code2 });
+  return /* @__PURE__ */ jsx16("span", { className: cx("ad-project-pill", current && "ad-project-pill--current"), style: shown ? { ["--ad-pill"]: shown } : void 0, "data-coloured": shown ? true : void 0, children: code2 });
 }
 function Rail({ screens, projects, current, onSelect, onHome, onSettings, onToggle, labels: l = {} }) {
   const L = { home: "Home", settings: "Settings", expand: "Open the menu", menu: "Main", ...l };
@@ -3216,7 +3216,7 @@ function BoardLane({ title, mark, onTitle, titleLabel, children, className }) {
     /* @__PURE__ */ jsx37("div", { className: "ad-lane__cards", children })
   ] });
 }
-function BoardCardMeta({ date, icon, face, code, marks, role, deliverable }) {
+function BoardCardMeta({ date, icon, face, code: code2, marks, role, deliverable }) {
   return /* @__PURE__ */ jsxs33("div", { className: "ad-lane__card-meta", children: [
     date,
     icon && /* @__PURE__ */ jsx37("span", { "aria-hidden": "true", className: "ad-lane__card-icon", children: icon }),
@@ -3226,7 +3226,7 @@ function BoardCardMeta({ date, icon, face, code, marks, role, deliverable }) {
       /* @__PURE__ */ jsx37(Icon, { job: "kind-deliverable", size: "sm" }),
       /* @__PURE__ */ jsx37("span", { className: "ad-lane__card-fact-word", children: String(deliverable) })
     ] }),
-    code && /* @__PURE__ */ jsx37("span", { className: "ad-lane__card-code", children: code }),
+    code2 && /* @__PURE__ */ jsx37("span", { className: "ad-lane__card-code", children: code2 }),
     face && /* @__PURE__ */ jsx37("span", { className: "ad-lane__card-face", children: face })
   ] });
 }
@@ -3512,6 +3512,7 @@ function PeriodCluster({ shown, periods, period, onPeriod, onPrevious, onNext, o
 
 // src/components/Calendar/Calendar.tsx
 import { jsx as jsx41, jsxs as jsxs37 } from "react/jsx-runtime";
+var code = (it) => it.code ? /* @__PURE__ */ jsx41(ProjectPill, { code: it.code, color: it.color?.startsWith("project-") ? it.color : void 0 }) : null;
 var hooksOf = (h) => {
   if (!h) return {};
   const { className: _c, style: _s, ...rest } = h;
@@ -3561,10 +3562,16 @@ function MonthCalendar({ month, items, today: todayIn, weekStart = 1, locale = "
           const style = { gridColumn: `${from + 1} / ${to + 2}`, ["--ad-lane"]: lane, ["--ad-bar"]: hueOf(item.color) };
           const cls = cx("ad-month__bar", item.unconfirmed && "ad-month__bar--unconfirmed", cutStart && "ad-month__bar--cut-start", cutEnd && "ad-month__bar--cut-end");
           const hooks = hooksOf(itemProps?.(item));
-          return onOpen ? /* @__PURE__ */ jsx41("button", { type: "button", ...hooks, className: cls, style, onClick: (e) => {
+          return onOpen ? /* @__PURE__ */ jsxs37("button", { type: "button", ...hooks, className: cls, style, onClick: (e) => {
             hooks.onClick?.(e);
             onOpen(item);
-          }, children: /* @__PURE__ */ jsx41("span", { children: item.label }) }, item.id) : /* @__PURE__ */ jsx41("span", { ...hooks, className: cls, style, children: /* @__PURE__ */ jsx41("span", { children: item.label }) }, item.id);
+          }, children: [
+            code(item),
+            /* @__PURE__ */ jsx41("span", { children: item.label })
+          ] }, item.id) : /* @__PURE__ */ jsxs37("span", { ...hooks, className: cls, style, children: [
+            code(item),
+            /* @__PURE__ */ jsx41("span", { children: item.label })
+          ] }, item.id);
         })
       ] }, w);
     })
@@ -3773,10 +3780,10 @@ function PixxBrief({ open, face, greeting, children, onSnooze, onGotIt, snoozeLa
 
 // src/components/Furniture/Furniture.tsx
 import { Fragment as Fragment12, jsx as jsx45, jsxs as jsxs40 } from "react/jsx-runtime";
-function TitleBlock({ code, number, venue, pageNumber, page }) {
+function TitleBlock({ code: code2, number, venue, pageNumber, page }) {
   return /* @__PURE__ */ jsxs40("footer", { className: "ad-title-block", children: [
     /* @__PURE__ */ jsxs40("span", { className: "ad-title-block__cell ad-title-block__code", children: [
-      code,
+      code2,
       number && /* @__PURE__ */ jsx45("span", { className: "ad-title-block__number", children: number })
     ] }),
     /* @__PURE__ */ jsx45("span", { className: "ad-title-block__cell ad-title-block__venue", children: venue }),
