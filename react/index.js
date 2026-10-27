@@ -3668,25 +3668,33 @@ var strip3 = (h) => {
   const { className: _c, style: _s, ...rest } = h;
   return rest;
 };
-function Bar({ label, unconfirmed, deal, backup, color, selected, startLabel, endLabel, lead, children, thin, labelOutside, onOpen, ends, barProps, labelInset, labelHidden, late, dense, fade, className, style }) {
+function Bar({ label, unconfirmed, deal, backup, color, selected, startLabel, endLabel, lead, children, thin, labelOutside, onOpen, ends, barProps, labelInset, labelHidden, late, dense, fade, onCramped, className, style }) {
   const asButton = !!onOpen && !ends;
   const Tag2 = asButton ? "button" : "div";
   const hue = useHue(color);
   const hooks = strip3(barProps);
   const root = useRef24(null);
   const [cramped, setCramped] = useState23(false);
+  const tell = useRef24(onCramped);
+  tell.current = onCramped;
   useLayoutEffect5(() => {
     const el = root.current;
     if (!el) return;
     const measure = () => {
       const n = el.querySelector(".ad-bar__label > .ad-bar__name");
-      if (n) setCramped(n.scrollWidth > n.clientWidth + 1);
+      if (n) {
+        const c = n.scrollWidth > n.clientWidth + 1;
+        setCramped(c);
+        tell.current?.(c);
+      }
     };
     measure();
     document.fonts?.ready.then(measure).catch(() => {
     });
     const ro = typeof ResizeObserver === "undefined" ? null : new ResizeObserver(measure);
     ro?.observe(el);
+    const lab = el.querySelector(".ad-bar__label");
+    if (lab) ro?.observe(lab);
     return () => ro?.disconnect();
   }, [label]);
   const outside = labelOutside || cramped;
@@ -3749,8 +3757,24 @@ function DeliverableBar({ parts, ...props }) {
     }) })
   ] });
 }
-function DeliverableRow({ status, showStatus, statusLabel, markers, expandable, expanded, onToggle, toggleLabel = "Show parts", className, ...bar }) {
+function DeliverableRow({ status, showStatus, statusLabel, markers: given, expandable, expanded, onToggle, toggleLabel = "Show parts", className, ...bar }) {
   const done = status === "good";
+  const row = useRef24(null);
+  const [marksOff, setMarksOff] = useState23(null);
+  const onCramped = (c) => {
+    const width = row.current?.clientWidth ?? 0;
+    if (c && marksOff === null && given.length) setMarksOff(width);
+  };
+  useLayoutEffect5(() => {
+    const el = row.current;
+    if (!el || marksOff === null || typeof ResizeObserver === "undefined") return;
+    const ro = new ResizeObserver(() => {
+      if (el.clientWidth > marksOff + 1) setMarksOff(null);
+    });
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, [marksOff]);
+  const markers = marksOff === null ? given : [];
   const ats = markers.map((m) => Math.max(0, Math.min(1, m.at))).sort((a, b) => a - b);
   const leading = ats.filter((a) => a < LEAD_AT).length;
   const cap = ats.find((a) => a >= LEAD_AT);
@@ -3759,9 +3783,9 @@ function DeliverableRow({ status, showStatus, statusLabel, markers, expandable, 
     ...leading ? { ["--ad-label-in"]: `calc(var(--icon-md) * ${leading} + var(--space-2))` } : {},
     ...cap !== void 0 ? { ["--ad-label-max"]: `calc(${(cap * 100).toFixed(2)}% - var(--icon-md) - var(--space-2) - var(--space-2) * 2)` } : {}
   };
-  return /* @__PURE__ */ jsxs35("div", { className: cx("ad-deliverable", expandable && "ad-deliverable--expandable", className), style, children: [
+  return /* @__PURE__ */ jsxs35("div", { ref: row, className: cx("ad-deliverable", expandable && "ad-deliverable--expandable", marksOff !== null && "ad-deliverable--no-marks", className), style, children: [
     expandable && /* @__PURE__ */ jsx39("button", { type: "button", className: "ad-deliverable__caret", "aria-expanded": !!expanded, "aria-label": toggleLabel, onClick: onToggle, children: /* @__PURE__ */ jsx39(Icon, { name: "caret-right", size: "sm", className: cx("ad-deliverable__chevron", expanded && "ad-is-open") }) }),
-    /* @__PURE__ */ jsx39(Bar, { ...bar, style: void 0, lead: showStatus ? /* @__PURE__ */ jsx39("span", { role: "img", "aria-label": statusLabel, className: "ad-deliverable__status", children: /* @__PURE__ */ jsx39(Dot, { tone: status }) }) : /* @__PURE__ */ jsx39("span", { className: "ad-sr", children: statusLabel }), children: markers.map((m, i) => /* @__PURE__ */ jsx39(BarMarker, { done, ...m }, i)) })
+    /* @__PURE__ */ jsx39(Bar, { ...bar, style: void 0, onCramped, lead: showStatus ? /* @__PURE__ */ jsx39("span", { role: "img", "aria-label": statusLabel, className: "ad-deliverable__status", children: /* @__PURE__ */ jsx39(Dot, { tone: status }) }) : /* @__PURE__ */ jsx39("span", { className: "ad-sr", children: statusLabel }), children: markers.map((m, i) => /* @__PURE__ */ jsx39(BarMarker, { done, ...m }, i)) })
   ] });
 }
 var LEAD_AT = 0.12;
