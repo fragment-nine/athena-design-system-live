@@ -625,6 +625,9 @@ var REGULAR = {
   "clipboard-text": [
     "M168,152a8,8,0,0,1-8,8H96a8,8,0,0,1,0-16h64A8,8,0,0,1,168,152Zm-8-40H96a8,8,0,0,0,0,16h64a8,8,0,0,0,0-16Zm56-64V216a16,16,0,0,1-16,16H56a16,16,0,0,1-16-16V48A16,16,0,0,1,56,32H92.26a47.92,47.92,0,0,1,71.48,0H200A16,16,0,0,1,216,48ZM96,64h64a32,32,0,0,0-64,0ZM200,48H173.25A47.93,47.93,0,0,1,176,64v8a8,8,0,0,1-8,8H88a8,8,0,0,1-8-8V64a47.93,47.93,0,0,1,2.75-16H56V216H200Z"
   ],
+  "clock-afternoon": [
+    "M128,24A104,104,0,1,0,232,128,104.11,104.11,0,0,0,128,24Zm0,192a88,88,0,1,1,88-88A88.1,88.1,0,0,1,128,216Zm64-88a8,8,0,0,1-8,8H147.31l26.35,26.34a8,8,0,0,1-11.32,11.32l-40-40A8,8,0,0,1,128,120h56A8,8,0,0,1,192,128Z"
+  ],
   "clock": [
     "M128,24A104,104,0,1,0,232,128,104.11,104.11,0,0,0,128,24Zm0,192a88,88,0,1,1,88-88A88.1,88.1,0,0,1,128,216Zm64-88a8,8,0,0,1-8,8H128a8,8,0,0,1-8-8V72a8,8,0,0,1,16,0v48h48A8,8,0,0,1,192,128Z"
   ],
@@ -882,6 +885,9 @@ var FILL = {
   "clipboard-text": [
     "M200,32H163.74a47.92,47.92,0,0,0-71.48,0H56A16,16,0,0,0,40,48V216a16,16,0,0,0,16,16H200a16,16,0,0,0,16-16V48A16,16,0,0,0,200,32Zm-72,0a32,32,0,0,1,32,32H96A32,32,0,0,1,128,32Zm32,128H96a8,8,0,0,1,0-16h64a8,8,0,0,1,0,16Zm0-32H96a8,8,0,0,1,0-16h64a8,8,0,0,1,0,16Z"
   ],
+  "clock-afternoon": [
+    "M128,24A104,104,0,1,0,232,128,104.11,104.11,0,0,0,128,24Zm56,112H147.31l26.35,26.34a8,8,0,0,1-11.32,11.32l-40-40A8,8,0,0,1,128,120h56a8,8,0,0,1,0,16Z"
+  ],
   "clock": [
     "M128,24A104,104,0,1,0,232,128,104.11,104.11,0,0,0,128,24Zm56,112H128a8,8,0,0,1-8-8V72a8,8,0,0,1,16,0v48h48a8,8,0,0,1,0,16Z"
   ],
@@ -1091,6 +1097,7 @@ var JOBS = {
   "copy": "copy",
   "dashboard": "layout",
   "deadline": "paper-plane-tilt",
+  "day-planner": "clock-afternoon",
   "dept-admin": "clipboard-text",
   "dept-content": "monitor-play",
   "dept-direction": "megaphone",
@@ -1821,11 +1828,11 @@ function RowPress({ label, onPress, children }) {
     onPress(e.currentTarget);
   }, className: "ad-row__press", children });
 }
-function RowDate({ due, today, until, done, what, icon, countdown: countdown2 }) {
+function RowDate({ due, today, until, done, milestone, what, icon, countdown: countdown2 }) {
   if (countdown2) {
     const c = countdown(due, today, { done });
     if (!c.label) return null;
-    return /* @__PURE__ */ jsxs14("span", { className: cx("ad-row-date", "ad-row-date--countdown", `ad-row-date--countdown-${countdown2}`, c.late && "ad-row-date--late"), title: c.title, children: [
+    return /* @__PURE__ */ jsxs14("span", { className: cx("ad-row-date", "ad-row-date--countdown", `ad-row-date--countdown-${countdown2}`, c.late && !milestone && "ad-row-date--late"), title: c.title, children: [
       icon && /* @__PURE__ */ jsx17("span", { "aria-hidden": "true", className: "ad-row-date__icon", children: icon }),
       what && /* @__PURE__ */ jsxs14("span", { className: "ad-sr", children: [
         what,
@@ -1837,7 +1844,7 @@ function RowDate({ due, today, until, done, what, icon, countdown: countdown2 })
   const first = dueLabel(due, today);
   if (!first.label) return null;
   const last = until ? dueLabel(until, today) : null;
-  const late = isLate(due, today, { until, done });
+  const late = !milestone && isLate(due, today, { until, done });
   const words = last ? `${first.label} \u2013 ${last.label}` : first.label;
   const title = last ? `${first.title} \u2013 ${last.title}` : first.title;
   return /* @__PURE__ */ jsxs14("span", { className: cx("ad-row-date", late && "ad-row-date--late"), title, children: [
@@ -1849,10 +1856,15 @@ function RowDate({ due, today, until, done, what, icon, countdown: countdown2 })
     words
   ] });
 }
+var bareNumber = (text) => {
+  const words = text.trim().split(/\s+/).filter(Boolean);
+  return words.some((w) => /\d/.test(w)) && words.every((w) => /\d/.test(w) || /^[A-Z]{2,4}$/.test(w));
+};
 function RowFigure({ children, icon }) {
-  return /* @__PURE__ */ jsxs14("span", { className: "ad-row-date", children: [
+  const text = String(children);
+  return /* @__PURE__ */ jsxs14("span", { className: cx("ad-row-date", bareNumber(text) && "ad-row-figure--number"), children: [
     icon && /* @__PURE__ */ jsx17("span", { "aria-hidden": "true", className: "ad-row-date__icon", children: icon }),
-    children
+    text
   ] });
 }
 function TodoCheck({ checked, onChange, priority = 4, ariaLabel, disabled, unacknowledged, onAcknowledge, acknowledgeLabel }) {
@@ -2991,13 +3003,15 @@ function PageHeader({ title, icon, stamp, tabs, back, description, countdown: gi
       back.label
     ] }) }),
     /* @__PURE__ */ jsxs28("div", { className: "ad-page-header__row", children: [
-      /* @__PURE__ */ jsxs28("h1", { className: "ad-page-header__title", children: [
-        icon && /* @__PURE__ */ jsx31("span", { className: "ad-page-header__icon", "aria-hidden": "true", children: icon }),
-        scramble ? /* @__PURE__ */ jsx31(TextScramble, { text: title }) : title
-      ] }),
-      (description || countdown2) && /* @__PURE__ */ jsxs28("div", { className: "ad-page-header__aside", children: [
-        description && /* @__PURE__ */ jsx31("p", { className: "ad-page-header__description", children: String(description) }),
-        countdown2 && /* @__PURE__ */ jsx31("p", { className: "ad-page-header__countdown", children: countdown2 })
+      /* @__PURE__ */ jsxs28("div", { className: "ad-page-header__lead", children: [
+        /* @__PURE__ */ jsxs28("h1", { className: "ad-page-header__title", children: [
+          icon && /* @__PURE__ */ jsx31("span", { className: "ad-page-header__icon", "aria-hidden": "true", children: icon }),
+          scramble ? /* @__PURE__ */ jsx31(TextScramble, { text: title }) : title
+        ] }),
+        (description || countdown2) && /* @__PURE__ */ jsxs28("div", { className: "ad-page-header__aside", children: [
+          description && /* @__PURE__ */ jsx31("p", { className: "ad-page-header__description", children: String(description) }),
+          countdown2 && /* @__PURE__ */ jsx31("p", { className: "ad-page-header__countdown", children: countdown2 })
+        ] })
       ] }),
       shownStamp && /* @__PURE__ */ jsx31("div", { className: "ad-type-stamp ad-page-header__stamp", children: stamp }),
       anyEnd && /* @__PURE__ */ jsxs28(HeaderActions, { groupProps: { "aria-label": headerLabels?.group ?? "Screen actions" }, children: [
@@ -3888,13 +3902,6 @@ function OffscreenStart({ date }) {
     date
   ] });
 }
-function Legend({ items }) {
-  return /* @__PURE__ */ jsxs35("p", { className: "ad-legend", children: [
-    "[ ",
-    items.join(" \xB7 "),
-    " ]"
-  ] });
-}
 var KEY_MARKS = /* @__PURE__ */ new Set(["confirmed", "pencilled", "deal", "backup"]);
 function ChartKey({ items, ariaLabel = "Key" }) {
   return /* @__PURE__ */ jsx39("div", { className: "ad-chart-key", role: "group", "aria-label": ariaLabel, children: items.map((it, i) => {
@@ -3915,7 +3922,7 @@ function ChartKey({ items, ariaLabel = "Key" }) {
 
 // src/components/Timeline/Ruler.tsx
 import { jsx as jsx40, jsxs as jsxs36 } from "react/jsx-runtime";
-function Ruler({ start, days, dayWidth, locale = "en-US", end, pinned, className }) {
+function Ruler({ start, days, dayWidth, locale = "en-US", pinned, className }) {
   const at = (i) => new Date(start.getFullYear(), start.getMonth(), start.getDate() + i);
   const months = [];
   const ticks = [];
@@ -3944,8 +3951,7 @@ function Ruler({ start, days, dayWidth, locale = "en-US", end, pinned, className
   }
   return /* @__PURE__ */ jsxs36("div", { className: cx("ad-ruler", pinned && "ad-ruler--pinned", className), style: { width: days * dayWidth }, children: [
     /* @__PURE__ */ jsx40("div", { className: "ad-ruler__months", "aria-hidden": "true", children: months.map((m) => /* @__PURE__ */ jsx40("span", { className: "ad-ruler__month", style: { left: m.x }, children: m.label }, m.x)) }),
-    /* @__PURE__ */ jsx40("div", { className: "ad-ruler__ticks", "aria-hidden": "true", children: ticks.map((t) => /* @__PURE__ */ jsx40("span", { className: cx("ad-ruler__tick", t.major && "ad-ruler__tick--major"), style: { left: t.x }, children: t.label && /* @__PURE__ */ jsx40("span", { className: "ad-ruler__day", children: t.label }) }, t.x)) }),
-    end && /* @__PURE__ */ jsx40("div", { className: "ad-ruler__end", children: end })
+    /* @__PURE__ */ jsx40("div", { className: "ad-ruler__ticks", "aria-hidden": "true", children: ticks.map((t) => /* @__PURE__ */ jsx40("span", { className: cx("ad-ruler__tick", t.major && "ad-ruler__tick--major"), style: { left: t.x }, children: t.label && /* @__PURE__ */ jsx40("span", { className: "ad-ruler__day", children: t.label }) }, t.x)) })
   ] });
 }
 var ORDER = ["days", "weeks", "months", "quarters"];
@@ -3964,18 +3970,18 @@ function ZoomCluster({ zoom, onZoom, onPrevious, onToday, onNext, labels }) {
 }
 function PeriodCluster({ shown, periods, period, onPeriod, onPrevious, onNext, onToday, previousOff, nextOff, labels }) {
   const L = { previous: "Earlier", today: "Today", next: "Later", period: "Period", ...labels };
-  const step = (label, glyph, on, off, today) => on && /* @__PURE__ */ jsx40("button", { type: "button", "aria-label": off ? `${label}: ${off}` : label, title: off ?? label, disabled: !!off, onClick: on, className: cx("ad-zoom__btn", today && "ad-zoom__btn--today"), children: /* @__PURE__ */ jsx40("span", { "aria-hidden": "true", children: glyph }) });
+  const step = (label, glyph, on, off, today) => on && /* @__PURE__ */ jsx40("button", { type: "button", "aria-label": off ? `${label}: ${off}` : label, title: off ?? label, disabled: !!off, onClick: on, className: cx("ad-zoom__btn", today && "ad-zoom__btn--today"), children: /* @__PURE__ */ jsx40(Icon, { job: glyph, size: "md" }) });
   return /* @__PURE__ */ jsxs36("div", { className: "ad-zoom ad-period", role: "group", "aria-label": shown, children: [
     /* @__PURE__ */ jsx40("span", { className: "ad-zoom__name", children: shown }),
-    step(L.previous, "\u2039", onPrevious, previousOff),
-    step(L.today, "\u2022", onToday, void 0, true),
-    step(L.next, "\u203A", onNext, nextOff),
-    periods && periods.length > 1 && onPeriod && /* @__PURE__ */ jsx40("span", { className: "ad-period__sizes", role: "radiogroup", "aria-label": L.period, children: periods.map((p) => /* @__PURE__ */ jsx40("button", { type: "button", role: "radio", "aria-checked": p.id === period, onClick: () => onPeriod(p.id), className: "ad-zoom__btn ad-period__size", children: p.label.toLowerCase() }, p.id)) })
+    step(L.previous, "chevron-left", onPrevious, previousOff),
+    step(L.today, "today", onToday, void 0, true),
+    step(L.next, "chevron-right", onNext, nextOff),
+    periods && periods.length > 1 && onPeriod && /* @__PURE__ */ jsx40("span", { className: "ad-period__sizes", role: "radiogroup", "aria-label": L.period, children: periods.map((p) => /* @__PURE__ */ jsx40("button", { type: "button", role: "radio", "aria-checked": p.id === period, onClick: () => onPeriod(p.id), className: "ad-zoom__btn ad-period__size", children: p.label }, p.id)) })
   ] });
 }
 
 // src/components/Calendar/Calendar.tsx
-import { jsx as jsx41, jsxs as jsxs37 } from "react/jsx-runtime";
+import { Fragment as Fragment14, jsx as jsx41, jsxs as jsxs37 } from "react/jsx-runtime";
 var code = (it) => it.code ? /* @__PURE__ */ jsx41(ProjectPill, { code: it.code, color: it.color?.startsWith("project-") ? it.color : void 0 }) : null;
 var hooksOf2 = (h) => {
   if (!h) return {};
@@ -4024,18 +4030,18 @@ function MonthCalendar({ month, items, today: todayIn, weekStart = 1, locale = "
         }),
         placed.map(({ item, lane, from, to, cutStart, cutEnd }) => {
           const style = { gridColumn: `${from + 1} / ${to + 2}`, ["--ad-lane"]: lane, ["--ad-bar"]: hueOf(item.color) };
-          const cls = cx("ad-month__bar", item.unconfirmed && "ad-month__bar--unconfirmed", cutStart && "ad-month__bar--cut-start", cutEnd && "ad-month__bar--cut-end");
+          const ms = !!item.milestone;
+          const cls = cx("ad-month__bar", ms && "ad-month__bar--milestone", ms && diff(item.end, today) < 0 && "ad-month__bar--past", item.unconfirmed && "ad-month__bar--unconfirmed", cutStart && "ad-month__bar--cut-start", cutEnd && "ad-month__bar--cut-end");
           const hooks = hooksOf2(itemProps?.(item));
-          return onOpen ? /* @__PURE__ */ jsxs37("button", { type: "button", ...hooks, className: cls, style, onClick: (e) => {
+          const inner = /* @__PURE__ */ jsxs37(Fragment14, { children: [
+            ms && /* @__PURE__ */ jsx41("span", { className: "ad-month__diamond", "aria-hidden": "true" }),
+            code(item),
+            /* @__PURE__ */ jsx41("span", { children: item.label })
+          ] });
+          return onOpen ? /* @__PURE__ */ jsx41("button", { type: "button", ...hooks, className: cls, style, onClick: (e) => {
             hooks.onClick?.(e);
             onOpen(item);
-          }, children: [
-            code(item),
-            /* @__PURE__ */ jsx41("span", { children: item.label })
-          ] }, item.id) : /* @__PURE__ */ jsxs37("span", { ...hooks, className: cls, style, children: [
-            code(item),
-            /* @__PURE__ */ jsx41("span", { children: item.label })
-          ] }, item.id);
+          }, children: inner }, item.id) : /* @__PURE__ */ jsx41("span", { ...hooks, className: cls, style, children: inner }, item.id);
         })
       ] }, w);
     })
@@ -4305,7 +4311,7 @@ function MapNightDot() {
 }
 
 // src/components/Charts/Charts.tsx
-import { Fragment as Fragment14, jsx as jsx43, jsxs as jsxs39 } from "react/jsx-runtime";
+import { Fragment as Fragment15, jsx as jsx43, jsxs as jsxs39 } from "react/jsx-runtime";
 function AmountBars({ items, max, ariaLabel, className }) {
   const top = max ?? Math.max(1, ...items.map((i) => i.value));
   return /* @__PURE__ */ jsx43("div", { className: cx("ad-amounts", className), role: "list", "aria-label": ariaLabel, children: items.map((i) => /* @__PURE__ */ jsxs39("div", { className: "ad-amounts__row", role: "listitem", children: [
@@ -4329,7 +4335,7 @@ function BudgetBar({ fraction, figure, note = "worked", remainder, end, ariaLabe
       /* @__PURE__ */ jsx43("span", { children: note }),
       /* @__PURE__ */ jsxs39("span", { children: [
         remainder,
-        end && /* @__PURE__ */ jsxs39(Fragment14, { children: [
+        end && /* @__PURE__ */ jsxs39(Fragment15, { children: [
           " \xB7 ",
           end
         ] })
@@ -4503,7 +4509,7 @@ function PixxBrief({ open, face, greeting, children, onSnooze, onGotIt, snoozeLa
 }
 
 // src/components/Furniture/Furniture.tsx
-import { Fragment as Fragment15, jsx as jsx46, jsxs as jsxs41 } from "react/jsx-runtime";
+import { Fragment as Fragment16, jsx as jsx46, jsxs as jsxs41 } from "react/jsx-runtime";
 function TitleBlock({ code: code2, number, venue, pageNumber, page }) {
   return /* @__PURE__ */ jsxs41("footer", { className: "ad-title-block", children: [
     /* @__PURE__ */ jsxs41("span", { className: "ad-title-block__cell ad-title-block__code", children: [
@@ -4520,7 +4526,7 @@ function TitleBlock({ code: code2, number, venue, pageNumber, page }) {
 }
 function Contents({ entries, ariaLabel = "Contents" }) {
   return /* @__PURE__ */ jsx46("ol", { className: "ad-contents", "aria-label": ariaLabel, children: entries.map((e, i) => {
-    const inner = /* @__PURE__ */ jsxs41(Fragment15, { children: [
+    const inner = /* @__PURE__ */ jsxs41(Fragment16, { children: [
       /* @__PURE__ */ jsx46("span", { className: "ad-contents__numeral", children: String(i + 1).padStart(2, "0") }),
       /* @__PURE__ */ jsxs41("span", { className: "ad-contents__body", children: [
         /* @__PURE__ */ jsx46("span", { className: "ad-contents__name", children: e.name }),
@@ -4752,7 +4758,6 @@ export {
   Lane,
   LaneWash,
   Lanes,
-  Legend,
   List,
   ListSection,
   LoadError,

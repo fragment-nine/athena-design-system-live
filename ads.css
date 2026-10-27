@@ -266,7 +266,6 @@
 .ad-type-nav { font-family: var(--font-display); font-size: 14px; line-height: 1.25; font-weight: 600; }
 .ad-type-section-header { font-family: var(--font-display); font-size: 12px; line-height: 1.25; font-weight: 600; }
 .ad-type-tab { font-family: var(--font-display); font-size: 12px; line-height: 1.25; font-weight: 600; }
-.ad-type-outlined-empty { font-family: var(--font-display); font-size: 28px; line-height: 1.1; font-weight: 600; }
 .ad-type-section-title { font-family: var(--font-display); font-size: 13px; line-height: 1.25; font-weight: 600; letter-spacing: 0.08em; }
 .ad-type-stamp { font-family: var(--font-display); font-size: 44px; line-height: 1; font-weight: 700; letter-spacing: 0.02em; }
 .ad-type-pop-title { font-family: var(--font-body); font-size: 20px; line-height: 1.25; font-weight: 600; }
@@ -483,7 +482,11 @@ tr[data-ad-drop="after"] > :is(td, th) { box-shadow: inset 0 calc(var(--bw-selec
 .ad-month__marks { display: inline-flex; align-items: center; gap: var(--space-1); margin-left: auto; color: var(--text-secondary); }
 .ad-month__num { position: relative; align-self: flex-start; font-family: var(--font-mono); font-size: var(--text-xs); color: var(--text-secondary); }
 .ad-month__num[data-today] { color: var(--text-primary); }
-.ad-month__num[data-today]::after { content: ""; position: absolute; top: 50%; left: calc(100% + var(--space-1)); width: var(--space-1); height: var(--space-1); transform: translateY(-50%); border-radius: var(--radius-round); background: var(--text-primary); }
+/* A milestone in the month: its diamond before its name, no bar (2026-10-27): white ahead, grey once past, hatched when unconfirmed. */
+.ad-month__bar.ad-month__bar--milestone, .ad-month__bar.ad-month__bar--milestone.ad-month__bar--unconfirmed { background: transparent; background-image: none; }
+.ad-month__diamond { box-sizing: border-box; flex: none; width: var(--icon-sm); height: var(--icon-sm); transform: scale(0.75) rotate(45deg); background: var(--text-primary); }
+.ad-month__bar--past .ad-month__diamond { background: var(--text-muted); }
+.ad-month__bar--unconfirmed .ad-month__diamond { background-color: var(--bg-base); background-image: var(--hatch-ink); border: var(--border-w) solid var(--text-primary); }
 /* One bar across its days, one lane high: solid when confirmed, hatched with its name on a solid patch when not. */
 .ad-month__bar {
   --ad-bar: var(--bg-hover); --ad-lane: 0;
@@ -552,7 +555,7 @@ button.ad-booking:focus-visible { outline: none; box-shadow: var(--ring-select);
 .ad-year { display: grid; grid-template-columns: repeat(auto-fill, minmax(calc(var(--space-6) * 7), 1fr)); gap: var(--space-6); }
 .ad-year__name { margin-bottom: var(--space-2); font-family: var(--font-display); font-weight: 600; font-size: var(--text-xs); letter-spacing: var(--track-label); color: var(--text-muted); }
 .ad-year__days { display: grid; grid-template-columns: repeat(7, 1fr); gap: var(--space-hair); }
-.ad-year__day { position: relative; display: grid; place-items: center; height: var(--space-6); padding: 0; border: 0; border-radius: var(--radius-round); background: transparent; font-family: var(--font-mono); font-size: var(--text-xs); color: var(--text-muted); }
+.ad-year__day { position: relative; display: grid; place-items: center; height: var(--space-6); padding: 0; border: 0; border-radius: var(--radius-page); background: transparent; font-family: var(--font-mono); font-size: var(--text-xs); color: var(--text-muted); }
 .ad-year__day[data-busy] { color: var(--text-primary); }
 .ad-year__day[data-busy]::after { content: ""; position: absolute; bottom: var(--space-hair); left: 50%; width: var(--space-hair); height: var(--space-hair); transform: translateX(-50%); border-radius: var(--radius-round); background: var(--text-primary); }
 /* Today: Athena's 2px bone ring (ring-today, kept 2026-10-26). */
@@ -1108,7 +1111,10 @@ button:hover > .ad-project-pill:not(.ad-project-pill--current) { color: var(--ac
 .ad-page-header__stamp + .ad-header-actions { margin-left: 0; }
 /* A project's tabs, under the title row. */
 .ad-page-header__tabs { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-2) var(--space-6); margin-top: var(--space-4); }
-.ad-page-header__aside { display: flex; flex-direction: column; gap: var(--space-1); min-width: 0; }
+/* The title and its description: beside it while there is room; when the title and stamp leave none, the description and
+   countdown drop under the title instead of squeezing to a word a line (2026-10-27, his form). */
+.ad-page-header__lead { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-2) var(--space-6); flex: 1 1 auto; min-width: 0; }
+.ad-page-header__aside { display: flex; flex-direction: column; gap: var(--space-1); flex: 1 1 0; min-width: var(--w-menu); }
 .ad-page-header__description { margin: 0; font-family: var(--font-body); font-size: var(--text-base); line-height: var(--lh-tight); color: var(--text-secondary); }
 .ad-page-header__countdown { margin: 0; font-family: var(--font-mono); font-size: var(--text-xs); color: var(--text-muted); }
 .ad-tabs { display: flex; flex-wrap: wrap; gap: var(--space-2) var(--space-6); }
@@ -1121,7 +1127,7 @@ button:hover > .ad-project-pill:not(.ad-project-pill--current) { color: var(--ac
 .ad-tab:focus-visible { outline: none; box-shadow: var(--ring-select); border-radius: var(--radius-page); }
 .ad-tab[aria-selected="true"] { color: var(--text-primary); border-bottom-color: var(--text-primary); }
 .ad-tab__numeral { font-family: var(--font-mono); font-weight: 400; letter-spacing: 0; color: var(--text-faint); }
-.ad-tab[aria-selected="true"] .ad-tab__numeral { color: var(--text-secondary); }
+.ad-tab[aria-selected="true"] .ad-tab__numeral { color: var(--text-primary); }
 /* The way back from a detail page that is not a project: quiet words with the chevron, on the top line (built 2026-10-25 for Athena). */
 .ad-page-header__back { display: inline-flex; align-items: center; gap: var(--space-1); height: var(--h-btn-bar); margin: 0 0 var(--space-2); padding: 0; border: 0; background: transparent; font-family: var(--font-body); font-size: var(--text-base); color: var(--text-secondary); cursor: pointer; }
 .ad-page-header__back:hover { color: var(--accent); }
@@ -1186,8 +1192,8 @@ button:hover > .ad-project-pill:not(.ad-project-pill--current) { color: var(--ac
 .ad-datepicker__day:focus-visible { outline: none; box-shadow: var(--ring-select); }
 .ad-datepicker__day[data-weekend] { color: var(--text-muted); }
 .ad-datepicker__day[data-outside] { color: var(--text-faint); }
-.ad-datepicker__day[aria-current="date"] { color: var(--text-primary); }
-.ad-datepicker__day[aria-current="date"]::after { content: ""; position: absolute; bottom: var(--space-hair); left: 50%; width: var(--space-1); height: var(--space-1); transform: translateX(-50%); border-radius: var(--radius-round); background: var(--text-primary); }
+/* Today wears the 2px bone ring, as in every day grid (2026-10-27); the picked day's select ring wins when they are one. */
+.ad-datepicker__day[aria-current="date"] { color: var(--text-primary); box-shadow: var(--ring-today); }
 .ad-datepicker__day[data-picked] { background: var(--bg-hover); color: var(--text-primary); box-shadow: var(--ring-select); }
 .ad-datefield { display: inline-flex; flex-direction: column; min-width: 0; max-width: 100%; }
 .ad-datefield__field--date .ad-field__input { font-family: var(--font-mono); }
@@ -1234,7 +1240,7 @@ button:hover > .ad-project-pill:not(.ad-project-pill--current) { color: var(--ac
 .ad-popover--card { width: var(--w-card); }
 .ad-popover--wide { width: var(--w-wide); }
 .ad-popover--menu { width: var(--w-menu); }
-.ad-popover__header { margin-right: var(--space-8); }
+.ad-popover__header { margin-right: var(--space-8); margin-bottom: var(--space-4); }
 .ad-popover__eyebrow, .ad-popover__section-label {
   margin: 0; font-family: var(--font-display); font-weight: 600; font-size: var(--text-xs);
   letter-spacing: var(--track-label); text-transform: uppercase; color: var(--text-muted);
@@ -1250,7 +1256,8 @@ button:hover > .ad-project-pill:not(.ad-project-pill--current) { color: var(--ac
 .ad-facts__cell--full { flex-basis: 100%; border-right: 0; border-top: var(--border-w) solid var(--border); padding-left: 0; font-family: var(--font-mono); font-size: var(--text-xs); }
 .ad-facts__icon { display: inline-flex; color: var(--text-muted); }
 .ad-facts__icon svg { width: var(--icon-sm); height: var(--icon-sm); }
-.ad-popover__section { margin-top: var(--space-3); }
+/* 16 between the title, the fields and each section (2026-10-27, his form). */
+.ad-popover__section { margin-top: var(--space-4); }
 .ad-popover__section-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: var(--space-2); }
 /* With a foot: the body scrolls and the foot stays pinned under it, a hairline above. */
 .ad-popover--with-foot { display: flex; flex-direction: column; overflow: hidden; padding-bottom: 0; }
@@ -1298,6 +1305,8 @@ button.ad-row__name:focus-visible { outline: none; box-shadow: var(--ring-select
 .ad-row__trail { gap: var(--space-1); }
 .ad-row-date { display: inline-flex; align-items: center; gap: var(--space-1); font-family: var(--font-body); font-size: var(--text-xs); color: var(--text-secondary); white-space: nowrap; }
 .ad-row-date--late { color: var(--status-error-ink); }
+/* A figure that is only a number with its unit or zone is mono; one with a word stays the body face (2026-10-27). */
+.ad-row-figure--number { font-family: var(--font-mono); }
 /* The countdown (ruled 2026-10-26, Athena's milestone card): body face, regular, text-secondary; red once passed. */
 .ad-row-date--countdown { font-family: var(--font-body); font-weight: 400; }
 .ad-row-date--countdown-base { font-size: var(--text-base); }
@@ -1389,11 +1398,10 @@ button.ad-row__name:focus-visible { outline: none; box-shadow: var(--ring-select
 .ad-search .ad-picklist__option:hover .ad-picklist__lead { color: var(--accent); }
 
 /* src/components/Segmented/Segmented.css */
-/* Segmented: the pick-one tray, one tone darker than its plane (ruled 2026-10-15): below the ground on the page, the ground on a card or glass.
-   One hairline round the tray (approved Controls card). */
+/* Segmented: pick one of 2 to 5. The choices sit loose and the current one sits on a bg-raised tile, as the view switch draws
+   it (2026-10-27, his form; the darker tray is gone). space-hair between the choices: tight neighbours. */
 .ad-segmented {
-  display: inline-flex; width: max-content; gap: var(--space-hair); padding: calc((var(--h-btn) - var(--h-seg)) / 2); box-sizing: border-box; height: var(--h-btn);
-  border-radius: var(--radius-page); background: var(--ad-tray, var(--bg-inset)); box-shadow: inset 0 0 0 var(--border-w) var(--border);
+  display: inline-flex; align-items: center; width: max-content; gap: var(--space-hair); box-sizing: border-box; height: var(--h-btn);
 }
 .ad-segmented__option {
   display: inline-flex; align-items: center; justify-content: center; gap: var(--space-2);
@@ -1401,7 +1409,7 @@ button.ad-row__name:focus-visible { outline: none; box-shadow: var(--ring-select
   background: transparent; color: var(--text-secondary); font-family: var(--font-body); font-size: var(--text-base); line-height: var(--lh-none); cursor: pointer;
 }
 .ad-segmented__option:hover { color: var(--accent); }
-.ad-segmented__option[aria-checked="true"] { background: var(--bg-hover); color: var(--text-primary); }
+.ad-segmented__option[aria-checked="true"] { background: var(--bg-raised); color: var(--text-primary); }
 .ad-segmented__option:focus-visible { outline: none; box-shadow: var(--ring-select); }
 .ad-segmented__option:disabled { opacity: var(--opacity-disabled); cursor: default; color: var(--text-secondary); }
 .ad-segmented__option svg { width: var(--icon-md); height: var(--icon-md); }
@@ -1568,7 +1576,6 @@ button.ad-row__name:focus-visible { outline: none; box-shadow: var(--ring-select
 .ad-ruler__tick { position: absolute; bottom: 0; width: var(--border-w); height: var(--space-1); background: var(--line-strong); }
 .ad-ruler__tick--major { height: var(--space-2); }
 .ad-ruler__day { position: absolute; bottom: var(--space-2); left: 50%; transform: translateX(-50%); font-size: var(--text-xs); color: var(--text-muted); white-space: nowrap; }
-.ad-ruler__end { position: absolute; top: calc(var(--space-4) * -1); right: 0; padding-left: var(--space-2); background: var(--bg-base); }
 /* The cluster: toolbar-size icon buttons in a row (ZoomCluster), or the period control's words and sizes (PeriodCluster). */
 .ad-zoom { display: inline-flex; align-items: center; gap: var(--space-1); font-family: var(--font-mono); font-size: var(--text-xs); line-height: var(--lh-none); color: var(--text-muted); }
 .ad-zoom__name { margin-right: var(--space-1); color: var(--text-primary); }
@@ -1581,7 +1588,7 @@ button.ad-row__name:focus-visible { outline: none; box-shadow: var(--ring-select
 /* PeriodCluster (built 2026-10-25 for Athena): the span in words in bone, the steps, then the sizes; the current size in bone on the view switch's `bg-raised` tile (ruled 2026-10-27, Jeremy). */
 .ad-period .ad-zoom__name { color: var(--text-primary); margin-right: var(--space-1); }
 .ad-period__sizes { display: inline-flex; gap: var(--space-1); margin-left: var(--space-2); }
-.ad-period__size { width: auto; padding: 0 var(--space-1); white-space: nowrap; }
+.ad-period__size { width: auto; padding: 0 var(--space-2); white-space: nowrap; font-family: var(--font-body); font-size: var(--text-base); }
 .ad-period__size[aria-checked="true"] { background: var(--bg-raised); color: var(--text-primary); }
 /* Pinned: held at the top of the scroller on its own ground, above the lanes (built 2026-10-25 for Athena). */
 .ad-ruler--pinned { position: sticky; top: 0; z-index: 2; background: var(--bg-base); }
@@ -1630,8 +1637,6 @@ button.ad-bar { cursor: pointer; }
 .ad-bar--fade-start { mask-image: linear-gradient(to right, transparent, var(--text-primary) var(--ad-fade)); }
 .ad-bar--fade-end { mask-image: linear-gradient(to left, transparent, var(--text-primary) var(--ad-fade)); }
 .ad-bar--fade-both { mask-image: linear-gradient(to right, transparent, var(--text-primary) var(--ad-fade), var(--text-primary) calc(100% - var(--ad-fade)), transparent); }
-.ad-bar--late:not(.ad-bar--selected):not(:focus-visible) { box-shadow: var(--glow-late); }
-.ad-bar--late:not(.ad-bar--selected):not(:focus-visible):hover { box-shadow: var(--glow-late), var(--glow-hover); }
 .ad-bar__name { overflow: hidden; text-overflow: ellipsis; }
 .ad-bar__outside { position: absolute; top: 0; bottom: 0; left: calc(100% + var(--space-4)); /* clear of the deadline mark, which straddles the bar end */ display: inline-flex; align-items: center; color: var(--text-primary); }
 .ad-bar--label-outside .ad-bar__outside .ad-bar__name { overflow: visible; }
@@ -1642,10 +1647,12 @@ button.ad-bar { cursor: pointer; }
 .ad-bar--label-outside .ad-bar__end--end { display: none; }
 .ad-bar--label-outside { flex: 1; }
 .ad-bar:hover .ad-bar__end { opacity: 1; }
-/* The eye and the plane: icon-md, centred on their date, bone; red with a faint glow when late. */
+/* Late is the red date alone, no glow (2026-10-27). */
+.ad-bar--late .ad-bar__end { color: var(--status-error-ink); }
+/* The eye and the plane: icon-md, centred on their date, bone; red when late, no glow (2026-10-27). */
 .ad-bar-marker { position: absolute; top: 50%; z-index: 2; display: inline-flex; transform: translate(-50%, -50%); color: var(--text-primary); }
 .ad-bar-marker svg { width: var(--icon-md); height: var(--icon-md); }
-.ad-bar-marker--late { color: var(--status-error-ink); filter: drop-shadow(var(--glow-late)); }
+.ad-bar-marker--late { color: var(--status-error-ink); }
 /* The caret sits inside the bar, before the status mark (a sibling in the DOM, so the bar can be a button). */
 .ad-deliverable { --ad-label-max: none; --ad-label-in: 0px; position: relative; display: flex; align-items: center; width: 100%; }
 /* The name stays clear of the date icons (ruled 2026-10-26): pushed past an icon at the start, capped before the next. */
@@ -1696,7 +1703,6 @@ button.ad-milestone:focus-visible { outline: none; box-shadow: var(--ring-select
 .ad-clash { display: flex; width: 100%; border-radius: var(--radius-page); box-shadow: var(--glow-clash); }
 .ad-clash > * { flex: 1; min-width: 0; }
 .ad-offscreen { font-family: var(--font-mono); font-size: var(--text-xs); color: var(--text-secondary); white-space: nowrap; }
-.ad-legend { margin: 0; font-family: var(--font-mono); font-size: var(--text-xs); color: var(--text-muted); }
 @media (prefers-reduced-motion: reduce) { .ad-bar, .ad-bar__end, .ad-deliverable__chevron { transition: none; } }
 /* ChartKey: each word with its swatch, drawn as the bar draws that mark (ruled 2026-10-25); no "FIG." (2026-10-27). */
 .ad-chart-key { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-2) var(--space-4); font-family: var(--font-body); font-size: var(--text-xs); color: var(--text-secondary); }
