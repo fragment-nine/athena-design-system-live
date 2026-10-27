@@ -1734,7 +1734,7 @@ function Rail({ screens, projects, current, onSelect, onHome, onSettings, onTogg
     ] })
   ] });
 }
-function SideMenu({ screens, projects, views = [], current, onSelect, onHome, onSettings, onToggle, onReorder, labels: l = {} }) {
+function SideMenu({ screens, projects, views = [], current, onSelect, onHome, onSettings, onToggle, onReorder, projectsScreen, labels: l = {} }) {
   const L = { home: "Home", menu: "Main", settings: "Settings", fold: "Fold the menu", ...l };
   const [drag, setDrag] = useState7(null);
   const [over, setOver] = useState7(null);
@@ -1766,21 +1766,23 @@ function SideMenu({ screens, projects, views = [], current, onSelect, onHome, on
       setOver(null);
     }
   } : {};
+  const nested = !!projectsScreen && screens.some((x) => x.id === projectsScreen);
+  const projectRows = projects.map((p) => /* @__PURE__ */ jsx16("li", { ...dataOnly(p.hooks), ...movable("projects", p.id, projects.map((x) => x.id)), children: /* @__PURE__ */ jsxs13("button", { type: "button", className: "ad-side__item", "aria-current": current === p.id ? "page" : void 0, onClick: () => onSelect(p.id), children: [
+    /* @__PURE__ */ jsx16(ProjectPill, { code: p.code, current: current === p.id, color: p.color }),
+    p.name
+  ] }) }, p.id));
   return /* @__PURE__ */ jsxs13("nav", { className: "ad-side", "aria-label": L.menu, children: [
     /* @__PURE__ */ jsxs13("ul", { className: "ad-side__list", children: [
-      /* @__PURE__ */ jsx16("li", { children: /* @__PURE__ */ jsxs13("button", { type: "button", className: "ad-side__item", onClick: onHome, children: [
-        /* @__PURE__ */ jsx16("span", { className: "ad-side__icon", "aria-hidden": "true", children: /* @__PURE__ */ jsx16(X, {}) }),
-        L.home
-      ] }) }),
-      screens.map((s) => /* @__PURE__ */ jsx16("li", { ...dataOnly(s.hooks), ...movable("screens", s.id, screens.map((x) => x.id)), children: /* @__PURE__ */ jsxs13("button", { type: "button", className: "ad-side__item", "aria-current": current === s.id ? "page" : void 0, onClick: () => onSelect(s.id), children: [
-        /* @__PURE__ */ jsx16("span", { className: "ad-side__icon", "aria-hidden": "true", children: s.icon }),
-        s.label
-      ] }) }, s.id))
+      /* @__PURE__ */ jsx16("li", { children: /* @__PURE__ */ jsx16("button", { type: "button", className: "ad-side__item ad-side__home", "aria-label": L.home, title: L.home, onClick: onHome, children: /* @__PURE__ */ jsx16("span", { className: "ad-side__icon", "aria-hidden": "true", children: /* @__PURE__ */ jsx16(X, {}) }) }) }),
+      screens.map((s) => /* @__PURE__ */ jsxs13("li", { ...dataOnly(s.hooks), ...movable("screens", s.id, screens.map((x) => x.id)), children: [
+        /* @__PURE__ */ jsxs13("button", { type: "button", className: "ad-side__item", "aria-current": current === s.id ? "page" : void 0, onClick: () => onSelect(s.id), children: [
+          /* @__PURE__ */ jsx16("span", { className: "ad-side__icon", "aria-hidden": "true", children: s.icon }),
+          s.label
+        ] }),
+        projectsScreen === s.id && projects.length > 0 && /* @__PURE__ */ jsx16("ul", { className: "ad-side__list ad-side__list--nested", children: projectRows })
+      ] }, s.id))
     ] }),
-    projects.length > 0 && /* @__PURE__ */ jsx16("ul", { className: "ad-side__list", children: projects.map((p) => /* @__PURE__ */ jsx16("li", { ...dataOnly(p.hooks), ...movable("projects", p.id, projects.map((x) => x.id)), children: /* @__PURE__ */ jsxs13("button", { type: "button", className: "ad-side__item", "aria-current": current === p.id ? "page" : void 0, onClick: () => onSelect(p.id), children: [
-      /* @__PURE__ */ jsx16(ProjectPill, { code: p.code, current: current === p.id, color: p.color }),
-      p.name
-    ] }) }, p.id)) }),
+    !nested && projects.length > 0 && /* @__PURE__ */ jsx16("ul", { className: "ad-side__list", children: projectRows }),
     views.length > 0 && /* @__PURE__ */ jsx16("ul", { className: "ad-side__list", children: views.map((v) => /* @__PURE__ */ jsx16("li", { ...dataOnly(v.hooks), children: /* @__PURE__ */ jsxs13("button", { type: "button", className: "ad-side__item", "aria-current": current === v.id ? "page" : void 0, onClick: () => onSelect(v.id), children: [
       /* @__PURE__ */ jsx16(Icon, { name: "star", className: "ad-side__star" }),
       v.label
@@ -4628,14 +4630,17 @@ function PixxBrief({ open, face, greeting, children, onSnooze, onGotIt, snoozeLa
 
 // src/components/Furniture/Furniture.tsx
 import { Fragment as Fragment17, jsx as jsx46, jsxs as jsxs41 } from "react/jsx-runtime";
-function Footer({ code: code2, number, venue, pageNumber, page }) {
+function Footer({ code: code2, number, venue, pageNumber, page, undo }) {
   return /* @__PURE__ */ jsxs41("footer", { className: "ad-footer", children: [
     /* @__PURE__ */ jsxs41("span", { className: "ad-footer__cell ad-footer__code", children: [
-      code2,
+      code2 ?? "LOUDBOX",
       number && /* @__PURE__ */ jsx46("span", { className: "ad-footer__number", children: number })
     ] }),
     /* @__PURE__ */ jsx46("span", { className: "ad-footer__cell ad-footer__venue", children: venue }),
-    /* @__PURE__ */ jsx46("span", { className: "ad-footer__cell ad-footer__run", "aria-hidden": "true" }),
+    /* @__PURE__ */ jsx46("span", { className: "ad-footer__cell ad-footer__run", role: "status", "aria-live": "polite", children: undo && /* @__PURE__ */ jsxs41(Fragment17, { children: [
+      /* @__PURE__ */ jsx46("span", { className: "ad-footer__undo-words", children: undo.message }),
+      /* @__PURE__ */ jsx46(ButtonSizeScope, { size: "row", children: /* @__PURE__ */ jsx46(Button, { onClick: undo.onUndo, children: undo.label ?? "Undo" }) })
+    ] }) }),
     /* @__PURE__ */ jsxs41("span", { className: "ad-footer__cell ad-footer__page", children: [
       /* @__PURE__ */ jsx46("span", { className: "ad-footer__page-number", children: pageNumber }),
       page
