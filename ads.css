@@ -585,6 +585,15 @@ button.ad-year__day:focus-visible { outline: none; box-shadow: var(--ring-select
 /* Every other hour on the inset plane (ruled 2026-10-26, Athena's time grid). */
 .ad-time-grid__hour--band { background: var(--bg-inset); }
 
+/* The day planner's asks (2026-10-27): a block's second line; short and thin blocks; a dragged block lifts; a lit drop column; a capped height that scrolls. */
+.ad-booking__meta { display: block; font-family: var(--font-mono); font-size: var(--text-xs); color: var(--text-secondary); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.ad-booking--fit .ad-booking__name, .ad-booking--narrow .ad-booking__name { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.ad-booking--dragging { backdrop-filter: blur(var(--blur-glass)); box-shadow: var(--shadow-float); opacity: 0.92; }
+.ad-time-grid__column--over .ad-time-grid__body { background: var(--tint-selected); }
+.ad-time-grid { --ad-visible-hours: 10; }
+.ad-time-grid--scrolls { max-height: calc(var(--ad-hour) * var(--ad-visible-hours) + var(--ad-hour) * min(1, var(--ad-allday-rows))); overflow-y: auto; }
+.ad-time-grid__body { cursor: default; }
+
 /* src/components/Card/Card.css */
 /* Card: a board tile, or a dashboard widget as the Dashboard card draws it (small caps title, More at the right in 600). */
 .ad-card { --ad-tray: var(--bg-base); }
@@ -1524,6 +1533,16 @@ button.ad-row__name:focus-visible { outline: none; box-shadow: var(--ring-select
 .ad-setting__name { display: inline-flex; align-items: center; gap: var(--space-2); color: var(--text-primary); }
 /* A set-time field ("9:00 – 18:00") reads in mono. */
 /* "No access" sits quiet. */
+
+/* src/components/Splitter/Splitter.css */
+/* Splitter: two panes and the divider between (2026-10-27). */
+.ad-splitter { --ad-split: var(--w-side); display: flex; min-height: 0; min-width: 0; flex: 1; }
+.ad-splitter__main { flex: 1; min-width: 0; min-height: 0; overflow: auto; }
+.ad-splitter__side { flex: none; width: var(--ad-split); min-width: 0; min-height: 0; overflow: auto; }
+.ad-splitter__divider { flex: none; position: relative; width: var(--space-2); cursor: col-resize; touch-action: none; }
+.ad-splitter__divider::after { content: ''; position: absolute; top: 0; bottom: 0; left: 50%; width: var(--border-w); transform: translateX(-50%); background: var(--border); }
+.ad-splitter__divider:hover::after, .ad-splitter__divider:focus-visible::after { background: var(--accent); }
+.ad-splitter__divider:focus-visible { outline: none; }
 
 /* src/components/Status/Status.css */
 /* Dot and Status */
