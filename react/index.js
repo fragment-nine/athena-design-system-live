@@ -212,7 +212,7 @@ function usePlacement(open, anchor, floating, placement) {
       if (left + fw > vw - edge) left = a.right - fw;
       if (top + fh > vh - edge && a.top - gap - fh >= edge) top = a.top - gap - fh;
     }
-    const next = { top: Math.max(edge, top), left: Math.max(edge, left) };
+    const next = { top: Math.round(Math.max(edge, top)), left: Math.round(Math.max(edge, left)) };
     setPos((p) => p && p.top === next.top && p.left === next.left ? p : next);
   };
   useIsoLayoutEffect(() => {
@@ -1706,7 +1706,6 @@ function Rail({ screens, projects, current, onSelect, onHome, onSettings, onTogg
     /* @__PURE__ */ jsx16("div", { className: "ad-rail__group", children: screens.map((s) => /* @__PURE__ */ jsx16("button", { type: "button", className: "ad-rail__item", "aria-label": s.label, title: s.label, "aria-current": current === s.id ? "page" : void 0, onClick: () => onSelect(s.id), children: s.icon }, s.id)) }),
     /* @__PURE__ */ jsx16("div", { className: "ad-rail__group", children: projects.map((p) => /* @__PURE__ */ jsx16("button", { type: "button", className: "ad-rail__project", "aria-label": `${p.code} ${p.name}`, title: p.name, "aria-current": current === p.id ? "page" : void 0, onClick: () => onSelect(p.id), children: /* @__PURE__ */ jsx16(ProjectPill, { code: p.code, current: current === p.id, color: p.color }) }, p.id)) }),
     /* @__PURE__ */ jsxs13("div", { className: "ad-rail__foot", children: [
-      /* @__PURE__ */ jsx16("span", { className: "ad-rail__vertical", "aria-hidden": "true", children: L.settings.toLowerCase() }),
       /* @__PURE__ */ jsx16("button", { type: "button", className: "ad-rail__item", "aria-label": L.settings, title: L.settings, "aria-current": current === "settings" ? "page" : void 0, onClick: onSettings, children: /* @__PURE__ */ jsx16(Icon, { name: "gear", size: "lg" }) }),
       /* @__PURE__ */ jsx16("button", { type: "button", className: "ad-rail__item ad-rail__fold", "aria-label": L.expand, title: L.expand, "aria-expanded": "false", onClick: onToggle, children: /* @__PURE__ */ jsx16(Icon, { name: "caret-right" }) })
     ] })
@@ -1882,7 +1881,7 @@ function TodoCheck({ checked, onChange, priority = 4, ariaLabel, disabled, unack
   );
 }
 function TodoRow({ name, priority, done, onTick, due, today, dept, who, selected, onOpen, completeLabel = "Complete", unacknowledged, onAcknowledge, acknowledgeLabel = "Acknowledge", repeat, pastDeadline, pastDeadlineLabel = "Deadline passed", role, deliverable, project, picking, onPressDate, onPressWho, onPressDeliverable, pressLabels, onRename, onPressProject, onPressDept, rowProps, cells, ring = true, whoMax }) {
-  const plain = due ? /* @__PURE__ */ jsx17(RowDate, { due, today, done }) : null;
+  const plain = due ? /* @__PURE__ */ jsx17(RowDate, { due, today, done, icon: /* @__PURE__ */ jsx17(Icon, { job: "calendar", size: "sm" }) }) : null;
   const date = plain && onPressDate ? /* @__PURE__ */ jsx17(RowPress, { label: pressLabels?.date ?? "Change the date", onPress: onPressDate, children: plain }) : plain;
   const extras = repeat || pastDeadline || role || deliverable;
   const meta = date || dept || extras ? /* @__PURE__ */ jsxs14(Fragment5, { children: [
@@ -2988,15 +2987,10 @@ function PageHeader({ title, icon, stamp, tabs, back, description, countdown: gi
   const shownStamp = typeof stamp === "string" && STATES.has(stamp);
   const countdown2 = given && typeof given === "object" && given.to instanceof Date ? countdownWords(given) : null;
   return /* @__PURE__ */ jsxs28("header", { className: cx("ad-page-header", className), children: [
-    !tabs && shownStamp && /* @__PURE__ */ jsx31("div", { className: "ad-type-stamp ad-page-header__stamp", children: stamp }),
     back && /* @__PURE__ */ jsx31(ButtonSizeScope, { size: "bar", children: /* @__PURE__ */ jsxs28("button", { type: "button", className: "ad-page-header__back", onClick: back.onBack, children: [
       /* @__PURE__ */ jsx31(Icon, { job: "chevron-left", size: "sm" }),
       back.label
     ] }) }),
-    tabs && /* @__PURE__ */ jsxs28("div", { className: "ad-page-header__tabs", children: [
-      tabs,
-      shownStamp && /* @__PURE__ */ jsx31("div", { className: "ad-type-stamp ad-page-header__stamp ad-page-header__stamp--line", children: stamp })
-    ] }),
     /* @__PURE__ */ jsxs28("div", { className: "ad-page-header__row", children: [
       /* @__PURE__ */ jsxs28("h1", { className: "ad-page-header__title", children: [
         icon && /* @__PURE__ */ jsx31("span", { className: "ad-page-header__icon", "aria-hidden": "true", children: icon }),
@@ -3006,6 +3000,7 @@ function PageHeader({ title, icon, stamp, tabs, back, description, countdown: gi
         description && /* @__PURE__ */ jsx31("p", { className: "ad-page-header__description", children: String(description) }),
         countdown2 && /* @__PURE__ */ jsx31("p", { className: "ad-page-header__countdown", children: countdown2 })
       ] }),
+      shownStamp && /* @__PURE__ */ jsx31("div", { className: "ad-type-stamp ad-page-header__stamp", children: stamp }),
       anyEnd && /* @__PURE__ */ jsxs28(HeaderActions, { groupProps: { "aria-label": headerLabels?.group ?? "Screen actions" }, children: [
         gear && /* @__PURE__ */ jsx31(ShowOptionsGear, { ...gear }),
         onSearch && /* @__PURE__ */ jsx31(IconButton, { label: headerLabels?.search ?? "Search", onClick: onSearch, children: /* @__PURE__ */ jsx31(Icon, { job: "search", size: "md" }) }),
@@ -3017,7 +3012,8 @@ function PageHeader({ title, icon, stamp, tabs, back, description, countdown: gi
           /* @__PURE__ */ jsx31(Menu, { open: menuOpen, onClose: () => setMenuOpen(false), anchor: menuAt, ariaLabel: menu.label ?? "More", items: menu.items })
         ] })
       ] })
-    ] })
+    ] }),
+    tabs && /* @__PURE__ */ jsx31("div", { className: "ad-page-header__tabs", children: tabs })
   ] });
 }
 var strip = (h) => {
@@ -3307,6 +3303,7 @@ var ViewButton = forwardRef8(function ViewButton2({ label = "View", open, opens,
     Button,
     {
       ref,
+      className: "ad-button--view",
       icon: /* @__PURE__ */ jsx34(Icon, { name: "binoculars" }),
       active: open,
       "aria-expanded": onClick ? !!open : void 0,
@@ -3665,6 +3662,7 @@ function SelectionBar({ count, countLabel = (n) => `${n} selected`, actions, lea
 }
 
 // src/components/Timeline/Timeline.tsx
+import { useLayoutEffect as useLayoutEffect5, useRef as useRef24, useState as useState23 } from "react";
 import { Fragment as Fragment13, jsx as jsx39, jsxs as jsxs35 } from "react/jsx-runtime";
 var strip3 = (h) => {
   if (!h) return {};
@@ -3676,11 +3674,29 @@ function Bar({ label, unconfirmed, deal, backup, color, selected, startLabel, en
   const Tag2 = asButton ? "button" : "div";
   const hue = useHue(color);
   const hooks = strip3(barProps);
+  const root = useRef24(null);
+  const [cramped, setCramped] = useState23(false);
+  useLayoutEffect5(() => {
+    const el = root.current;
+    if (!el) return;
+    const measure = () => {
+      const n = el.querySelector(".ad-bar__label > .ad-bar__name");
+      if (n) setCramped(n.scrollWidth > n.clientWidth + 1);
+    };
+    measure();
+    document.fonts?.ready.then(measure).catch(() => {
+    });
+    const ro = typeof ResizeObserver === "undefined" ? null : new ResizeObserver(measure);
+    ro?.observe(el);
+    return () => ro?.disconnect();
+  }, [label]);
+  const outside = labelOutside || cramped;
   const name = /* @__PURE__ */ jsx39("span", { className: "ad-bar__name", children: label });
   const grip = (side, h) => h && /* @__PURE__ */ jsx39("span", { "aria-hidden": h["aria-label"] ? void 0 : true, ...strip3(h), className: `ad-bar__grip ad-bar__grip--${side}` });
   return /* @__PURE__ */ jsxs35(
     Tag2,
     {
+      ref: root,
       ...hooks,
       type: asButton ? "button" : void 0,
       role: onOpen && !asButton ? "button" : hooks.role,
@@ -3698,17 +3714,17 @@ function Bar({ label, unconfirmed, deal, backup, color, selected, startLabel, en
         }
       },
       "aria-current": selected || void 0,
-      className: cx("ad-bar", unconfirmed && "ad-bar--unconfirmed", deal && "ad-bar--deal", backup && "ad-bar--backup", thin && "ad-bar--thin", labelOutside && "ad-bar--label-outside", selected && "ad-bar--selected", late && "ad-bar--late", dense && "ad-bar--dense", fade && `ad-bar--fade-${fade}`, labelHidden && "ad-bar--label-hidden", className),
+      className: cx("ad-bar", unconfirmed && "ad-bar--unconfirmed", deal && "ad-bar--deal", backup && "ad-bar--backup", thin && "ad-bar--thin", outside && "ad-bar--label-outside", selected && "ad-bar--selected", late && "ad-bar--late", dense && "ad-bar--dense", fade && `ad-bar--fade-${fade}`, labelHidden && "ad-bar--label-hidden", className),
       style: { ...style, ["--ad-bar"]: hue, ...labelInset ? { ["--ad-label-in"]: `${Math.max(0, labelInset)}px` } : {} },
       children: [
         grip("start", ends?.start),
         startLabel && /* @__PURE__ */ jsx39("span", { className: "ad-bar__end ad-bar__end--start", children: startLabel }),
         /* @__PURE__ */ jsxs35("span", { className: "ad-bar__label", children: [
           lead,
-          !labelOutside && name
+          name
         ] }),
         children,
-        labelOutside && /* @__PURE__ */ jsx39("span", { className: "ad-bar__outside", children: name }),
+        outside && /* @__PURE__ */ jsx39("span", { className: "ad-bar__outside", children: name }),
         endLabel && /* @__PURE__ */ jsx39("span", { className: "ad-bar__end ad-bar__end--end", children: endLabel }),
         grip("end", ends?.end)
       ]
@@ -3719,7 +3735,7 @@ function BarMarker({ kind, at, due, today, done, labels: l = {} }) {
   const late = kind === "review" && !done && due instanceof Date && today instanceof Date && daysBetween(today, due) < 0;
   const word = kind === "review" ? l.review ?? "Review date" : l.deadline ?? "Deadline";
   const label = late ? `${word} ${l.passed ?? "passed"}` : word;
-  return /* @__PURE__ */ jsx39("span", { className: cx("ad-bar-marker", late && "ad-bar-marker--late"), style: { left: `${Math.max(0, Math.min(1, at)) * 100}%` }, role: "img", "aria-label": label, title: label, children: /* @__PURE__ */ jsx39(Icon, { name: kind === "review" ? "eye" : "paper-plane-tilt", fill: true }) });
+  return /* @__PURE__ */ jsx39("span", { className: cx("ad-bar-marker", late && "ad-bar-marker--late"), style: { left: `clamp(calc(var(--icon-md) / 2), ${Math.max(0, Math.min(1, at)) * 100}%, calc(100% - var(--icon-md) / 2))` }, role: "img", "aria-label": label, title: label, children: /* @__PURE__ */ jsx39(Icon, { name: kind === "review" ? "eye" : "paper-plane-tilt", fill: true }) });
 }
 function DeliverableBar({ parts, ...props }) {
   if (!parts) return /* @__PURE__ */ jsx39(DeliverableRow, { ...props });
@@ -3734,10 +3750,33 @@ function DeliverableBar({ parts, ...props }) {
     }) })
   ] });
 }
-function DeliverableRow({ status, statusLabel, markers, expandable, expanded, onToggle, toggleLabel = "Show parts", className, ...bar }) {
-  return /* @__PURE__ */ jsxs35("div", { className: cx("ad-deliverable", expandable && "ad-deliverable--expandable", className), children: [
+function DeliverableRow({ status, showStatus, statusLabel, markers, expandable, expanded, onToggle, toggleLabel = "Show parts", className, ...bar }) {
+  const done = status === "good";
+  const ats = markers.map((m) => Math.max(0, Math.min(1, m.at))).sort((a, b) => a - b);
+  const leading = ats.filter((a) => a < LEAD_AT).length;
+  const cap = ats.find((a) => a >= LEAD_AT);
+  const style = {
+    ...bar.style,
+    ...leading ? { ["--ad-label-in"]: `calc(var(--icon-md) * ${leading} + var(--space-2))` } : {},
+    ...cap !== void 0 ? { ["--ad-label-max"]: `calc(${(cap * 100).toFixed(2)}% - var(--icon-md) - var(--space-2) - var(--space-2) * 2)` } : {}
+  };
+  return /* @__PURE__ */ jsxs35("div", { className: cx("ad-deliverable", expandable && "ad-deliverable--expandable", className), style, children: [
     expandable && /* @__PURE__ */ jsx39("button", { type: "button", className: "ad-deliverable__caret", "aria-expanded": !!expanded, "aria-label": toggleLabel, onClick: onToggle, children: /* @__PURE__ */ jsx39(Icon, { name: "caret-right", size: "sm", className: cx("ad-deliverable__chevron", expanded && "ad-is-open") }) }),
-    /* @__PURE__ */ jsx39(Bar, { ...bar, lead: /* @__PURE__ */ jsx39("span", { role: "img", "aria-label": statusLabel, className: "ad-deliverable__status", children: /* @__PURE__ */ jsx39(Dot, { tone: status }) }), children: markers.map((m, i) => /* @__PURE__ */ jsx39(BarMarker, { ...m }, i)) })
+    /* @__PURE__ */ jsx39(Bar, { ...bar, style: void 0, lead: showStatus ? /* @__PURE__ */ jsx39("span", { role: "img", "aria-label": statusLabel, className: "ad-deliverable__status", children: /* @__PURE__ */ jsx39(Dot, { tone: status }) }) : /* @__PURE__ */ jsx39("span", { className: "ad-sr", children: statusLabel }), children: markers.map((m, i) => /* @__PURE__ */ jsx39(BarMarker, { done, ...m }, i)) })
+  ] });
+}
+var LEAD_AT = 0.12;
+function Lanes({ children, marks, ariaLabel, className }) {
+  return /* @__PURE__ */ jsxs35("div", { className: cx("ad-lanes", className), role: ariaLabel ? "group" : void 0, "aria-label": ariaLabel, children: [
+    children,
+    marks && /* @__PURE__ */ jsx39("div", { className: "ad-lanes__marks", "aria-hidden": "true", children: marks })
+  ] });
+}
+function Lane({ name, children, tall, laneProps }) {
+  const { className: _c, style: _s, ...hooks } = laneProps ?? {};
+  return /* @__PURE__ */ jsxs35("div", { ...hooks, className: cx("ad-lane", tall && "ad-lane--tall"), children: [
+    /* @__PURE__ */ jsx39("div", { className: "ad-lane__name", children: name }),
+    /* @__PURE__ */ jsx39("div", { className: "ad-lane__chart", children })
   ] });
 }
 function MarkerKey({ review = "review date \xB7 internal", deadline = "deadline \xB7 sent out" }) {
@@ -3894,14 +3933,14 @@ var NAMES = { days: "Days", weeks: "Weeks", months: "Months", quarters: "Quarter
 function ZoomCluster({ zoom, onZoom, onPrevious, onToday, onNext, labels }) {
   const L = { ...NAMES, ...labels };
   const i = ORDER.indexOf(zoom);
-  const btn = (label, glyph, on, disabled, today) => /* @__PURE__ */ jsx40("button", { type: "button", "aria-label": label, title: label, disabled, onClick: on, className: cx("ad-zoom__btn", today && "ad-zoom__btn--today"), children: /* @__PURE__ */ jsx40("span", { "aria-hidden": "true", children: glyph }) }, glyph);
+  const btn = (label, glyph, on, disabled, today) => /* @__PURE__ */ jsx40("button", { type: "button", "aria-label": label, title: label, disabled, onClick: on, className: cx("ad-zoom__btn", today && "ad-zoom__btn--today"), children: /* @__PURE__ */ jsx40(Icon, { job: glyph, size: "md" }) }, glyph);
   return /* @__PURE__ */ jsxs36("div", { className: "ad-zoom", role: "group", "aria-label": L[zoom], children: [
     /* @__PURE__ */ jsx40("span", { className: "ad-zoom__name", "aria-hidden": "true", children: L[zoom].toLowerCase() }),
-    btn(`${L.zoomOut} (${L[ORDER[Math.min(i + 1, 3)]]})`, "\u2212", () => onZoom(ORDER[Math.min(i + 1, 3)]), i === 3),
-    btn(L.previous, "\u2039", onPrevious),
-    btn(L.today, "\u2022", onToday, false, true),
-    btn(L.next, "\u203A", onNext),
-    btn(`${L.zoomIn} (${L[ORDER[Math.max(i - 1, 0)]]})`, "+", () => onZoom(ORDER[Math.max(i - 1, 0)]), i === 0)
+    btn(`${L.zoomOut} (${L[ORDER[Math.min(i + 1, 3)]]})`, "minus", () => onZoom(ORDER[Math.min(i + 1, 3)]), i === 3),
+    btn(L.previous, "chevron-left", onPrevious),
+    btn(L.today, "today", onToday, false, true),
+    btn(L.next, "chevron-right", onNext),
+    btn(`${L.zoomIn} (${L[ORDER[Math.max(i - 1, 0)]]})`, "plus", () => onZoom(ORDER[Math.max(i - 1, 0)]), i === 0)
   ] });
 }
 function PeriodCluster({ shown, periods, period, onPeriod, onPrevious, onNext, onToday, previousOff, nextOff, labels }) {
@@ -4095,7 +4134,7 @@ function TimeGrid({ startHour, endHour, bookings = [], columns, now, hourLabel =
 }
 
 // src/components/Map/Map.tsx
-import { useEffect as useEffect14, useMemo as useMemo3, useRef as useRef24, useState as useState23 } from "react";
+import { useEffect as useEffect14, useMemo as useMemo3, useRef as useRef25, useState as useState24 } from "react";
 
 // src/components/Map/worldGeo.ts
 var GEO_LAT_MAX = 84;
@@ -4164,10 +4203,10 @@ var LABEL_ALL_FROM = 760;
 var LABEL_SOME_FROM = 380;
 var PICKS = new Set(pickColours);
 function WorldMap({ pins, at, ariaLabel, onPin, hoverCard, pinProps }) {
-  const [hover, setHover] = useState23(null);
+  const [hover, setHover] = useState24(null);
   const night = useMemo3(() => nightPath(at), [at]);
-  const wrap = useRef24(null);
-  const [w, setW] = useState23(0);
+  const wrap = useRef25(null);
+  const [w, setW] = useState24(0);
   useEffect14(() => {
     const el = wrap.current;
     if (!el) return;
@@ -4322,10 +4361,10 @@ function Verdict({ word, sentence }) {
 }
 
 // src/components/Search/Search.tsx
-import { useRef as useRef25 } from "react";
+import { useRef as useRef26 } from "react";
 import { jsx as jsx44 } from "react/jsx-runtime";
 function CommandSearch({ open, onClose, query, onQuery, results, onPick, label = "Search everything", noMatch = "Nothing by that name" }) {
-  const box = useRef25(null);
+  const box = useRef26(null);
   const z = useLayer(open, onClose, [box], "dialog");
   usePageInert(open, [box]);
   useFocusReturn(open, box);
@@ -4348,13 +4387,13 @@ function CommandSearch({ open, onClose, query, onQuery, results, onPick, label =
 }
 
 // src/components/Guidance/Guidance.tsx
-import { useEffect as useEffect15, useLayoutEffect as useLayoutEffect5, useRef as useRef26, useState as useState24 } from "react";
+import { useEffect as useEffect15, useLayoutEffect as useLayoutEffect6, useRef as useRef27, useState as useState25 } from "react";
 import { jsx as jsx45, jsxs as jsxs40 } from "react/jsx-runtime";
-var useIsoLayoutEffect3 = typeof window === "undefined" ? useEffect15 : useLayoutEffect5;
+var useIsoLayoutEffect3 = typeof window === "undefined" ? useEffect15 : useLayoutEffect6;
 function TourStep({ open, anchor, step, total, title, children, onBack, onNext, onExit, backLabel = "Back", nextLabel = "Next", progressLabel = (s, t) => `${s} of ${t}`, placement, side: older, onClose, closeLabel }) {
-  const card = useRef26(null);
-  const [rect, setRect] = useState24(null);
-  const [size, setSize] = useState24(null);
+  const card = useRef27(null);
+  const [rect, setRect] = useState25(null);
+  const [size, setSize] = useState25(null);
   const asked = placement ?? older ?? "below";
   const doc = useFloatingDocument() ?? document;
   useFocusReturn(open, card);
@@ -4691,7 +4730,9 @@ export {
   Icon,
   IconButton,
   InlineEdit,
+  Lane,
   LaneWash,
+  Lanes,
   Legend,
   List,
   ListSection,
