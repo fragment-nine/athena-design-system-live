@@ -1705,6 +1705,7 @@ function dropLineProps(at, axis = "y") {
 
 // src/components/Navigation/Navigation.tsx
 import { jsx as jsx16, jsxs as jsxs13 } from "react/jsx-runtime";
+var dataOnly = (hooks) => hooks ? Object.fromEntries(Object.entries(hooks).filter(([k]) => k.startsWith("data-"))) : {};
 var X = () => /* @__PURE__ */ jsx16("span", { className: "ad-rail__x", "aria-hidden": "true" });
 function ProjectPill({ code: code2, current, color, onPress, pressLabel }) {
   const hue = useHue(color);
@@ -1719,8 +1720,8 @@ function Rail({ screens, projects, current, onSelect, onHome, onSettings, onTogg
   const L = { home: "Home", settings: "Settings", expand: "Open the menu", menu: "Main", ...l };
   return /* @__PURE__ */ jsxs13("nav", { className: "ad-rail", "aria-label": L.menu, children: [
     /* @__PURE__ */ jsx16("button", { type: "button", className: "ad-rail__item ad-rail__home", "aria-label": L.home, title: L.home, onClick: onHome, children: /* @__PURE__ */ jsx16(X, {}) }),
-    /* @__PURE__ */ jsx16("div", { className: "ad-rail__group", children: screens.map((s) => /* @__PURE__ */ jsx16("button", { type: "button", className: "ad-rail__item", "aria-label": s.label, title: s.label, "aria-current": current === s.id ? "page" : void 0, onClick: () => onSelect(s.id), children: s.icon }, s.id)) }),
-    /* @__PURE__ */ jsx16("div", { className: "ad-rail__group", children: projects.map((p) => /* @__PURE__ */ jsx16("button", { type: "button", className: "ad-rail__project", "aria-label": `${p.code} ${p.name}`, title: p.name, "aria-current": current === p.id ? "page" : void 0, onClick: () => onSelect(p.id), children: /* @__PURE__ */ jsx16(ProjectPill, { code: p.code, current: current === p.id, color: p.color }) }, p.id)) }),
+    /* @__PURE__ */ jsx16("div", { className: "ad-rail__group", children: screens.map((s) => /* @__PURE__ */ jsx16("button", { type: "button", ...dataOnly(s.hooks), className: "ad-rail__item", "aria-label": s.label, title: s.label, "aria-current": current === s.id ? "page" : void 0, onClick: () => onSelect(s.id), children: s.icon }, s.id)) }),
+    /* @__PURE__ */ jsx16("div", { className: "ad-rail__group", children: projects.map((p) => /* @__PURE__ */ jsx16("button", { type: "button", ...dataOnly(p.hooks), className: "ad-rail__project", "aria-label": `${p.code} ${p.name}`, title: p.name, "aria-current": current === p.id ? "page" : void 0, onClick: () => onSelect(p.id), children: /* @__PURE__ */ jsx16(ProjectPill, { code: p.code, current: current === p.id, color: p.color }) }, p.id)) }),
     /* @__PURE__ */ jsxs13("div", { className: "ad-rail__foot", children: [
       /* @__PURE__ */ jsx16("button", { type: "button", className: "ad-rail__item", "aria-label": L.settings, title: L.settings, "aria-current": current === "settings" ? "page" : void 0, onClick: onSettings, children: /* @__PURE__ */ jsx16(Icon, { name: "gear", size: "lg" }) }),
       /* @__PURE__ */ jsx16("button", { type: "button", className: "ad-rail__item ad-rail__fold", "aria-label": L.expand, title: L.expand, "aria-expanded": "false", onClick: onToggle, children: /* @__PURE__ */ jsx16(Icon, { name: "caret-right" }) })
@@ -1765,16 +1766,16 @@ function SideMenu({ screens, projects, views = [], current, onSelect, onHome, on
         /* @__PURE__ */ jsx16("span", { className: "ad-side__icon", "aria-hidden": "true", children: /* @__PURE__ */ jsx16(X, {}) }),
         L.home
       ] }) }),
-      screens.map((s) => /* @__PURE__ */ jsx16("li", { ...movable("screens", s.id, screens.map((x) => x.id)), children: /* @__PURE__ */ jsxs13("button", { type: "button", className: "ad-side__item", "aria-current": current === s.id ? "page" : void 0, onClick: () => onSelect(s.id), children: [
+      screens.map((s) => /* @__PURE__ */ jsx16("li", { ...dataOnly(s.hooks), ...movable("screens", s.id, screens.map((x) => x.id)), children: /* @__PURE__ */ jsxs13("button", { type: "button", className: "ad-side__item", "aria-current": current === s.id ? "page" : void 0, onClick: () => onSelect(s.id), children: [
         /* @__PURE__ */ jsx16("span", { className: "ad-side__icon", "aria-hidden": "true", children: s.icon }),
         s.label
       ] }) }, s.id))
     ] }),
-    projects.length > 0 && /* @__PURE__ */ jsx16("ul", { className: "ad-side__list", children: projects.map((p) => /* @__PURE__ */ jsx16("li", { ...movable("projects", p.id, projects.map((x) => x.id)), children: /* @__PURE__ */ jsxs13("button", { type: "button", className: "ad-side__item", "aria-current": current === p.id ? "page" : void 0, onClick: () => onSelect(p.id), children: [
+    projects.length > 0 && /* @__PURE__ */ jsx16("ul", { className: "ad-side__list", children: projects.map((p) => /* @__PURE__ */ jsx16("li", { ...dataOnly(p.hooks), ...movable("projects", p.id, projects.map((x) => x.id)), children: /* @__PURE__ */ jsxs13("button", { type: "button", className: "ad-side__item", "aria-current": current === p.id ? "page" : void 0, onClick: () => onSelect(p.id), children: [
       /* @__PURE__ */ jsx16(ProjectPill, { code: p.code, current: current === p.id, color: p.color }),
       p.name
     ] }) }, p.id)) }),
-    views.length > 0 && /* @__PURE__ */ jsx16("ul", { className: "ad-side__list", children: views.map((v) => /* @__PURE__ */ jsx16("li", { children: /* @__PURE__ */ jsxs13("button", { type: "button", className: "ad-side__item", "aria-current": current === v.id ? "page" : void 0, onClick: () => onSelect(v.id), children: [
+    views.length > 0 && /* @__PURE__ */ jsx16("ul", { className: "ad-side__list", children: views.map((v) => /* @__PURE__ */ jsx16("li", { ...dataOnly(v.hooks), children: /* @__PURE__ */ jsxs13("button", { type: "button", className: "ad-side__item", "aria-current": current === v.id ? "page" : void 0, onClick: () => onSelect(v.id), children: [
       /* @__PURE__ */ jsx16(Icon, { name: "star", className: "ad-side__star" }),
       v.label
     ] }) }, v.id)) }),
