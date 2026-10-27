@@ -22,7 +22,7 @@ import {
 import {
   describeViolations,
   scanIn
-} from "../chunk-J5DWL4FT.js";
+} from "../chunk-5DPRZLB3.js";
 
 // src/components/cx.ts
 function fromControl(e) {
@@ -470,94 +470,6 @@ function Tooltip({ text, children }) {
     node
   ] });
 }
-
-// src/components/Button/Button.tsx
-import { Fragment as Fragment2, jsx as jsx3, jsxs as jsxs2 } from "react/jsx-runtime";
-var Place = createContext3("md");
-function ButtonSizeScope({ size, children }) {
-  return /* @__PURE__ */ jsx3(Place.Provider, { value: size, children });
-}
-function useButtonSize() {
-  return useContext3(Place);
-}
-var Button = forwardRef(function Button2({ variant = "quiet", icon, danger, active, block, className, type = "button", children, ...rest }, ref) {
-  const size = useContext3(Place);
-  delete rest.size;
-  return /* @__PURE__ */ jsxs2(
-    "button",
-    {
-      ref,
-      type,
-      ...rest,
-      className: cx("ad-button", `ad-button--${variant}`, `ad-button--${size}`, danger && variant !== "main" && "ad-button--danger", active && "ad-button--active", block && "ad-button--block", className),
-      children: [
-        icon,
-        children
-      ]
-    }
-  );
-});
-function FileButton({ accept, multiple, onFiles, ...button }) {
-  const input = useRef4(null);
-  return /* @__PURE__ */ jsxs2(Fragment2, { children: [
-    /* @__PURE__ */ jsx3(Button, { ...button, onClick: () => input.current?.click() }),
-    /* @__PURE__ */ jsx3(
-      "input",
-      {
-        ref: input,
-        type: "file",
-        accept,
-        multiple,
-        hidden: true,
-        "aria-hidden": "true",
-        tabIndex: -1,
-        onChange: (e) => {
-          const files = [...e.target.files ?? []];
-          if (files.length) onFiles(files);
-          e.target.value = "";
-        }
-      }
-    )
-  ] });
-}
-var IconButton = forwardRef(function IconButton2({ label, active, danger, className, type = "button", children, onPointerEnter, onPointerLeave, onFocus, onBlur, ...rest }, ref) {
-  const size = useContext3(Place);
-  delete rest.size;
-  const { triggerProps: tip, node } = useTooltip(label, { describes: false });
-  return /* @__PURE__ */ jsxs2(Fragment2, { children: [
-    /* @__PURE__ */ jsx3(
-      "button",
-      {
-        ref,
-        type,
-        ...rest,
-        "aria-label": label,
-        onPointerEnter: (e) => {
-          onPointerEnter?.(e);
-          tip.onPointerEnter(e);
-        },
-        onPointerLeave: (e) => {
-          onPointerLeave?.(e);
-          tip.onPointerLeave();
-        },
-        onFocus: (e) => {
-          onFocus?.(e);
-          tip.onFocus(e);
-        },
-        onBlur: (e) => {
-          onBlur?.(e);
-          tip.onBlur();
-        },
-        className: cx("ad-icon-button", `ad-icon-button--${size}`, active && "ad-icon-button--active", danger && "ad-button--danger", className),
-        children
-      }
-    ),
-    node
-  ] });
-});
-
-// src/components/Field/Field.tsx
-import { forwardRef as forwardRef2, useEffect as useEffect4, useId as useId3, useRef as useRef5, useState as useState4 } from "react";
 
 // src/components/Icon/glyphs.ts
 var REGULAR = {
@@ -1172,20 +1084,114 @@ var JOBS = {
 };
 
 // src/components/Icon/Icon.tsx
-import { jsx as jsx4 } from "react/jsx-runtime";
+import { jsx as jsx3 } from "react/jsx-runtime";
+var isJob = (s) => Object.prototype.hasOwnProperty.call(JOBS, s);
+function slotIcon(icon, props = {}) {
+  if (icon == null || icon === false || icon === "") return null;
+  if (typeof icon === "string") return isJob(icon) ? /* @__PURE__ */ jsx3(Icon, { job: icon, ...props }) : /* @__PURE__ */ jsx3(Icon, { name: icon, ...props });
+  return /* @__PURE__ */ jsx3("span", { className: "ad-icon-slot--own", "data-ad-own-drawing": "", children: icon });
+}
 var ITEM_TYPES = /* @__PURE__ */ new Set(["phase", "milestone", "deliverable", "todo", "travel"]);
 function Icon(props) {
   const { name, job, size = "md", fill, label, tint, className, resolved } = props;
-  if (tint && ITEM_TYPES.has(tint) && resolved === void 0) return /* @__PURE__ */ jsx4(TintedIcon, { ...props });
+  if (tint && ITEM_TYPES.has(tint) && resolved === void 0) return /* @__PURE__ */ jsx3(TintedIcon, { ...props });
   const glyph = job ? JOBS[job] : name;
   const paths = fill && FILL[glyph] || REGULAR[glyph];
   if (!paths) throw new Error(`Icon: "${String(job ?? name)}" is not a glyph or a job in the icon map (assets/icons/README.md). One set: nothing outside it is drawn.`);
-  return /* @__PURE__ */ jsx4("svg", { viewBox: "0 0 256 256", className: cx("ad-icon", `ad-icon--${size}`, className), role: label ? "img" : void 0, "aria-label": label, "aria-hidden": label ? void 0 : true, focusable: "false", "data-tint": resolved ? tint : void 0, style: resolved ? { color: resolved } : void 0, children: paths.map((d, i) => /* @__PURE__ */ jsx4("path", { fill: "currentColor", d }, i)) });
+  return /* @__PURE__ */ jsx3("svg", { viewBox: "0 0 256 256", className: cx("ad-icon", `ad-icon--${size}`, className), role: label ? "img" : void 0, "aria-label": label, "aria-hidden": label ? void 0 : true, focusable: "false", "data-tint": resolved ? tint : void 0, style: resolved ? { color: resolved } : void 0, children: paths.map((d, i) => /* @__PURE__ */ jsx3("path", { fill: "currentColor", d }, i)) });
 }
 function TintedIcon(props) {
   const resolved = useHue(`item-${props.tint}`) ?? null;
   return Icon({ ...props, resolved });
 }
+
+// src/components/Button/Button.tsx
+import { Fragment as Fragment2, jsx as jsx4, jsxs as jsxs2 } from "react/jsx-runtime";
+var Place = createContext3("md");
+function ButtonSizeScope({ size, children }) {
+  return /* @__PURE__ */ jsx4(Place.Provider, { value: size, children });
+}
+function useButtonSize() {
+  return useContext3(Place);
+}
+var Button = forwardRef(function Button2({ variant = "quiet", icon, danger, active, block, className, type = "button", children, ...rest }, ref) {
+  const size = useContext3(Place);
+  delete rest.size;
+  return /* @__PURE__ */ jsxs2(
+    "button",
+    {
+      ref,
+      type,
+      ...rest,
+      className: cx("ad-button", `ad-button--${variant}`, `ad-button--${size}`, danger && variant !== "main" && "ad-button--danger", active && "ad-button--active", block && "ad-button--block", className),
+      children: [
+        slotIcon(icon),
+        children
+      ]
+    }
+  );
+});
+function FileButton({ accept, multiple, onFiles, ...button }) {
+  const input = useRef4(null);
+  return /* @__PURE__ */ jsxs2(Fragment2, { children: [
+    /* @__PURE__ */ jsx4(Button, { ...button, onClick: () => input.current?.click() }),
+    /* @__PURE__ */ jsx4(
+      "input",
+      {
+        ref: input,
+        type: "file",
+        accept,
+        multiple,
+        hidden: true,
+        "aria-hidden": "true",
+        tabIndex: -1,
+        onChange: (e) => {
+          const files = [...e.target.files ?? []];
+          if (files.length) onFiles(files);
+          e.target.value = "";
+        }
+      }
+    )
+  ] });
+}
+var IconButton = forwardRef(function IconButton2({ label, active, danger, className, type = "button", children, onPointerEnter, onPointerLeave, onFocus, onBlur, ...rest }, ref) {
+  const size = useContext3(Place);
+  delete rest.size;
+  const { triggerProps: tip, node } = useTooltip(label, { describes: false });
+  return /* @__PURE__ */ jsxs2(Fragment2, { children: [
+    /* @__PURE__ */ jsx4(
+      "button",
+      {
+        ref,
+        type,
+        ...rest,
+        "aria-label": label,
+        onPointerEnter: (e) => {
+          onPointerEnter?.(e);
+          tip.onPointerEnter(e);
+        },
+        onPointerLeave: (e) => {
+          onPointerLeave?.(e);
+          tip.onPointerLeave();
+        },
+        onFocus: (e) => {
+          onFocus?.(e);
+          tip.onFocus(e);
+        },
+        onBlur: (e) => {
+          onBlur?.(e);
+          tip.onBlur();
+        },
+        className: cx("ad-icon-button", `ad-icon-button--${size}`, active && "ad-icon-button--active", danger && "ad-button--danger", className),
+        children
+      }
+    ),
+    node
+  ] });
+});
+
+// src/components/Field/Field.tsx
+import { forwardRef as forwardRef2, useEffect as useEffect4, useId as useId3, useRef as useRef5, useState as useState4 } from "react";
 
 // src/components/GroupHeading/GroupHeading.tsx
 import { useId as useId2 } from "react";
@@ -1227,7 +1233,7 @@ var TextField = forwardRef2(function TextField2({ icon, end, parsed, error, mono
   const describedBy = [parsed != null ? parsedId : null, error != null ? errorId : null, rest["aria-describedby"]].filter(Boolean).join(" ") || void 0;
   return /* @__PURE__ */ jsxs5("span", { className: cx("ad-field-wrap", className), style, children: [
     /* @__PURE__ */ jsxs5("span", { className: cx("ad-field", rest.disabled && "ad-field--disabled"), children: [
-      icon && /* @__PURE__ */ jsx7("span", { className: "ad-field__icon", "aria-hidden": "true", children: icon }),
+      icon && /* @__PURE__ */ jsx7("span", { className: "ad-field__icon", "aria-hidden": "true", children: slotIcon(icon) }),
       /* @__PURE__ */ jsx7("input", { ref, ...rest, "aria-invalid": error != null || void 0, "aria-describedby": describedBy, className: cx("ad-field__input", mono && "ad-field__input--mono") }),
       end && /* @__PURE__ */ jsx7("span", { className: "ad-field__end", children: end })
     ] }),
@@ -1641,7 +1647,7 @@ function Tag({ children, current, className, ...rest }) {
 }
 function FilterTag({ axis, value, icon, onRemove, removeLabel = "Remove filter", size = "bar", className }) {
   return /* @__PURE__ */ jsxs11("span", { className: cx("ad-filter-tag", size === "row" && "ad-filter-tag--row", className), children: [
-    icon != null && /* @__PURE__ */ jsx14("span", { className: "ad-filter-tag__icon", "aria-hidden": "true", children: icon }),
+    icon != null && /* @__PURE__ */ jsx14("span", { className: "ad-filter-tag__icon", "aria-hidden": "true", children: slotIcon(icon, { size: "sm" }) }),
     axis != null && /* @__PURE__ */ jsx14("span", { className: "ad-filter-tag__axis", children: axis }),
     /* @__PURE__ */ jsx14("span", { className: "ad-filter-tag__value", children: value }),
     /* @__PURE__ */ jsx14("button", { type: "button", className: "ad-filter-tag__remove", "aria-label": removeLabel, title: removeLabel, onClick: onRemove, children: /* @__PURE__ */ jsx14(Icon, { name: "x" }) })
@@ -1844,7 +1850,7 @@ function RowDate({ due, today, until, done, milestone, what, icon, countdown: co
     const c = countdown(due, today, { done });
     if (!c.label) return null;
     return /* @__PURE__ */ jsxs14("span", { className: cx("ad-row-date", "ad-row-date--countdown", `ad-row-date--countdown-${countdown2}`, c.late && !milestone && "ad-row-date--late"), title: c.title, children: [
-      icon && /* @__PURE__ */ jsx17("span", { "aria-hidden": "true", className: "ad-row-date__icon", children: icon }),
+      icon && /* @__PURE__ */ jsx17("span", { "aria-hidden": "true", className: "ad-row-date__icon", children: slotIcon(icon, { size: "sm" }) }),
       what && /* @__PURE__ */ jsxs14("span", { className: "ad-sr", children: [
         what,
         ": "
@@ -1859,7 +1865,7 @@ function RowDate({ due, today, until, done, milestone, what, icon, countdown: co
   const words = last ? `${first.label} \u2013 ${last.label}` : first.label;
   const title = last ? `${first.title} \u2013 ${last.title}` : first.title;
   return /* @__PURE__ */ jsxs14("span", { className: cx("ad-row-date", late && "ad-row-date--late"), title, children: [
-    icon && /* @__PURE__ */ jsx17("span", { "aria-hidden": "true", className: "ad-row-date__icon", children: icon }),
+    icon && /* @__PURE__ */ jsx17("span", { "aria-hidden": "true", className: "ad-row-date__icon", children: slotIcon(icon, { size: "sm" }) }),
     what && /* @__PURE__ */ jsxs14("span", { className: "ad-sr", children: [
       what,
       ": "
@@ -1874,7 +1880,7 @@ var bareNumber = (text) => {
 function RowFigure({ children, icon }) {
   const text = String(children);
   return /* @__PURE__ */ jsxs14("span", { className: cx("ad-row-date", bareNumber(text) && "ad-row-figure--number"), children: [
-    icon && /* @__PURE__ */ jsx17("span", { "aria-hidden": "true", className: "ad-row-date__icon", children: icon }),
+    icon && /* @__PURE__ */ jsx17("span", { "aria-hidden": "true", className: "ad-row-date__icon", children: slotIcon(icon, { size: "sm" }) }),
     text
   ] });
 }
@@ -1903,7 +1909,7 @@ function TodoCheck({ checked, onChange, priority = 4, ariaLabel, disabled, unack
   );
 }
 function TodoRow({ name, priority, done, onTick, due, today, dept, who, selected, onOpen, completeLabel = "Complete", unacknowledged, onAcknowledge, acknowledgeLabel = "Acknowledge", repeat, pastDeadline, pastDeadlineLabel = "Deadline passed", role, deliverable, project, picking, onPressDate, onPressWho, onPressDeliverable, pressLabels, onRename, onPressProject, onPressDept, rowProps, cells, ring = true, whoMax }) {
-  const plain = due ? /* @__PURE__ */ jsx17(RowDate, { due, today, done, icon: /* @__PURE__ */ jsx17(Icon, { job: "calendar", size: "sm" }) }) : null;
+  const plain = due ? /* @__PURE__ */ jsx17(RowDate, { due, today, done, icon: "calendar" }) : null;
   const date = plain && onPressDate ? /* @__PURE__ */ jsx17(RowPress, { label: pressLabels?.date ?? "Change the date", onPress: onPressDate, children: plain }) : plain;
   const extras = repeat || pastDeadline || role || deliverable;
   const meta = date || dept || extras ? /* @__PURE__ */ jsxs14(Fragment5, { children: [
@@ -2032,7 +2038,7 @@ function DayHeading({ day, today, level = 3 }) {
 function AddRow({ label, onAdd, icon }) {
   const inList = useInList();
   const button = /* @__PURE__ */ jsxs15("button", { type: "button", className: "ad-add-row", onClick: onAdd, children: [
-    /* @__PURE__ */ jsx18("span", { "aria-hidden": "true", className: "ad-add-row__icon", children: icon ?? /* @__PURE__ */ jsx18(Icon, { name: "plus" }) }),
+    /* @__PURE__ */ jsx18("span", { "aria-hidden": "true", className: "ad-add-row__icon", children: slotIcon(icon ?? "plus") }),
     label
   ] });
   return inList ? /* @__PURE__ */ jsx18("div", { role: "listitem", children: button }) : button;
@@ -2188,7 +2194,7 @@ function Facts({ children }) {
 }
 function Fact({ icon, label, children, full }) {
   return /* @__PURE__ */ jsxs17("div", { role: "listitem", className: cx("ad-facts__cell", full && "ad-facts__cell--full"), title: label, children: [
-    icon && /* @__PURE__ */ jsx20("span", { className: "ad-facts__icon", "aria-hidden": "true", children: icon }),
+    icon && /* @__PURE__ */ jsx20("span", { className: "ad-facts__icon", "aria-hidden": "true", children: slotIcon(icon, { size: "sm" }) }),
     label && /* @__PURE__ */ jsxs17("span", { className: "ad-sr", children: [
       label,
       ": "
@@ -2306,7 +2312,7 @@ function MenuRow({ item, i, lit, keepCursor, focusable, onEnter, onChoose }) {
         },
         className: cx("ad-menu__item", item.danger && "ad-menu__item--danger", item.sub && "ad-menu__item--two"),
         children: [
-          item.icon && /* @__PURE__ */ jsx22("span", { className: "ad-menu__icon", "aria-hidden": "true", children: item.icon }),
+          item.icon && /* @__PURE__ */ jsx22("span", { className: "ad-menu__icon", "aria-hidden": "true", children: slotIcon(item.icon) }),
           item.sub ? /* @__PURE__ */ jsxs19("span", { className: "ad-menu__words", children: [
             /* @__PURE__ */ jsx22("span", { className: "ad-menu__label", children: item.label }),
             /* @__PURE__ */ jsx22("span", { className: "ad-menu__sub", children: item.sub })
@@ -2914,7 +2920,7 @@ function TimeField({ value, onChange, label, step = 30, bareHoursArePm, classNam
       TextField,
       {
         mono: true,
-        icon: /* @__PURE__ */ jsx27(Icon, { job: "clock", size: "sm" }),
+        icon: "clock",
         "aria-label": label,
         placeholder: label,
         value: text,
@@ -3028,9 +3034,9 @@ function SettingsLayout({ nav, title, children, className }) {
 function SettingsNav({ children, ariaLabel }) {
   return /* @__PURE__ */ jsx29("nav", { className: "ad-settings__nav", "aria-label": ariaLabel, children });
 }
-function SettingsNavItem({ icon, label, current, onSelect }) {
+function SettingsNavItem({ icon, face, label, current, onSelect }) {
   return /* @__PURE__ */ jsxs26("button", { type: "button", className: "ad-settings__nav-item", "aria-current": current ? "page" : void 0, onClick: onSelect, children: [
-    icon && /* @__PURE__ */ jsx29("span", { "aria-hidden": "true", className: "ad-settings__nav-icon", children: icon }),
+    (face || icon) && /* @__PURE__ */ jsx29("span", { "aria-hidden": "true", className: "ad-settings__nav-icon", children: face ? /* @__PURE__ */ jsx29(Avatar, { name: face.name, src: face.src, decorative: true }) : slotIcon(icon) }),
     label
   ] });
 }
@@ -3098,7 +3104,7 @@ function PageHeader({ title, icon, stamp, tabs, back, description, countdown: gi
     /* @__PURE__ */ jsxs28("div", { className: "ad-page-header__row", children: [
       /* @__PURE__ */ jsxs28("div", { className: "ad-page-header__lead", children: [
         /* @__PURE__ */ jsxs28("h1", { className: "ad-page-header__title", children: [
-          icon && /* @__PURE__ */ jsx31("span", { className: "ad-page-header__icon", "aria-hidden": "true", children: icon }),
+          icon && /* @__PURE__ */ jsx31("span", { className: "ad-page-header__icon", "aria-hidden": "true", children: slotIcon(icon) }),
           scramble ? /* @__PURE__ */ jsx31(TextScramble, { text: title }) : title
         ] }),
         (description || countdown2) && /* @__PURE__ */ jsxs28("div", { className: "ad-page-header__aside", children: [
@@ -3170,8 +3176,8 @@ function readTokens(value, read2) {
       const name = sections.find((x) => x.id === t.id)?.name ?? t.meaning;
       resolved = name.charAt(0).toUpperCase() + name.slice(1);
       const dept = name.toLowerCase();
-      if (DEPTS.has(dept)) icon = /* @__PURE__ */ jsx32(Icon, { job: `dept-${dept}` });
-    } else if (CHIP[t.kind]) icon = /* @__PURE__ */ jsx32(Icon, { job: CHIP[t.kind] });
+      if (DEPTS.has(dept)) icon = `dept-${dept}`;
+    } else if (CHIP[t.kind]) icon = CHIP[t.kind];
     return { start: t.start, end: t.end, label: t.label, resolved, icon };
   });
 }
@@ -3385,12 +3391,12 @@ function RuleBuilder({ match, onMatch, rules, onChange, fields, operators, rende
       /* @__PURE__ */ jsx33("span", { className: "ad-rules__value", children: renderValue(r, (value) => set(r.id, { value })) }),
       /* @__PURE__ */ jsx33(ButtonSizeScope, { size: "row", children: /* @__PURE__ */ jsx33(IconButton, { label: L.removeRule, className: "ad-rules__remove", onClick: () => onChange(rules.filter((x) => x.id !== r.id)), children: /* @__PURE__ */ jsx33(Icon, { name: "x", size: "sm" }) }) })
     ] }, r.id)),
-    /* @__PURE__ */ jsx33("div", { children: /* @__PURE__ */ jsx33(ButtonSizeScope, { size: "bar", children: /* @__PURE__ */ jsx33(Button, { icon: /* @__PURE__ */ jsx33(Icon, { name: "plus", size: "sm" }), onClick: () => onChange([...rules, newRule()]), children: L.addRule }) }) })
+    /* @__PURE__ */ jsx33("div", { children: /* @__PURE__ */ jsx33(ButtonSizeScope, { size: "bar", children: /* @__PURE__ */ jsx33(Button, { icon: "plus", onClick: () => onChange([...rules, newRule()]), children: L.addRule }) }) })
   ] });
 }
 var RuleValue = forwardRef7(function RuleValue2({ icon, end, mono, className, type = "button", children, ...rest }, ref) {
   return /* @__PURE__ */ jsxs30("button", { ref, type, ...rest, className: cx("ad-rule-value", mono && "ad-rule-value--mono", className), children: [
-    icon != null && /* @__PURE__ */ jsx33("span", { className: "ad-rule-value__icon", "aria-hidden": "true", children: icon }),
+    icon != null && /* @__PURE__ */ jsx33("span", { className: "ad-rule-value__icon", "aria-hidden": "true", children: slotIcon(icon, { size: "sm" }) }),
     /* @__PURE__ */ jsx33("span", { className: "ad-rule-value__words", children }),
     /* @__PURE__ */ jsx33("span", { className: "ad-rule-value__end", "aria-hidden": "true", children: end ?? /* @__PURE__ */ jsx33(Icon, { name: "caret-down", size: "sm" }) })
   ] });
@@ -3410,7 +3416,7 @@ var ViewButton = forwardRef8(function ViewButton2({ label = "View", open, opens,
     {
       ref,
       className: "ad-button--view",
-      icon: /* @__PURE__ */ jsx34(Icon, { name: "binoculars" }),
+      icon: "binoculars",
       active: open,
       "aria-expanded": onClick ? !!open : void 0,
       "aria-haspopup": onClick ? opens ?? "dialog" : void 0,
@@ -3635,7 +3641,7 @@ function BoardLane({ title, mark, onTitle, titleLabel, children, className }) {
 function BoardCardMeta({ date, icon, face, code: code2, marks, role, deliverable }) {
   return /* @__PURE__ */ jsxs33("div", { className: "ad-lane__card-meta", children: [
     date,
-    icon && /* @__PURE__ */ jsx37("span", { "aria-hidden": "true", className: "ad-lane__card-icon", children: icon }),
+    icon && /* @__PURE__ */ jsx37("span", { "aria-hidden": "true", className: "ad-lane__card-icon", children: slotIcon(icon, { size: "sm" }) }),
     marks && /* @__PURE__ */ jsx37("span", { className: "ad-lane__card-marks", children: marks }),
     role && /* @__PURE__ */ jsx37("span", { className: "ad-lane__card-fact", title: String(role), children: /* @__PURE__ */ jsx37("span", { className: "ad-lane__card-fact-word", children: String(role) }) }),
     deliverable && /* @__PURE__ */ jsxs33("span", { className: "ad-lane__card-fact ad-lane__card-fact--cut", title: String(deliverable), children: [
@@ -4753,9 +4759,9 @@ var strip4 = (h) => {
 };
 var Folded = createContext7(false);
 var InList2 = createContext7(false);
-function MenuBrand({ mark, label, onPress, end }) {
+function MenuBrand({ label, onPress, end }) {
   return /* @__PURE__ */ jsxs42("div", { className: "ad-menu__brand", children: [
-    /* @__PURE__ */ jsx48("button", { type: "button", className: "ad-menu__mark", "aria-label": label, title: label, onClick: onPress, children: mark }),
+    /* @__PURE__ */ jsx48("button", { type: "button", className: "ad-menu__mark", "aria-label": label, title: label, onClick: onPress, children: /* @__PURE__ */ jsx48("span", { className: "ad-rail__x", "aria-hidden": "true" }) }),
     end != null && /* @__PURE__ */ jsx48("span", { className: "ad-menu__trail", children: /* @__PURE__ */ jsx48(ButtonSizeScope, { size: "row", children: end }) })
   ] });
 }
@@ -4769,14 +4775,14 @@ function MenuList({ children, listProps }) {
   const rail = useContext9(Folded);
   return /* @__PURE__ */ jsx48("ul", { ...strip4(listProps), className: cx(rail ? "ad-rail__group" : "ad-side__list", "ad-menu__list"), children: /* @__PURE__ */ jsx48(InList2.Provider, { value: true, children }) });
 }
-function MenuItem({ icon, label, current, onPress, trail, children, itemProps, ariaLabel, codeSlot }) {
+function MenuItem({ icon, pill, label, current, onPress, trail, children, itemProps, ariaLabel, codeSlot }) {
   const rail = useContext9(Folded);
   const Row3 = useContext9(InList2) ? "li" : "div";
   const name = ariaLabel ?? (typeof label === "string" ? label : void 0);
   return /* @__PURE__ */ jsxs42(Row3, { ...strip4(itemProps), className: "ad-menu__row", children: [
     /* @__PURE__ */ jsxs42("div", { className: "ad-menu__line", children: [
       /* @__PURE__ */ jsxs42("button", { type: "button", className: rail ? "ad-rail__item" : "ad-side__item", "aria-current": current ? "page" : void 0, "aria-label": rail ? name : void 0, title: rail ? name : void 0, onClick: onPress, children: [
-        icon != null && /* @__PURE__ */ jsx48("span", { className: rail ? void 0 : cx("ad-side__icon", codeSlot && "ad-menu__code"), "aria-hidden": typeof label === "string" ? true : void 0, children: icon }),
+        (icon != null || pill) && /* @__PURE__ */ jsx48("span", { className: rail ? void 0 : cx("ad-side__icon", codeSlot && "ad-menu__code"), "aria-hidden": typeof label === "string" ? true : void 0, children: pill ? /* @__PURE__ */ jsx48(ProjectPill, { code: pill.code, current: pill.current, color: pill.color }) : slotIcon(icon, { size: "lg" }) }),
         !rail && /* @__PURE__ */ jsx48("span", { className: "ad-menu__label", children: label })
       ] }),
       !rail && trail != null && /* @__PURE__ */ jsx48("span", { className: "ad-menu__trail", children: /* @__PURE__ */ jsx48(ButtonSizeScope, { size: "row", children: trail }) })

@@ -26,6 +26,15 @@ function scanIn(root) {
     for (let i = 0; i < list.length; i++) found.push(list[i]);
     return found;
   }
+  const own = all("[data-ad-own-drawing]");
+  if (own.length) {
+    out.push({
+      kind: "own-icon",
+      rule: "guard.no-own-icons",
+      elements: own.map(name),
+      message: `guard.no-own-icons: ${own.length} icon slot${own.length === 1 ? "" : "s"} hold${own.length === 1 ? "s" : ""} the app's own drawing. An icon slot takes a name or a job from the icon map (icon="todos"); the design system draws the glyph. Nothing of the app's own is drawn there.`
+    });
+  }
   const mains = all(".ad-button--main").filter((el) => shown(el));
   if (mains.length > 1) {
     out.push({
@@ -104,4 +113,4 @@ export {
   scanIn,
   describeViolations
 };
-//# sourceMappingURL=chunk-J5DWL4FT.js.map
+//# sourceMappingURL=chunk-5DPRZLB3.js.map
