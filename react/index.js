@@ -4545,7 +4545,7 @@ function CommandSearch({ open, onClose, query, onQuery, results, onPick, label =
 
 // src/components/Guidance/Guidance.tsx
 import { useEffect as useEffect15, useLayoutEffect as useLayoutEffect8, useRef as useRef27, useState as useState25 } from "react";
-import { jsx as jsx45, jsxs as jsxs40 } from "react/jsx-runtime";
+import { Fragment as Fragment17, jsx as jsx45, jsxs as jsxs40 } from "react/jsx-runtime";
 var useIsoLayoutEffect3 = typeof window === "undefined" ? useEffect15 : useLayoutEffect8;
 function TourStep({ open, anchor, step, total, title, children, onBack, onNext, onExit, backLabel = "Back", nextLabel = "Next", progressLabel = (s, t) => `${s} of ${t}`, placement, side: older, onClose, closeLabel }) {
   const card = useRef27(null);
@@ -4639,9 +4639,33 @@ function PixxBrief({ open, face, greeting, children, onSnooze, onGotIt, snoozeLa
     ] })
   ] }) });
 }
+function PixxFigure({ onPress, open, unread = 0, tip = "Pixx", motion, body, tail, hooks, className }) {
+  const { triggerProps, node } = useTooltip(tip, { describes: false });
+  const data = hooks ? Object.fromEntries(Object.entries(hooks).filter(([k]) => k.startsWith("data-"))) : {};
+  return /* @__PURE__ */ jsxs40(Fragment17, { children: [
+    /* @__PURE__ */ jsxs40(
+      "button",
+      {
+        type: "button",
+        ...data,
+        ...triggerProps,
+        "aria-label": tip,
+        "data-pixx": open ? "open" : "rest",
+        className: cx("ad-pixx", open && "ad-pixx--open", unread > 0 && "ad-pixx--unread", motion && `ad-pixx--${motion}`, className),
+        onClick: onPress,
+        children: [
+          /* @__PURE__ */ jsx45("img", { className: "ad-pixx__tail", src: tail, alt: "", draggable: false }),
+          /* @__PURE__ */ jsx45("img", { className: "ad-pixx__body", src: body, alt: "", draggable: false }),
+          unread > 0 && /* @__PURE__ */ jsx45(UnreadDot, { className: "ad-pixx__dot", label: `${unread} need you` })
+        ]
+      }
+    ),
+    node
+  ] });
+}
 
 // src/components/Furniture/Furniture.tsx
-import { Fragment as Fragment17, jsx as jsx46, jsxs as jsxs41 } from "react/jsx-runtime";
+import { Fragment as Fragment18, jsx as jsx46, jsxs as jsxs41 } from "react/jsx-runtime";
 function Footer({ code: code2, number, venue, pageNumber, page, undo }) {
   return /* @__PURE__ */ jsxs41("footer", { className: "ad-footer", children: [
     /* @__PURE__ */ jsxs41("span", { className: "ad-footer__cell ad-footer__code", children: [
@@ -4649,7 +4673,7 @@ function Footer({ code: code2, number, venue, pageNumber, page, undo }) {
       number && /* @__PURE__ */ jsx46("span", { className: "ad-footer__number", children: number })
     ] }),
     /* @__PURE__ */ jsx46("span", { className: "ad-footer__cell ad-footer__venue", children: venue }),
-    /* @__PURE__ */ jsx46("span", { className: "ad-footer__cell ad-footer__run", role: "status", "aria-live": "polite", children: undo && /* @__PURE__ */ jsxs41(Fragment17, { children: [
+    /* @__PURE__ */ jsx46("span", { className: "ad-footer__cell ad-footer__run", role: "status", "aria-live": "polite", children: undo && /* @__PURE__ */ jsxs41(Fragment18, { children: [
       /* @__PURE__ */ jsx46("span", { className: "ad-footer__undo-words", children: undo.message }),
       undo.onUndo && /* @__PURE__ */ jsx46(ButtonSizeScope, { size: "row", children: /* @__PURE__ */ jsx46(Button, { onClick: undo.onUndo, children: undo.label ?? "Undo" }) })
     ] }) }),
@@ -4664,7 +4688,7 @@ function TitleBlock(props) {
 }
 function Contents({ entries, ariaLabel = "Contents" }) {
   return /* @__PURE__ */ jsx46("ol", { className: "ad-contents", "aria-label": ariaLabel, children: entries.map((e, i) => {
-    const inner = /* @__PURE__ */ jsxs41(Fragment17, { children: [
+    const inner = /* @__PURE__ */ jsxs41(Fragment18, { children: [
       /* @__PURE__ */ jsx46("span", { className: "ad-contents__numeral", children: String(i + 1).padStart(2, "0") }),
       /* @__PURE__ */ jsxs41("span", { className: "ad-contents__body", children: [
         /* @__PURE__ */ jsx46("span", { className: "ad-contents__name", children: e.name }),
@@ -4929,6 +4953,7 @@ export {
   PickList,
   Picture,
   PixxBrief,
+  PixxFigure,
   Popover,
   PopoverCard,
   PopoverHeader,
