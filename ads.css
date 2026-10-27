@@ -1865,6 +1865,11 @@ button.ad-milestone:focus-visible { outline: none; box-shadow: var(--ring-select
 /* A narrowed view: the binoculars in the primary ink, the word stays quiet (2026-10-27). */
 .ad-button--view-narrowed .ad-icon { color: var(--text-primary); }
 
+/* The View pop-over (2026-10-27): the filter's two halves with "or" between; the sentence when there is no saved view yet. */
+.ad-view-or { display: flex; align-items: center; gap: var(--space-2); margin: var(--space-2) 0; font-family: var(--font-body); font-size: var(--text-xs); color: var(--text-muted); }
+.ad-view-or::before, .ad-view-or::after { content: ''; flex: 1; height: var(--border-w); background: var(--border); }
+.ad-view-none { margin: 0 0 var(--space-2); font-family: var(--font-body); font-size: var(--text-base); color: var(--text-muted); }
+
 /* src/components/Tooltip/Tooltip.css */
 /* Tooltip */
 .ad-tooltip {

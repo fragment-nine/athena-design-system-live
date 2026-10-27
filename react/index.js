@@ -2800,6 +2800,7 @@ function PickList({ options, value, onPick, searchLabel, noMatch = "Nothing matc
             /* @__PURE__ */ jsx24(
               "div",
               {
+                ...o.rowProps,
                 id: optId(o),
                 role: "option",
                 "aria-selected": picked.has(o.id),
@@ -3454,14 +3455,46 @@ var ViewButton = forwardRef8(function ViewButton2({ label = "View", open, opens,
 function ToolbarSeparator() {
   return /* @__PURE__ */ jsx33("span", { className: "ad-toolbar__separator", role: "separator", "aria-orientation": "vertical" });
 }
-function ViewPopover({ open, onClose, anchor, builtInViews = [], savedViews, currentView, onPickView, onStarView, viewActions, onSaveView, saveScopes, query, rules, groupBy, sortBy, show, labels: l = {} }) {
-  const L = { show: "Show", view: "View", builtInViews: "Views", savedViews: "Saved views", saveView: "Save this view\u2026", viewName: "View name", save: "Save", cancel: "Cancel", star: "Star", unstar: "Unstar", more: "More", filter: "Filter", groupBy: "Group by", sortBy: "Sort by", ascending: "Ascending", descending: "Descending", ...l };
+function ViewPopover({ open, onClose, anchor, builtInViews = [], savedViews, currentView, onPickView, onStarView, viewActions, onSaveView, saveScopes, renaming, onRenameView, onCancelRename, onReorderViews, searchAfter = 8, saveOff, query, rules, groupBy, sortBy, show, labels: l = {} }) {
+  const L = { noSaved: "No saved views yet", noMatch: "No view by that name", or: "or", default: "Default", rename: "Rename", show: "Show", view: "View", builtInViews: "Views", savedViews: "Saved views", saveView: "Save this view\u2026", viewName: "View name", save: "Save", cancel: "Cancel", star: "Star", unstar: "Unstar", more: "More", filter: "Filter", groupBy: "Group by", sortBy: "Sort by", ascending: "Ascending", descending: "Descending", ...l };
   const SAVE = "__save";
   const [naming, setNaming] = useState20(false);
   const [name, setName] = useState20("");
   const [scope, setScope] = useState20(saveScopes?.[0]?.value);
   const [menuFor, setMenuFor] = useState20(null);
   const menuAnchor = useRef20(null);
+  const [drag, setDrag] = useState20(null);
+  const [over, setOver] = useState20(null);
+  const savedIds = (savedViews ?? []).map((v) => v.id);
+  const movable = (id) => onReorderViews ? {
+    draggable: true,
+    ...dropLineProps(over === id && drag != null && drag !== id ? "before" : null),
+    onDragStart: (e) => {
+      e.dataTransfer.effectAllowed = "move";
+      setDrag(id);
+    },
+    onDragOver: (e) => {
+      if (drag) {
+        e.preventDefault();
+        setOver(id);
+      }
+    },
+    onDragEnd: () => {
+      setDrag(null);
+      setOver(null);
+    },
+    onDrop: (e) => {
+      e.preventDefault();
+      if (drag && drag !== id) {
+        const n = savedIds.filter((x) => x !== drag);
+        n.splice(n.indexOf(id), 0, drag);
+        onReorderViews(n);
+      }
+      setDrag(null);
+      setOver(null);
+    }
+  } : {};
+  const [newName, setNewName] = useState20("");
   const viewsShown = builtInViews.length > 0 || savedViews != null;
   const views = [
     ...builtInViews.map((v) => ({ id: v.id, label: String(v.label), group: savedViews ? L.builtInViews : void 0 })),
@@ -3469,6 +3502,8 @@ function ViewPopover({ open, onClose, anchor, builtInViews = [], savedViews, cur
       id: v.id,
       label: String(v.label),
       group: builtInViews.length ? L.savedViews : void 0,
+      hint: v.hint ?? (v.isDefault ? L.default : void 0),
+      rowProps: movable(v.id),
       ...onStarView ? { leadControl: /* @__PURE__ */ jsx33(IconButton, { label: v.starred === false ? L.star : L.unstar, "aria-pressed": v.starred !== false, onClick: (e) => {
         e.stopPropagation();
         onStarView(v.id, v.starred === false);
@@ -3479,7 +3514,7 @@ function ViewPopover({ open, onClose, anchor, builtInViews = [], savedViews, cur
         setMenuFor(v);
       }, children: /* @__PURE__ */ jsx33(Icon, { job: "more" }) }) : void 0
     })),
-    ...savedViews && onSaveView ? [{ id: SAVE, label: L.saveView, lead: /* @__PURE__ */ jsx33(Icon, { job: "plus" }) }] : []
+    ...savedViews && onSaveView ? [{ id: SAVE, label: L.saveView, lead: /* @__PURE__ */ jsx33(Icon, { job: "plus" }), disabled: !!saveOff, hint: saveOff }] : []
   ];
   const finishSave = () => {
     if (!name.trim() || !onSaveView) return;
@@ -3489,16 +3524,43 @@ function ViewPopover({ open, onClose, anchor, builtInViews = [], savedViews, cur
   };
   return /* @__PURE__ */ jsxs30(Popover, { open, onClose, anchor, ariaLabel: L.view, children: [
     viewsShown && /* @__PURE__ */ jsxs30(PopoverSection, { label: savedViews && !builtInViews.length ? L.savedViews : L.builtInViews, children: [
+      savedViews && savedViews.length === 0 && !builtInViews.length && /* @__PURE__ */ jsx33("p", { className: "ad-view-none", children: L.noSaved }),
       /* @__PURE__ */ jsx33(
         PickList,
         {
-          noSearch: true,
+          noSearch: views.length <= searchAfter,
+          noMatch: L.noMatch,
           searchLabel: L.savedViews,
           value: currentView ?? null,
           options: views,
           onPick: (id) => id === SAVE ? setNaming(true) : onPickView?.(id)
         }
       ),
+      renaming && onRenameView && (() => {
+        const v = (savedViews ?? []).find((x) => x.id === renaming);
+        if (!v) return null;
+        const done = () => {
+          if (newName.trim()) onRenameView(v.id, newName.trim());
+          setNewName("");
+        };
+        return /* @__PURE__ */ jsxs30("div", { className: "ad-view-save", children: [
+          /* @__PURE__ */ jsx33(TextField, { autoFocus: true, "aria-label": L.rename, placeholder: String(v.label), value: newName, onChange: (e) => setNewName(e.target.value), onKeyDown: (e) => {
+            if (e.key === "Enter") done();
+            if (e.key === "Escape") {
+              e.stopPropagation();
+              setNewName("");
+              onCancelRename?.();
+            }
+          } }),
+          /* @__PURE__ */ jsxs30(ButtonSizeScope, { size: "row", children: [
+            /* @__PURE__ */ jsx33(Button, { onClick: () => {
+              setNewName("");
+              onCancelRename?.();
+            }, children: L.cancel }),
+            /* @__PURE__ */ jsx33(Button, { variant: "main", disabled: !newName.trim(), onClick: done, children: L.rename })
+          ] })
+        ] });
+      })(),
       naming && /* @__PURE__ */ jsxs30("div", { className: "ad-view-save", children: [
         /* @__PURE__ */ jsx33(TextField, { autoFocus: true, "aria-label": L.viewName, placeholder: L.viewName, value: name, onChange: (e) => setName(e.target.value), onKeyDown: (e) => {
           if (e.key === "Enter") finishSave();
@@ -3516,7 +3578,8 @@ function ViewPopover({ open, onClose, anchor, builtInViews = [], savedViews, cur
       menuFor && viewActions && /* @__PURE__ */ jsx33(Menu, { open: true, onClose: () => setMenuFor(null), anchor: menuAnchor, ariaLabel: String(menuFor.label), items: viewActions(menuFor) })
     ] }),
     query && /* @__PURE__ */ jsxs30(PopoverSection, { label: L.filter, children: [
-      /* @__PURE__ */ jsx33(TokenInput, { read: { kind: "query", vocabulary: query.vocabulary }, label: L.filter, value: query.value, onChange: query.onChange, showResolved: false }),
+      query.vocabulary ? /* @__PURE__ */ jsx33(TokenInput, { read: { kind: "query", vocabulary: query.vocabulary }, label: L.filter, value: query.value, onChange: query.onChange, showResolved: false, suggestions: query.suggestions }) : /* @__PURE__ */ jsx33(TextField, { "aria-label": L.filter, placeholder: L.filter, value: query.value, onChange: (e) => query.onChange(e.target.value) }),
+      rules && /* @__PURE__ */ jsx33("div", { className: "ad-view-or", "aria-hidden": "true", children: /* @__PURE__ */ jsx33("span", { children: L.or }) }),
       rules && /* @__PURE__ */ jsx33(RuleBuilder, { ...rules })
     ] }),
     groupBy && /* @__PURE__ */ jsx33(PopoverSection, { label: L.groupBy, children: /* @__PURE__ */ jsx33(Select, { "aria-label": L.groupBy, value: groupBy.value, onChange: (e) => groupBy.onChange(e.target.value), options: groupBy.options }) }),
@@ -3525,7 +3588,8 @@ function ViewPopover({ open, onClose, anchor, builtInViews = [], savedViews, cur
       sortBy.direction && /* @__PURE__ */ jsx33(ButtonSizeScope, { size: "row", children: /* @__PURE__ */ jsx33(
         IconButton,
         {
-          label: sortBy.direction.value === "ascending" ? L.ascending : L.descending,
+          label: sortBy.direction.off ? `${sortBy.direction.value === "ascending" ? L.ascending : L.descending} \u2014 ${sortBy.direction.off}` : sortBy.direction.value === "ascending" ? L.ascending : L.descending,
+          disabled: !!sortBy.direction.off,
           onClick: () => sortBy.direction.onChange(sortBy.direction.value === "ascending" ? "descending" : "ascending"),
           children: /* @__PURE__ */ jsx33(Icon, { job: sortBy.direction.value === "ascending" ? "arrow-up" : "arrow-down" })
         }
