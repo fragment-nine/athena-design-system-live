@@ -1674,8 +1674,8 @@ function Department({ dept: given, name, glyphOnly, onPress, pressLabel }) {
 
 // src/components/Tag/Tag.tsx
 import { jsx as jsx15, jsxs as jsxs12 } from "react/jsx-runtime";
-function Tag({ children, current, className, ...rest }) {
-  return /* @__PURE__ */ jsx15("span", { ...rest, className: cx("ad-tag", current && "ad-tag--current", className), children });
+function Tag({ children, current, tone, className, ...rest }) {
+  return /* @__PURE__ */ jsx15("span", { ...rest, className: cx("ad-tag", current && "ad-tag--current", tone && `ad-tag--${tone}`, className), children });
 }
 function FilterTag({ axis, value, icon, face, onRemove, removeLabel = "Remove filter", size = "bar", className }) {
   return /* @__PURE__ */ jsxs12("span", { className: cx("ad-filter-tag", size === "row" && "ad-filter-tag--row", className), children: [
@@ -1700,7 +1700,7 @@ function UnreadDot({ label = "unread", className }) {
 }
 
 // src/components/List/List.tsx
-import { createContext as createContext4, useContext as useContext5, useEffect as useEffect7, useId as useId4, useState as useState9 } from "react";
+import React, { createContext as createContext4, useContext as useContext5, useEffect as useEffect7, useId as useId4, useState as useState9 } from "react";
 
 // src/components/Row/Row.tsx
 import { forwardRef as forwardRef5, useContext as useContext4, useState as useState8 } from "react";
@@ -1896,15 +1896,17 @@ function RowFigure({ children, icon }) {
     text
   ] });
 }
-function TodoCheck({ checked, onChange, priority = 4, ariaLabel, disabled, unacknowledged, onAcknowledge, acknowledgeLabel }) {
+function TodoCheck({ hooks, checked, onChange, priority = 4, ariaLabel, disabled, unacknowledged, onAcknowledge, acknowledgeLabel }) {
+  const data = hooks ? Object.fromEntries(Object.entries(hooks).filter(([n]) => n.startsWith("data-"))) : {};
   const [pop, setPop] = useState8(false);
   if (unacknowledged && !checked) {
-    return /* @__PURE__ */ jsx17("button", { type: "button", "aria-label": acknowledgeLabel ?? ariaLabel, disabled, onClick: () => onAcknowledge?.(), className: cx("ad-todo-check", `ad-todo-check--p${priority}`, "ad-todo-check--asked") });
+    return /* @__PURE__ */ jsx17("button", { type: "button", ...data, "aria-label": acknowledgeLabel ?? ariaLabel, disabled, onClick: () => onAcknowledge?.(), className: cx("ad-todo-check", `ad-todo-check--p${priority}`, "ad-todo-check--asked") });
   }
   return /* @__PURE__ */ jsx17(
     "button",
     {
       type: "button",
+      ...data,
       role: "checkbox",
       "aria-checked": checked,
       "aria-label": ariaLabel,
@@ -1920,23 +1922,25 @@ function TodoCheck({ checked, onChange, priority = 4, ariaLabel, disabled, unack
     }
   );
 }
-function TodoRow({ name, priority, done, onTick, due, today, dept, who, selected, onOpen, completeLabel = "Complete", unacknowledged, onAcknowledge, acknowledgeLabel = "Acknowledge", repeat, pastDeadline, pastDeadlineLabel = "Deadline passed", role, deliverable, project, picking, onPressDate, onPressWho, onPressDeliverable, pressLabels, onRename, onPressProject, onPressDept, rowProps, cells, ring = true, whoMax }) {
-  const plain = due ? /* @__PURE__ */ jsx17(RowDate, { due, today, done, icon: "calendar" }) : null;
+function TodoRow({ ringProps, factProps, dragging, handle, name, priority, done, onTick, due, today, dept, who, selected, onOpen, completeLabel = "Complete", unacknowledged, onAcknowledge, acknowledgeLabel = "Acknowledge", repeat, pastDeadline, pastDeadlineLabel = "Deadline passed", role, deliverable, project, picking, onPressDate, onPressWho, onPressDeliverable, pressLabels, onRename, onPressProject, onPressDept, rowProps, cells, ring = true, whoMax }) {
+  const d = (k) => factProps?.[k] ? Object.fromEntries(Object.entries(factProps[k]).filter(([n]) => n.startsWith("data-"))) : {};
+  const roleWords = Array.isArray(role) ? role.join(" \xB7 ") : role;
+  const plain = due ? /* @__PURE__ */ jsx17("span", { ...d("date"), className: "ad-row__fact-hook", children: /* @__PURE__ */ jsx17(RowDate, { due, today, done, icon: "calendar" }) }) : null;
   const date = plain && onPressDate ? /* @__PURE__ */ jsx17(RowPress, { label: pressLabels?.date ?? "Change the date", onPress: onPressDate, children: plain }) : plain;
-  const extras = repeat || pastDeadline || role || deliverable;
+  const extras = repeat || pastDeadline || roleWords || deliverable;
   const meta = date || dept || extras ? /* @__PURE__ */ jsxs14(Fragment5, { children: [
     date,
     dept && /* @__PURE__ */ jsx17(Department, { dept: dept.dept, name: dept.name, onPress: onPressDept, pressLabel: pressLabels?.dept }),
-    repeat && /* @__PURE__ */ jsxs14("span", { className: "ad-row__fact", children: [
+    repeat && /* @__PURE__ */ jsxs14("span", { ...d("repeat"), className: "ad-row__fact", children: [
       /* @__PURE__ */ jsx17(Icon, { job: "repeat", size: "sm" }),
       String(repeat)
     ] }),
-    pastDeadline && /* @__PURE__ */ jsx17("span", { className: "ad-row__fact ad-row__fact--late", role: "img", "aria-label": pastDeadlineLabel, children: /* @__PURE__ */ jsx17(Icon, { job: "flag", size: "sm" }) }),
-    role && /* @__PURE__ */ jsx17("span", { className: "ad-row__fact ad-row__fact--cut", title: String(role), children: /* @__PURE__ */ jsx17("span", { className: "ad-row__fact-word", children: String(role) }) }),
+    pastDeadline && /* @__PURE__ */ jsx17("span", { ...d("pastDeadline"), className: "ad-row__fact ad-row__fact--late", role: "img", "aria-label": pastDeadlineLabel, children: /* @__PURE__ */ jsx17(Icon, { job: "flag", size: "sm" }) }),
+    roleWords && /* @__PURE__ */ jsx17("span", { className: "ad-row__fact ad-row__fact--cut", title: roleWords, children: /* @__PURE__ */ jsx17("span", { className: "ad-row__fact-word", children: roleWords }) }),
     deliverable && (onPressDeliverable ? /* @__PURE__ */ jsx17(RowPress, { label: pressLabels?.deliverable ?? `Open ${deliverable}`, onPress: onPressDeliverable, children: /* @__PURE__ */ jsxs14("span", { className: "ad-row__fact ad-row__fact--cut", title: String(deliverable), children: [
       /* @__PURE__ */ jsx17(Icon, { job: "kind-deliverable", size: "sm" }),
       /* @__PURE__ */ jsx17("span", { className: "ad-row__fact-word", children: String(deliverable) })
-    ] }) }) : /* @__PURE__ */ jsxs14("span", { className: "ad-row__fact ad-row__fact--cut", title: String(deliverable), children: [
+    ] }) }) : /* @__PURE__ */ jsxs14("span", { ...d("deliverable"), className: "ad-row__fact ad-row__fact--cut", title: String(deliverable), children: [
       /* @__PURE__ */ jsx17(Icon, { job: "kind-deliverable", size: "sm" }),
       /* @__PURE__ */ jsx17("span", { className: "ad-row__fact-word", children: String(deliverable) })
     ] }))
@@ -1952,9 +1956,11 @@ function TodoRow({ name, priority, done, onTick, due, today, dept, who, selected
       cells,
       onRename,
       renameLabel: onRename ? String(name) : void 0,
+      dragging,
       lead: /* @__PURE__ */ jsxs14(Fragment5, { children: [
+        handle && /* @__PURE__ */ jsx17(DragHandle, { label: handle.label, handleProps: handle.handleProps }),
         picking && /* @__PURE__ */ jsx17(Checkbox, { "aria-label": picking.label ?? `Pick: ${name}`, checked: picking.picked, onChange: picking.onChange }),
-        ring && /* @__PURE__ */ jsx17(TodoCheck, { checked: done, onChange: onTick, priority, ariaLabel: `${completeLabel}: ${name}`, unacknowledged, onAcknowledge, acknowledgeLabel: `${acknowledgeLabel}: ${name}` })
+        ring && /* @__PURE__ */ jsx17(TodoCheck, { hooks: ringProps, checked: done, onChange: onTick, priority, ariaLabel: `${completeLabel}: ${name}`, unacknowledged, onAcknowledge, acknowledgeLabel: `${acknowledgeLabel}: ${name}` })
       ] }),
       name: String(name),
       meta,
@@ -1962,9 +1968,10 @@ function TodoRow({ name, priority, done, onTick, due, today, dept, who, selected
         who && (() => {
           const list = Array.isArray(who) ? who : [who];
           const faces = list.length > 1 ? /* @__PURE__ */ jsx17(AvatarStack, { people: list, max: whoMax }) : list[0] ? /* @__PURE__ */ jsx17(Avatar, { name: list[0].name, src: list[0].src }) : null;
-          return onPressWho && faces ? /* @__PURE__ */ jsx17(RowPress, { label: pressLabels?.who ?? "Change who", onPress: onPressWho, children: faces }) : faces;
+          const hooked = /* @__PURE__ */ jsx17("span", { ...d("who"), className: "ad-row__fact-hook", children: faces });
+          return onPressWho && faces ? /* @__PURE__ */ jsx17(RowPress, { label: pressLabels?.who ?? "Change who", onPress: onPressWho, children: hooked }) : hooked;
         })(),
-        project && /* @__PURE__ */ jsx17(ProjectPill, { code: project.code, color: project.color, onPress: onPressProject, pressLabel: pressLabels?.project })
+        project && /* @__PURE__ */ jsx17("span", { ...d("project"), className: "ad-row__fact-hook", children: /* @__PURE__ */ jsx17(ProjectPill, { code: project.code, color: project.color, onPress: onPressProject, pressLabel: pressLabels?.project }) })
       ] }) : void 0,
       selected,
       onOpen
@@ -2018,7 +2025,8 @@ var tokenPxList = (name, fallback) => {
 function useInList() {
   return useContext5(InList);
 }
-function ListSection({ title, children, collapsible, collapsed, onCollapsedChange, day, bar, className, ...heading }) {
+function ListSection({ title, children, collapsible, collapsed, onCollapsedChange, day, bar, dropTarget, emptySentence, className, ...heading }) {
+  const none = React.Children.count(children) === 0;
   const [own, setOwn] = useState9(!!collapsible && !heading.needsYou);
   useEffect7(() => {
     if (heading.needsYou) setOwn(false);
@@ -2031,12 +2039,15 @@ function ListSection({ title, children, collapsible, collapsed, onCollapsedChang
     onCollapsedChange?.(next);
   };
   const inList = useInList();
-  return /* @__PURE__ */ jsxs15("section", { role: inList ? "listitem" : void 0, className: cx("ad-list-section", className), children: [
+  return /* @__PURE__ */ jsxs15("section", { role: inList ? "listitem" : void 0, className: cx("ad-list-section", dropTarget?.over && "ad-list-section--over", className), children: [
     day ? /* @__PURE__ */ jsx18(DayHeading, { day: day.day, today: day.today }) : bar ? /* @__PURE__ */ jsxs15("div", { className: "ad-list-section__bar", children: [
       collapsible && /* @__PURE__ */ jsx18("button", { type: "button", className: "ad-list-section__fold", "aria-expanded": !shut, "aria-controls": bodyId, "aria-label": bar.foldLabel ?? String(title), onClick: toggle, children: /* @__PURE__ */ jsx18(Icon, { job: shut ? "chevron-right" : "chevron-down", size: "sm" }) }),
       /* @__PURE__ */ jsx18(InList.Provider, { value: false, children: /* @__PURE__ */ jsx18(Row, { heading: true, name: title, status: bar.status, dates: bar.dates, onOpen: bar.onOpen }) })
     ] }) : /* @__PURE__ */ jsx18(GroupHeading, { ...heading, collapsible, collapsed: shut, onToggle: toggle, controls: bodyId, children: title }),
-    /* @__PURE__ */ jsx18("div", { id: bodyId, role: "list", hidden: collapsible ? shut : void 0, className: cx("ad-list-section__body", bar && "ad-list-section__body--nested"), children: /* @__PURE__ */ jsx18(InList.Provider, { value: true, children }) })
+    /* @__PURE__ */ jsxs15("div", { id: bodyId, role: "list", hidden: collapsible ? shut : void 0, className: cx("ad-list-section__body", bar && "ad-list-section__body--nested", (dropTarget?.empty || none) && "ad-list-section__body--empty"), children: [
+      /* @__PURE__ */ jsx18(InList.Provider, { value: true, children }),
+      none && emptySentence && /* @__PURE__ */ jsx18("p", { className: "ad-list-section__empty", children: emptySentence })
+    ] })
   ] });
 }
 function DayHeading({ day, today, level = 3 }) {
@@ -2093,10 +2104,13 @@ function LoadError({ sentence, onRetry, retryLabel = "Try again" }) {
 
 // src/components/EmptyState/EmptyState.tsx
 import { Fragment as Fragment6, jsx as jsx19, jsxs as jsxs16 } from "react/jsx-runtime";
-function EmptyState({ sentence, add, clear, className }) {
+function EmptyState({ sentence, add, clear, also, className }) {
   const children = /* @__PURE__ */ jsxs16(Fragment6, { children: [
     add && /* @__PURE__ */ jsx19(AddRow, { label: add.label, onAdd: add.onAdd }),
-    clear && /* @__PURE__ */ jsx19("div", { children: /* @__PURE__ */ jsx19(Button, { onClick: clear.onClear, children: clear.label ?? "Clear" }) })
+    (clear || also) && /* @__PURE__ */ jsxs16("div", { className: "ad-empty__actions", children: [
+      clear && /* @__PURE__ */ jsx19(Button, { onClick: clear.onClear, children: clear.label ?? "Clear" }),
+      also && /* @__PURE__ */ jsx19(Button, { onClick: also.onPress, children: also.label })
+    ] })
   ] });
   const inList = useInList();
   const box = /* @__PURE__ */ jsxs16("div", { className: cx("ad-empty", className), role: "status", children: [
@@ -3711,19 +3725,20 @@ function Table({ columns, rows, rowId, caption, sort, onSort, picked, onPickedCh
     }) })
   ] }) });
 }
-function SelectionBar({ count, countLabel = (n) => `${n} selected`, actions, lead, onClear, clearLabel = "Clear", className }) {
+function SelectionBar({ count, countLabel = (n) => `${n} selected`, actions, lead, onClear, clearLabel = "Clear", showAtZero, emptyLabel = "Nothing selected", onExit, exitLabel = "Exit", className }) {
   const [open, setOpen] = useState21(null);
   const anchor = useRef22(null);
   const ordered2 = [...actions.filter((a) => !a.danger), ...actions.filter((a) => a.danger)];
-  if (count <= 0) return null;
+  if (count <= 0 && !showAtZero) return null;
+  const zero = count <= 0;
   const shown = ordered2.find((a) => a.id === open && a.picker);
   const close = () => setOpen(null);
   return /* @__PURE__ */ jsxs33(Portal, { children: [
-    /* @__PURE__ */ jsxs33("div", { className: cx("ad-float", "ad-selection-bar", className), role: "toolbar", "aria-label": countLabel(count), children: [
-      /* @__PURE__ */ jsx37("span", { className: "ad-selection-bar__count", "aria-live": "polite", children: countLabel(count) }),
+    /* @__PURE__ */ jsxs33("div", { className: cx("ad-float", "ad-selection-bar", className), role: "toolbar", "aria-label": zero ? emptyLabel : countLabel(count), children: [
+      /* @__PURE__ */ jsx37("span", { className: "ad-selection-bar__count", "aria-live": "polite", children: zero ? emptyLabel : countLabel(count) }),
       lead != null && /* @__PURE__ */ jsx37("span", { className: "ad-selection-bar__lead", children: lead }),
       /* @__PURE__ */ jsxs33(ButtonSizeScope, { size: "bar", children: [
-        ordered2.map((a) => {
+        !zero && ordered2.map((a) => {
           const button = /* @__PURE__ */ jsxs33(
             Button,
             {
@@ -3748,11 +3763,15 @@ function SelectionBar({ count, countLabel = (n) => `${n} selected`, actions, lea
           );
           return a.picker ? /* @__PURE__ */ jsx37("span", { className: "ad-selection-bar__slot", children: button }, a.id) : button;
         }),
-        onClear && /* @__PURE__ */ jsx37(Button, { onClick: onClear, children: clearLabel })
+        !zero && onClear && /* @__PURE__ */ jsx37(Button, { onClick: onClear, children: clearLabel }),
+        onExit && /* @__PURE__ */ jsx37(Button, { onClick: onExit, children: exitLabel })
       ] })
     ] }),
     shown && /* @__PURE__ */ jsx37(Popover, { open: true, onClose: close, anchor, width: shown.pickerWidth ?? "menu", noClose: true, ariaLabel: shown.label, children: shown.picker(close) })
   ] });
+}
+function SelectionBarRoom() {
+  return /* @__PURE__ */ jsx37("div", { className: "ad-selection-bar-room", "aria-hidden": "true" });
 }
 
 // src/components/Timeline/Timeline.tsx
@@ -4942,6 +4961,7 @@ export {
   Segmented,
   Select,
   SelectionBar,
+  SelectionBarRoom,
   SettingRow,
   SettingsLayout,
   SettingsNav,

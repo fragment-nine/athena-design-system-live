@@ -719,6 +719,8 @@ button.ad-card__name:focus-visible { outline: none; box-shadow: var(--ring-selec
 .ad-empty__sentence { margin: var(--space-2) 0 var(--space-4); font-family: var(--font-body); font-size: var(--text-base); line-height: var(--lh-normal); color: var(--text-secondary); }
 .ad-empty > :not(.ad-empty__sentence) { align-self: stretch; }
 
+.ad-empty__actions { display: flex; gap: var(--space-2); }
+
 /* src/components/Field/Field.css */
 /* TextField, TextArea, Select, FieldRow */
 .ad-field-wrap { display: inline-flex; flex-direction: column; min-width: 0; }
@@ -992,6 +994,11 @@ button.ad-contents__button:focus-visible { outline: none; box-shadow: var(--ring
 .ad-list-columns__edge:hover { box-shadow: inset calc(var(--border-w) * -1) 0 0 var(--text-muted); }
 .ad-row__cells { --ad-col: auto; display: inline-flex; align-items: center; flex: none; }
 .ad-row__cell { flex: none; width: var(--ad-col); padding: 0 var(--space-2); box-sizing: border-box; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: var(--text-base); color: var(--text-secondary); }
+
+/* A drop target (2026-10-27): lit one tone while a row is dragged over; an empty section keeps a row of height. */
+.ad-list-section--over .ad-list-section__body { background: var(--tint-selected); border-radius: var(--radius-page); }
+.ad-list-section__body--empty { min-height: var(--h-row); }
+.ad-list-section__empty { margin: 0; height: var(--h-row); display: flex; align-items: center; padding: 0 var(--space-2); font-family: var(--font-body); font-size: var(--text-base); color: var(--text-muted); }
 
 /* src/components/Map/Map.css */
 /* WorldMap (ruled 2026-10-26, Jeremy): Athena's Where-is-everyone map as it draws it (widgets.css .wx-map-*), in map units. */
@@ -1454,6 +1461,9 @@ button.ad-row__name:focus-visible { outline: none; box-shadow: var(--ring-select
 .ad-drag-handle:active { cursor: grabbing; }
 .ad-drag-handle:focus-visible { outline: none; box-shadow: var(--ring-select); }
 
+/* A fact's hook wrapper: no look of its own. */
+.ad-row__fact-hook { display: contents; }
+
 /* src/components/Search/Search.css */
 /* CommandSearch (the Finding card): a glass card near the top, the typing line 40 tall with a hairline under it, no fill;
    results grouped under small caps headings, a kind icon and the project code on each row. */
@@ -1608,6 +1618,8 @@ button.ad-row__name:focus-visible { outline: none; box-shadow: var(--ring-select
 .ad-selection-bar__lead { display: inline-flex; align-items: center; gap: var(--space-2); }
 .ad-selection-bar__slot { align-self: stretch; display: inline-flex; align-items: center; }
 
+.ad-selection-bar-room { height: calc(var(--h-float-bar) + var(--space-4) * 2); }
+
 /* src/components/Tag/Tag.css */
 /* Tag, FilterTag, UnreadDot. (TokenPill's look is .ad-token, in Writing.css: one red pill.) */
 .ad-tag {
@@ -1641,6 +1653,9 @@ button.ad-row__name:focus-visible { outline: none; box-shadow: var(--ring-select
 /* Unread: a small bone dot after the word ("Notes ·"), never a count. */
 .ad-unread { display: inline-block; width: var(--dot-size); height: var(--dot-size); margin-left: var(--space-2); border-radius: var(--radius-round); background: var(--text-primary); vertical-align: middle; }
 .ad-active-filters { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-3); }
+
+/* A note tag: words, not a code (2026-10-27). */
+.ad-tag--note { font-family: var(--font-body); text-transform: none; letter-spacing: var(--track-normal); color: var(--text-secondary); }
 
 /* src/components/Timeline/Ruler.css */
 /* Ruler and ZoomCluster: a line-strong rule, months in bone mono caps along the top, ticks from the rule (weeks taller than
