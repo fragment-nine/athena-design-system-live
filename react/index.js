@@ -593,6 +593,9 @@ var REGULAR = {
   "gear": [
     "M128,80a48,48,0,1,0,48,48A48.05,48.05,0,0,0,128,80Zm0,80a32,32,0,1,1,32-32A32,32,0,0,1,128,160Zm88-29.84q.06-2.16,0-4.32l14.92-18.64a8,8,0,0,0,1.48-7.06,107.21,107.21,0,0,0-10.88-26.25,8,8,0,0,0-6-3.93l-23.72-2.64q-1.48-1.56-3-3L186,40.54a8,8,0,0,0-3.94-6,107.71,107.71,0,0,0-26.25-10.87,8,8,0,0,0-7.06,1.49L130.16,40Q128,40,125.84,40L107.2,25.11a8,8,0,0,0-7.06-1.48A107.6,107.6,0,0,0,73.89,34.51a8,8,0,0,0-3.93,6L67.32,64.27q-1.56,1.49-3,3L40.54,70a8,8,0,0,0-6,3.94,107.71,107.71,0,0,0-10.87,26.25,8,8,0,0,0,1.49,7.06L40,125.84Q40,128,40,130.16L25.11,148.8a8,8,0,0,0-1.48,7.06,107.21,107.21,0,0,0,10.88,26.25,8,8,0,0,0,6,3.93l23.72,2.64q1.49,1.56,3,3L70,215.46a8,8,0,0,0,3.94,6,107.71,107.71,0,0,0,26.25,10.87,8,8,0,0,0,7.06-1.49L125.84,216q2.16.06,4.32,0l18.64,14.92a8,8,0,0,0,7.06,1.48,107.21,107.21,0,0,0,26.25-10.88,8,8,0,0,0,3.93-6l2.64-23.72q1.56-1.48,3-3L215.46,186a8,8,0,0,0,6-3.94,107.71,107.71,0,0,0,10.87-26.25,8,8,0,0,0-1.49-7.06Zm-16.1-6.5a73.93,73.93,0,0,1,0,8.68,8,8,0,0,0,1.74,5.48l14.19,17.73a91.57,91.57,0,0,1-6.23,15L187,173.11a8,8,0,0,0-5.1,2.64,74.11,74.11,0,0,1-6.14,6.14,8,8,0,0,0-2.64,5.1l-2.51,22.58a91.32,91.32,0,0,1-15,6.23l-17.74-14.19a8,8,0,0,0-5-1.75h-.48a73.93,73.93,0,0,1-8.68,0,8,8,0,0,0-5.48,1.74L100.45,215.8a91.57,91.57,0,0,1-15-6.23L82.89,187a8,8,0,0,0-2.64-5.1,74.11,74.11,0,0,1-6.14-6.14,8,8,0,0,0-5.1-2.64L46.43,170.6a91.32,91.32,0,0,1-6.23-15l14.19-17.74a8,8,0,0,0,1.74-5.48,73.93,73.93,0,0,1,0-8.68,8,8,0,0,0-1.74-5.48L40.2,100.45a91.57,91.57,0,0,1,6.23-15L69,82.89a8,8,0,0,0,5.1-2.64,74.11,74.11,0,0,1,6.14-6.14A8,8,0,0,0,82.89,69L85.4,46.43a91.32,91.32,0,0,1,15-6.23l17.74,14.19a8,8,0,0,0,5.48,1.74,73.93,73.93,0,0,1,8.68,0,8,8,0,0,0,5.48-1.74L155.55,40.2a91.57,91.57,0,0,1,15,6.23L173.11,69a8,8,0,0,0,2.64,5.1,74.11,74.11,0,0,1,6.14,6.14,8,8,0,0,0,5.1,2.64l22.58,2.51a91.32,91.32,0,0,1,6.23,15l-14.19,17.74A8,8,0,0,0,199.87,123.66Z"
   ],
+  "globe": [
+    "M128,24h0A104,104,0,1,0,232,128,104.12,104.12,0,0,0,128,24Zm88,104a87.61,87.61,0,0,1-3.33,24H174.16a157.44,157.44,0,0,0,0-48h38.51A87.61,87.61,0,0,1,216,128ZM102,168H154a115.11,115.11,0,0,1-26,45A115.27,115.27,0,0,1,102,168Zm-3.9-16a140.84,140.84,0,0,1,0-48h59.88a140.84,140.84,0,0,1,0,48ZM40,128a87.61,87.61,0,0,1,3.33-24H81.84a157.44,157.44,0,0,0,0,48H43.33A87.61,87.61,0,0,1,40,128ZM154,88H102a115.11,115.11,0,0,1,26-45A115.27,115.27,0,0,1,154,88Zm52.33,0H170.71a135.28,135.28,0,0,0-22.3-45.6A88.29,88.29,0,0,1,206.37,88ZM107.59,42.4A135.28,135.28,0,0,0,85.29,88H49.63A88.29,88.29,0,0,1,107.59,42.4ZM49.63,168H85.29a135.28,135.28,0,0,0,22.3,45.6A88.29,88.29,0,0,1,49.63,168Zm98.78,45.6a135.28,135.28,0,0,0,22.3-45.6h35.66A88.29,88.29,0,0,1,148.41,213.6Z"
+  ],
   "handshake": [
     "M254.3,107.91,228.78,56.85a16,16,0,0,0-21.47-7.15L182.44,62.13,130.05,48.27a8.14,8.14,0,0,0-4.1,0L73.56,62.13,48.69,49.7a16,16,0,0,0-21.47,7.15L1.7,107.9a16,16,0,0,0,7.15,21.47l27,13.51,55.49,39.63a8.06,8.06,0,0,0,2.71,1.25l64,16a8,8,0,0,0,7.6-2.1l55.07-55.08,26.42-13.21a16,16,0,0,0,7.15-21.46Zm-54.89,33.37L165,113.72a8,8,0,0,0-10.68.61C136.51,132.27,116.66,130,104,122L147.24,80h31.81l27.21,54.41ZM41.53,64,62,74.22,36.43,125.27,16,115.06Zm116,119.13L99.42,168.61l-49.2-35.14,28-56L128,64.28l9.8,2.59-45,43.68-.08.09a16,16,0,0,0,2.72,24.81c20.56,13.13,45.37,11,64.91-5L188,152.66Zm62-57.87-25.52-51L214.47,64,240,115.06Zm-87.75,92.67a8,8,0,0,1-7.75,6.06,8.13,8.13,0,0,1-1.95-.24L80.41,213.33a7.89,7.89,0,0,1-2.71-1.25L51.35,193.26a8,8,0,0,1,9.3-13l25.11,17.94L126,208.24A8,8,0,0,1,131.82,217.94Z"
   ],
@@ -1027,7 +1030,7 @@ var JOBS = {
   "dept-video": "video-camera",
   "drag": "dots-six-vertical",
   "edit": "pencil-simple",
-  "everything": "circle",
+  "everything": "globe",
   "external": "arrow-square-out",
   "filter": "funnel",
   "flag": "flag",
@@ -1724,19 +1727,20 @@ function ProjectPill({ code: code2, current, color, onPress, pressLabel }) {
   }, className: cx("ad-project-pill", "ad-project-pill--press", current && "ad-project-pill--current"), style: shown ? { ["--ad-pill"]: shown } : void 0, "data-coloured": shown ? true : void 0, children: code2 });
   return /* @__PURE__ */ jsx16("span", { className: cx("ad-project-pill", current && "ad-project-pill--current"), style: shown ? { ["--ad-pill"]: shown } : void 0, "data-coloured": shown ? true : void 0, children: code2 });
 }
-function Rail({ screens, projects, current, onSelect, onHome, onSettings, onToggle, labels: l = {} }) {
+function Rail({ foot = [], screens, projects, current, onSelect, onHome, onSettings, onToggle, labels: l = {} }) {
   const L = { home: "Home", settings: "Settings", expand: "Open the menu", menu: "Main", ...l };
   return /* @__PURE__ */ jsxs13("nav", { className: "ad-rail", "aria-label": L.menu, children: [
     /* @__PURE__ */ jsx16("button", { type: "button", className: "ad-rail__item ad-rail__home", "aria-label": L.home, title: L.home, onClick: onHome, children: /* @__PURE__ */ jsx16(X, {}) }),
     /* @__PURE__ */ jsx16("div", { className: "ad-rail__group", children: screens.map((s) => /* @__PURE__ */ jsx16("button", { type: "button", ...dataOnly(s.hooks), className: "ad-rail__item", "aria-label": s.label, title: s.label, "aria-current": current === s.id ? "page" : void 0, onClick: () => onSelect(s.id), children: s.icon }, s.id)) }),
     /* @__PURE__ */ jsx16("div", { className: "ad-rail__group ad-rail__group--projects", children: projects.map((p) => /* @__PURE__ */ jsx16("button", { type: "button", ...dataOnly(p.hooks), className: "ad-rail__project", "aria-label": `${p.code} ${p.name}`, title: p.name, "aria-current": current === p.id ? "page" : void 0, onClick: () => onSelect(p.id), children: /* @__PURE__ */ jsx16(ProjectPill, { code: p.code, current: current === p.id, color: p.color }) }, p.id)) }),
     /* @__PURE__ */ jsxs13("div", { className: "ad-rail__foot", children: [
+      foot.map((s) => /* @__PURE__ */ jsx16("button", { type: "button", ...dataOnly(s.hooks), className: "ad-rail__item", "aria-label": s.label, title: s.label, "aria-current": current === s.id ? "page" : void 0, onClick: () => onSelect(s.id), children: s.icon }, s.id)),
       /* @__PURE__ */ jsx16("button", { type: "button", className: "ad-rail__item", "aria-label": L.settings, title: L.settings, "aria-current": current === "settings" ? "page" : void 0, onClick: onSettings, children: /* @__PURE__ */ jsx16(Icon, { name: "gear", size: "lg" }) }),
       /* @__PURE__ */ jsx16("button", { type: "button", className: "ad-rail__item ad-rail__fold", "aria-label": L.expand, title: L.expand, "aria-expanded": "false", onClick: onToggle, children: /* @__PURE__ */ jsx16(Icon, { name: "caret-right" }) })
     ] })
   ] });
 }
-function SideMenu({ screens, projects, views = [], current, onSelect, onHome, onSettings, onToggle, onReorder, projectsScreen, labels: l = {} }) {
+function SideMenu({ foot = [], screens, projects, views = [], current, onSelect, onHome, onSettings, onToggle, onReorder, projectsScreen, labels: l = {} }) {
   const L = { home: "Home", menu: "Main", settings: "Settings", fold: "Fold the menu", ...l };
   const [drag, setDrag] = useState7(null);
   const [over, setOver] = useState7(null);
@@ -1789,7 +1793,11 @@ function SideMenu({ screens, projects, views = [], current, onSelect, onHome, on
       /* @__PURE__ */ jsx16(Icon, { name: "star", className: "ad-side__star" }),
       v.label
     ] }) }, v.id)) }),
-    (onSettings || onToggle) && /* @__PURE__ */ jsxs13("div", { className: "ad-side__foot", children: [
+    (foot.length > 0 || onSettings || onToggle) && /* @__PURE__ */ jsxs13("div", { className: "ad-side__foot", children: [
+      foot.map((s) => /* @__PURE__ */ jsxs13("button", { type: "button", ...dataOnly(s.hooks), className: "ad-side__item", "aria-current": current === s.id ? "page" : void 0, onClick: () => onSelect(s.id), children: [
+        /* @__PURE__ */ jsx16("span", { className: "ad-side__icon", "aria-hidden": "true", children: s.icon }),
+        s.label
+      ] }, s.id)),
       onSettings && /* @__PURE__ */ jsxs13("button", { type: "button", className: "ad-side__item", "aria-current": current === "settings" ? "page" : void 0, onClick: onSettings, children: [
         /* @__PURE__ */ jsx16("span", { className: "ad-side__icon", "aria-hidden": "true", children: /* @__PURE__ */ jsx16(Icon, { name: "gear" }) }),
         L.settings
