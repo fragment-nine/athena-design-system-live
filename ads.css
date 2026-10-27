@@ -493,6 +493,16 @@ tr[data-ad-drop="after"] > :is(td, th) { box-shadow: inset 0 calc(var(--bw-selec
   grid-row: calc(var(--ad-lane) + 2); z-index: 1; display: flex; align-items: center; min-width: 0; margin: 0 var(--space-1); padding: 0 var(--space-2);
   border: 0; border-radius: var(--radius-page); background: var(--ad-bar); color: var(--text-primary); font-family: var(--font-body); font-size: var(--text-xs); text-align: left; overflow: hidden;
 }
+/* An item or phase colour is never the fill of a calendar item or a booking: it runs as the side stripe down the left side
+   (`w-stripe`, as SideStripe draws it; ruled 2026-10-27, Jeremy). hue.tsx barColour sets --ad-stripe. */
+.ad-month__bar, .ad-booking { --ad-stripe: transparent; }
+.ad-month__bar { position: relative; }
+.ad-month__bar--milestone::before { content: none; }
+.ad-month__bar--cut-start::before { border-radius: 0; }
+.ad-month__bar::before, .ad-booking::before { content: ""; position: absolute; top: 0; bottom: 0; left: 0; width: var(--w-stripe); border-radius: var(--radius-page) 0 0 var(--radius-page); background: var(--ad-stripe); pointer-events: none; }
+/* A department colour is the department's glyph before the name, in its colour (ruled 2026-10-27, Jeremy): Department.tsx DeptGlyph. */
+.ad-month__bar > .ad-dept { flex: none; }
+.ad-booking__name > .ad-dept { margin-right: var(--space-1); vertical-align: middle; }
 .ad-month__bar > span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .ad-month__bar { gap: var(--space-1); }
 .ad-month__bar > .ad-project-pill { flex-shrink: 0; }
@@ -515,6 +525,12 @@ button.ad-booking { cursor: pointer; }
 .ad-booking--press:hover { box-shadow: var(--glow-hover); }
 .ad-booking--press:focus-visible { outline: none; box-shadow: var(--ring-select); }
 /* Grab handles: a short bone tick inside the top and bottom edges, shown on hover or focus; the cursor says it resizes. */
+/* A block that presses holds no control (Booking): it fills a holder, and its grips and buttons sit beside it, over its edges. */
+.ad-booking-hold { position: relative; display: flex; flex-direction: column; }
+.ad-booking-hold > .ad-booking { flex: 1; min-height: 0; }
+.ad-booking-hold:hover > .ad-booking--press { box-shadow: var(--glow-hover); }
+.ad-booking-hold:hover > .ad-booking__grip::after { opacity: 1; }
+.ad-booking-hold > .ad-booking--press:focus-visible { box-shadow: var(--ring-select); }
 .ad-booking__grip { position: absolute; left: 0; right: 0; height: var(--space-2); cursor: ns-resize; z-index: 1; }
 .ad-booking__grip--start { top: 0; }
 .ad-booking__grip--end { bottom: 0; }
@@ -1147,16 +1163,23 @@ button:hover > .ad-project-pill:not(.ad-project-pill--current) { color: var(--ac
 .ad-picklist__search input::placeholder { color: var(--text-muted); }
 .ad-picklist__search:focus-within { background: var(--bg-float); }
 .ad-picklist__search:has(input:focus-visible) { box-shadow: var(--ring-select); }
-.ad-picklist__list { max-height: calc(var(--h-row) * 8); overflow-y: auto; outline: none; }
-.ad-picklist__list:focus-visible { box-shadow: var(--ring-select); border-radius: var(--radius-page); }
+.ad-picklist__list { position: relative; max-height: calc(var(--h-row) * 8); overflow-y: auto; outline: none; }
+.ad-picklist__box { outline: none; }
+.ad-picklist__list:has(> .ad-picklist__box:focus-visible) { box-shadow: var(--ring-select); border-radius: var(--radius-page); }
+/* A row's buttons, beside the listbox (a listbox holds choices only), each placed over its row by PickList. */
+.ad-picklist__layer > * { position: absolute; left: 0; right: 0; }
+.ad-picklist__over { pointer-events: none; }
+.ad-picklist__over > * { visibility: hidden; }
+.ad-picklist__over > .ad-picklist__control { visibility: visible; pointer-events: auto; }
+.ad-picklist__place { visibility: hidden; }
 .ad-picklist__group { padding: var(--space-3) var(--space-3) var(--space-1); font-family: var(--font-display); font-weight: 600; font-size: var(--text-xs); letter-spacing: var(--track-label); text-transform: uppercase; color: var(--text-muted); }
-.ad-picklist__option {
+.ad-picklist__option, .ad-picklist__over {
   display: flex; align-items: center; gap: var(--space-3); box-sizing: border-box; height: var(--h-row); padding: 0 var(--space-2);
   border-radius: var(--radius-page); font-family: var(--font-body); font-size: var(--text-base); color: var(--text-primary); cursor: pointer;
 }
 /* Coral is the light under the cursor only (DR Colour, DR Behaviour): the keyboard's active option keeps the tint, not the ink. */
-.ad-picklist__option[data-active], .ad-picklist__option:hover { background: var(--tint-hover); }
-.ad-picklist__option:hover, .ad-picklist__option:hover .ad-picklist__lead { color: var(--accent); }
+.ad-picklist__option[data-active], .ad-picklist__option:hover, .ad-picklist__option[data-hover] { background: var(--tint-hover); }
+.ad-picklist__option:hover, .ad-picklist__option:hover .ad-picklist__lead, .ad-picklist__option[data-hover], .ad-picklist__over[data-hover] .ad-picklist__lead { color: var(--accent); }
 .ad-picklist__option[aria-disabled] { opacity: var(--opacity-disabled); cursor: default; }
 .ad-picklist__lead { display: inline-flex; align-items: center; flex: none; }
 .ad-picklist__label { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
@@ -1604,6 +1627,10 @@ button.ad-row__name:focus-visible { outline: none; box-shadow: var(--ring-select
   transition: box-shadow var(--dur-fast) var(--ease-out);
 }
 button.ad-bar { cursor: pointer; }
+/* An item or phase colour is never a bar's fill: the bar stays grey and the colour runs as the side stripe down its left
+   side (`w-stripe`, as SideStripe draws it; ruled 2026-10-27, Jeremy). hue.tsx barColour sets --ad-stripe. */
+.ad-bar { --ad-stripe: transparent; }
+.ad-bar::before { content: ""; position: absolute; top: 0; bottom: 0; left: 0; width: var(--w-stripe); border-radius: var(--radius-page) 0 0 var(--radius-page); background: var(--ad-stripe); pointer-events: none; }
 .ad-bar[role="button"] { cursor: pointer; }
 /* Grab handles: a short bone tick inside each end, shown on hover or focus; the cursor says it resizes. */
 .ad-bar__grip { position: absolute; top: 0; bottom: 0; width: var(--space-2); cursor: ew-resize; z-index: 1; }
