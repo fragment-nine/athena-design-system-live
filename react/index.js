@@ -2926,10 +2926,13 @@ import { useRef as useRef17, useState as useState17 } from "react";
 // src/components/Settings/Settings.tsx
 import { useId as useId10 } from "react";
 import { jsx as jsx29, jsxs as jsxs26 } from "react/jsx-runtime";
-function SettingsLayout({ nav, children, className }) {
+function SettingsLayout({ nav, title, children, className }) {
   return /* @__PURE__ */ jsxs26("div", { className: cx("ad-settings", className), children: [
     nav,
-    /* @__PURE__ */ jsx29("div", { className: "ad-settings__pane", children })
+    /* @__PURE__ */ jsxs26("div", { className: "ad-settings__pane", children: [
+      title != null && /* @__PURE__ */ jsx29("h2", { className: "ad-settings__title", children: title }),
+      children
+    ] })
   ] });
 }
 function SettingsNav({ children, ariaLabel }) {

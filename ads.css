@@ -1428,6 +1428,8 @@ button.ad-row__name:focus-visible { outline: none; box-shadow: var(--ring-select
 .ad-settings__nav-item:focus-visible { outline: none; box-shadow: var(--ring-select); }
 .ad-settings__nav-item[aria-current="page"] { background: var(--tint-selected); color: var(--text-primary); }
 .ad-settings__pane { flex: 1; min-width: 0; max-width: var(--w-prose); display: flex; flex-direction: column; gap: var(--space-6); }
+/* The pane's one big title, the pop-over title's size; the sections under it stay 13px labels (ruled 2026-10-25). */
+.ad-settings__title { margin: 0; font-family: var(--font-display); font-weight: 600; font-size: var(--text-20); line-height: var(--lh-tight); color: var(--text-primary); }
 .ad-setting { min-height: var(--h-row); }
 .ad-setting__name { display: inline-flex; align-items: center; gap: var(--space-2); color: var(--text-primary); }
 /* A set-time field ("9:00 – 18:00") reads in mono. */
