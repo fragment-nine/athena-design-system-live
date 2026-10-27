@@ -1559,8 +1559,8 @@ button.ad-row__name:focus-visible { outline: none; box-shadow: var(--ring-select
 .ad-active-filters { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-3); }
 
 /* src/components/Timeline/Ruler.css */
-/* Ruler and ZoomCluster, as the Page-Schedule card draws them: a line-strong rule, months in bone mono caps along the top, ticks
-   from the rule (weeks taller than days), day numbers mono muted centred on their tick, the zoom cluster just above the right end. */
+/* Ruler and ZoomCluster: a line-strong rule, months in bone mono caps along the top, ticks from the rule (weeks taller than
+   days), day numbers mono muted centred on their tick. The zoom cluster sits in the toolbar, before View (2026-10-27). */
 .ad-ruler { position: relative; height: var(--h-row); border-bottom: var(--border-w) solid var(--line-strong); font-family: var(--font-mono); color: var(--text-secondary); }
 .ad-ruler__months { position: relative; height: var(--space-6); }
 .ad-ruler__month { position: absolute; top: 0; padding-left: var(--space-1); font-size: var(--text-xs); letter-spacing: var(--track-caps); color: var(--text-primary); white-space: nowrap; }
@@ -1569,7 +1569,7 @@ button.ad-row__name:focus-visible { outline: none; box-shadow: var(--ring-select
 .ad-ruler__tick--major { height: var(--space-2); }
 .ad-ruler__day { position: absolute; bottom: var(--space-2); left: 50%; transform: translateX(-50%); font-size: var(--text-xs); color: var(--text-muted); white-space: nowrap; }
 .ad-ruler__end { position: absolute; top: calc(var(--space-4) * -1); right: 0; padding-left: var(--space-2); background: var(--bg-base); }
-/* The cluster: bare mono glyphs in a row with the zoom's name before them (the card). No icon-button boxes, so it clears the caps. */
+/* The cluster: toolbar-size icon buttons in a row (ZoomCluster), or the period control's words and sizes (PeriodCluster). */
 .ad-zoom { display: inline-flex; align-items: center; gap: var(--space-1); font-family: var(--font-mono); font-size: var(--text-xs); line-height: var(--lh-none); color: var(--text-muted); }
 .ad-zoom__name { margin-right: var(--space-1); color: var(--text-primary); }
 .ad-zoom__btn { display: inline-flex; align-items: center; justify-content: center; width: var(--h-btn-bar); height: var(--h-btn-bar); margin: 0; padding: 0; border: 0; border-radius: var(--radius-page); background: transparent; color: var(--text-muted); cursor: pointer; }
@@ -1697,12 +1697,6 @@ button.ad-milestone:focus-visible { outline: none; box-shadow: var(--ring-select
 .ad-clash > * { flex: 1; min-width: 0; }
 .ad-offscreen { font-family: var(--font-mono); font-size: var(--text-xs); color: var(--text-secondary); white-space: nowrap; }
 .ad-legend { margin: 0; font-family: var(--font-mono); font-size: var(--text-xs); color: var(--text-muted); }
-/* Tracks (provisional): the step meter and the span bar. Done is bg-hover here, not the chart grey. */
-.ad-step-meter__step { box-sizing: border-box; width: var(--dot-size); height: var(--dot-size); border-radius: var(--radius-round); border: var(--border-w) solid var(--text-muted); }
-.ad-step-meter__step--done { background: var(--text-muted); }
-/* The current step is ringed: the hairline dot inside a second ring, clear of it. */
-.ad-step-meter__step--current { box-shadow: 0 0 0 var(--border-w) var(--bg-base), 0 0 0 calc(var(--border-w) + var(--border-w-strong)) var(--text-secondary); }
-.ad-track__done { position: absolute; left: 0; top: 0; bottom: 0; background: var(--bg-hover); }
 @media (prefers-reduced-motion: reduce) { .ad-bar, .ad-bar__end, .ad-deliverable__chevron { transition: none; } }
 /* ChartKey: each word with its swatch, drawn as the bar draws that mark (ruled 2026-10-25); no "FIG." (2026-10-27). */
 .ad-chart-key { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-2) var(--space-4); font-family: var(--font-body); font-size: var(--text-xs); color: var(--text-secondary); }
