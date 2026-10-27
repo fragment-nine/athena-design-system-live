@@ -805,14 +805,15 @@ button.ad-card__name:focus-visible { outline: none; box-shadow: var(--ring-selec
 
 /* src/components/Furniture/Furniture.css */
 /* Footer, Contents, Caption, DualUnit, Ground, Frame */
-.ad-footer { display: grid; grid-template-columns: max-content minmax(0, 1fr) minmax(0, 2fr) max-content; height: var(--h-footer); border-top: var(--border-w) solid var(--line-strong); font-family: var(--font-display); font-weight: 700; font-size: var(--text-xs); letter-spacing: var(--track-caps-sm); text-transform: uppercase; color: var(--text-primary); white-space: nowrap; }
+.ad-footer { display: grid; grid-template-columns: max-content minmax(0, 1fr) minmax(0, 2fr) max-content; height: var(--h-footer); border-top: var(--border-w) solid var(--line-strong); font-family: var(--font-display); font-weight: 700; font-size: var(--text-base); letter-spacing: var(--track-caps-sm); text-transform: uppercase; color: var(--text-primary); white-space: nowrap; }
 .ad-footer__cell { display: flex; align-items: center; padding: 0 var(--space-4); border-right: var(--border-w) solid var(--border); }
 .ad-footer__code { gap: var(--space-2); }
 .ad-footer__number { font-family: var(--font-mono); font-weight: 400; letter-spacing: var(--track-normal); color: var(--text-secondary); }
 .ad-footer__venue { overflow: hidden; text-overflow: ellipsis; }
-.ad-footer__run { border-right: 0; justify-content: center; gap: var(--space-2); font-family: var(--font-body); font-weight: 400; font-size: var(--text-xs); letter-spacing: var(--track-normal); text-transform: none; color: var(--text-secondary); }
+.ad-footer__run { border-right: 0; justify-content: center; gap: var(--space-2); font-family: var(--font-body); font-weight: 400; font-size: var(--text-base); letter-spacing: var(--track-normal); text-transform: none; color: var(--text-secondary); }
 .ad-footer__undo-words { overflow: hidden; text-overflow: ellipsis; }
-.ad-footer__page { justify-content: flex-end; gap: var(--space-2); border-right: 0; font-size: var(--text-base); }
+/* One size across the footer, the larger one (ruled 2026-10-27, Jeremy: "LOUDBOX and 03 todos … should be the larger one"). */
+.ad-footer__page { justify-content: flex-end; gap: var(--space-2); border-right: 0; }
 .ad-footer__page-number { font-family: var(--font-mono); font-weight: 400; letter-spacing: var(--track-normal); color: var(--text-secondary); }
 .ad-contents { margin: 0; padding: 0; list-style: none; border-top: var(--border-w) solid var(--border); }
 .ad-contents__entry { border-bottom: var(--border-w) solid var(--border); }
@@ -1046,9 +1047,10 @@ button.ad-contents__button:focus-visible { outline: none; box-shadow: var(--ring
 .ad-rail__fold svg { width: var(--icon-md); height: var(--icon-md); }
 .ad-project-pill {
   --ad-pill: var(--line-strong);
-  display: inline-flex; align-items: center; justify-content: center; box-sizing: border-box; min-width: var(--h-btn-bar); height: var(--text-base); padding: 0 var(--space-1);
+  /* Never wider than the rail leaves right of the icon column: a four-letter code fits, nothing runs off (ruled 2026-10-27, Jeremy). */
+  display: inline-flex; align-items: center; justify-content: center; box-sizing: border-box; min-width: 0; max-width: calc(var(--w-rail) - (var(--w-rail) - var(--icon-lg)) / 2); height: var(--text-base); padding: 0 var(--space-hair); overflow: hidden;
   border-radius: var(--radius-page); box-shadow: inset 0 0 0 var(--border-w) var(--ad-pill); background: transparent; line-height: 1;
-  font-family: var(--font-mono); font-size: var(--text-xs); color: var(--text-secondary); white-space: nowrap;
+  font-family: var(--font-mono); font-size: var(--text-xs); letter-spacing: var(--track-normal); color: var(--text-secondary); white-space: nowrap;
 }
 /* Its colour on the outline only, never a fill; no taller than the name beside it (ruled 2026-10-27, Jeremy: "Don't fill the project pill -- just color the outline"). */
 .ad-project-pill[data-coloured] { color: var(--text-primary); }
