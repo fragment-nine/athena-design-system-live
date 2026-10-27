@@ -1105,19 +1105,86 @@ function TintedIcon(props) {
   return Icon({ ...props, resolved });
 }
 
+// src/components/Avatar/Avatar.tsx
+import { useState as useState4 } from "react";
+
+// src/components/Status/Status.tsx
+import { jsx as jsx4, jsxs as jsxs2 } from "react/jsx-runtime";
+var pickColours = ["grey", "blue", "teal", "green", "amber", "orange", "red", "purple", "white"];
+var PICKABLE = new Set(pickColours);
+function useNamedColour(name) {
+  const isPick = !!name && PICKABLE.has(name);
+  const shown = useHue(isPick ? void 0 : name);
+  return isPick ? `var(--pick-${name})` : shown;
+}
+function Dot({ tone = "neutral", hue, priority, colour: picked, className, ...rest }) {
+  const colour = useNamedColour(picked && PICKABLE.has(picked) ? picked : hue);
+  return /* @__PURE__ */ jsx4("span", { "aria-hidden": "true", ...rest, "data-coloured": colour ? true : void 0, style: colour ? { ["--ad-dot"]: colour } : void 0, className: cx("ad-dot", `ad-dot--${tone}`, priority && `ad-dot--p${priority}`, className) });
+}
+function Status({ label, tone = "neutral", colour, className, ...rest }) {
+  return /* @__PURE__ */ jsxs2("span", { ...rest, className: cx("ad-status", className), children: [
+    /* @__PURE__ */ jsx4(Dot, { tone, colour }),
+    /* @__PURE__ */ jsx4("span", { className: "ad-status__word", children: label })
+  ] });
+}
+function Health({ state, reason, labels: l = {} }) {
+  if (state !== "at-risk" && state !== "off-track") return null;
+  const word = state === "at-risk" ? l.atRisk ?? "At risk" : l.offTrack ?? "Off track";
+  const said = reason ? `${word}: ${String(reason)}` : word;
+  return /* @__PURE__ */ jsx4("span", { role: "img", "aria-label": said, title: said, className: "ad-health", children: /* @__PURE__ */ jsx4(Dot, { tone: state === "at-risk" ? "waiting" : "problem" }) });
+}
+function SideStripe({ colour, side = "left", inline, children }) {
+  const drawn = useNamedColour(colour);
+  return /* @__PURE__ */ jsx4(
+    "span",
+    {
+      "data-coloured": drawn ? true : void 0,
+      style: drawn ? { ["--ad-stripe"]: drawn } : void 0,
+      className: cx("ad-side-stripe", `ad-side-stripe--${side}`, inline && "ad-side-stripe--inline"),
+      children
+    }
+  );
+}
+
+// src/components/Avatar/Avatar.tsx
+import { jsx as jsx5, jsxs as jsxs3 } from "react/jsx-runtime";
+function Avatar({ name, initials: initials2, src, size = "sm", decorative, presence, className, style }) {
+  const [failed, setFailed] = useState4();
+  const broken = !!src && failed === src;
+  return /* @__PURE__ */ jsxs3("span", { role: decorative ? void 0 : "img", "aria-label": decorative ? void 0 : presence ? `${name}, ${presence.label}` : name, "aria-hidden": decorative || void 0, title: presence ? `${name}, ${presence.label}` : name, className: cx("ad-avatar", `ad-avatar--${size}`, className), style, children: [
+    src && !broken ? /* @__PURE__ */ jsx5("img", { src, alt: "", onError: () => setFailed(src) }) : /* @__PURE__ */ jsx5("span", { "aria-hidden": "true", children: initials2 ?? initials(name) }),
+    presence && /* @__PURE__ */ jsx5(Dot, { colour: presence.colour, className: "ad-avatar__presence" })
+  ] });
+}
+function AvatarStack({ people, max = 3, size = "sm", plane = "base", className }) {
+  if (!people.length) return null;
+  const shown = people.slice(0, max);
+  const rest = people.length - shown.length;
+  return /* @__PURE__ */ jsxs3("span", { className: cx("ad-avatar-stack", `ad-plane--${plane}`, className), role: "group", "aria-label": people.map((p) => p.name).join(", "), children: [
+    shown.map((p, i) => /* @__PURE__ */ jsx5(Avatar, { ...p, initials: (p.initials ?? initials(p.name)).slice(0, 1), size, decorative: true, style: { zIndex: shown.length - i } }, p.id ?? `${p.name}-${i}`)),
+    rest > 0 && /* @__PURE__ */ jsx5("span", { className: cx("ad-avatar", `ad-avatar--${size}`, "ad-avatar-stack__more"), "aria-hidden": "true", children: "\u2026" })
+  ] });
+}
+function Person({ name, initials: initials2, src, className }) {
+  return /* @__PURE__ */ jsxs3("span", { className: cx("ad-person", className), children: [
+    /* @__PURE__ */ jsx5(Avatar, { name, initials: initials2, src, decorative: true }),
+    /* @__PURE__ */ jsx5("span", { className: "ad-person__name", children: name })
+  ] });
+}
+
 // src/components/Button/Button.tsx
-import { Fragment as Fragment2, jsx as jsx4, jsxs as jsxs2 } from "react/jsx-runtime";
+import { Fragment as Fragment2, jsx as jsx6, jsxs as jsxs4 } from "react/jsx-runtime";
 var Place = createContext3("md");
 function ButtonSizeScope({ size, children }) {
-  return /* @__PURE__ */ jsx4(Place.Provider, { value: size, children });
+  return /* @__PURE__ */ jsx6(Place.Provider, { value: size, children });
 }
 function useButtonSize() {
   return useContext3(Place);
 }
-var Button = forwardRef(function Button2({ variant = "quiet", icon, danger, active, block, className, type = "button", children, ...rest }, ref) {
+var Button = forwardRef(function Button2({ variant = "quiet", icon, face, dot, danger, active, block, className, type = "button", children, ...rest }, ref) {
   const size = useContext3(Place);
   delete rest.size;
-  return /* @__PURE__ */ jsxs2(
+  return /* @__PURE__ */ jsxs4(
     "button",
     {
       ref,
@@ -1125,7 +1192,7 @@ var Button = forwardRef(function Button2({ variant = "quiet", icon, danger, acti
       ...rest,
       className: cx("ad-button", `ad-button--${variant}`, `ad-button--${size}`, danger && variant !== "main" && "ad-button--danger", active && "ad-button--active", block && "ad-button--block", className),
       children: [
-        slotIcon(icon),
+        face ? /* @__PURE__ */ jsx6(Avatar, { name: face.name, src: face.src, size: "sm", decorative: true }) : dot ? /* @__PURE__ */ jsx6(Dot, { tone: dot }) : slotIcon(icon),
         children
       ]
     }
@@ -1133,9 +1200,9 @@ var Button = forwardRef(function Button2({ variant = "quiet", icon, danger, acti
 });
 function FileButton({ accept, multiple, onFiles, ...button }) {
   const input = useRef4(null);
-  return /* @__PURE__ */ jsxs2(Fragment2, { children: [
-    /* @__PURE__ */ jsx4(Button, { ...button, onClick: () => input.current?.click() }),
-    /* @__PURE__ */ jsx4(
+  return /* @__PURE__ */ jsxs4(Fragment2, { children: [
+    /* @__PURE__ */ jsx6(Button, { ...button, onClick: () => input.current?.click() }),
+    /* @__PURE__ */ jsx6(
       "input",
       {
         ref: input,
@@ -1158,8 +1225,8 @@ var IconButton = forwardRef(function IconButton2({ label, active, danger, classN
   const size = useContext3(Place);
   delete rest.size;
   const { triggerProps: tip, node } = useTooltip(label, { describes: false });
-  return /* @__PURE__ */ jsxs2(Fragment2, { children: [
-    /* @__PURE__ */ jsx4(
+  return /* @__PURE__ */ jsxs4(Fragment2, { children: [
+    /* @__PURE__ */ jsx6(
       "button",
       {
         ref,
@@ -1191,65 +1258,65 @@ var IconButton = forwardRef(function IconButton2({ label, active, danger, classN
 });
 
 // src/components/Field/Field.tsx
-import { forwardRef as forwardRef2, useEffect as useEffect4, useId as useId3, useRef as useRef5, useState as useState4 } from "react";
+import { forwardRef as forwardRef2, useEffect as useEffect4, useId as useId3, useRef as useRef5, useState as useState5 } from "react";
 
 // src/components/GroupHeading/GroupHeading.tsx
 import { useId as useId2 } from "react";
 
 // src/components/Field/Help.tsx
-import { Fragment as Fragment3, jsx as jsx5, jsxs as jsxs3 } from "react/jsx-runtime";
+import { Fragment as Fragment3, jsx as jsx7, jsxs as jsxs5 } from "react/jsx-runtime";
 function Help({ text }) {
   const { triggerProps, node } = useTooltip(text, { describes: false });
-  return /* @__PURE__ */ jsxs3(Fragment3, { children: [
-    /* @__PURE__ */ jsx5("button", { type: "button", className: "ad-field-row__help", "aria-label": text, ...triggerProps, onPointerLeave: triggerProps.onPointerLeave, onBlur: triggerProps.onBlur, children: /* @__PURE__ */ jsx5(Icon, { name: "question", size: "sm" }) }),
+  return /* @__PURE__ */ jsxs5(Fragment3, { children: [
+    /* @__PURE__ */ jsx7("button", { type: "button", className: "ad-field-row__help", "aria-label": text, ...triggerProps, onPointerLeave: triggerProps.onPointerLeave, onBlur: triggerProps.onBlur, children: /* @__PURE__ */ jsx7(Icon, { name: "question", size: "sm" }) }),
     node
   ] });
 }
 
 // src/components/GroupHeading/GroupHeading.tsx
-import { Fragment as Fragment4, jsx as jsx6, jsxs as jsxs4 } from "react/jsx-runtime";
+import { Fragment as Fragment4, jsx as jsx8, jsxs as jsxs6 } from "react/jsx-runtime";
 function GroupHeading({ children, number, rule = "above", needsYou, lead, end, collapsible, collapsed = false, onToggle, controls, level = 3, help, className }) {
   const id = useId2();
   const Tag2 = `h${level}`;
   const num = number == null ? null : typeof number === "number" ? String(number).padStart(2, "0") : number;
-  const inner = /* @__PURE__ */ jsxs4(Fragment4, { children: [
-    collapsible && /* @__PURE__ */ jsx6(Icon, { name: "caret-down", className: "ad-group-heading__chevron" }),
-    num != null && /* @__PURE__ */ jsx6("span", { className: "ad-group-heading__numeral", children: num }),
-    lead && /* @__PURE__ */ jsx6("span", { className: "ad-group-heading__lead", children: lead }),
-    /* @__PURE__ */ jsx6("span", { className: "ad-group-heading__name", id, children })
+  const inner = /* @__PURE__ */ jsxs6(Fragment4, { children: [
+    collapsible && /* @__PURE__ */ jsx8(Icon, { name: "caret-down", className: "ad-group-heading__chevron" }),
+    num != null && /* @__PURE__ */ jsx8("span", { className: "ad-group-heading__numeral", children: num }),
+    lead && /* @__PURE__ */ jsx8("span", { className: "ad-group-heading__lead", children: lead }),
+    /* @__PURE__ */ jsx8("span", { className: "ad-group-heading__name", id, children })
   ] });
-  return /* @__PURE__ */ jsxs4("div", { className: cx("ad-group-heading", `ad-group-heading--rule-${rule}`, className), "data-needs-you": needsYou || void 0, "data-collapsed": collapsible ? String(collapsed) : void 0, children: [
-    /* @__PURE__ */ jsx6(Tag2, { className: "ad-group-heading__title", children: collapsible ? /* @__PURE__ */ jsx6("button", { type: "button", className: "ad-group-heading__button", "aria-expanded": !collapsed, "aria-controls": controls, onClick: onToggle, children: inner }) : inner }),
-    help && /* @__PURE__ */ jsx6(Help, { text: help }),
-    end && /* @__PURE__ */ jsx6("span", { className: "ad-group-heading__end", children: end })
+  return /* @__PURE__ */ jsxs6("div", { className: cx("ad-group-heading", `ad-group-heading--rule-${rule}`, className), "data-needs-you": needsYou || void 0, "data-collapsed": collapsible ? String(collapsed) : void 0, children: [
+    /* @__PURE__ */ jsx8(Tag2, { className: "ad-group-heading__title", children: collapsible ? /* @__PURE__ */ jsx8("button", { type: "button", className: "ad-group-heading__button", "aria-expanded": !collapsed, "aria-controls": controls, onClick: onToggle, children: inner }) : inner }),
+    help && /* @__PURE__ */ jsx8(Help, { text: help }),
+    end && /* @__PURE__ */ jsx8("span", { className: "ad-group-heading__end", children: end })
   ] });
 }
 
 // src/components/Field/Field.tsx
-import { jsx as jsx7, jsxs as jsxs5 } from "react/jsx-runtime";
+import { jsx as jsx9, jsxs as jsxs7 } from "react/jsx-runtime";
 var TextField = forwardRef2(function TextField2({ icon, end, parsed, error, mono, className, style, ...rest }, ref) {
   const parsedId = useId3();
   const errorId = useId3();
   const describedBy = [parsed != null ? parsedId : null, error != null ? errorId : null, rest["aria-describedby"]].filter(Boolean).join(" ") || void 0;
-  return /* @__PURE__ */ jsxs5("span", { className: cx("ad-field-wrap", className), style, children: [
-    /* @__PURE__ */ jsxs5("span", { className: cx("ad-field", rest.disabled && "ad-field--disabled"), children: [
-      icon && /* @__PURE__ */ jsx7("span", { className: "ad-field__icon", "aria-hidden": "true", children: slotIcon(icon) }),
-      /* @__PURE__ */ jsx7("input", { ref, ...rest, "aria-invalid": error != null || void 0, "aria-describedby": describedBy, className: cx("ad-field__input", mono && "ad-field__input--mono") }),
-      end && /* @__PURE__ */ jsx7("span", { className: "ad-field__end", children: end })
+  return /* @__PURE__ */ jsxs7("span", { className: cx("ad-field-wrap", className), style, children: [
+    /* @__PURE__ */ jsxs7("span", { className: cx("ad-field", rest.disabled && "ad-field--disabled"), children: [
+      icon && /* @__PURE__ */ jsx9("span", { className: "ad-field__icon", "aria-hidden": "true", children: slotIcon(icon) }),
+      /* @__PURE__ */ jsx9("input", { ref, ...rest, "aria-invalid": error != null || void 0, "aria-describedby": describedBy, className: cx("ad-field__input", mono && "ad-field__input--mono") }),
+      end && /* @__PURE__ */ jsx9("span", { className: "ad-field__end", children: end })
     ] }),
-    parsed != null && /* @__PURE__ */ jsxs5("span", { id: parsedId, className: "ad-field__parsed", "aria-live": "polite", children: [
+    parsed != null && /* @__PURE__ */ jsxs7("span", { id: parsedId, className: "ad-field__parsed", "aria-live": "polite", children: [
       "[ ",
       parsed,
       " ]"
     ] }),
-    error != null && /* @__PURE__ */ jsx7("span", { id: errorId, className: "ad-field__error", role: "alert", children: error })
+    error != null && /* @__PURE__ */ jsx9("span", { id: errorId, className: "ad-field__error", role: "alert", children: error })
   ] });
 });
 var TextArea = forwardRef2(function TextArea2({ className, ...rest }, ref) {
-  return /* @__PURE__ */ jsx7("textarea", { ref, ...rest, className: cx("ad-field", "ad-textarea", className) });
+  return /* @__PURE__ */ jsx9("textarea", { ref, ...rest, className: cx("ad-field", "ad-textarea", className) });
 });
 var InlineEdit = forwardRef2(function InlineEdit2({ value, onCommit, ariaLabel, placeholder, size = "body", onType, onLeaveDown, disabled, className }, ref) {
-  const [draft, setDraft] = useState4(value);
+  const [draft, setDraft] = useState5(value);
   const editing = useRef5(false);
   const cancelled = useRef5(false);
   useEffect4(() => {
@@ -1266,7 +1333,7 @@ var InlineEdit = forwardRef2(function InlineEdit2({ value, onCommit, ariaLabel, 
     if (next !== value) onCommit(next);
     setDraft(value);
   };
-  return /* @__PURE__ */ jsx7(
+  return /* @__PURE__ */ jsx9(
     "input",
     {
       ref,
@@ -1300,51 +1367,51 @@ var InlineEdit = forwardRef2(function InlineEdit2({ value, onCommit, ariaLabel, 
   );
 });
 var Select = forwardRef2(function Select2({ options, placeholder, quiet, className, value, defaultValue, ...rest }, ref) {
-  return /* @__PURE__ */ jsxs5("span", { className: cx("ad-field", "ad-select", rest.disabled && "ad-field--disabled", className), children: [
-    /* @__PURE__ */ jsxs5("select", { ref, ...rest, value, defaultValue: value === void 0 ? defaultValue ?? (placeholder ? "" : void 0) : void 0, className: cx("ad-select__native", quiet && "ad-select__native--quiet"), children: [
-      placeholder != null && /* @__PURE__ */ jsx7("option", { value: "", disabled: true, children: placeholder }),
-      options.map((o) => /* @__PURE__ */ jsx7("option", { value: o.value, disabled: o.disabled, children: o.label }, o.value))
+  return /* @__PURE__ */ jsxs7("span", { className: cx("ad-field", "ad-select", rest.disabled && "ad-field--disabled", className), children: [
+    /* @__PURE__ */ jsxs7("select", { ref, ...rest, value, defaultValue: value === void 0 ? defaultValue ?? (placeholder ? "" : void 0) : void 0, className: cx("ad-select__native", quiet && "ad-select__native--quiet"), children: [
+      placeholder != null && /* @__PURE__ */ jsx9("option", { value: "", disabled: true, children: placeholder }),
+      options.map((o) => /* @__PURE__ */ jsx9("option", { value: o.value, disabled: o.disabled, children: o.label }, o.value))
     ] }),
-    /* @__PURE__ */ jsx7(Icon, { name: "caret-down", className: "ad-select__caret" })
+    /* @__PURE__ */ jsx9(Icon, { name: "caret-down", className: "ad-select__caret" })
   ] });
 });
 function FieldRow({ label, children, help, beside, htmlFor, className }) {
-  return /* @__PURE__ */ jsxs5("div", { className: cx("ad-field-row", beside && "ad-field-row--beside", className), children: [
-    /* @__PURE__ */ jsxs5("span", { className: "ad-field-row__label", children: [
-      /* @__PURE__ */ jsx7("label", { htmlFor, children: label }),
-      help && /* @__PURE__ */ jsx7(Help, { text: help })
+  return /* @__PURE__ */ jsxs7("div", { className: cx("ad-field-row", beside && "ad-field-row--beside", className), children: [
+    /* @__PURE__ */ jsxs7("span", { className: "ad-field-row__label", children: [
+      /* @__PURE__ */ jsx9("label", { htmlFor, children: label }),
+      help && /* @__PURE__ */ jsx9(Help, { text: help })
     ] }),
-    /* @__PURE__ */ jsx7("div", { className: "ad-field-row__control", children })
+    /* @__PURE__ */ jsx9("div", { className: "ad-field-row__control", children })
   ] });
 }
 function FormSection({ number, title, children, error, className }) {
   const errorId = useId3();
   const num = String(number).padStart(2, "0");
-  return /* @__PURE__ */ jsxs5("section", { role: "group", "aria-label": `${num} ${title}`, "aria-describedby": error != null ? errorId : void 0, className: cx("ad-form-section", className), children: [
-    /* @__PURE__ */ jsx7(GroupHeading, { number, children: title }),
-    /* @__PURE__ */ jsx7("div", { className: "ad-form-section__body", children }),
-    error != null && /* @__PURE__ */ jsx7("p", { id: errorId, className: "ad-field__error ad-form-section__error", children: error })
+  return /* @__PURE__ */ jsxs7("section", { role: "group", "aria-label": `${num} ${title}`, "aria-describedby": error != null ? errorId : void 0, className: cx("ad-form-section", className), children: [
+    /* @__PURE__ */ jsx9(GroupHeading, { number, children: title }),
+    /* @__PURE__ */ jsx9("div", { className: "ad-form-section__body", children }),
+    error != null && /* @__PURE__ */ jsx9("p", { id: errorId, className: "ad-field__error ad-form-section__error", children: error })
   ] });
 }
 function FormActions({ main, onCancel, cancelLabel = "Cancel" }) {
-  return /* @__PURE__ */ jsxs5("div", { className: "ad-form-actions", children: [
-    /* @__PURE__ */ jsx7(Button, { onClick: onCancel, children: cancelLabel }),
-    /* @__PURE__ */ jsx7(Button, { variant: "main", type: main.onSelect ? "button" : "submit", onClick: main.onSelect, children: String(main.label) })
+  return /* @__PURE__ */ jsxs7("div", { className: "ad-form-actions", children: [
+    /* @__PURE__ */ jsx9(Button, { onClick: onCancel, children: cancelLabel }),
+    /* @__PURE__ */ jsx9(Button, { variant: "main", type: main.onSelect ? "button" : "submit", onClick: main.onSelect, children: String(main.label) })
   ] });
 }
 var OverlayTextArea = forwardRef2(function OverlayTextArea2({ value, onChange, mirror, placeholder, ...rest }, ref) {
-  return /* @__PURE__ */ jsxs5("span", { className: "ad-overlay-text", children: [
-    /* @__PURE__ */ jsxs5("span", { "aria-hidden": "true", className: "ad-overlay-text__mirror", children: [
-      value ? mirror : /* @__PURE__ */ jsx7("span", { className: "ad-overlay-text__placeholder", children: placeholder }),
+  return /* @__PURE__ */ jsxs7("span", { className: "ad-overlay-text", children: [
+    /* @__PURE__ */ jsxs7("span", { "aria-hidden": "true", className: "ad-overlay-text__mirror", children: [
+      value ? mirror : /* @__PURE__ */ jsx9("span", { className: "ad-overlay-text__placeholder", children: placeholder }),
       "\u200B"
     ] }),
-    /* @__PURE__ */ jsx7("textarea", { ref, rows: 1, ...rest, value, onChange: (e) => onChange(e.target.value, e), className: "ad-overlay-text__field" })
+    /* @__PURE__ */ jsx9("textarea", { ref, rows: 1, ...rest, value, onChange: (e) => onChange(e.target.value, e), className: "ad-overlay-text__field" })
   ] });
 });
 
 // src/components/Checkbox/Checkbox.tsx
 import { forwardRef as forwardRef3, useEffect as useEffect5, useImperativeHandle, useRef as useRef6 } from "react";
-import { jsx as jsx8, jsxs as jsxs6 } from "react/jsx-runtime";
+import { jsx as jsx10, jsxs as jsxs8 } from "react/jsx-runtime";
 var Checkbox = forwardRef3(function Checkbox2({ checked, onChange, label, partly, className, style, disabled, ...rest }, ref) {
   const box = useRef6(null);
   useImperativeHandle(ref, () => box.current);
@@ -1353,8 +1420,8 @@ var Checkbox = forwardRef3(function Checkbox2({ checked, onChange, label, partly
     if (box.current) box.current.indeterminate = mixed;
   }, [mixed]);
   const state = checked ? "on" : mixed ? "mixed" : "off";
-  return /* @__PURE__ */ jsxs6("label", { className: cx("ad-checkbox", disabled && "ad-checkbox--disabled", className), style, children: [
-    /* @__PURE__ */ jsx8(
+  return /* @__PURE__ */ jsxs8("label", { className: cx("ad-checkbox", disabled && "ad-checkbox--disabled", className), style, children: [
+    /* @__PURE__ */ jsx10(
       "input",
       {
         ...rest,
@@ -1366,19 +1433,19 @@ var Checkbox = forwardRef3(function Checkbox2({ checked, onChange, label, partly
         className: "ad-checkbox__input"
       }
     ),
-    /* @__PURE__ */ jsxs6("span", { className: "ad-checkbox__box", "data-state": state, "aria-hidden": "true", children: [
-      state === "on" && /* @__PURE__ */ jsx8(Icon, { name: "check" }),
-      state === "mixed" && /* @__PURE__ */ jsx8(Icon, { name: "minus" })
+    /* @__PURE__ */ jsxs8("span", { className: "ad-checkbox__box", "data-state": state, "aria-hidden": "true", children: [
+      state === "on" && /* @__PURE__ */ jsx10(Icon, { name: "check" }),
+      state === "mixed" && /* @__PURE__ */ jsx10(Icon, { name: "minus" })
     ] }),
-    label != null && /* @__PURE__ */ jsx8("span", { className: "ad-checkbox__label", children: label })
+    label != null && /* @__PURE__ */ jsx10("span", { className: "ad-checkbox__label", children: label })
   ] });
 });
 
 // src/components/Switch/Switch.tsx
 import { forwardRef as forwardRef4 } from "react";
-import { jsx as jsx9, jsxs as jsxs7 } from "react/jsx-runtime";
+import { jsx as jsx11, jsxs as jsxs9 } from "react/jsx-runtime";
 var Switch = forwardRef4(function Switch2({ checked, onChange, label, className, disabled, onClick, ...rest }, ref) {
-  const button = /* @__PURE__ */ jsx9(
+  const button = /* @__PURE__ */ jsx11(
     "button",
     {
       ref,
@@ -1395,15 +1462,15 @@ var Switch = forwardRef4(function Switch2({ checked, onChange, label, className,
     }
   );
   if (label == null) return button;
-  return /* @__PURE__ */ jsxs7("label", { className: cx("ad-switch-label", disabled && "ad-switch-label--disabled", className), children: [
+  return /* @__PURE__ */ jsxs9("label", { className: cx("ad-switch-label", disabled && "ad-switch-label--disabled", className), children: [
     button,
-    /* @__PURE__ */ jsx9("span", { children: label })
+    /* @__PURE__ */ jsx11("span", { children: label })
   ] });
 });
 
 // src/components/Segmented/Segmented.tsx
 import { useRef as useRef7 } from "react";
-import { jsx as jsx10 } from "react/jsx-runtime";
+import { jsx as jsx12 } from "react/jsx-runtime";
 function Segmented({ options, value, onChange, ariaLabel, disabled, className }) {
   const group = useRef7(null);
   const live = options.filter((o) => !o.disabled);
@@ -1423,9 +1490,9 @@ function Segmented({ options, value, onChange, ariaLabel, disabled, className })
     else if (e.key === "Home") go(0);
     else if (e.key === "End") go(live.length - 1);
   };
-  return /* @__PURE__ */ jsx10("div", { ref: group, role: "radiogroup", "aria-label": ariaLabel, "aria-disabled": disabled || void 0, onKeyDown: onKeyDown2, className: cx("ad-segmented", disabled && "ad-segmented--disabled", className), children: options.map((o) => {
+  return /* @__PURE__ */ jsx12("div", { ref: group, role: "radiogroup", "aria-label": ariaLabel, "aria-disabled": disabled || void 0, onKeyDown: onKeyDown2, className: cx("ad-segmented", disabled && "ad-segmented--disabled", className), children: options.map((o) => {
     const on = o.value === value;
-    return /* @__PURE__ */ jsx10(
+    return /* @__PURE__ */ jsx12(
       "button",
       {
         type: "button",
@@ -1445,8 +1512,8 @@ function Segmented({ options, value, onChange, ariaLabel, disabled, className })
 }
 
 // src/components/TextScramble/TextScramble.tsx
-import { useCallback as useCallback2, useEffect as useEffect6, useLayoutEffect as useLayoutEffect2, useRef as useRef8, useState as useState5 } from "react";
-import { jsx as jsx11, jsxs as jsxs8 } from "react/jsx-runtime";
+import { useCallback as useCallback2, useEffect as useEffect6, useLayoutEffect as useLayoutEffect2, useRef as useRef8, useState as useState6 } from "react";
+import { jsx as jsx13, jsxs as jsxs10 } from "react/jsx-runtime";
 var useIsoLayoutEffect2 = typeof window === "undefined" ? useEffect6 : useLayoutEffect2;
 var scrambled = (text, chars) => text.split("").map((ch) => ch === " " ? " " : chars[Math.floor(Math.random() * chars.length)]).join("");
 function TextScramble({
@@ -1467,9 +1534,9 @@ function TextScramble({
   const frameRef = useRef8();
   const timeoutRef = useRef8();
   const startedRef = useRef8(false);
-  const [inView, setInView] = useState5(false);
-  const [display, setDisplay] = useState5(text);
-  const [minWidth, setMinWidth] = useState5();
+  const [inView, setInView] = useState6(false);
+  const [display, setDisplay] = useState6(text);
+  const [minWidth, setMinWidth] = useState6();
   const randomChar = useCallback2(() => chars[Math.floor(Math.random() * chars.length)], [chars]);
   useIsoLayoutEffect2(() => {
     const still = window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
@@ -1572,57 +1639,19 @@ function TextScramble({
     }, delay + tokenMs("--tick-scramble", 30) * 40);
     return () => clearTimeout(t);
   }, [text, delay]);
-  return /* @__PURE__ */ jsxs8(Tag2, { ref: elRef, className, style, children: [
-    /* @__PURE__ */ jsx11("span", { className: "ad-sr", children: text }),
-    /* @__PURE__ */ jsx11("span", { ref: innerRef, "aria-hidden": "true", style: minWidth != null ? { display: "inline-block", minWidth } : void 0, children: display })
+  return /* @__PURE__ */ jsxs10(Tag2, { ref: elRef, className, style, children: [
+    /* @__PURE__ */ jsx13("span", { className: "ad-sr", children: text }),
+    /* @__PURE__ */ jsx13("span", { ref: innerRef, "aria-hidden": "true", style: minWidth != null ? { display: "inline-block", minWidth } : void 0, children: display })
   ] });
-}
-
-// src/components/Status/Status.tsx
-import { jsx as jsx12, jsxs as jsxs9 } from "react/jsx-runtime";
-var pickColours = ["grey", "blue", "teal", "green", "amber", "orange", "red", "purple", "white"];
-var PICKABLE = new Set(pickColours);
-function useNamedColour(name) {
-  const isPick = !!name && PICKABLE.has(name);
-  const shown = useHue(isPick ? void 0 : name);
-  return isPick ? `var(--pick-${name})` : shown;
-}
-function Dot({ tone = "neutral", hue, priority, colour: picked, className, ...rest }) {
-  const colour = useNamedColour(picked && PICKABLE.has(picked) ? picked : hue);
-  return /* @__PURE__ */ jsx12("span", { "aria-hidden": "true", ...rest, "data-coloured": colour ? true : void 0, style: colour ? { ["--ad-dot"]: colour } : void 0, className: cx("ad-dot", `ad-dot--${tone}`, priority && `ad-dot--p${priority}`, className) });
-}
-function Status({ label, tone = "neutral", colour, className, ...rest }) {
-  return /* @__PURE__ */ jsxs9("span", { ...rest, className: cx("ad-status", className), children: [
-    /* @__PURE__ */ jsx12(Dot, { tone, colour }),
-    /* @__PURE__ */ jsx12("span", { className: "ad-status__word", children: label })
-  ] });
-}
-function Health({ state, reason, labels: l = {} }) {
-  if (state !== "at-risk" && state !== "off-track") return null;
-  const word = state === "at-risk" ? l.atRisk ?? "At risk" : l.offTrack ?? "Off track";
-  const said = reason ? `${word}: ${String(reason)}` : word;
-  return /* @__PURE__ */ jsx12("span", { role: "img", "aria-label": said, title: said, className: "ad-health", children: /* @__PURE__ */ jsx12(Dot, { tone: state === "at-risk" ? "waiting" : "problem" }) });
-}
-function SideStripe({ colour, side = "left", inline, children }) {
-  const drawn = useNamedColour(colour);
-  return /* @__PURE__ */ jsx12(
-    "span",
-    {
-      "data-coloured": drawn ? true : void 0,
-      style: drawn ? { ["--ad-stripe"]: drawn } : void 0,
-      className: cx("ad-side-stripe", `ad-side-stripe--${side}`, inline && "ad-side-stripe--inline"),
-      children
-    }
-  );
 }
 
 // src/components/Department/Department.tsx
-import { jsx as jsx13, jsxs as jsxs10 } from "react/jsx-runtime";
+import { jsx as jsx14, jsxs as jsxs11 } from "react/jsx-runtime";
 var KNOWN2 = /* @__PURE__ */ new Set(["lighting", "video", "eng", "sfx", "content", "scenic", "direction", "admin", "pm", "lasers"]);
 function DeptGlyph({ hue }) {
   const colour = useHue(hue);
   if (!hue?.startsWith("dept-") || !colour) return null;
-  return /* @__PURE__ */ jsx13("span", { className: "ad-dept ad-dept--coloured", "aria-hidden": "true", style: { ["--ad-dept"]: colour }, children: /* @__PURE__ */ jsx13(Icon, { job: hue, size: "sm" }) });
+  return /* @__PURE__ */ jsx14("span", { className: "ad-dept ad-dept--coloured", "aria-hidden": "true", style: { ["--ad-dept"]: colour }, children: /* @__PURE__ */ jsx14(Icon, { job: hue, size: "sm" }) });
 }
 var FOLDED = { pyro: "sfx" };
 function Department({ dept: given, name, glyphOnly, onPress, pressLabel }) {
@@ -1631,67 +1660,40 @@ function Department({ dept: given, name, glyphOnly, onPress, pressLabel }) {
   const colour = useHue(`dept-${known ? dept : "lighting"}`);
   const tint = known ? colour : null;
   const Tag2 = onPress ? "button" : "span";
-  return /* @__PURE__ */ jsxs10(Tag2, { type: onPress ? "button" : void 0, "aria-label": onPress ? pressLabel ?? String(name) : void 0, onClick: onPress ? (e) => {
+  return /* @__PURE__ */ jsxs11(Tag2, { type: onPress ? "button" : void 0, "aria-label": onPress ? pressLabel ?? String(name) : void 0, onClick: onPress ? (e) => {
     e.stopPropagation();
     onPress();
   } : void 0, className: cx("ad-dept", tint && "ad-dept--coloured", onPress && "ad-dept--press"), style: tint ? { ["--ad-dept"]: tint } : void 0, children: [
-    /* @__PURE__ */ jsx13(Icon, { job: known ? `dept-${dept}` : "tag", size: "sm" }),
-    glyphOnly ? /* @__PURE__ */ jsx13("span", { className: "ad-sr", children: String(name) }) : /* @__PURE__ */ jsx13("span", { className: "ad-dept__name", children: String(name) })
+    /* @__PURE__ */ jsx14(Icon, { job: known ? `dept-${dept}` : "tag", size: "sm" }),
+    glyphOnly ? /* @__PURE__ */ jsx14("span", { className: "ad-sr", children: String(name) }) : /* @__PURE__ */ jsx14("span", { className: "ad-dept__name", children: String(name) })
   ] });
 }
 
 // src/components/Tag/Tag.tsx
-import { jsx as jsx14, jsxs as jsxs11 } from "react/jsx-runtime";
+import { jsx as jsx15, jsxs as jsxs12 } from "react/jsx-runtime";
 function Tag({ children, current, className, ...rest }) {
-  return /* @__PURE__ */ jsx14("span", { ...rest, className: cx("ad-tag", current && "ad-tag--current", className), children });
+  return /* @__PURE__ */ jsx15("span", { ...rest, className: cx("ad-tag", current && "ad-tag--current", className), children });
 }
-function FilterTag({ axis, value, icon, onRemove, removeLabel = "Remove filter", size = "bar", className }) {
-  return /* @__PURE__ */ jsxs11("span", { className: cx("ad-filter-tag", size === "row" && "ad-filter-tag--row", className), children: [
-    icon != null && /* @__PURE__ */ jsx14("span", { className: "ad-filter-tag__icon", "aria-hidden": "true", children: slotIcon(icon, { size: "sm" }) }),
-    axis != null && /* @__PURE__ */ jsx14("span", { className: "ad-filter-tag__axis", children: axis }),
-    /* @__PURE__ */ jsx14("span", { className: "ad-filter-tag__value", children: value }),
-    /* @__PURE__ */ jsx14("button", { type: "button", className: "ad-filter-tag__remove", "aria-label": removeLabel, title: removeLabel, onClick: onRemove, children: /* @__PURE__ */ jsx14(Icon, { name: "x" }) })
+function FilterTag({ axis, value, icon, face, onRemove, removeLabel = "Remove filter", size = "bar", className }) {
+  return /* @__PURE__ */ jsxs12("span", { className: cx("ad-filter-tag", size === "row" && "ad-filter-tag--row", className), children: [
+    (face || icon != null) && /* @__PURE__ */ jsx15("span", { className: "ad-filter-tag__icon", "aria-hidden": "true", children: face ? /* @__PURE__ */ jsx15(Avatar, { name: face.name, src: face.src, size: "sm", decorative: true }) : slotIcon(icon, { size: "sm" }) }),
+    axis != null && /* @__PURE__ */ jsx15("span", { className: "ad-filter-tag__axis", children: axis }),
+    /* @__PURE__ */ jsx15("span", { className: "ad-filter-tag__value", children: value }),
+    /* @__PURE__ */ jsx15("button", { type: "button", className: "ad-filter-tag__remove", "aria-label": removeLabel, title: removeLabel, onClick: onRemove, children: /* @__PURE__ */ jsx15(Icon, { name: "x" }) })
   ] });
 }
 function ActiveFilters({ filters, onRemove, onClear, clearLabel = "Clear", label = "Active filters" }) {
   if (!filters.length) return null;
-  return /* @__PURE__ */ jsxs11("div", { className: "ad-active-filters", role: "group", "aria-label": label, children: [
-    filters.map((f) => /* @__PURE__ */ jsx14(FilterTag, { icon: f.icon, axis: f.axis, value: f.value, onRemove: () => onRemove(f.id), removeLabel: `Remove filter ${f.axis}: ${f.value}` }, f.id)),
-    onClear && /* @__PURE__ */ jsx14(ButtonSizeScope, { size: "bar", children: /* @__PURE__ */ jsx14(Button, { onClick: onClear, children: clearLabel }) })
+  return /* @__PURE__ */ jsxs12("div", { className: "ad-active-filters", role: "group", "aria-label": label, children: [
+    filters.map((f) => /* @__PURE__ */ jsx15(FilterTag, { icon: f.icon, axis: f.axis, value: f.value, onRemove: () => onRemove(f.id), removeLabel: `Remove filter ${f.axis}: ${f.value}` }, f.id)),
+    onClear && /* @__PURE__ */ jsx15(ButtonSizeScope, { size: "bar", children: /* @__PURE__ */ jsx15(Button, { onClick: onClear, children: clearLabel }) })
   ] });
 }
 function TokenPill({ children }) {
-  return /* @__PURE__ */ jsx14("span", { className: "ad-token", children: String(children) });
+  return /* @__PURE__ */ jsx15("span", { className: "ad-token", children: String(children) });
 }
 function UnreadDot({ label = "unread", className }) {
-  return /* @__PURE__ */ jsx14("span", { role: "img", "aria-label": label, className: cx("ad-unread", className) });
-}
-
-// src/components/Avatar/Avatar.tsx
-import { useState as useState6 } from "react";
-import { jsx as jsx15, jsxs as jsxs12 } from "react/jsx-runtime";
-function Avatar({ name, initials: initials2, src, size = "sm", decorative, presence, className, style }) {
-  const [failed, setFailed] = useState6();
-  const broken = !!src && failed === src;
-  return /* @__PURE__ */ jsxs12("span", { role: decorative ? void 0 : "img", "aria-label": decorative ? void 0 : presence ? `${name}, ${presence.label}` : name, "aria-hidden": decorative || void 0, title: presence ? `${name}, ${presence.label}` : name, className: cx("ad-avatar", `ad-avatar--${size}`, className), style, children: [
-    src && !broken ? /* @__PURE__ */ jsx15("img", { src, alt: "", onError: () => setFailed(src) }) : /* @__PURE__ */ jsx15("span", { "aria-hidden": "true", children: initials2 ?? initials(name) }),
-    presence && /* @__PURE__ */ jsx15(Dot, { colour: presence.colour, className: "ad-avatar__presence" })
-  ] });
-}
-function AvatarStack({ people, max = 3, size = "sm", plane = "base", className }) {
-  if (!people.length) return null;
-  const shown = people.slice(0, max);
-  const rest = people.length - shown.length;
-  return /* @__PURE__ */ jsxs12("span", { className: cx("ad-avatar-stack", `ad-plane--${plane}`, className), role: "group", "aria-label": people.map((p) => p.name).join(", "), children: [
-    shown.map((p, i) => /* @__PURE__ */ jsx15(Avatar, { ...p, initials: (p.initials ?? initials(p.name)).slice(0, 1), size, decorative: true, style: { zIndex: shown.length - i } }, p.id ?? `${p.name}-${i}`)),
-    rest > 0 && /* @__PURE__ */ jsx15("span", { className: cx("ad-avatar", `ad-avatar--${size}`, "ad-avatar-stack__more"), "aria-hidden": "true", children: "\u2026" })
-  ] });
-}
-function Person({ name, initials: initials2, src, className }) {
-  return /* @__PURE__ */ jsxs12("span", { className: cx("ad-person", className), children: [
-    /* @__PURE__ */ jsx15(Avatar, { name, initials: initials2, src, decorative: true }),
-    /* @__PURE__ */ jsx15("span", { className: "ad-person__name", children: name })
-  ] });
+  return /* @__PURE__ */ jsx15("span", { role: "img", "aria-label": label, className: cx("ad-unread", className) });
 }
 
 // src/components/List/List.tsx
@@ -2314,7 +2316,7 @@ function MenuRow({ item, i, lit, keepCursor, focusable, onEnter, onChoose }) {
         },
         className: cx("ad-menu__item", item.danger && "ad-menu__item--danger", item.sub && "ad-menu__item--two"),
         children: [
-          item.icon && /* @__PURE__ */ jsx22("span", { className: "ad-menu__icon", "aria-hidden": "true", children: slotIcon(item.icon) }),
+          (item.icon || item.face || item.pill || item.dot) && /* @__PURE__ */ jsx22("span", { className: "ad-menu__icon", "aria-hidden": "true", children: item.face ? /* @__PURE__ */ jsx22(Avatar, { name: item.face.name, src: item.face.src, size: "sm", decorative: true }) : item.pill ? /* @__PURE__ */ jsx22(ProjectPill, { code: item.pill.code, color: item.pill.color }) : item.dot ? /* @__PURE__ */ jsx22(Dot, { tone: item.dot }) : slotIcon(item.icon) }),
           item.sub ? /* @__PURE__ */ jsxs19("span", { className: "ad-menu__words", children: [
             /* @__PURE__ */ jsx22("span", { className: "ad-menu__label", children: item.label }),
             /* @__PURE__ */ jsx22("span", { className: "ad-menu__sub", children: item.sub })
@@ -3412,13 +3414,14 @@ function Toolbar({ children, end, ariaLabel, className }) {
     end && /* @__PURE__ */ jsx34("div", { className: "ad-toolbar__end", children: end })
   ] }) });
 }
-var ViewButton = forwardRef8(function ViewButton2({ label = "View", open, opens, onClick }, ref) {
+var ViewButton = forwardRef8(function ViewButton2({ label = "View", open, opens, narrowed, onClick }, ref) {
   return /* @__PURE__ */ jsxs31(
     Button,
     {
       ref,
-      className: "ad-button--view",
+      className: narrowed ? "ad-button--view ad-button--view-narrowed" : "ad-button--view",
       icon: "binoculars",
+      "data-narrowed": narrowed ? true : void 0,
       active: open,
       "aria-expanded": onClick ? !!open : void 0,
       "aria-haspopup": onClick ? opens ?? "dialog" : void 0,
@@ -3751,6 +3754,7 @@ function SelectionBar({ count, countLabel = (n) => `${n} selected`, actions, lea
             Button,
             {
               icon: a.icon,
+              dot: a.dot,
               danger: a.danger,
               active: !!a.picker && open === a.id,
               "aria-haspopup": a.picker ? "dialog" : void 0,
@@ -4639,7 +4643,7 @@ function Footer({ code: code2, number, venue, pageNumber, page, undo }) {
     /* @__PURE__ */ jsx46("span", { className: "ad-footer__cell ad-footer__venue", children: venue }),
     /* @__PURE__ */ jsx46("span", { className: "ad-footer__cell ad-footer__run", role: "status", "aria-live": "polite", children: undo && /* @__PURE__ */ jsxs41(Fragment17, { children: [
       /* @__PURE__ */ jsx46("span", { className: "ad-footer__undo-words", children: undo.message }),
-      /* @__PURE__ */ jsx46(ButtonSizeScope, { size: "row", children: /* @__PURE__ */ jsx46(Button, { onClick: undo.onUndo, children: undo.label ?? "Undo" }) })
+      undo.onUndo && /* @__PURE__ */ jsx46(ButtonSizeScope, { size: "row", children: /* @__PURE__ */ jsx46(Button, { onClick: undo.onUndo, children: undo.label ?? "Undo" }) })
     ] }) }),
     /* @__PURE__ */ jsxs41("span", { className: "ad-footer__cell ad-footer__page", children: [
       /* @__PURE__ */ jsx46("span", { className: "ad-footer__page-number", children: pageNumber }),
