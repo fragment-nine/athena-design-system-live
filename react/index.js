@@ -3504,7 +3504,7 @@ function ViewSwitch({ options, value, onChange, ariaLabel, className }) {
     onChange(options[n].value);
     requestAnimationFrame(() => box.current?.querySelectorAll('[role="radio"]')[n]?.focus());
   };
-  return /* @__PURE__ */ jsx34("div", { ref: box, role: "radiogroup", "aria-label": ariaLabel, onKeyDown: onKeyDown2, className: cx("ad-view-switch", className), children: options.map((o) => /* @__PURE__ */ jsx34("button", { type: "button", role: "radio", "aria-checked": o.value === value, "aria-label": o.label, title: o.label, tabIndex: o.value === value ? 0 : -1, onClick: () => onChange(o.value), className: "ad-view-switch__option", children: o.icon }, o.value)) });
+  return /* @__PURE__ */ jsx34("div", { ref: box, role: "radiogroup", "aria-label": ariaLabel, onKeyDown: onKeyDown2, className: cx("ad-view-switch", className), children: options.map((o) => /* @__PURE__ */ jsx34("button", { type: "button", role: "radio", "aria-checked": o.value === value, "aria-label": o.label, title: o.label, tabIndex: o.value === value ? 0 : -1, onClick: () => onChange(o.value), className: "ad-view-switch__option", children: slotIcon(o.icon) }, o.value)) });
 }
 
 // src/components/Warnings/Warnings.tsx
@@ -4503,7 +4503,7 @@ function CommandSearch({ open, onClose, query, onQuery, results, onPick, label =
         onPick(id);
         onClose();
       },
-      options: results.map((r) => ({ id: r.id, label: r.label, group: r.group, lead: r.icon, hint: r.code ? /* @__PURE__ */ jsx43(Tag, { children: r.code }) : void 0 })),
+      options: results.map((r) => ({ id: r.id, label: r.label, group: r.group, lead: slotIcon(r.icon), hint: r.code ? /* @__PURE__ */ jsx43(Tag, { children: r.code }) : void 0 })),
       className: "ad-search__list"
     }
   ) }) });
