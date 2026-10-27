@@ -4621,19 +4621,22 @@ function PixxBrief({ open, face, greeting, children, onSnooze, onGotIt, snoozeLa
 
 // src/components/Furniture/Furniture.tsx
 import { Fragment as Fragment17, jsx as jsx46, jsxs as jsxs41 } from "react/jsx-runtime";
-function TitleBlock({ code: code2, number, venue, pageNumber, page }) {
-  return /* @__PURE__ */ jsxs41("footer", { className: "ad-title-block", children: [
-    /* @__PURE__ */ jsxs41("span", { className: "ad-title-block__cell ad-title-block__code", children: [
+function Footer({ code: code2, number, venue, pageNumber, page }) {
+  return /* @__PURE__ */ jsxs41("footer", { className: "ad-footer", children: [
+    /* @__PURE__ */ jsxs41("span", { className: "ad-footer__cell ad-footer__code", children: [
       code2,
-      number && /* @__PURE__ */ jsx46("span", { className: "ad-title-block__number", children: number })
+      number && /* @__PURE__ */ jsx46("span", { className: "ad-footer__number", children: number })
     ] }),
-    /* @__PURE__ */ jsx46("span", { className: "ad-title-block__cell ad-title-block__venue", children: venue }),
-    /* @__PURE__ */ jsx46("span", { className: "ad-title-block__cell ad-title-block__run", "aria-hidden": "true" }),
-    /* @__PURE__ */ jsxs41("span", { className: "ad-title-block__cell ad-title-block__page", children: [
-      /* @__PURE__ */ jsx46("span", { className: "ad-title-block__page-number", children: pageNumber }),
+    /* @__PURE__ */ jsx46("span", { className: "ad-footer__cell ad-footer__venue", children: venue }),
+    /* @__PURE__ */ jsx46("span", { className: "ad-footer__cell ad-footer__run", "aria-hidden": "true" }),
+    /* @__PURE__ */ jsxs41("span", { className: "ad-footer__cell ad-footer__page", children: [
+      /* @__PURE__ */ jsx46("span", { className: "ad-footer__page-number", children: pageNumber }),
       page
     ] })
   ] });
+}
+function TitleBlock(props) {
+  return /* @__PURE__ */ jsx46(Footer, { ...props });
 }
 function Contents({ entries, ariaLabel = "Contents" }) {
   return /* @__PURE__ */ jsx46("ol", { className: "ad-contents", "aria-label": ariaLabel, children: entries.map((e, i) => {
@@ -4854,6 +4857,7 @@ export {
   FileButton,
   FilterTag,
   FloatingWindow,
+  Footer,
   FormActions,
   FormSection,
   Frame,
