@@ -1090,7 +1090,6 @@ button:hover > .ad-project-pill:not(.ad-project-pill--current) { color: var(--ac
 .ad-menu__who { display: flex; flex-direction: column; min-width: 0; flex: 1; }
 .ad-menu__name { font-family: var(--font-body); font-weight: 600; font-size: var(--text-base); color: var(--text-primary); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .ad-menu__role { font-family: var(--font-body); font-size: var(--text-xs); color: var(--text-secondary); }
-.ad-menu__note { margin: 0; padding: 0 var(--space-1) var(--space-2); font-family: var(--font-mono); font-size: var(--text-xs); color: var(--text-muted); }
 
 /* src/components/PageHeader/PageHeader.css */
 /* PageHeader and Tabs */

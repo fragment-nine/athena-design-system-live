@@ -4686,10 +4686,6 @@ function MenuPerson({ name, role, src, initials: initials2, onPress, pressLabel,
     !rail && end != null && /* @__PURE__ */ jsx48("span", { className: "ad-menu__trail", children: /* @__PURE__ */ jsx48(ButtonSizeScope, { size: "row", children: end }) })
   ] });
 }
-function MenuNote({ children }) {
-  const rail = useContext9(Folded);
-  return rail ? null : /* @__PURE__ */ jsx48("p", { className: "ad-menu__note", children });
-}
 export {
   AccessRow,
   ActiveFilters,
@@ -4771,7 +4767,6 @@ export {
   MenuFrame,
   MenuItem,
   MenuList,
-  MenuNote,
   MenuPerson,
   MenuSeparator,
   Milestone,
