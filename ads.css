@@ -805,6 +805,9 @@ button.ad-card__name:focus-visible { outline: none; box-shadow: var(--ring-selec
 /* A piece drawn in the copy keeps the words' own width (the understood-word pill in place, as in TokenInput), so the caret stays on its letter. */
 .ad-overlay-text__mirror .ad-token { margin: 0; padding: 0; line-height: inherit; }
 
+.ad-form-actions__destroy { margin-right: auto; }
+.ad-form-actions__extras { display: inline-flex; align-items: center; gap: var(--space-2); }
+
 /* src/components/Furniture/Furniture.css */
 /* Footer, Contents, Caption, DualUnit, Ground, Frame */
 .ad-footer { display: grid; grid-template-columns: max-content minmax(0, 1fr) minmax(0, 2fr) max-content; height: var(--h-footer); border-top: var(--border-w) solid var(--line-strong); font-family: var(--font-display); font-weight: 700; font-size: var(--text-base); letter-spacing: var(--track-caps-sm); text-transform: uppercase; color: var(--text-primary); white-space: nowrap; }
@@ -1352,6 +1355,11 @@ button:hover > .ad-project-pill:not(.ad-project-pill--current) { color: var(--ac
 .ad-popover--sheet { inset: 0; width: 100%; max-height: none; border-radius: 0; }
 .ad-popover__title .ad-inline-edit--title { margin-left: calc(var(--space-2) * -1); }
 .ad-popover__title:has(.ad-inline-edit) { flex: 1; min-width: 0; }
+
+/* A section that folds (2026-10-27): the chevron before its label. */
+.ad-popover__section-fold { display: inline-flex; align-items: center; justify-content: center; width: var(--h-btn-row); height: var(--h-btn-row); margin: 0; padding: 0; border: 0; background: transparent; color: var(--text-muted); cursor: pointer; }
+.ad-popover__section-fold:hover { color: var(--accent); }
+.ad-popover__section-fold:focus-visible { outline: none; box-shadow: var(--ring-select); border-radius: var(--radius-page); }
 
 /* src/components/Row/Row.css */
 /* Row, RowDate, TodoCheck */
@@ -2004,3 +2012,7 @@ button.ad-notification:focus-visible { outline: none; box-shadow: var(--ring-sel
 .ad-rule-value__words { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; }
 .ad-rule-value:hover, .ad-rule-value:hover .ad-rule-value__icon, .ad-rule-value:hover .ad-rule-value__end { color: var(--accent); }
 .ad-rule-value:focus-visible { outline: none; box-shadow: var(--ring-select); }
+
+.ad-rules__note { margin: 0; font-size: var(--text-xs); color: var(--text-muted); }
+.ad-rules__add { display: flex; align-items: center; gap: var(--space-2); }
+.ad-rules__add-end { margin-left: auto; }
