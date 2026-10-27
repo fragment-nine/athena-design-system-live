@@ -11,7 +11,6 @@ import {
   initials,
   isLate,
   monoDate,
-  monthDay,
   nextWeekday,
   parseTask,
   parseTimeOfDay,
@@ -2978,7 +2977,7 @@ function countdownWords(c) {
   const n = daysBetween(c.today, c.to);
   if (!(n >= 0)) return null;
   const days = n === 0 ? "Today" : `${n} ${n === 1 ? "day" : "days"} to`;
-  return `${days} ${c.what} \xB7 ${monthDay(c.to, c.today)} ${c.place}`;
+  return `${days} ${c.what}`;
 }
 function PageHeader({ title, icon, stamp, tabs, back, description, countdown: given, gear, onSearch, onPopOut, onHelp, menu, headerLabels, scramble = true, className }) {
   const anyEnd = gear || onSearch || onPopOut || onHelp || menu;
@@ -3873,24 +3872,21 @@ function Legend({ items }) {
   ] });
 }
 var KEY_MARKS = /* @__PURE__ */ new Set(["confirmed", "pencilled", "deal", "backup"]);
-function ChartKey({ items, caption = "FIG.", ariaLabel = "Key" }) {
-  return /* @__PURE__ */ jsxs35("div", { className: "ad-chart-key", role: "group", "aria-label": ariaLabel, children: [
-    caption && /* @__PURE__ */ jsx39("span", { className: "ad-chart-key__caption", children: caption }),
-    items.map((it, i) => {
-      const swatch = typeof it.mark === "string" && KEY_MARKS.has(it.mark) ? /* @__PURE__ */ jsx39("span", { "aria-hidden": "true", className: `ad-chart-key__swatch ad-chart-key__swatch--${it.mark}` }) : /* @__PURE__ */ jsx39("span", { "aria-hidden": "true", className: "ad-chart-key__mark", children: it.mark });
-      const { className: _c, style: _s, ...hooks } = it.itemProps ?? {};
-      return it.onPress ? /* @__PURE__ */ jsxs35("button", { type: "button", ...hooks, className: "ad-chart-key__item ad-chart-key__item--press", onClick: (e) => {
-        hooks.onClick?.(e);
-        it.onPress();
-      }, children: [
-        swatch,
-        it.label
-      ] }, i) : /* @__PURE__ */ jsxs35("span", { ...hooks, className: "ad-chart-key__item", children: [
-        swatch,
-        it.label
-      ] }, i);
-    })
-  ] });
+function ChartKey({ items, ariaLabel = "Key" }) {
+  return /* @__PURE__ */ jsx39("div", { className: "ad-chart-key", role: "group", "aria-label": ariaLabel, children: items.map((it, i) => {
+    const swatch = typeof it.mark === "string" && KEY_MARKS.has(it.mark) ? /* @__PURE__ */ jsx39("span", { "aria-hidden": "true", className: `ad-chart-key__swatch ad-chart-key__swatch--${it.mark}` }) : /* @__PURE__ */ jsx39("span", { "aria-hidden": "true", className: "ad-chart-key__mark", children: it.mark });
+    const { className: _c, style: _s, ...hooks } = it.itemProps ?? {};
+    return it.onPress ? /* @__PURE__ */ jsxs35("button", { type: "button", ...hooks, className: "ad-chart-key__item ad-chart-key__item--press", onClick: (e) => {
+      hooks.onClick?.(e);
+      it.onPress();
+    }, children: [
+      swatch,
+      it.label
+    ] }, i) : /* @__PURE__ */ jsxs35("span", { ...hooks, className: "ad-chart-key__item", children: [
+      swatch,
+      it.label
+    ] }, i);
+  }) });
 }
 
 // src/components/Timeline/Ruler.tsx
@@ -3935,7 +3931,6 @@ function ZoomCluster({ zoom, onZoom, onPrevious, onToday, onNext, labels }) {
   const i = ORDER.indexOf(zoom);
   const btn = (label, glyph, on, disabled, today) => /* @__PURE__ */ jsx40("button", { type: "button", "aria-label": label, title: label, disabled, onClick: on, className: cx("ad-zoom__btn", today && "ad-zoom__btn--today"), children: /* @__PURE__ */ jsx40(Icon, { job: glyph, size: "md" }) }, glyph);
   return /* @__PURE__ */ jsxs36("div", { className: "ad-zoom", role: "group", "aria-label": L[zoom], children: [
-    /* @__PURE__ */ jsx40("span", { className: "ad-zoom__name", "aria-hidden": "true", children: L[zoom].toLowerCase() }),
     btn(`${L.zoomOut} (${L[ORDER[Math.min(i + 1, 3)]]})`, "minus", () => onZoom(ORDER[Math.min(i + 1, 3)]), i === 3),
     btn(L.previous, "chevron-left", onPrevious),
     btn(L.today, "today", onToday, false, true),
