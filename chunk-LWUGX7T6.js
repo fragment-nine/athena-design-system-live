@@ -415,8 +415,9 @@ function isLate(due, today, opts = {}) {
 }
 function dayHeading(day, today, w = ENGLISH) {
   const d = daysBetween(today, day);
-  const name = d === 0 ? w.today : d === 1 ? w.tomorrow : d === -1 ? w.yesterday : w.weekdays[day.getDay()];
-  return { name: name.toUpperCase(), date: monoDate(day, w) };
+  const named = d === 0 ? w.today : d === 1 ? w.tomorrow : d === -1 ? w.yesterday : null;
+  const date = named ? monoDate(day, w) : `${w.monthsShort[day.getMonth()]} ${day.getDate()}`.toLowerCase();
+  return { name: (named ?? w.weekdays[day.getDay()]).toUpperCase(), date };
 }
 function relative(d, today, w = ENGLISH) {
   if (!d) return { label: "", title: "", late: false };
@@ -1881,4 +1882,4 @@ export {
   querySplitter,
   queryTokens
 };
-//# sourceMappingURL=chunk-B45Z4YRZ.js.map
+//# sourceMappingURL=chunk-LWUGX7T6.js.map

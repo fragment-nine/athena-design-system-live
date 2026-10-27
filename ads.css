@@ -1508,6 +1508,9 @@ button.ad-row__name:focus-visible { outline: none; box-shadow: var(--ring-select
 /* src/components/Table/Table.css */
 /* Table and SelectionBar */
 .ad-table { border-collapse: collapse; width: 100%; font-family: var(--font-body); color: var(--text-primary); }
+/* `fixed`: columns keep their widths; a cell that fills clips with an ellipsis rather than widening its column (2026-10-27). */
+.ad-table--fixed { table-layout: fixed; }
+.ad-table--fixed td { overflow: hidden; text-overflow: ellipsis; }
 .ad-table th[scope="col"] {
   position: sticky; top: 0; z-index: 1; height: var(--h-btn); padding: 0 var(--space-2); text-align: left; white-space: nowrap; background: var(--bg-base);
   border-bottom: var(--border-w) solid var(--border);

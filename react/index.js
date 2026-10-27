@@ -18,7 +18,7 @@ import {
   readDate,
   sameDay,
   weekStartOf
-} from "../chunk-B45Z4YRZ.js";
+} from "../chunk-LWUGX7T6.js";
 import {
   describeViolations,
   scanIn
@@ -3653,7 +3653,7 @@ function DropLine() {
 import { useLayoutEffect as useLayoutEffect6, useRef as useRef23, useState as useState22 } from "react";
 import { jsx as jsx38, jsxs as jsxs34 } from "react/jsx-runtime";
 var Arrow = ({ up }) => /* @__PURE__ */ jsx38(Icon, { name: up ? "arrow-up" : "arrow-down", size: "sm", className: "ad-table__arrow" });
-function Table({ columns, rows, rowId, caption, sort, onSort, picked, onPickedChange, onPickAllChange, pickLabel, pickAllLabel = "Pick all", onOpen, rowProps, group, depth, nameColumn, className }) {
+function Table({ columns, rows, rowId, caption, sort, onSort, picked, onPickedChange, onPickAllChange, pickLabel, pickAllLabel = "Pick all", onOpen, rowProps, group, depth, nameColumn, fixed, className }) {
   const span = columns.length + (onPickedChange ? 1 : 0);
   let lastGroup;
   const all = rows.length > 0 && rows.every((r) => picked?.has(rowId(r)));
@@ -3682,7 +3682,7 @@ function Table({ columns, rows, rowId, caption, sort, onSort, picked, onPickedCh
   const wrap = useRef23(null);
   useKeyScroll(wrap);
   const at = (c) => c.frozen === "start" && held[c.id] ? { ["--ad-held"]: `${held[c.id]}px` } : {};
-  return /* @__PURE__ */ jsx38("div", { ref: wrap, className: cx("ad-table-wrap", className), children: /* @__PURE__ */ jsxs34("table", { className: "ad-table", children: [
+  return /* @__PURE__ */ jsx38("div", { ref: wrap, className: cx("ad-table-wrap", className), children: /* @__PURE__ */ jsxs34("table", { className: cx("ad-table", fixed && "ad-table--fixed"), children: [
     /* @__PURE__ */ jsx38("caption", { className: "ad-sr", children: caption }),
     /* @__PURE__ */ jsx38("thead", { children: /* @__PURE__ */ jsxs34("tr", { ref: headRow, children: [
       onPickedChange && /* @__PURE__ */ jsx38("th", { scope: "col", className: "ad-table__pick", children: /* @__PURE__ */ jsx38(Checkbox, { "aria-label": pickAllLabel, checked: all, onChange: (on) => onPickAllChange?.(on) }) }),
