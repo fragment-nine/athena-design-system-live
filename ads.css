@@ -1033,6 +1033,8 @@ button.ad-contents__button:focus-visible { outline: none; box-shadow: var(--ring
 /* Rail, SideMenu, ProjectPill */
 .ad-rail { display: flex; flex-direction: column; align-items: center; gap: var(--space-4); box-sizing: border-box; width: var(--w-rail); height: 100%; padding: var(--space-4) 0 var(--space-3); background: var(--bg-side); }
 .ad-rail__group { display: flex; flex-direction: column; align-items: center; gap: var(--space-1); }
+/* The project pills sit on the icon column's left edge, not centred, rail and open menu alike (ruled 2026-10-27, Jeremy: "make them left justified, not centered"). */
+.ad-rail__group--projects { align-self: stretch; align-items: flex-start; padding-left: calc((var(--w-rail) - var(--icon-lg)) / 2); }
 .ad-rail__foot { margin-top: auto; display: flex; flex-direction: column; align-items: center; gap: var(--space-1); }
 .ad-rail__item { display: inline-flex; align-items: center; justify-content: center; width: var(--h-btn); height: var(--h-btn); margin: 0; padding: 0; border: 0; border-radius: var(--radius-page); background: transparent; color: var(--text-primary); cursor: pointer; }
 .ad-rail__item svg { width: var(--icon-lg); height: var(--icon-lg); }
@@ -1061,7 +1063,7 @@ button:hover > .ad-project-pill:not(.ad-project-pill--current) { color: var(--ac
 .ad-side__list { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: var(--space-1); }
 .ad-side__list + .ad-side__list { padding-top: 0; }
 /* The pinned projects under the Projects row: indented past its icon, no hairline of their own (ruled 2026-10-27). */
-.ad-side__list--nested { padding: 0 0 0 calc(var(--space-2) + var(--icon-lg)); }
+.ad-side__list--nested { padding: 0; }
 .ad-side__list--nested .ad-side__item { height: var(--h-btn-bar); }
 .ad-side__list + .ad-side__list::before { content: ""; display: block; height: var(--border-w); margin: calc((var(--space-4) - var(--space-1) - var(--border-w)) / 2) var(--space-1); background: var(--border); }
 .ad-side__item {
