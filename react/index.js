@@ -2128,7 +2128,7 @@ function Popover({ open, onClose, anchor, placement = "drop", width = "card", ar
   const z = useLayer(open, onClose, [box, anchor]);
   useFocusReturn(open && !keepFocus, box, "box");
   if (!open) return null;
-  return /* @__PURE__ */ jsx20(Portal, { children: /* @__PURE__ */ jsx20(PopoverCard, { cardRef: box, id, onClose, width, ariaLabel, noClose, closeLabel, foot, className, style: { ...style, zIndex: z }, children }) });
+  return /* @__PURE__ */ jsx20(Portal, { children: /* @__PURE__ */ jsx20(PopoverCard, { cardRef: box, id, onClose, width, ariaLabel, noClose, closeLabel, foot, className: cx("ad-popover--placed", className), style: { ...style, zIndex: z }, children }) });
 }
 function PopoverCard({ onClose, width = "card", ariaLabel, noClose, closeLabel, id, header, children, rail, foot, sheet, style, cardRef, cardProps, className }) {
   const titleId = useId5();
