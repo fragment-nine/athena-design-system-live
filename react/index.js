@@ -1315,6 +1315,15 @@ function FormActions({ main, onCancel, cancelLabel = "Cancel" }) {
     /* @__PURE__ */ jsx7(Button, { variant: "main", type: main.onSelect ? "button" : "submit", onClick: main.onSelect, children: String(main.label) })
   ] });
 }
+var OverlayTextArea = forwardRef2(function OverlayTextArea2({ value, onChange, mirror, placeholder, ...rest }, ref) {
+  return /* @__PURE__ */ jsxs5("span", { className: "ad-overlay-text", children: [
+    /* @__PURE__ */ jsxs5("span", { "aria-hidden": "true", className: "ad-overlay-text__mirror", children: [
+      value ? mirror : /* @__PURE__ */ jsx7("span", { className: "ad-overlay-text__placeholder", children: placeholder }),
+      "\u200B"
+    ] }),
+    /* @__PURE__ */ jsx7("textarea", { ref, rows: 1, ...rest, value, onChange: (e) => onChange(e.target.value, e), className: "ad-overlay-text__field" })
+  ] });
+});
 
 // src/components/Checkbox/Checkbox.tsx
 import { forwardRef as forwardRef3, useEffect as useEffect5, useImperativeHandle, useRef as useRef6 } from "react";
@@ -4487,6 +4496,9 @@ function Frame({ rail, children, className }) {
     /* @__PURE__ */ jsx46("div", { className: "ad-frame__page", children })
   ] });
 }
+function CloudGlow() {
+  return /* @__PURE__ */ jsx46("div", { className: "ad-cloud-glow", "aria-hidden": "true", children: /* @__PURE__ */ jsx46("div", { className: "ad-cloud-glow__drift" }) });
+}
 function Ground({ children, className, style }) {
   return /* @__PURE__ */ jsx46("div", { className: cx("ad-ground", className), style, children });
 }
@@ -4644,6 +4656,7 @@ export {
   Checkbox,
   Clash,
   CloseButton,
+  CloudGlow,
   CommandSearch,
   ConfirmDialog,
   Contents,
@@ -4704,6 +4717,7 @@ export {
   OffscreenStart,
   OverMark,
   OverTime,
+  OverlayTextArea,
   PageHeader,
   PastHatch,
   PeriodCluster,
