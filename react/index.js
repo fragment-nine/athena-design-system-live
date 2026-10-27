@@ -4673,7 +4673,8 @@ function Footer({ code: code2, number, venue, pageNumber, page, undo }) {
       number && /* @__PURE__ */ jsx46("span", { className: "ad-footer__number", children: number })
     ] }),
     /* @__PURE__ */ jsx46("span", { className: "ad-footer__cell ad-footer__venue", children: venue }),
-    /* @__PURE__ */ jsx46("span", { className: "ad-footer__cell ad-footer__run", role: "status", "aria-live": "polite", children: undo && /* @__PURE__ */ jsxs41(Fragment18, { children: [
+    /* @__PURE__ */ jsx46("span", { className: "ad-footer__cell ad-footer__run", "aria-hidden": "true" }),
+    /* @__PURE__ */ jsx46("span", { className: "ad-footer__undo", role: "status", "aria-live": "polite", children: undo && /* @__PURE__ */ jsxs41(Fragment18, { children: [
       /* @__PURE__ */ jsx46("span", { className: "ad-footer__undo-words", children: undo.message }),
       undo.onUndo && /* @__PURE__ */ jsx46(ButtonSizeScope, { size: "row", children: /* @__PURE__ */ jsx46(Button, { onClick: undo.onUndo, children: undo.label ?? "Undo" }) })
     ] }) }),
@@ -4716,10 +4717,11 @@ function DualUnit({ primary, secondary }) {
     ] })
   ] });
 }
-function Frame({ rail, children, className }) {
-  return /* @__PURE__ */ jsxs41("div", { className: cx("ad-frame", className), children: [
+function Frame({ rail, corner, children, className }) {
+  return /* @__PURE__ */ jsxs41("div", { className: cx("ad-frame", corner != null && "ad-frame--corner", className), children: [
     rail,
-    /* @__PURE__ */ jsx46("div", { className: "ad-frame__page", children })
+    /* @__PURE__ */ jsx46("div", { className: "ad-frame__page", children }),
+    corner != null && /* @__PURE__ */ jsx46("div", { className: "ad-frame__corner", children: corner })
   ] });
 }
 function CloudGlow() {
