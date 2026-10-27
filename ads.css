@@ -1851,13 +1851,6 @@ button.ad-milestone:focus-visible { outline: none; box-shadow: var(--ring-select
 }
 @media (prefers-reduced-motion: reduce) { .ad-tooltip { animation: none; } }
 
-/* src/components/UndoNote/UndoNote.css */
-/* UndoNote */
-.ad-undo-region { position: fixed; left: var(--space-6); bottom: var(--space-6); z-index: var(--z-undo); }
-.ad-undo { position: relative; display: inline-flex; align-items: center; gap: var(--space-4); height: var(--h-row); padding: 0 var(--space-2) 0 var(--space-4); }
-.ad-undo__message { font-size: var(--text-base); white-space: nowrap; }
-.ad-undo .ad-button--quiet { background: var(--bg-hover); }
-
 /* src/components/ViewSwitch/ViewSwitch.css */
 /* ViewSwitch */
 .ad-view-switch { display: inline-flex; gap: var(--space-hair); }
