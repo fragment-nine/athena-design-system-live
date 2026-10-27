@@ -252,6 +252,7 @@ function restack() {
 }
 function onPointerDown(e) {
   const t = e.target;
+  if (t.closest?.("[data-ad-layer]") || t.parentElement?.closest("[data-ad-layer]")) return;
   let keep = -1;
   for (let i = layers.length - 1; i >= 0; i--) if (layers[i].boxes().some((b) => b?.contains(t))) {
     keep = i;
@@ -358,6 +359,7 @@ function usePageInert(open, boxes) {
     for (const el of Array.from(document.body.children)) {
       if (mine.some((m) => el === m || el.contains(m))) continue;
       if (el.hasAttribute("inert") || el.getAttribute("aria-hidden") === "true") continue;
+      if (el.hasAttribute("data-ad-layer")) continue;
       el.setAttribute("inert", "");
       el.setAttribute("aria-hidden", "true");
       hidden.push(el);
@@ -2144,7 +2146,8 @@ function PopoverSection({ label, children, end }) {
 
 // src/components/Dialog/Dialog.tsx
 import { useId as useId6, useRef as useRef10 } from "react";
-import { jsx as jsx21, jsxs as jsxs18 } from "react/jsx-runtime";
+import { Fragment as Fragment8, jsx as jsx21, jsxs as jsxs18 } from "react/jsx-runtime";
+var hooksOf = (a) => Object.fromEntries(Object.entries(a).filter(([k]) => k.startsWith("data-")));
 function Dialog({ open, onClose, title, children, body, actions, role = "dialog", width = "dialog", closeLabel, blur, className }) {
   const box = useRef10(null);
   const titleId = useId6();
@@ -2172,13 +2175,23 @@ function Dialog({ open, onClose, title, children, body, actions, role = "dialog"
           /* @__PURE__ */ jsx21("h2", { id: titleId, className: "ad-dialog__title", children: String(title) }),
           children && /* @__PURE__ */ jsx21("div", { id: bodyId, className: "ad-dialog__body", children: String(children) }),
           body != null && /* @__PURE__ */ jsx21("div", { className: "ad-dialog__rich", children: body }),
-          Array.isArray(actions) && actions.length > 0 && /* @__PURE__ */ jsx21("div", { className: "ad-dialog__actions", children: [...actions.filter((a) => !a.main), ...actions.filter((a) => a.main).slice(0, 1)].map((a) => /* @__PURE__ */ jsx21(Button, { block: true, variant: a.main ? "main" : "quiet", onClick: a.onSelect, children: a.label }, a.label)) })
+          Array.isArray(actions) && actions.length > 0 && (() => {
+            const shown = [...actions.filter((a) => !a.main), ...actions.filter((a) => a.main).slice(0, 1)];
+            const reasons = shown.filter((a) => a.disabled && a.disabledReason).map((a) => a.disabledReason);
+            return /* @__PURE__ */ jsxs18(Fragment8, { children: [
+              reasons.length > 0 && /* @__PURE__ */ jsx21("p", { className: "ad-dialog__reason", children: reasons.join(" ") }),
+              /* @__PURE__ */ jsx21("div", { className: "ad-dialog__actions", children: shown.map((a) => {
+                const b = /* @__PURE__ */ jsx21(Button, { ...hooksOf(a), block: true, variant: a.main ? "main" : "quiet", danger: a.tone === "danger", disabled: a.disabled, onClick: a.onSelect, children: a.label }, a.label);
+                return a.tip ? /* @__PURE__ */ jsx21(Tooltip, { text: a.tip, children: b }, a.label) : b;
+              }) })
+            ] });
+          })()
         ]
       }
     )
   ] });
 }
-function ConfirmDialog({ open, act, thing, detail, onConfirm, onKeep, labels: l = {} }) {
+function ConfirmDialog({ open, act, thing, detail, onConfirm, onKeep, labels: l = {}, confirmDisabled, disabledReason, confirmHooks, keepHooks }) {
   return /* @__PURE__ */ jsx21(
     Dialog,
     {
@@ -2186,27 +2199,73 @@ function ConfirmDialog({ open, act, thing, detail, onConfirm, onKeep, labels: l 
       onClose: onKeep,
       role: "alertdialog",
       title: `${act} ${thing}?`,
-      actions: [{ label: `${l.keep ?? "Keep"} ${thing}`, onSelect: onKeep }, { label: `${act} ${thing}`, onSelect: onConfirm, main: true }],
+      actions: [{ ...keepHooks, label: `${l.keep ?? "Keep"} ${thing}`, onSelect: onKeep }, { ...confirmHooks, label: `${act} ${thing}`, onSelect: onConfirm, main: true, disabled: confirmDisabled, disabledReason }],
       children: `${detail} ${l.cannotUndo ?? "This can\u2019t be undone."}`
     }
   );
 }
 
 // src/components/Menu/Menu.tsx
-import { useEffect as useEffect8, useRef as useRef11, useState as useState10 } from "react";
-import { jsx as jsx22, jsxs as jsxs19 } from "react/jsx-runtime";
+import { useEffect as useEffect8, useId as useId7, useRef as useRef11, useState as useState10 } from "react";
+import { Fragment as Fragment9, jsx as jsx22, jsxs as jsxs19 } from "react/jsx-runtime";
+var isItem = (i) => i.kind !== "separator" && i.kind !== "heading";
 function ordered(items) {
-  const danger = items.filter((i) => i.kind !== "separator" && i.danger);
-  const rest = items.filter((i) => i.kind === "separator" || !i.danger);
+  const danger = items.filter((i) => isItem(i) && i.danger);
+  const rest = items.filter((i) => !isItem(i) || !i.danger);
   const all = danger.length ? [...rest, { kind: "separator", id: "__danger" }, ...danger] : rest;
-  return all.filter((i, n) => i.kind !== "separator" || n > 0 && n < all.length - 1 && all[n - 1].kind !== "separator");
+  return all.filter((i, n) => i.kind !== "separator" || n > 0 && n < all.length - 1 && all[n - 1].kind !== "separator" && all[n - 1].kind !== "heading");
 }
-function Menu({ open, onClose, anchor, items: given, ariaLabel, placement = "drop", keepCursor, active, onActiveChange, className }) {
+function MenuRow({ item, i, lit, keepCursor, focusable, onEnter, onChoose }) {
+  const { triggerProps, node } = useTooltip(item.tip);
+  return /* @__PURE__ */ jsxs19(Fragment9, { children: [
+    /* @__PURE__ */ jsxs19(
+      "button",
+      {
+        type: "button",
+        role: item.checked != null ? "menuitemcheckbox" : "menuitem",
+        "aria-checked": item.checked,
+        "aria-description": item.sub,
+        "aria-disabled": item.disabled || void 0,
+        "aria-describedby": triggerProps["aria-describedby"],
+        tabIndex: !keepCursor && focusable ? 0 : -1,
+        "data-index": i,
+        "data-active": lit || void 0,
+        onPointerEnter: (e) => {
+          triggerProps.onPointerEnter(e);
+          onEnter();
+        },
+        onPointerLeave: triggerProps.onPointerLeave,
+        onFocus: triggerProps.onFocus,
+        onBlur: triggerProps.onBlur,
+        onMouseEnter: onEnter,
+        onClick: (e) => {
+          if (item.disabled && item.tip) triggerProps.onClick(e);
+          onChoose();
+        },
+        className: cx("ad-menu__item", item.danger && "ad-menu__item--danger", item.sub && "ad-menu__item--two"),
+        children: [
+          item.icon && /* @__PURE__ */ jsx22("span", { className: "ad-menu__icon", "aria-hidden": "true", children: item.icon }),
+          item.sub ? /* @__PURE__ */ jsxs19("span", { className: "ad-menu__words", children: [
+            /* @__PURE__ */ jsx22("span", { className: "ad-menu__label", children: item.label }),
+            /* @__PURE__ */ jsx22("span", { className: "ad-menu__sub", children: item.sub })
+          ] }) : /* @__PURE__ */ jsx22("span", { className: "ad-menu__label", children: item.label }),
+          item.shortcut && /* @__PURE__ */ jsx22("kbd", { className: "ad-menu__shortcut", children: item.shortcut }),
+          item.checked && /* @__PURE__ */ jsx22("span", { className: "ad-menu__check", "aria-hidden": "true", children: /* @__PURE__ */ jsx22(Icon, { job: "check", size: "sm" }) })
+        ]
+      }
+    ),
+    node
+  ] });
+}
+function Menu({ open, onClose, anchor: given_anchor, at: point, items: given, ariaLabel, placement = "drop", keepCursor, active, onActiveChange, className }) {
   const items = ordered(given);
   const box = useRef11(null);
+  const mark = useRef11(null);
+  const anchor = point ? mark : given_anchor;
+  const headId = useId7();
   const style = usePlacement(open, anchor, box, placement);
   const z = useLayer(open, onClose, [box, anchor]);
-  const live = items.filter((i) => i.kind !== "separator" && !i.disabled);
+  const live = items.filter((i) => isItem(i) && !i.disabled);
   const [at, setAt] = useState10(0);
   const doc = useFloatingDocument() ?? document;
   useEffect8(() => {
@@ -2258,52 +2317,65 @@ function Menu({ open, onClose, anchor, items: given, ariaLabel, placement = "dro
     }
   };
   let index = -1;
-  return /* @__PURE__ */ jsx22(Portal, { children: /* @__PURE__ */ jsx22(
-    "div",
-    {
-      ref: box,
-      role: "menu",
-      "aria-label": ariaLabel,
-      style: { ...style, zIndex: z },
-      onKeyDown: keepCursor ? void 0 : onKeyDown2,
-      onMouseDown: keepCursor ? (e) => e.preventDefault() : void 0,
-      className: cx("ad-float", "ad-menu", className),
-      children: items.map((item) => {
-        if (item.kind === "separator") return /* @__PURE__ */ jsx22("div", { role: "separator", className: "ad-menu__separator" }, item.id);
-        const i = item.disabled ? -1 : ++index;
-        return /* @__PURE__ */ jsxs19(
-          "button",
-          {
-            type: "button",
-            role: item.checked != null ? "menuitemcheckbox" : "menuitem",
-            "aria-checked": item.checked,
-            "aria-description": item.sub,
-            "aria-disabled": item.disabled || void 0,
-            tabIndex: !keepCursor && i === at ? 0 : -1,
-            "data-index": i,
-            "data-active": i === lit || void 0,
-            onMouseEnter: () => {
-              if (i < 0) return;
-              if (keepCursor) onActiveChange?.(i);
-              else setAt(i);
-            },
-            onClick: () => i >= 0 && choose(i),
-            className: cx("ad-menu__item", item.danger && "ad-menu__item--danger", item.sub && "ad-menu__item--two"),
-            children: [
-              item.icon && /* @__PURE__ */ jsx22("span", { className: "ad-menu__icon", "aria-hidden": "true", children: item.icon }),
-              item.sub ? /* @__PURE__ */ jsxs19("span", { className: "ad-menu__words", children: [
-                /* @__PURE__ */ jsx22("span", { className: "ad-menu__label", children: item.label }),
-                /* @__PURE__ */ jsx22("span", { className: "ad-menu__sub", children: item.sub })
-              ] }) : /* @__PURE__ */ jsx22("span", { className: "ad-menu__label", children: item.label }),
-              item.shortcut && /* @__PURE__ */ jsx22("kbd", { className: "ad-menu__shortcut", children: item.shortcut }),
-              item.checked && /* @__PURE__ */ jsx22("span", { className: "ad-menu__check", "aria-hidden": "true", children: /* @__PURE__ */ jsx22(Icon, { job: "check", size: "sm" }) })
-            ]
-          },
-          item.id
-        );
-      })
+  const row = (item) => {
+    const i = item.disabled ? -1 : ++index;
+    return /* @__PURE__ */ jsx22(
+      MenuRow,
+      {
+        item,
+        i,
+        lit: i >= 0 && i === lit,
+        keepCursor,
+        focusable: i === at,
+        onEnter: () => {
+          if (i < 0) return;
+          if (keepCursor) onActiveChange?.(i);
+          else setAt(i);
+        },
+        onChoose: () => {
+          if (i >= 0) choose(i);
+        }
+      },
+      item.id
+    );
+  };
+  const body = [];
+  for (let n = 0; n < items.length; n++) {
+    const e = items[n];
+    if (e.kind === "separator") {
+      body.push(/* @__PURE__ */ jsx22("div", { role: "separator", className: "ad-menu__separator" }, e.id));
+      continue;
     }
-  ) });
+    if (e.kind === "heading") {
+      const members = [];
+      while (n + 1 < items.length && isItem(items[n + 1])) members.push(items[++n]);
+      const hid = `${headId}-${e.id}`;
+      body.push(
+        /* @__PURE__ */ jsxs19("div", { role: "group", "aria-labelledby": hid, className: "ad-menu__group", children: [
+          /* @__PURE__ */ jsx22("div", { id: hid, className: "ad-group-heading ad-menu__heading", children: /* @__PURE__ */ jsx22("span", { className: "ad-group-heading__title", children: e.label }) }),
+          members.map(row)
+        ] }, e.id)
+      );
+      continue;
+    }
+    body.push(row(e));
+  }
+  return /* @__PURE__ */ jsxs19(Portal, { children: [
+    point && /* @__PURE__ */ jsx22("span", { ref: mark, "aria-hidden": "true", className: "ad-menu__at", style: { left: point.x, top: point.y } }),
+    /* @__PURE__ */ jsx22(
+      "div",
+      {
+        ref: box,
+        role: "menu",
+        "aria-label": ariaLabel,
+        style: { ...style, zIndex: z },
+        onKeyDown: keepCursor ? void 0 : onKeyDown2,
+        onMouseDown: keepCursor ? (e) => e.preventDefault() : void 0,
+        className: cx("ad-float", "ad-menu", className),
+        children: body
+      }
+    )
+  ] });
 }
 
 // src/components/UndoNote/UndoNote.tsx
@@ -2321,7 +2393,7 @@ function UndoNote({ open, noteId, message, actionLabel = "Undo", onAction, onClo
     const t = setTimeout(() => latest.current(), tokenMs("--dur-undo", 4e3));
     return () => clearTimeout(t);
   }, [open, held, noteId]);
-  return /* @__PURE__ */ jsx23(Portal, { children: /* @__PURE__ */ jsx23("div", { className: "ad-undo-region", role: "status", "aria-live": "polite", children: open && /* @__PURE__ */ jsxs20(
+  return /* @__PURE__ */ jsx23(Portal, { children: /* @__PURE__ */ jsx23("div", { className: "ad-undo-region", role: "status", "aria-live": "polite", "data-ad-layer": "", children: open && /* @__PURE__ */ jsxs20(
     "div",
     {
       className: cx("ad-float", "ad-undo", className),
@@ -2341,7 +2413,7 @@ function UndoNote({ open, noteId, message, actionLabel = "Undo", onAction, onClo
 }
 
 // src/components/Pickers/PickList.tsx
-import { useId as useId7, useMemo, useRef as useRef13, useState as useState12 } from "react";
+import { useId as useId8, useMemo, useRef as useRef13, useState as useState12 } from "react";
 import { jsx as jsx24, jsxs as jsxs21 } from "react/jsx-runtime";
 function PickList({ options, value, onPick, searchLabel, noMatch = "Nothing matches", noSearch, query, onQuery, footer, className }) {
   const [own, setOwn] = useState12("");
@@ -2350,7 +2422,7 @@ function PickList({ options, value, onPick, searchLabel, noMatch = "Nothing matc
     setOwn(v);
     onQuery?.(v);
   };
-  const listId = useId7();
+  const listId = useId8();
   const picked = new Set(value == null ? [] : Array.isArray(value) ? value : [value]);
   const many = Array.isArray(value);
   const shown = useMemo(() => {
@@ -2445,7 +2517,7 @@ function PickList({ options, value, onPick, searchLabel, noMatch = "Nothing matc
 
 // src/components/Pickers/Pickers.tsx
 import { cloneElement as cloneElement2, isValidElement as isValidElement2, useRef as useRef14, useState as useState13 } from "react";
-import { Fragment as Fragment8, jsx as jsx25, jsxs as jsxs22 } from "react/jsx-runtime";
+import { Fragment as Fragment10, jsx as jsx25, jsxs as jsxs22 } from "react/jsx-runtime";
 function PersonPicker({ people, ...rest }) {
   return /* @__PURE__ */ jsx25(PickList, { ...rest, options: people.map((p) => ({ id: p.id, label: p.name, keywords: p.email, lead: /* @__PURE__ */ jsx25(Avatar, { name: p.name, initials: p.initials, src: p.src }) })) });
 }
@@ -2488,7 +2560,7 @@ function PickField({ options, value, onPick, label, placeholder, search, disable
   ) }) });
   if (trigger && isValidElement2(trigger)) {
     const own = trigger;
-    return /* @__PURE__ */ jsxs22(Fragment8, { children: [
+    return /* @__PURE__ */ jsxs22(Fragment10, { children: [
       /* @__PURE__ */ jsx25(
         "span",
         {
@@ -2503,7 +2575,7 @@ function PickField({ options, value, onPick, label, placeholder, search, disable
       list
     ] });
   }
-  return /* @__PURE__ */ jsxs22(Fragment8, { children: [
+  return /* @__PURE__ */ jsxs22(Fragment10, { children: [
     /* @__PURE__ */ jsxs22(
       "button",
       {
@@ -2530,7 +2602,7 @@ function PickField({ options, value, onPick, label, placeholder, search, disable
 }
 
 // src/components/Pickers/DatePicker.tsx
-import { useEffect as useEffect10, useId as useId8, useMemo as useMemo2, useRef as useRef15, useState as useState14 } from "react";
+import { useEffect as useEffect10, useId as useId9, useMemo as useMemo2, useRef as useRef15, useState as useState14 } from "react";
 import { jsx as jsx26, jsxs as jsxs23 } from "react/jsx-runtime";
 var EN = { today: "Today", tomorrow: "Tomorrow", nextWeek: "Next week", inTwoWeeks: "In two weeks", previousMonth: "Previous month", nextMonth: "Next month", noDate: "No date", repeat: "Repeat" };
 function DatePicker({ value, onChange, today: todayIn, weekStart = 1, locale = "en-US", labels: l, quickPicks, shadeWeekends = true, onClear, repeat, openOn, dayMarks, marksKey, className }) {
@@ -2652,7 +2724,7 @@ function DateField({ onParsed, label, text: given, onText, format, icon, disable
     onText?.(t);
   };
   const [open, setOpen] = useState14(false);
-  const dropId = useId8();
+  const dropId = useId9();
   const anchor = useRef15(null);
   const drop = useRef15(null);
   const input = useRef15(null);
@@ -2827,13 +2899,13 @@ function Picture({ src, alt, ...rest }) {
 }
 
 // src/components/PageHeader/PageHeader.tsx
-import { useId as useId10, useRef as useRef18, useState as useState18 } from "react";
+import { useId as useId11, useRef as useRef18, useState as useState18 } from "react";
 
 // src/components/ShowOptions/ShowOptions.tsx
 import { useRef as useRef17, useState as useState17 } from "react";
 
 // src/components/Settings/Settings.tsx
-import { useId as useId9 } from "react";
+import { useId as useId10 } from "react";
 import { jsx as jsx29, jsxs as jsxs26 } from "react/jsx-runtime";
 function SettingsLayout({ nav, children, className }) {
   return /* @__PURE__ */ jsxs26("div", { className: cx("ad-settings", className), children: [
@@ -2851,7 +2923,7 @@ function SettingsNavItem({ icon, label, current, onSelect }) {
   ] });
 }
 function SettingsSection({ title, help, number, fold, children }) {
-  const rows = useId9();
+  const rows = useId10();
   return /* @__PURE__ */ jsxs26("section", { className: "ad-settings__section", "data-collapsed": fold ? String(fold.collapsed) : void 0, children: [
     /* @__PURE__ */ jsx29(GroupHeading, { number, help, collapsible: !!fold, collapsed: fold?.collapsed, onToggle: fold?.onToggle, controls: rows, children: title }),
     /* @__PURE__ */ jsx29("div", { className: "ad-settings__rows", id: rows, hidden: fold?.collapsed || void 0, children })
@@ -2868,7 +2940,7 @@ function AccessRow({ face, name, className, ...rest }) {
 }
 
 // src/components/ShowOptions/ShowOptions.tsx
-import { Fragment as Fragment9, jsx as jsx30, jsxs as jsxs27 } from "react/jsx-runtime";
+import { Fragment as Fragment11, jsx as jsx30, jsxs as jsxs27 } from "react/jsx-runtime";
 var showOrder = ["compactRows", "projectColours", "itemColours", "departmentColours", "weekendShading", "people", "archive"];
 var WORDS = {
   compactRows: "Compact rows",
@@ -2885,7 +2957,7 @@ function ShowOptionsGear({ value, onChange, options = [...showOrder], labels: l 
   const now = { ...SHOW_DEFAULTS, ...value };
   const shown = showOrder.filter((o) => options.includes(o));
   const gearLabel = l.gear ?? "Show options";
-  return /* @__PURE__ */ jsxs27(Fragment9, { children: [
+  return /* @__PURE__ */ jsxs27(Fragment11, { children: [
     /* @__PURE__ */ jsx30(IconButton, { ref: gear, label: gearLabel, active: open, "aria-expanded": open, "aria-haspopup": "dialog", onClick: () => setOpen(!open), children: /* @__PURE__ */ jsx30(Icon, { job: "settings" }) }),
     /* @__PURE__ */ jsx30(Popover, { open, onClose: () => setOpen(false), anchor: gear, ariaLabel: gearLabel, children: /* @__PURE__ */ jsx30(PopoverSection, { label: gearLabel, children: shown.map((o) => /* @__PURE__ */ jsx30(SettingRow, { label: l[o] ?? WORDS[o], children: /* @__PURE__ */ jsx30(Switch, { checked: now[o], "aria-label": l[o] ?? WORDS[o], onChange: (on) => onChange({ ...now, [o]: on }) }) }, o)) }) })
   ] });
@@ -2949,7 +3021,7 @@ function HeaderActions({ children, groupProps }) {
 }
 function Tabs({ tabs, value, onChange, ariaLabel, numbered = true, panelId, className }) {
   const list = useRef18(null);
-  const base = useId10();
+  const base = useId11();
   const at = tabs.findIndex((t) => t.id === value);
   const onKeyDown2 = (e) => {
     let n = null;
@@ -3339,12 +3411,12 @@ function ViewSwitch({ options, value, onChange, ariaLabel, className }) {
 }
 
 // src/components/Warnings/Warnings.tsx
-import { forwardRef as forwardRef9, useId as useId11, useState as useState21 } from "react";
-import { Fragment as Fragment10, jsx as jsx36, jsxs as jsxs32 } from "react/jsx-runtime";
+import { forwardRef as forwardRef9, useId as useId12, useState as useState21 } from "react";
+import { Fragment as Fragment12, jsx as jsx36, jsxs as jsxs32 } from "react/jsx-runtime";
 function AlertBar({ alerts, label = "Alerts", snoozeLabel = "Snooze", pillLabel = (p, n) => `${n} priority ${p}`, priorityLabel = (p) => `Priority ${p}`, defaultOpen = false, open, onOpenChange, className }) {
   const [own, setOwn] = useState21(defaultOpen);
   const isOpen = open ?? own;
-  const listId = useId11();
+  const listId = useId12();
   if (!alerts.length) return null;
   const counts = [1, 2, 3, 4].map((p) => [p, alerts.filter((a) => a.priority === p).length]);
   const toggle = () => {
@@ -3360,7 +3432,7 @@ function AlertBar({ alerts, label = "Alerts", snoozeLabel = "Snooze", pillLabel 
         priorityLabel: priorityLabel(a.priority),
         sentence: a.sentence,
         number: a.number,
-        actions: /* @__PURE__ */ jsxs32(Fragment10, { children: [
+        actions: /* @__PURE__ */ jsxs32(Fragment12, { children: [
           a.action && /* @__PURE__ */ jsx36(Button, { onClick: a.action.onSelect, children: a.action.label }),
           a.onSnooze && /* @__PURE__ */ jsx36(Button, { onClick: a.onSnooze, children: snoozeLabel })
         ] })
@@ -3386,7 +3458,7 @@ function AlertList({ children, id, hidden, ariaLabel, listProps }) {
   return /* @__PURE__ */ jsx36("div", { ...strip2(listProps), id, hidden, role: "list", "aria-label": ariaLabel, children });
 }
 function AlertRow({ priority, priorityLabel = `Priority ${priority}`, sentence, number, actions, end, children, rowProps, muted }) {
-  const line = /* @__PURE__ */ jsxs32(Fragment10, { children: [
+  const line = /* @__PURE__ */ jsxs32(Fragment12, { children: [
     /* @__PURE__ */ jsx36("span", { className: cx("ad-alert__ring", `ad-alert__ring--p${priority}`), role: "img", "aria-label": priorityLabel }),
     /* @__PURE__ */ jsx36("span", { className: "ad-alert__sentence", children: sentence }),
     number != null && number !== "" && /* @__PURE__ */ jsx36("span", { className: "ad-alert__number", children: number }),
@@ -3423,7 +3495,7 @@ function NotificationList({ days, unreadLabel = "Unread" }) {
       /* @__PURE__ */ jsx36("span", { className: "ad-notifications__date", children: d.date })
     ] }),
     d.items.map((n) => {
-      const body = /* @__PURE__ */ jsxs32(Fragment10, { children: [
+      const body = /* @__PURE__ */ jsxs32(Fragment12, { children: [
         n.unread ? /* @__PURE__ */ jsx36("span", { className: "ad-notification__unread", role: "img", "aria-label": unreadLabel }) : /* @__PURE__ */ jsx36("span", { className: "ad-notification__read" }),
         n.face && /* @__PURE__ */ jsx36("span", { className: "ad-notification__face", children: n.face }),
         /* @__PURE__ */ jsx36("span", { className: "ad-notification__sentence", children: n.sentence }),
@@ -3584,7 +3656,7 @@ function SelectionBar({ count, countLabel = (n) => `${n} selected`, actions, lea
 }
 
 // src/components/Timeline/Timeline.tsx
-import { Fragment as Fragment11, jsx as jsx39, jsxs as jsxs35 } from "react/jsx-runtime";
+import { Fragment as Fragment13, jsx as jsx39, jsxs as jsxs35 } from "react/jsx-runtime";
 var strip3 = (h) => {
   if (!h) return {};
   const { className: _c, style: _s, ...rest } = h;
@@ -3711,7 +3783,7 @@ function OverMark({ left, width, label, "aria-label": ariaLabel, markProps }) {
       "aria-label": read2,
       className: "ad-over-mark",
       style: { left: `${Number.isFinite(left) ? left : 0}px`, width: `${Math.max(1, Number.isFinite(width) ? width : 1)}px` },
-      children: typeof label === "string" && label && (m ? /* @__PURE__ */ jsxs35(Fragment11, { children: [
+      children: typeof label === "string" && label && (m ? /* @__PURE__ */ jsxs35(Fragment13, { children: [
         /* @__PURE__ */ jsx39("span", { className: "ad-over-mark__figure", children: m[1] }),
         /* @__PURE__ */ jsx39("span", { children: m[3] })
       ] }) : /* @__PURE__ */ jsx39("span", { children: label }))
@@ -3838,7 +3910,7 @@ function PeriodCluster({ shown, periods, period, onPeriod, onPrevious, onNext, o
 // src/components/Calendar/Calendar.tsx
 import { jsx as jsx41, jsxs as jsxs37 } from "react/jsx-runtime";
 var code = (it) => it.code ? /* @__PURE__ */ jsx41(ProjectPill, { code: it.code, color: it.color?.startsWith("project-") ? it.color : void 0 }) : null;
-var hooksOf = (h) => {
+var hooksOf2 = (h) => {
   if (!h) return {};
   const { className: _c, style: _s, ...rest } = h;
   return rest;
@@ -3878,7 +3950,7 @@ function MonthCalendar({ month, items, today: todayIn, weekStart = 1, locale = "
           const d = addDays(ws, i);
           const wk = d.getDay() === 0 || d.getDay() === 6;
           const mark = marks?.(d);
-          return /* @__PURE__ */ jsx41("div", { "aria-hidden": dayProps ? void 0 : true, ...hooksOf(dayProps?.(d)), style: { gridColumn: i + 1 }, className: "ad-month__cell", "data-outside": d.getMonth() !== first.getMonth() || void 0, "data-weekend": shadeWeekends && wk || void 0, "data-ring": diff(d, today) === 0 || ringDay?.(d) || void 0, children: /* @__PURE__ */ jsxs37("span", { className: "ad-month__day", children: [
+          return /* @__PURE__ */ jsx41("div", { "aria-hidden": dayProps ? void 0 : true, ...hooksOf2(dayProps?.(d)), style: { gridColumn: i + 1 }, className: "ad-month__cell", "data-outside": d.getMonth() !== first.getMonth() || void 0, "data-weekend": shadeWeekends && wk || void 0, "data-ring": diff(d, today) === 0 || ringDay?.(d) || void 0, children: /* @__PURE__ */ jsxs37("span", { className: "ad-month__day", children: [
             /* @__PURE__ */ jsx41("span", { className: "ad-month__num", "data-today": diff(d, today) === 0 || void 0, children: d.getDate() }),
             mark != null && /* @__PURE__ */ jsx41("span", { className: "ad-month__marks", children: mark })
           ] }) }, i);
@@ -3886,7 +3958,7 @@ function MonthCalendar({ month, items, today: todayIn, weekStart = 1, locale = "
         placed.map(({ item, lane, from, to, cutStart, cutEnd }) => {
           const style = { gridColumn: `${from + 1} / ${to + 2}`, ["--ad-lane"]: lane, ["--ad-bar"]: hueOf(item.color) };
           const cls = cx("ad-month__bar", item.unconfirmed && "ad-month__bar--unconfirmed", cutStart && "ad-month__bar--cut-start", cutEnd && "ad-month__bar--cut-end");
-          const hooks = hooksOf(itemProps?.(item));
+          const hooks = hooksOf2(itemProps?.(item));
           return onOpen ? /* @__PURE__ */ jsxs37("button", { type: "button", ...hooks, className: cls, style, onClick: (e) => {
             hooks.onClick?.(e);
             onOpen(item);
@@ -3927,8 +3999,8 @@ function Booking({ name, time, unconfirmed, color, style, onOpen, bookingProps, 
   const asButton = !!onOpen && !ends && actions == null;
   const Tag2 = asButton ? "button" : "div";
   const hue = useHue(color);
-  const hooks = hooksOf(bookingProps);
-  const grip = (side, h) => h && /* @__PURE__ */ jsx41("span", { "aria-hidden": h["aria-label"] ? void 0 : true, ...hooksOf(h), className: `ad-booking__grip ad-booking__grip--${side}` });
+  const hooks = hooksOf2(bookingProps);
+  const grip = (side, h) => h && /* @__PURE__ */ jsx41("span", { "aria-hidden": h["aria-label"] ? void 0 : true, ...hooksOf2(h), className: `ad-booking__grip ad-booking__grip--${side}` });
   const inControl = (t) => !!t.closest(".ad-booking__grip, .ad-booking__actions");
   return /* @__PURE__ */ jsxs37(
     Tag2,
@@ -3990,8 +4062,8 @@ function TimeGrid({ startHour, endHour, bookings = [], columns, now, hourLabel =
         c.label,
         c.marks != null && /* @__PURE__ */ jsx41("span", { className: "ad-time-grid__marks", children: c.marks })
       ] }),
-      allDayRows > 0 && /* @__PURE__ */ jsx41("div", { ...hooksOf(columnProps?.(c.id)), className: "ad-time-grid__allday", children: (c.allDay ?? []).map((item) => {
-        const hooks = hooksOf(itemProps?.(item));
+      allDayRows > 0 && /* @__PURE__ */ jsx41("div", { ...hooksOf2(columnProps?.(c.id)), className: "ad-time-grid__allday", children: (c.allDay ?? []).map((item) => {
+        const hooks = hooksOf2(itemProps?.(item));
         const cls = cx("ad-month__bar", "ad-time-grid__item", item.unconfirmed && "ad-month__bar--unconfirmed");
         const style = { ["--ad-bar"]: hueOf(item.color) };
         return onOpen ? /* @__PURE__ */ jsxs37("button", { type: "button", ...hooks, className: cls, style, onClick: (e) => {
@@ -4110,7 +4182,7 @@ function WorldMap({ pins, at, ariaLabel, onPin, hoverCard, pinProps }) {
   const meridians = Array.from({ length: 25 }, (_, i) => -180 + i * 15);
   const parallels = [60, 40, 20, 0, -20, -40];
   return /* @__PURE__ */ jsxs38("div", { ref: wrap, className: "ad-world-map", children: [
-    /* @__PURE__ */ jsxs38("svg", { viewBox: `0 0 ${VBW} ${VBH}`, width: "100%", role: "img", "aria-label": ariaLabel, className: "ad-world-map__svg", children: [
+    /* @__PURE__ */ jsxs38("svg", { viewBox: `0 0 ${VBW} ${VBH}`, width: "100%", role: "group", "aria-label": ariaLabel, className: "ad-world-map__svg", children: [
       /* @__PURE__ */ jsx42("g", { children: LAND_PATHS.map((d, i) => /* @__PURE__ */ jsx42("path", { d, className: "ad-world-map__land" }, i)) }),
       /* @__PURE__ */ jsx42("g", { children: BORDER_PATHS.map((d, i) => /* @__PURE__ */ jsx42("path", { d, className: "ad-world-map__border" }, i)) }),
       night && /* @__PURE__ */ jsx42("path", { d: night, className: "ad-world-map__night", "data-night": "" }),
@@ -4161,9 +4233,12 @@ function WorldMap({ pins, at, ariaLabel, onPin, hoverCard, pinProps }) {
     hovered && hoverCard && /* @__PURE__ */ jsx42("div", { className: "ad-float ad-world-map__card", style: { left: `${Math.min(72, hovered.cx / VBW * 100)}%`, top: `${hovered.cy / VBH * 100}%` }, children: hoverCard(hovered.pin) })
   ] });
 }
+function MapNightDot() {
+  return /* @__PURE__ */ jsx42(Dot, { className: "ad-world-map__night-dot" });
+}
 
 // src/components/Charts/Charts.tsx
-import { Fragment as Fragment12, jsx as jsx43, jsxs as jsxs39 } from "react/jsx-runtime";
+import { Fragment as Fragment14, jsx as jsx43, jsxs as jsxs39 } from "react/jsx-runtime";
 function AmountBars({ items, max, ariaLabel, className }) {
   const top = max ?? Math.max(1, ...items.map((i) => i.value));
   return /* @__PURE__ */ jsx43("div", { className: cx("ad-amounts", className), role: "list", "aria-label": ariaLabel, children: items.map((i) => /* @__PURE__ */ jsxs39("div", { className: "ad-amounts__row", role: "listitem", children: [
@@ -4187,7 +4262,7 @@ function BudgetBar({ fraction, figure, note = "worked", remainder, end, ariaLabe
       /* @__PURE__ */ jsx43("span", { children: note }),
       /* @__PURE__ */ jsxs39("span", { children: [
         remainder,
-        end && /* @__PURE__ */ jsxs39(Fragment12, { children: [
+        end && /* @__PURE__ */ jsxs39(Fragment14, { children: [
           " \xB7 ",
           end
         ] })
@@ -4267,9 +4342,11 @@ function CommandSearch({ open, onClose, query, onQuery, results, onPick, label =
 import { useEffect as useEffect15, useLayoutEffect as useLayoutEffect5, useRef as useRef26, useState as useState24 } from "react";
 import { jsx as jsx45, jsxs as jsxs40 } from "react/jsx-runtime";
 var useIsoLayoutEffect3 = typeof window === "undefined" ? useEffect15 : useLayoutEffect5;
-function TourStep({ open, anchor, step, total, title, children, onBack, onNext, onExit, backLabel = "Back", nextLabel = "Next", progressLabel = (s, t) => `${s} of ${t}`, side = "below" }) {
+function TourStep({ open, anchor, step, total, title, children, onBack, onNext, onExit, backLabel = "Back", nextLabel = "Next", progressLabel = (s, t) => `${s} of ${t}`, placement, side: older, onClose, closeLabel }) {
   const card = useRef26(null);
   const [rect, setRect] = useState24(null);
+  const [size, setSize] = useState24(null);
+  const asked = placement ?? older ?? "below";
   const doc = useFloatingDocument() ?? document;
   useFocusReturn(open, card);
   useIsoLayoutEffect3(() => {
@@ -4279,27 +4356,60 @@ function TourStep({ open, anchor, step, total, title, children, onBack, onNext, 
       if (r) setRect(r);
     };
     place();
-    const win = doc.defaultView ?? window;
-    win.addEventListener("resize", place);
-    win.addEventListener("scroll", place, true);
+    const win2 = doc.defaultView ?? window;
+    win2.addEventListener("resize", place);
+    win2.addEventListener("scroll", place, true);
     const onKey = (e) => {
       if (e.key === "Escape") onExit?.();
     };
     doc.addEventListener("keydown", onKey);
     return () => {
-      win.removeEventListener("resize", place);
-      win.removeEventListener("scroll", place, true);
+      win2.removeEventListener("resize", place);
+      win2.removeEventListener("scroll", place, true);
       doc.removeEventListener("keydown", onKey);
     };
   }, [open, anchor, onExit]);
+  useIsoLayoutEffect3(() => {
+    const el = card.current;
+    if (!open || !el) return;
+    const next = { w: el.offsetWidth, h: el.offsetHeight };
+    setSize((o) => o && o.w === next.w && o.h === next.h ? o : next);
+  });
   if (!open || !rect) return null;
   const gap = tokenPx("--notch-size", 12);
   const pad = tokenPx("--space-1", 4);
   const notchMax = tokenPx("--space-8", 32);
-  const cardStyle = side === "below" ? { top: rect.bottom + pad + gap, left: Math.max(pad * 4, rect.left), ["--ad-notch-x"]: `${Math.round(Math.min(rect.width / 2, notchMax) - gap / 2)}px` } : { top: Math.max(pad * 4, rect.top), left: rect.right + pad + gap, ["--ad-notch-y"]: `${Math.round(Math.min(rect.height / 2, notchMax) - gap / 2)}px` };
+  const win = doc.defaultView ?? window;
+  const vw = win.innerWidth;
+  const vh = win.innerHeight;
+  const edge = pad * 4;
+  const w = size?.w ?? 0;
+  const h = size?.h ?? 0;
+  const clamp = (v, lo, hi) => Math.max(lo, Math.min(v, Math.max(lo, hi)));
+  let side = asked;
+  if (size) {
+    if (side === "below" && rect.bottom + pad + gap + h > vh - edge && rect.top - pad - gap - h >= edge) side = "above";
+    else if (side === "above" && rect.top - pad - gap - h < edge && rect.bottom + pad + gap + h <= vh - edge) side = "below";
+    else if (side === "right" && rect.right + pad + gap + w > vw - edge && rect.left - pad - gap - w >= edge) side = "left";
+    else if (side === "left" && rect.left - pad - gap - w < edge && rect.right + pad + gap + w <= vw - edge) side = "right";
+  }
+  let cardStyle;
+  if (side === "below" || side === "above") {
+    const left = size ? clamp(rect.left, edge, vw - w - edge) : Math.max(edge, rect.left);
+    const target = rect.left + Math.min(rect.width / 2, notchMax);
+    const notch = size ? clamp(target - left - gap / 2, gap, w - gap * 2) : Math.min(rect.width / 2, notchMax) - gap / 2;
+    cardStyle = { top: side === "below" ? rect.bottom + pad + gap : rect.top - pad - gap - h, left, ["--ad-notch-x"]: `${Math.round(notch)}px` };
+  } else {
+    const top = size ? clamp(rect.top, edge, vh - h - edge) : Math.max(edge, rect.top);
+    const target = rect.top + Math.min(rect.height / 2, notchMax);
+    const notch = size ? clamp(target - top - gap / 2, gap, h - gap * 2) : Math.min(rect.height / 2, notchMax) - gap / 2;
+    cardStyle = { top, left: side === "right" ? rect.right + pad + gap : rect.left - pad - gap - w, ["--ad-notch-y"]: `${Math.round(notch)}px` };
+  }
+  if (!size) cardStyle.visibility = "hidden";
   return /* @__PURE__ */ jsxs40(Portal, { children: [
     /* @__PURE__ */ jsx45("div", { className: "ad-spotlight", "aria-hidden": "true", style: { top: rect.top - pad, left: rect.left - pad, width: rect.width + pad * 2, height: rect.height + pad * 2 } }),
-    /* @__PURE__ */ jsxs40("div", { ref: card, role: "dialog", "aria-label": typeof title === "string" ? title : void 0, tabIndex: -1, className: cx("ad-tour-card", `ad-tour-card--${side}`), style: cardStyle, children: [
+    /* @__PURE__ */ jsxs40("div", { ref: card, role: "dialog", "aria-label": typeof title === "string" ? title : void 0, tabIndex: -1, className: cx("ad-tour-card", `ad-tour-card--${side}`, onClose && "ad-tour-card--closes"), style: cardStyle, children: [
+      onClose && /* @__PURE__ */ jsx45(CloseButton, { onClose, label: closeLabel }),
       /* @__PURE__ */ jsx45("div", { className: "ad-tour-card__ticks", "aria-label": progressLabel(step, total), role: "img", children: Array.from({ length: total }, (_, i) => /* @__PURE__ */ jsx45("i", { "data-done": i < step || void 0 }, i)) }),
       /* @__PURE__ */ jsx45("h2", { className: "ad-tour-card__title", children: title }),
       /* @__PURE__ */ jsx45("div", { className: "ad-tour-card__text", children }),
@@ -4326,7 +4436,7 @@ function PixxBrief({ open, face, greeting, children, onSnooze, onGotIt, snoozeLa
 }
 
 // src/components/Furniture/Furniture.tsx
-import { Fragment as Fragment13, jsx as jsx46, jsxs as jsxs41 } from "react/jsx-runtime";
+import { Fragment as Fragment15, jsx as jsx46, jsxs as jsxs41 } from "react/jsx-runtime";
 function TitleBlock({ code: code2, number, venue, pageNumber, page }) {
   return /* @__PURE__ */ jsxs41("footer", { className: "ad-title-block", children: [
     /* @__PURE__ */ jsxs41("span", { className: "ad-title-block__cell ad-title-block__code", children: [
@@ -4343,7 +4453,7 @@ function TitleBlock({ code: code2, number, venue, pageNumber, page }) {
 }
 function Contents({ entries, ariaLabel = "Contents" }) {
   return /* @__PURE__ */ jsx46("ol", { className: "ad-contents", "aria-label": ariaLabel, children: entries.map((e, i) => {
-    const inner = /* @__PURE__ */ jsxs41(Fragment13, { children: [
+    const inner = /* @__PURE__ */ jsxs41(Fragment15, { children: [
       /* @__PURE__ */ jsx46("span", { className: "ad-contents__numeral", children: String(i + 1).padStart(2, "0") }),
       /* @__PURE__ */ jsxs41("span", { className: "ad-contents__body", children: [
         /* @__PURE__ */ jsx46("span", { className: "ad-contents__name", children: e.name }),
@@ -4574,6 +4684,7 @@ export {
   ListSection,
   LoadError,
   LoadingRows,
+  MapNightDot,
   MarkerKey,
   Menu,
   MenuBody,
