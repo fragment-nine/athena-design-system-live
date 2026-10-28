@@ -1735,12 +1735,17 @@ function ProjectPill({ code: code2, current, color, onPress, pressLabel }) {
   }, className: cx("ad-project-pill", "ad-project-pill--press", current && "ad-project-pill--current"), style: shown ? { ["--ad-pill"]: shown } : void 0, "data-coloured": shown ? true : void 0, children: code2 });
   return /* @__PURE__ */ jsx16("span", { className: cx("ad-project-pill", current && "ad-project-pill--current"), style: shown ? { ["--ad-pill"]: shown } : void 0, "data-coloured": shown ? true : void 0, children: code2 });
 }
-function Rail({ foot = [], screens, projects, current, onSelect, onHome, onSettings, onToggle, labels: l = {} }) {
+function Rail({ foot = [], screens, projects, projectsScreen, current, onSelect, onHome, onSettings, onToggle, labels: l = {} }) {
+  const nested = !!projectsScreen && screens.some((x) => x.id === projectsScreen);
+  const pills = projects.map((p) => /* @__PURE__ */ jsx16("button", { type: "button", ...dataOnly(p.hooks), className: "ad-rail__project", "aria-label": `${p.code} ${p.name}`, title: p.name, "aria-current": current === p.id ? "page" : void 0, onClick: () => onSelect(p.id), children: /* @__PURE__ */ jsx16(ProjectPill, { code: p.code, current: current === p.id, color: p.color }) }, p.id));
   const L = { home: "Home", settings: "Settings", expand: "Open the menu", menu: "Main", ...l };
   return /* @__PURE__ */ jsxs13("nav", { className: "ad-rail", "aria-label": L.menu, children: [
     /* @__PURE__ */ jsx16("button", { type: "button", className: "ad-rail__item ad-rail__home", "aria-label": L.home, title: L.home, onClick: onHome, children: /* @__PURE__ */ jsx16(X, {}) }),
-    /* @__PURE__ */ jsx16("div", { className: "ad-rail__group", children: screens.map((s) => /* @__PURE__ */ jsx16("button", { type: "button", ...dataOnly(s.hooks), className: "ad-rail__item", "aria-label": s.label, title: s.label, "aria-current": current === s.id ? "page" : void 0, onClick: () => onSelect(s.id), children: s.icon }, s.id)) }),
-    /* @__PURE__ */ jsx16("div", { className: "ad-rail__group ad-rail__group--projects", children: projects.map((p) => /* @__PURE__ */ jsx16("button", { type: "button", ...dataOnly(p.hooks), className: "ad-rail__project", "aria-label": `${p.code} ${p.name}`, title: p.name, "aria-current": current === p.id ? "page" : void 0, onClick: () => onSelect(p.id), children: /* @__PURE__ */ jsx16(ProjectPill, { code: p.code, current: current === p.id, color: p.color }) }, p.id)) }),
+    /* @__PURE__ */ jsx16("div", { className: "ad-rail__group", children: screens.map((s) => /* @__PURE__ */ jsxs13("div", { className: "ad-rail__screen", children: [
+      /* @__PURE__ */ jsx16("button", { type: "button", ...dataOnly(s.hooks), className: "ad-rail__item", "aria-label": s.label, title: s.label, "aria-current": current === s.id ? "page" : void 0, onClick: () => onSelect(s.id), children: s.icon }),
+      nested && projectsScreen === s.id && projects.length > 0 && /* @__PURE__ */ jsx16("div", { className: "ad-rail__pinned", children: pills })
+    ] }, s.id)) }),
+    !nested && projects.length > 0 && /* @__PURE__ */ jsx16("div", { className: "ad-rail__group ad-rail__group--projects", children: pills }),
     /* @__PURE__ */ jsxs13("div", { className: "ad-rail__foot", children: [
       foot.map((s) => /* @__PURE__ */ jsx16("button", { type: "button", ...dataOnly(s.hooks), className: "ad-rail__item", "aria-label": s.label, title: s.label, "aria-current": current === s.id ? "page" : void 0, onClick: () => onSelect(s.id), children: s.icon }, s.id)),
       /* @__PURE__ */ jsx16("button", { type: "button", className: "ad-rail__item", "aria-label": L.settings, title: L.settings, "aria-current": current === "settings" ? "page" : void 0, onClick: onSettings, children: /* @__PURE__ */ jsx16(Icon, { name: "gear", size: "lg" }) }),
@@ -3451,7 +3456,7 @@ var ViewButton = forwardRef8(function ViewButton2({ label = "No view", open, ope
 function ToolbarSeparator() {
   return /* @__PURE__ */ jsx33("span", { className: "ad-toolbar__separator", role: "separator", "aria-orientation": "vertical" });
 }
-function ViewPopover({ open, onClose, anchor, builtInViews = [], savedViews, currentView, onPickView, onStarView, viewActions, builtInViewActions, onSaveView, saveScopes, renaming, onRenameView, onCancelRename, onReorderViews, searchAfter = 8, saveOff, query, rules, groupBy, sortBy, show, labels: l = {} }) {
+function ViewPopover({ open, onClose, anchor, builtInViews = [], savedViews, currentView, onPickView, onStarView, viewActions, builtInViewActions, onSaveView, saveScopes, renaming, onRenameView, onCancelRename, onReorderViews, saveOff, query, rules, groupBy, sortBy, show, labels: l = {} }) {
   const L = { noSaved: "No saved views yet", noMatch: "No view by that name", or: "or", default: "Default", rename: "Rename", show: "Show", view: "View", builtInViews: "Views", savedViews: "Saved views", saveView: "Save this view\u2026", viewName: "View name", save: "Save", cancel: "Cancel", star: "Star", unstar: "Unstar", more: "More", filter: "Filter", groupBy: "Group by", sortBy: "Sort by", ascending: "Ascending", descending: "Descending", ...l };
   const SAVE = "__save";
   const [naming, setNaming] = useState20(false);
@@ -3509,12 +3514,12 @@ function ViewPopover({ open, onClose, anchor, builtInViews = [], savedViews, cur
         setMenuFor(v);
       }, children: /* @__PURE__ */ jsx33(Icon, { job: "more" }) }) : void 0
     })),
-    ...savedViews && onSaveView ? [{ id: SAVE, label: L.saveView, lead: /* @__PURE__ */ jsx33(Icon, { job: "plus" }), disabled: !!saveOff, hint: saveOff }] : [],
     ...builtInViews.map((v) => ({
       id: v.id,
       label: String(v.label),
       group: savedViews ? L.builtInViews : void 0,
       hint: v.hint ?? (v.isDefault ? L.default : void 0),
+      lead: /* @__PURE__ */ jsx33(Icon, { job: "lock", size: "sm", className: "ad-view-lock" }),
       hintControl: builtInViewActions ? /* @__PURE__ */ jsx33(IconButton, { label: `${L.more}: ${v.label}`, onClick: (e) => {
         e.stopPropagation();
         menuAnchor.current = e.currentTarget;
@@ -3534,12 +3539,12 @@ function ViewPopover({ open, onClose, anchor, builtInViews = [], savedViews, cur
       /* @__PURE__ */ jsx33(
         PickList,
         {
-          noSearch: views.length <= searchAfter,
+          noSearch: true,
           noMatch: L.noMatch,
           searchLabel: L.savedViews,
           value: currentView ?? null,
           options: views,
-          onPick: (id) => id === SAVE ? setNaming(true) : onPickView?.(id)
+          onPick: (id) => onPickView?.(id)
         }
       ),
       renaming && onRenameView && (() => {
@@ -3567,20 +3572,6 @@ function ViewPopover({ open, onClose, anchor, builtInViews = [], savedViews, cur
           ] })
         ] });
       })(),
-      naming && /* @__PURE__ */ jsxs30("div", { className: "ad-view-save", children: [
-        /* @__PURE__ */ jsx33(TextField, { autoFocus: true, "aria-label": L.viewName, placeholder: L.viewName, value: name, onChange: (e) => setName(e.target.value), onKeyDown: (e) => {
-          if (e.key === "Enter") finishSave();
-          if (e.key === "Escape") {
-            e.stopPropagation();
-            setNaming(false);
-          }
-        } }),
-        saveScopes && /* @__PURE__ */ jsx33(Select, { "aria-label": L.view, value: scope, onChange: (e) => setScope(e.target.value), options: saveScopes }),
-        /* @__PURE__ */ jsxs30(ButtonSizeScope, { size: "row", children: [
-          /* @__PURE__ */ jsx33(Button, { onClick: () => setNaming(false), children: L.cancel }),
-          /* @__PURE__ */ jsx33(Button, { variant: "main", disabled: !name.trim(), onClick: finishSave, children: L.save })
-        ] })
-      ] }),
       menuFor && (() => {
         const fn = builtInViews.some((b) => b.id === menuFor.id) ? builtInViewActions : viewActions;
         return fn ? /* @__PURE__ */ jsx33(Menu, { open: true, onClose: () => setMenuFor(null), anchor: menuAnchor, ariaLabel: String(menuFor.label), items: fn(menuFor) }) : null;
@@ -3604,7 +3595,21 @@ function ViewPopover({ open, onClose, anchor, builtInViews = [], savedViews, cur
         }
       ) })
     ] }) }),
-    show && show.length > 0 && /* @__PURE__ */ jsx33(PopoverSection, { label: L.show, children: show.map((s) => s.kind === "order" ? /* @__PURE__ */ jsx33(OrderList, { label: s.label, items: s.items, onReorder: s.onReorder }, s.id) : /* @__PURE__ */ jsx33(FieldRow, { label: s.label, children: s.kind === "switch" ? /* @__PURE__ */ jsx33(Switch, { checked: s.on, onChange: s.onChange, "aria-label": s.label }) : /* @__PURE__ */ jsx33(Select, { "aria-label": s.label, value: s.value, onChange: (e) => s.onChange(e.target.value), options: s.options }) }, s.id)) })
+    show && show.length > 0 && /* @__PURE__ */ jsx33(PopoverSection, { label: L.show, children: show.map((s) => s.kind === "order" ? /* @__PURE__ */ jsx33(OrderList, { label: s.label, items: s.items, onReorder: s.onReorder }, s.id) : /* @__PURE__ */ jsx33(FieldRow, { label: s.label, children: s.kind === "switch" ? /* @__PURE__ */ jsx33(Switch, { checked: s.on, onChange: s.onChange, "aria-label": s.label }) : /* @__PURE__ */ jsx33(Select, { "aria-label": s.label, value: s.value, onChange: (e) => s.onChange(e.target.value), options: s.options }) }, s.id)) }),
+    savedViews && onSaveView && /* @__PURE__ */ jsx33("div", { className: "ad-view-save-row", children: !naming ? /* @__PURE__ */ jsx33(ButtonSizeScope, { size: "row", children: /* @__PURE__ */ jsx33(Button, { icon: "plus", unavailable: saveOff, onClick: () => setNaming(true), children: L.saveView }) }) : /* @__PURE__ */ jsxs30("div", { className: "ad-view-save", children: [
+      /* @__PURE__ */ jsx33(TextField, { autoFocus: true, "aria-label": L.viewName, placeholder: L.viewName, value: name, onChange: (e) => setName(e.target.value), onKeyDown: (e) => {
+        if (e.key === "Enter") finishSave();
+        if (e.key === "Escape") {
+          e.stopPropagation();
+          setNaming(false);
+        }
+      } }),
+      saveScopes && /* @__PURE__ */ jsx33(Select, { "aria-label": L.view, value: scope, onChange: (e) => setScope(e.target.value), options: saveScopes }),
+      /* @__PURE__ */ jsxs30(ButtonSizeScope, { size: "row", children: [
+        /* @__PURE__ */ jsx33(Button, { onClick: () => setNaming(false), children: L.cancel }),
+        /* @__PURE__ */ jsx33(Button, { variant: "main", disabled: !name.trim(), onClick: finishSave, children: L.save })
+      ] })
+    ] }) })
   ] });
 }
 function OrderList({ label, items, onReorder }) {
