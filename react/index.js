@@ -1925,6 +1925,9 @@ function TodoCheck({ hooks, checked, onChange, priority = 4, ariaLabel, disabled
     }
   );
 }
+function DragHandle(_props) {
+  return null;
+}
 function TodoRow({ ringProps, factProps, dragging, name, priority, done, onTick, due, today, dept, who, selected, onOpen, completeLabel = "Complete", unacknowledged, onAcknowledge, acknowledgeLabel = "Acknowledge", repeat, pastDeadline, pastDeadlineLabel = "Deadline passed", role, deliverable, project, picking, onPressDate, onPressWho, onPressDeliverable, pressLabels, onRename, onPressProject, onPressDept, rowProps, cells, ring = true, whoMax }) {
   const d = (k) => factProps?.[k] ? Object.fromEntries(Object.entries(factProps[k]).filter(([n]) => n.startsWith("data-"))) : {};
   const roleWords = Array.isArray(role) ? role.join(" \xB7 ") : role;
@@ -5109,6 +5112,7 @@ export {
   Dials,
   Dot,
   DragBand,
+  DragHandle,
   DropLine,
   DualUnit,
   EmptyState,
