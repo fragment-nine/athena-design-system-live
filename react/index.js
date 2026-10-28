@@ -3490,17 +3490,6 @@ function ViewPopover({ open, onClose, anchor, builtInViews = [], savedViews, cur
   const [newName, setNewName] = useState20("");
   const viewsShown = builtInViews.length > 0 || savedViews != null;
   const views = [
-    ...builtInViews.map((v) => ({
-      id: v.id,
-      label: String(v.label),
-      group: savedViews ? L.builtInViews : void 0,
-      hint: v.hint ?? (v.isDefault ? L.default : void 0),
-      hintControl: builtInViewActions ? /* @__PURE__ */ jsx33(IconButton, { label: `${L.more}: ${v.label}`, onClick: (e) => {
-        e.stopPropagation();
-        menuAnchor.current = e.currentTarget;
-        setMenuFor(v);
-      }, children: /* @__PURE__ */ jsx33(Icon, { job: "more" }) }) : void 0
-    })),
     ...(savedViews ?? []).map((v) => ({
       id: v.id,
       label: String(v.label),
@@ -3517,7 +3506,18 @@ function ViewPopover({ open, onClose, anchor, builtInViews = [], savedViews, cur
         setMenuFor(v);
       }, children: /* @__PURE__ */ jsx33(Icon, { job: "more" }) }) : void 0
     })),
-    ...savedViews && onSaveView ? [{ id: SAVE, label: L.saveView, lead: /* @__PURE__ */ jsx33(Icon, { job: "plus" }), disabled: !!saveOff, hint: saveOff }] : []
+    ...savedViews && onSaveView ? [{ id: SAVE, label: L.saveView, lead: /* @__PURE__ */ jsx33(Icon, { job: "plus" }), disabled: !!saveOff, hint: saveOff }] : [],
+    ...builtInViews.map((v) => ({
+      id: v.id,
+      label: String(v.label),
+      group: savedViews ? L.builtInViews : void 0,
+      hint: v.hint ?? (v.isDefault ? L.default : void 0),
+      hintControl: builtInViewActions ? /* @__PURE__ */ jsx33(IconButton, { label: `${L.more}: ${v.label}`, onClick: (e) => {
+        e.stopPropagation();
+        menuAnchor.current = e.currentTarget;
+        setMenuFor(v);
+      }, children: /* @__PURE__ */ jsx33(Icon, { job: "more" }) }) : void 0
+    }))
   ];
   const finishSave = () => {
     if (!name.trim() || !onSaveView) return;

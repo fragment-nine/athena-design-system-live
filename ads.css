@@ -224,10 +224,10 @@
   --lh-none: 1;
   --lh-tight: 1.25;
   --lh-normal: 1.5;
-  --track-label: 0.14em;
+  --track-label: 0.01em;
   --track-normal: 0.01em;
-  --track-caps: 0.12em;
-  --track-caps-sm: 0.08em;
+  --track-caps: 0.01em;
+  --track-caps-sm: 0.01em;
   /* Things resolve into focus; they do not slide. Nothing bounces, springs, scales or spins, with one exception: ticking a todo off pops its check (TodoCheck: a swell to 1.34, the 5px green ring-celebrate, 260ms on the ease-check-pop spring), ruled 2026-10-26, Jeremy. */
   --dur-fast: 0.15s;
   --dur: 0.3s;
@@ -1383,6 +1383,10 @@ button:hover > .ad-project-pill:not(.ad-project-pill--current) { color: var(--ac
 
 /* A title renamed through the writing box grows to as many lines as it needs (2026-10-27). */
 .ad-popover__title-read { display: block; white-space: normal; }
+
+/* No scroll area inside a card (ruled 2026-10-27, Jeremy: "You should never have a tiny scroll area inside a popover"): a list inside grows to its rows; the card alone scrolls, and only when it would run off the screen. */
+.ad-popover .ad-picklist__list, .ad-popover .ad-popover__body { max-height: none; overflow: visible; }
+.ad-popover { overflow-y: auto; }
 
 /* src/components/Row/Row.css */
 /* Row, RowDate, TodoCheck */
