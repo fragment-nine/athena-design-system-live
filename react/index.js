@@ -1409,8 +1409,8 @@ function FormActions({ main, onCancel, cancelLabel = "Cancel", destroy, extras }
   return /* @__PURE__ */ jsxs7("div", { className: "ad-form-actions", children: [
     destroy && /* @__PURE__ */ jsx9("span", { className: "ad-form-actions__destroy", children: /* @__PURE__ */ jsx9(Button, { danger: true, onClick: destroy.onSelect, children: destroy.label }) }),
     extras != null && /* @__PURE__ */ jsx9("span", { className: "ad-form-actions__extras", children: extras }),
-    /* @__PURE__ */ jsx9(Button, { onClick: onCancel, children: cancelLabel }),
-    /* @__PURE__ */ jsx9(Button, { variant: "main", type: main.onSelect ? "button" : "submit", onClick: main.onSelect, children: String(main.label) })
+    onCancel && /* @__PURE__ */ jsx9(Button, { onClick: onCancel, children: cancelLabel }),
+    main && /* @__PURE__ */ jsx9(Button, { variant: "main", type: main.onSelect ? "button" : "submit", onClick: main.onSelect, children: String(main.label) })
   ] });
 }
 var OverlayTextArea = forwardRef2(function OverlayTextArea2({ value, onChange, mirror, placeholder, ...rest }, ref) {
@@ -2404,7 +2404,7 @@ function Body({ rail, children }) {
   useKeyScroll(ref);
   return /* @__PURE__ */ jsx21("div", { ref, className: cx("ad-popover__body", rail && "ad-popover__rail"), children });
 }
-function PopoverHeader({ eyebrow, title, chip, lead, description, onRename, renameLabel, action, read: read2 }) {
+function PopoverHeader({ eyebrow, title, chip, lead, description, onRename, renameLabel, action, read: read2, suggestions }) {
   const own = useId5();
   const [draft, setDraft] = useState11(null);
   const id = useContext6(TitleId) ?? own;
@@ -2419,7 +2419,7 @@ function PopoverHeader({ eyebrow, title, chip, lead, description, onRename, rena
       }, children: /* @__PURE__ */ jsx21(TokenInput, { value: draft ?? String(title), onChange: setDraft, read: read2, onSubmit: (v) => {
         if (v !== String(title)) onRename(v);
         setDraft(null);
-      }, label: renameLabel ?? "Name" }) }) : onRename ? /* @__PURE__ */ jsx21(InlineEdit, { size: "title", value: String(title), onCommit: onRename, ariaLabel: renameLabel ?? "Name" }) : title }),
+      }, label: renameLabel ?? "Name", suggestions }) }) : onRename ? /* @__PURE__ */ jsx21(InlineEdit, { size: "title", value: String(title), onCommit: onRename, ariaLabel: renameLabel ?? "Name" }) : title }),
       action && /* @__PURE__ */ jsx21("span", { className: "ad-popover__action", children: /* @__PURE__ */ jsx21(ButtonSizeScope, { size: "row", children: action }) })
     ] }),
     description && /* @__PURE__ */ jsx21("p", { className: "ad-popover__description", children: description })
@@ -3457,7 +3457,7 @@ var ViewButton = forwardRef8(function ViewButton2({ label = "View", open, opens,
 function ToolbarSeparator() {
   return /* @__PURE__ */ jsx33("span", { className: "ad-toolbar__separator", role: "separator", "aria-orientation": "vertical" });
 }
-function ViewPopover({ open, onClose, anchor, builtInViews = [], savedViews, currentView, onPickView, onStarView, viewActions, onSaveView, saveScopes, renaming, onRenameView, onCancelRename, onReorderViews, searchAfter = 8, saveOff, query, rules, groupBy, sortBy, show, labels: l = {} }) {
+function ViewPopover({ open, onClose, anchor, builtInViews = [], savedViews, currentView, onPickView, onStarView, viewActions, builtInViewActions, onSaveView, saveScopes, renaming, onRenameView, onCancelRename, onReorderViews, searchAfter = 8, saveOff, query, rules, groupBy, sortBy, show, labels: l = {} }) {
   const L = { noSaved: "No saved views yet", noMatch: "No view by that name", or: "or", default: "Default", rename: "Rename", show: "Show", view: "View", builtInViews: "Views", savedViews: "Saved views", saveView: "Save this view\u2026", viewName: "View name", save: "Save", cancel: "Cancel", star: "Star", unstar: "Unstar", more: "More", filter: "Filter", groupBy: "Group by", sortBy: "Sort by", ascending: "Ascending", descending: "Descending", ...l };
   const SAVE = "__save";
   const [naming, setNaming] = useState20(false);
@@ -3499,7 +3499,17 @@ function ViewPopover({ open, onClose, anchor, builtInViews = [], savedViews, cur
   const [newName, setNewName] = useState20("");
   const viewsShown = builtInViews.length > 0 || savedViews != null;
   const views = [
-    ...builtInViews.map((v) => ({ id: v.id, label: String(v.label), group: savedViews ? L.builtInViews : void 0 })),
+    ...builtInViews.map((v) => ({
+      id: v.id,
+      label: String(v.label),
+      group: savedViews ? L.builtInViews : void 0,
+      hint: v.hint ?? (v.isDefault ? L.default : void 0),
+      hintControl: builtInViewActions ? /* @__PURE__ */ jsx33(IconButton, { label: `${L.more}: ${v.label}`, onClick: (e) => {
+        e.stopPropagation();
+        menuAnchor.current = e.currentTarget;
+        setMenuFor(v);
+      }, children: /* @__PURE__ */ jsx33(Icon, { job: "more" }) }) : void 0
+    })),
     ...(savedViews ?? []).map((v) => ({
       id: v.id,
       label: String(v.label),
@@ -3577,7 +3587,10 @@ function ViewPopover({ open, onClose, anchor, builtInViews = [], savedViews, cur
           /* @__PURE__ */ jsx33(Button, { variant: "main", disabled: !name.trim(), onClick: finishSave, children: L.save })
         ] })
       ] }),
-      menuFor && viewActions && /* @__PURE__ */ jsx33(Menu, { open: true, onClose: () => setMenuFor(null), anchor: menuAnchor, ariaLabel: String(menuFor.label), items: viewActions(menuFor) })
+      menuFor && (() => {
+        const fn = builtInViews.some((b) => b.id === menuFor.id) ? builtInViewActions : viewActions;
+        return fn ? /* @__PURE__ */ jsx33(Menu, { open: true, onClose: () => setMenuFor(null), anchor: menuAnchor, ariaLabel: String(menuFor.label), items: fn(menuFor) }) : null;
+      })()
     ] }),
     query && /* @__PURE__ */ jsxs30(PopoverSection, { label: L.filter, children: [
       query.vocabulary ? /* @__PURE__ */ jsx33(TokenInput, { read: { kind: "query", vocabulary: query.vocabulary }, label: L.filter, value: query.value, onChange: query.onChange, showResolved: false, suggestions: query.suggestions }) : /* @__PURE__ */ jsx33(TextField, { "aria-label": L.filter, placeholder: L.filter, value: query.value, onChange: (e) => query.onChange(e.target.value) }),
@@ -3597,7 +3610,52 @@ function ViewPopover({ open, onClose, anchor, builtInViews = [], savedViews, cur
         }
       ) })
     ] }) }),
-    show && show.length > 0 && /* @__PURE__ */ jsx33(PopoverSection, { label: L.show, children: show.map((s) => /* @__PURE__ */ jsx33(FieldRow, { label: s.label, children: s.kind === "switch" ? /* @__PURE__ */ jsx33(Switch, { checked: s.on, onChange: s.onChange, "aria-label": s.label }) : /* @__PURE__ */ jsx33(Select, { "aria-label": s.label, value: s.value, onChange: (e) => s.onChange(e.target.value), options: s.options }) }, s.id)) })
+    show && show.length > 0 && /* @__PURE__ */ jsx33(PopoverSection, { label: L.show, children: show.map((s) => s.kind === "order" ? /* @__PURE__ */ jsx33(OrderList, { label: s.label, items: s.items, onReorder: s.onReorder }, s.id) : /* @__PURE__ */ jsx33(FieldRow, { label: s.label, children: s.kind === "switch" ? /* @__PURE__ */ jsx33(Switch, { checked: s.on, onChange: s.onChange, "aria-label": s.label }) : /* @__PURE__ */ jsx33(Select, { "aria-label": s.label, value: s.value, onChange: (e) => s.onChange(e.target.value), options: s.options }) }, s.id)) })
+  ] });
+}
+function OrderList({ label, items, onReorder }) {
+  const [drag, setDrag] = useState20(null);
+  const [over, setOver] = useState20(null);
+  const ids = items.map((i) => i.id);
+  return /* @__PURE__ */ jsxs30("div", { className: "ad-view-order", role: "group", "aria-label": label, children: [
+    /* @__PURE__ */ jsx33("div", { className: "ad-view-order__label", children: label }),
+    /* @__PURE__ */ jsx33("ul", { className: "ad-view-order__list", children: items.map((it) => /* @__PURE__ */ jsxs30(
+      "li",
+      {
+        className: "ad-view-order__row",
+        draggable: true,
+        ...dropLineProps(over === it.id && drag != null && drag !== it.id ? "before" : null),
+        onDragStart: (e) => {
+          e.dataTransfer.effectAllowed = "move";
+          setDrag(it.id);
+        },
+        onDragOver: (e) => {
+          if (drag) {
+            e.preventDefault();
+            setOver(it.id);
+          }
+        },
+        onDragEnd: () => {
+          setDrag(null);
+          setOver(null);
+        },
+        onDrop: (e) => {
+          e.preventDefault();
+          if (drag && drag !== it.id) {
+            const n = ids.filter((x) => x !== drag);
+            n.splice(n.indexOf(it.id), 0, drag);
+            onReorder(n);
+          }
+          setDrag(null);
+          setOver(null);
+        },
+        children: [
+          /* @__PURE__ */ jsx33(DragHandle, { label: `Drag ${it.label}` }),
+          /* @__PURE__ */ jsx33("span", { className: "ad-view-order__words", children: it.label })
+        ]
+      },
+      it.id
+    )) })
   ] });
 }
 
