@@ -3507,7 +3507,7 @@ function ViewPopover({ open, onClose, anchor, builtInViews = [], savedViews, cur
       ...onStarView ? { leadControl: /* @__PURE__ */ jsx33(IconButton, { label: v.starred === false ? L.star : L.unstar, "aria-pressed": v.starred !== false, onClick: (e) => {
         e.stopPropagation();
         onStarView(v.id, v.starred === false);
-      }, children: /* @__PURE__ */ jsx33(Icon, { job: "star", fill: v.starred !== false }) }) } : { lead: /* @__PURE__ */ jsx33(Icon, { job: "star", fill: v.starred !== false }) },
+      }, children: /* @__PURE__ */ jsx33(Icon, { job: "star", fill: v.starred !== false }) }) } : {},
       hintControl: viewActions ? /* @__PURE__ */ jsx33(IconButton, { label: `${L.more}: ${v.label}`, onClick: (e) => {
         e.stopPropagation();
         menuAnchor.current = e.currentTarget;
