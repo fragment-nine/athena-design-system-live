@@ -1255,7 +1255,8 @@ button:hover > .ad-project-pill:not(.ad-project-pill--current) { color: var(--ac
 .ad-picklist__over > * { visibility: hidden; }
 .ad-picklist__over > .ad-picklist__control { visibility: visible; pointer-events: auto; }
 .ad-picklist__place { visibility: hidden; }
-.ad-picklist__group { padding: var(--space-3) var(--space-3) var(--space-1); font-family: var(--font-display); font-weight: 600; font-size: var(--text-xs); letter-spacing: var(--track-label); text-transform: uppercase; color: var(--text-muted); }
+/* A group's heading sits on the same left edge as the rows under it (ruled 2026-10-27, Jeremy: "the objects under a sub header should not be to the left of the title"); it reads as a title, in the primary ink. */
+.ad-picklist__group { padding: var(--space-3) var(--space-2) var(--space-1); font-family: var(--font-display); font-weight: 600; font-size: var(--text-xs); letter-spacing: var(--track-label); text-transform: uppercase; color: var(--text-primary); }
 .ad-picklist__option, .ad-picklist__over {
   display: flex; align-items: center; gap: var(--space-3); box-sizing: border-box; height: var(--h-row); padding: 0 var(--space-2);
   border-radius: var(--radius-page); font-family: var(--font-body); font-size: var(--text-base); color: var(--text-primary); cursor: pointer;
@@ -1348,7 +1349,7 @@ button:hover > .ad-project-pill:not(.ad-project-pill--current) { color: var(--ac
 .ad-popover__header { margin-right: var(--space-8); margin-bottom: var(--space-4); }
 .ad-popover__eyebrow, .ad-popover__section-label {
   margin: 0; font-family: var(--font-display); font-weight: 600; font-size: var(--text-xs);
-  letter-spacing: var(--track-label); text-transform: uppercase; color: var(--text-muted);
+  letter-spacing: var(--track-label); text-transform: uppercase; color: var(--text-primary); /* a title reads as one: the primary ink (2026-10-27, Jeremy: "Title text feels too dim") */
 }
 .ad-popover__chip { margin-top: var(--space-1); display: flex; }
 .ad-popover__title-row { display: flex; align-items: center; gap: var(--space-3); margin-top: var(--space-1); }
