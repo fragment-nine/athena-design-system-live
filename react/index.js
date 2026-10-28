@@ -2228,7 +2228,7 @@ function TokenInput({ value, onChange, read: read2, onSubmit, label, placeholder
     const frag = document.createDocumentFragment();
     let i = 0;
     for (const t of tokens) {
-      const live = at != null && at >= t.start && at <= t.end;
+      const live = at != null && at > t.start && at < t.end;
       if (live) continue;
       if (t.start > i) frag.append(document.createTextNode(value.slice(i, t.start)));
       const pill = document.createElement("span");
