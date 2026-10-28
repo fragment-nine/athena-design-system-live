@@ -2206,10 +2206,12 @@ function TodoRow({ ringProps, factProps, dragging, name, priority, done, onTick,
   const roleWords = Array.isArray(role) ? role.join(" \xB7 ") : role;
   const plain = due ? /* @__PURE__ */ jsx17("span", { ...d("date"), className: "ad-row__fact-hook", children: /* @__PURE__ */ jsx17(RowDate, { due, today, done, icon: "calendar", repeat }) }) : null;
   const date = plain && onPressDate ? /* @__PURE__ */ jsx17(RowPress, { label: pressLabels?.date ?? "Change the date", onPress: onPressDate, children: plain }) : plain;
-  const extras = pastDeadline || roleWords || deliverable;
+  const loneRepeat = repeat && !due ? /* @__PURE__ */ jsx17("span", { ...d("repeat"), className: "ad-row__fact", role: "img", "aria-label": String(repeat), title: String(repeat), children: /* @__PURE__ */ jsx17(Icon, { job: "repeat", size: "sm" }) }) : null;
+  const extras = loneRepeat || pastDeadline || roleWords || deliverable;
   const meta = date || dept || extras ? /* @__PURE__ */ jsxs14(Fragment5, { children: [
     date,
     dept && /* @__PURE__ */ jsx17(Department, { dept: dept.dept, name: dept.name, onPress: onPressDept, pressLabel: pressLabels?.dept }),
+    loneRepeat,
     pastDeadline && /* @__PURE__ */ jsx17("span", { ...d("pastDeadline"), className: "ad-row__fact ad-row__fact--late", role: "img", "aria-label": pastDeadlineLabel, children: /* @__PURE__ */ jsx17(Icon, { job: "flag", size: "sm" }) }),
     roleWords && /* @__PURE__ */ jsx17("span", { className: "ad-row__fact ad-row__fact--cut", title: roleWords, children: /* @__PURE__ */ jsx17("span", { className: "ad-row__fact-word", children: roleWords }) }),
     deliverable && (onPressDeliverable ? /* @__PURE__ */ jsx17(RowPress, { label: pressLabels?.deliverable ?? `Open ${deliverable}`, onPress: onPressDeliverable, children: /* @__PURE__ */ jsxs14("span", { className: "ad-row__fact ad-row__fact--cut", title: String(deliverable), children: [
