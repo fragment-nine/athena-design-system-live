@@ -1235,6 +1235,9 @@ button:hover > .ad-project-pill:not(.ad-project-pill--current) { color: var(--ac
 .ad-page-header__menu { position: relative; display: inline-flex; }
 .ad-page-header__mark { position: absolute; top: var(--space-1); right: var(--space-1); width: var(--space-2); height: var(--space-2); border-radius: var(--radius-round); background: var(--text-primary); pointer-events: none; }
 
+/* The header's icon buttons (gear, search, pop out, help) in the primary ink at rest, as the toolbar's and the rail's (2026-10-27, Jeremy: "brightness missed the top right items"). */
+.ad-header-actions .ad-icon-button { color: var(--text-primary); }
+
 /* src/components/Pickers/Pickers.css */
 /* PickList and DatePicker */
 .ad-picklist { width: var(--w-menu); }
