@@ -1476,19 +1476,9 @@ button.ad-row__name:focus-visible { outline: none; box-shadow: var(--ring-select
 .ad-row__trail .ad-button--quiet { background: transparent; }
 .ad-row .ad-inline-edit.ad-row__name { margin: 0; padding: 0 var(--space-1); }
 .ad-row__lead { gap: var(--space-2); }
-/* DragHandle (ruled 2026-10-26): six dots in two columns of three, muted ink, coral under the cursor. Its height follows where it
-   sits, as a button's does: row size (24) in a row's lead and in a table cell, so it never grows a row. */
-.ad-drag-handle {
   display: inline-flex; align-items: center; justify-content: center; flex: none; box-sizing: border-box; margin: 0; padding: 0; border: 0;
   border-radius: var(--radius-page); background: transparent; color: var(--text-muted); cursor: grab; touch-action: none;
 }
-.ad-drag-handle--md { width: var(--target-min); height: var(--h-btn); }
-.ad-drag-handle--bar { width: var(--target-min); height: var(--h-btn-bar); }
-.ad-drag-handle--row, .ad-table td .ad-drag-handle, .ad-table th .ad-drag-handle { width: var(--target-min); height: var(--h-btn-row); }
-.ad-drag-handle svg { width: var(--icon-md); height: var(--icon-md); }
-.ad-drag-handle:hover { color: var(--accent); }
-.ad-drag-handle:active { cursor: grabbing; }
-.ad-drag-handle:focus-visible { outline: none; box-shadow: var(--ring-select); }
 
 /* A fact's hook wrapper: no look of its own. */
 .ad-row__fact-hook { display: contents; }

@@ -1183,9 +1183,6 @@ var Place = createContext3("md");
 function ButtonSizeScope({ size, children }) {
   return /* @__PURE__ */ jsx6(Place.Provider, { value: size, children });
 }
-function useButtonSize() {
-  return useContext3(Place);
-}
 var Button = forwardRef(function Button2({ variant = "quiet", icon, face, dot, danger, active, block, unavailable, className, type = "button", children, ...rest }, ref) {
   const size = useContext3(Place);
   const why = useTooltip(unavailable);
@@ -1857,11 +1854,6 @@ var Row = forwardRef5(function Row2({ name, meta, lead, status, dates, tags, peo
     }
   );
 });
-var DragHandle = forwardRef5(function DragHandle2({ label, handleProps }, ref) {
-  const size = useButtonSize();
-  const { className: _c, style: _s, ...hooks } = handleProps ?? {};
-  return /* @__PURE__ */ jsx17("button", { ref, type: "button", ...hooks, "aria-label": label, className: cx("ad-drag-handle", `ad-drag-handle--${size}`), children: /* @__PURE__ */ jsx17(Icon, { job: "drag" }) });
-});
 function RowPress({ label, onPress, children }) {
   return /* @__PURE__ */ jsx17("button", { type: "button", "aria-label": label, onClick: (e) => {
     e.stopPropagation();
@@ -1933,7 +1925,7 @@ function TodoCheck({ hooks, checked, onChange, priority = 4, ariaLabel, disabled
     }
   );
 }
-function TodoRow({ ringProps, factProps, dragging, handle, name, priority, done, onTick, due, today, dept, who, selected, onOpen, completeLabel = "Complete", unacknowledged, onAcknowledge, acknowledgeLabel = "Acknowledge", repeat, pastDeadline, pastDeadlineLabel = "Deadline passed", role, deliverable, project, picking, onPressDate, onPressWho, onPressDeliverable, pressLabels, onRename, onPressProject, onPressDept, rowProps, cells, ring = true, whoMax }) {
+function TodoRow({ ringProps, factProps, dragging, name, priority, done, onTick, due, today, dept, who, selected, onOpen, completeLabel = "Complete", unacknowledged, onAcknowledge, acknowledgeLabel = "Acknowledge", repeat, pastDeadline, pastDeadlineLabel = "Deadline passed", role, deliverable, project, picking, onPressDate, onPressWho, onPressDeliverable, pressLabels, onRename, onPressProject, onPressDept, rowProps, cells, ring = true, whoMax }) {
   const d = (k) => factProps?.[k] ? Object.fromEntries(Object.entries(factProps[k]).filter(([n]) => n.startsWith("data-"))) : {};
   const roleWords = Array.isArray(role) ? role.join(" \xB7 ") : role;
   const plain = due ? /* @__PURE__ */ jsx17("span", { ...d("date"), className: "ad-row__fact-hook", children: /* @__PURE__ */ jsx17(RowDate, { due, today, done, icon: "calendar" }) }) : null;
@@ -1969,7 +1961,6 @@ function TodoRow({ ringProps, factProps, dragging, handle, name, priority, done,
       renameLabel: onRename ? String(name) : void 0,
       dragging,
       lead: /* @__PURE__ */ jsxs14(Fragment5, { children: [
-        handle && /* @__PURE__ */ jsx17(DragHandle, { label: handle.label, handleProps: handle.handleProps }),
         picking && /* @__PURE__ */ jsx17(Checkbox, { "aria-label": picking.label ?? `Pick: ${name}`, checked: picking.picked, onChange: picking.onChange }),
         ring && /* @__PURE__ */ jsx17(TodoCheck, { hooks: ringProps, checked: done, onChange: onTick, priority, ariaLabel: `${completeLabel}: ${name}`, unacknowledged, onAcknowledge, acknowledgeLabel: `${acknowledgeLabel}: ${name}` })
       ] }),
@@ -3435,7 +3426,7 @@ function Toolbar({ children, end, ariaLabel, className }) {
     end && /* @__PURE__ */ jsx33("div", { className: "ad-toolbar__end", children: end })
   ] }) });
 }
-var ViewButton = forwardRef8(function ViewButton2({ label = "View", open, opens, narrowed, onClick }, ref) {
+var ViewButton = forwardRef8(function ViewButton2({ label = "No view", open, opens, narrowed, onClick }, ref) {
   return /* @__PURE__ */ jsxs30(
     Button,
     {
@@ -3619,7 +3610,7 @@ function OrderList({ label, items, onReorder }) {
   const ids = items.map((i) => i.id);
   return /* @__PURE__ */ jsxs30("div", { className: "ad-view-order", role: "group", "aria-label": label, children: [
     /* @__PURE__ */ jsx33("div", { className: "ad-view-order__label", children: label }),
-    /* @__PURE__ */ jsx33("ul", { className: "ad-view-order__list", children: items.map((it) => /* @__PURE__ */ jsxs30(
+    /* @__PURE__ */ jsx33("ul", { className: "ad-view-order__list", children: items.map((it) => /* @__PURE__ */ jsx33(
       "li",
       {
         className: "ad-view-order__row",
@@ -3649,10 +3640,7 @@ function OrderList({ label, items, onReorder }) {
           setDrag(null);
           setOver(null);
         },
-        children: [
-          /* @__PURE__ */ jsx33(DragHandle, { label: `Drag ${it.label}` }),
-          /* @__PURE__ */ jsx33("span", { className: "ad-view-order__words", children: it.label })
-        ]
+        children: /* @__PURE__ */ jsx33("span", { className: "ad-view-order__words", children: it.label })
       },
       it.id
     )) })
@@ -5121,7 +5109,6 @@ export {
   Dials,
   Dot,
   DragBand,
-  DragHandle,
   DropLine,
   DualUnit,
   EmptyState,
