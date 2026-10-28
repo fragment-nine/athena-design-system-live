@@ -4466,9 +4466,11 @@ function TimeGrid({ startHour, endHour, bookings = [], columns, now, hourLabel =
     el.scrollTop = Math.max(0, (scrollTo - startHour) * hourPx);
   }, [scrollTo, startHour, hours]);
   const pressAt = (colId) => (e) => {
-    if (!onPressAt || e.target !== e.currentTarget) return;
+    if (!onPressAt) return;
+    const t = e.target;
+    if (t !== e.currentTarget && !t.classList.contains("ad-time-grid__hour")) return;
     const r = e.currentTarget.getBoundingClientRect();
-    const h = startHour + (e.clientY - r.top) / r.height * hours;
+    const h = startHour + (r.height > 0 ? (e.clientY - r.top) / r.height * hours : 0);
     onPressAt(colId, Math.round(h * 12) / 12);
   };
   const at = (h) => `calc(var(--ad-hour) * ${Math.max(0, Math.min(hours, h - startHour))})`;
@@ -4486,24 +4488,22 @@ function TimeGrid({ startHour, endHour, bookings = [], columns, now, hourLabel =
     cols.map((c) => /* @__PURE__ */ jsxs37("div", { className: cx("ad-time-grid__column", over === c.id && "ad-time-grid__column--over"), role: "group", "aria-label": c.label || void 0, children: [
       c.label && /* @__PURE__ */ jsxs37("span", { className: "ad-time-grid__day", children: [
         c.label,
-        c.marks != null && /* @__PURE__ */ jsx41("span", { className: "ad-time-grid__marks", children: c.marks })
+        c.marks != null && /* @__PURE__ */ jsx41("span", { className: "ad-time-grid__marks", children: c.marks }),
+        c.figure != null && /* @__PURE__ */ jsx41("span", { className: "ad-time-grid__figure", children: c.figure })
       ] }),
       allDayRows > 0 && /* @__PURE__ */ jsx41("div", { role: "group", ...hooksOf2(columnProps?.(c.id)), className: "ad-time-grid__allday", children: (c.allDay ?? []).map((item) => {
         const hooks = hooksOf2(itemProps?.(item));
         const cls = cx("ad-month__bar", "ad-time-grid__item", item.unconfirmed && "ad-month__bar--unconfirmed");
-        const style = { ...barColour(item.color, hueOf(item.color)) };
-        return onOpen ? /* @__PURE__ */ jsxs37("button", { type: "button", ...hooks, className: cls, style, onClick: (e) => {
+        const style = { ...barColour(item.color, hueOf(item.color)), ...item.span && item.span > 1 ? { ["--ad-span"]: item.span } : {} };
+        const inner = /* @__PURE__ */ jsxs37(Fragment16, { children: [
+          code(item),
+          item.icon ? slotIcon(item.icon, { size: "sm" }) : /* @__PURE__ */ jsx41(DeptGlyph, { hue: item.color }),
+          /* @__PURE__ */ jsx41("span", { children: item.label })
+        ] });
+        return onOpen ? /* @__PURE__ */ jsx41("button", { type: "button", ...hooks, "data-span": item.span && item.span > 1 ? item.span : void 0, className: cls, style, onClick: (e) => {
           hooks.onClick?.(e);
           onOpen(item);
-        }, children: [
-          code(item),
-          /* @__PURE__ */ jsx41(DeptGlyph, { hue: item.color }),
-          /* @__PURE__ */ jsx41("span", { children: item.label })
-        ] }, item.id) : /* @__PURE__ */ jsxs37("span", { ...hooks, className: cls, style, children: [
-          code(item),
-          /* @__PURE__ */ jsx41(DeptGlyph, { hue: item.color }),
-          /* @__PURE__ */ jsx41("span", { children: item.label })
-        ] }, item.id);
+        }, children: inner }, item.id) : /* @__PURE__ */ jsx41("span", { ...hooks, "data-span": item.span && item.span > 1 ? item.span : void 0, className: cls, style, children: inner }, item.id);
       }) }),
       /* @__PURE__ */ jsxs37("div", { className: "ad-time-grid__body", onClick: pressAt(c.id), children: [
         (c.blocks ?? []).map((b) => /* @__PURE__ */ jsx41("div", { className: "ad-time-grid__slot", style: { top: at(b.start), height: `calc(${at(b.end)} - ${at(b.start)})` }, children: b.node }, b.id)),

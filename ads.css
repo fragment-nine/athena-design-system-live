@@ -594,6 +594,14 @@ button.ad-year__day:focus-visible { outline: none; box-shadow: var(--ring-select
 .ad-time-grid--scrolls { max-height: calc(var(--ad-hour) * var(--ad-visible-hours) + var(--ad-hour) * min(1, var(--ad-allday-rows))); overflow-y: auto; }
 .ad-time-grid__body { cursor: default; }
 
+/* The time grid's asks of 2026-10-27: day headings held at the top while the hours scroll; an all-day item spanning days; a figure in the heading. */
+.ad-time-grid--scrolls { padding-top: 0; }
+.ad-time-grid--scrolls .ad-time-grid__day { position: sticky; top: 0; bottom: auto; z-index: 2; display: flex; align-items: center; height: var(--h-btn-row); padding: 0 var(--space-2); background: var(--bg-base); }
+.ad-time-grid--scrolls .ad-time-grid__gutter::before { content: ''; display: block; height: var(--h-btn-row); }
+.ad-time-grid__item { --ad-span: 1; }
+.ad-time-grid__item[data-span] { position: relative; z-index: 1; width: calc(var(--ad-span) * 100% + (var(--ad-span) - 1) * var(--border-w)); }
+.ad-time-grid__figure { margin-left: var(--space-2); font-family: var(--font-mono); text-transform: none; color: var(--text-muted); }
+
 /* src/components/Card/Card.css */
 /* Card: a board tile, or a dashboard widget as the Dashboard card draws it (small caps title, More at the right in 600). */
 .ad-card { --ad-tray: var(--bg-base); }
