@@ -1116,7 +1116,7 @@ button.ad-contents__button:focus-visible { outline: none; box-shadow: var(--ring
 .ad-rail__item:hover { color: var(--accent); }
 .ad-rail__item:focus-visible, .ad-rail__project:focus-visible { outline: none; box-shadow: var(--ring-select); }
 .ad-rail__item[aria-current="page"] { background: var(--tint-selected); color: var(--text-primary); }
-.ad-rail__x { width: var(--icon-md); height: var(--icon-md); background: url('assets/logos/loudbox-x.png') center / contain no-repeat; }
+.ad-rail__x { display: inline-block; flex: none; width: var(--icon-md); height: var(--icon-md); background: url('assets/logos/loudbox-x.png') center / contain no-repeat; }
 .ad-rail__project { margin: 0; padding: var(--space-hair); border: 0; border-radius: var(--radius-page); background: transparent; cursor: pointer; }
 .ad-rail__fold svg { width: var(--icon-md); height: var(--icon-md); }
 .ad-project-pill {

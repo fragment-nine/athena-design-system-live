@@ -217,8 +217,9 @@ function usePlacement(open, anchor, floating, placement) {
       if (left + fw > vw - edge) left = a.right - fw;
       if (top + fh > vh - edge && a.top - gap - fh >= edge) top = a.top - gap - fh;
     }
-    const next = { top: Math.round(Math.max(edge, top)), left: Math.round(Math.max(edge, left)) };
-    setPos((p) => p && p.top === next.top && p.left === next.left ? p : next);
+    const placedTop = Math.round(Math.max(edge, top));
+    const next = { top: placedTop, left: Math.round(Math.max(edge, left)), maxHeight: Math.max(0, Math.round(vh - placedTop - edge)) };
+    setPos((p) => p && p.top === next.top && p.left === next.left && p.maxHeight === next.maxHeight ? p : next);
   };
   useIsoLayoutEffect(() => {
     if (open) place.current();
@@ -240,7 +241,7 @@ function usePlacement(open, anchor, floating, placement) {
       win.removeEventListener("scroll", run, true);
     };
   }, [open]);
-  return pos ? { position: "fixed", top: pos.top, left: pos.left } : { position: "fixed", top: 0, left: 0, visibility: "hidden" };
+  return pos ? { position: "fixed", top: pos.top, left: pos.left, maxHeight: pos.maxHeight } : { position: "fixed", top: 0, left: 0, visibility: "hidden" };
 }
 var layers = [];
 var listening = /* @__PURE__ */ new Map();
