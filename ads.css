@@ -1149,7 +1149,8 @@ button:hover > .ad-project-pill:not(.ad-project-pill--current) { color: var(--ac
 .ad-side__fold:hover { color: var(--accent); }
 .ad-side__fold:focus-visible { outline: none; box-shadow: var(--ring-select); }
 .ad-side__list li[draggable] { cursor: grab; }
-.ad-project-pill--press { margin: 0; border: 0; font: inherit; cursor: pointer; }
+/* A pressable pill (a row's, a board card's) keeps the pill's own type, the menu's size (fixed 2026-10-27, Jeremy: "you didn't make the project pills smaller"). */
+.ad-project-pill--press { margin: 0; border: 0; font-family: var(--font-mono); font-size: var(--text-xs); line-height: 1; cursor: pointer; }
 .ad-project-pill--press:hover { color: var(--accent); }
 .ad-project-pill--press:focus-visible { outline: none; box-shadow: var(--ring-select); }
 /* The row pieces (MenuPieces.tsx): a row is its button and a trail of small buttons; rows under it sit indented; the one separator is
