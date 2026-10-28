@@ -149,7 +149,7 @@
   --h-footer: 28px;
   --numeral-contents: 26px;
   --h-seg: 26px;
-  --check-size: 16px;
+  --check-size: 18px;
   --knob-size: 14px;
   --dot-size: 6px;
   --w-dialog: 400px;
@@ -187,6 +187,7 @@
   --map-pin-line: 1.5;
   --h-dialog-cap: 82vh;
   --border-w: 1px;
+  --border-w-ring: 2px;
   --border-w-strong: 1.5px;
   --w-stripe: 3px;
   --bw-select: 2px;
@@ -220,7 +221,6 @@
   --text-display: 56px;
   --size-hero: 88px;
   --text-13: 13px;
-  --text-16: 16px;
   --lh-none: 1;
   --lh-tight: 1.25;
   --lh-normal: 1.5;
@@ -1433,13 +1433,13 @@ button:hover > .ad-project-pill:not(.ad-project-pill--current) { color: var(--ac
 .ad-row--opens:hover { background: var(--tint-hover); }
 .ad-row--opens:hover .ad-row__name { color: var(--accent); }
 .ad-row[data-selected] { box-shadow: var(--ring-select); border-radius: var(--radius-page); }
-button.ad-row__name { margin: 0; padding: 0; border: 0; background: transparent; font: inherit; font-size: var(--text-16); line-height: var(--lh-tight); color: inherit; text-align: left; cursor: pointer; }
+button.ad-row__name { margin: 0; padding: 0; border: 0; background: transparent; font: inherit; font-size: var(--text-base); line-height: var(--lh-tight); color: inherit; text-align: left; cursor: pointer; }
 button.ad-row__name:focus-visible { outline: none; box-shadow: var(--ring-select); border-radius: var(--radius-page); }
 .ad-row[data-picked] { background: var(--tint-selected); }
 .ad-row__lead { display: inline-flex; align-items: center; flex: none; }
 .ad-row__body { flex: 1; min-width: 0; display: flex; flex-direction: column; }
-/* A row's name is 16 and its second line 13, two points up each (ruled 2026-10-27, Jeremy: "body font on todos is too small. Needs to go up a couple points"). */
-.ad-row__name { font-size: var(--text-16); line-height: var(--lh-tight); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+/* One body face and one body size across the build, the alerts' (ruled 2026-10-28, Jeremy: "There is ONE body font across this build, and only one"); the second line is 13. */
+.ad-row__name { font-size: var(--text-base); line-height: var(--lh-tight); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .ad-row--heading .ad-row__name { font-family: var(--font-display); font-weight: 600; }
 /* A heading row (approved Rows card): name, then its status beside it, the review date at the far right. */
 .ad-row--heading .ad-row__body { flex: none; }
@@ -1451,6 +1451,9 @@ button.ad-row__name:focus-visible { outline: none; box-shadow: var(--ring-select
 .ad-row__trail { gap: var(--space-1); }
 .ad-row-date { display: inline-flex; align-items: center; gap: var(--space-1); font-family: var(--font-body); font-size: var(--text-13); color: var(--text-secondary); white-space: nowrap; }
 .ad-row-date--late { color: var(--status-error-ink); }
+/* Today green, late red, the glyphs in the date's colour (ruled 2026-10-28, Jeremy, from Todoist). */
+.ad-row-date--today { color: var(--status-good); }
+.ad-row-date__repeat { margin-left: calc(var(--space-1) * -0.5); }
 /* A figure that is only a number with its unit or zone is mono; one with a word stays the body face (2026-10-27). */
 .ad-row-figure--number { font-family: var(--font-mono); }
 /* The countdown (ruled 2026-10-26, Athena's milestone card): body face, regular, text-secondary; red once passed. */
@@ -1458,13 +1461,16 @@ button.ad-row__name:focus-visible { outline: none; box-shadow: var(--ring-select
 .ad-row-date--countdown-base { font-size: var(--text-base); }
 .ad-row-date--countdown-small { font-size: var(--text-xs); }
 .ad-row-date__icon { display: inline-flex; }
+/* The date's glyphs take the date's colour: green today, red late (ruled 2026-10-28, Jeremy). */
+.ad-row__meta .ad-row-date--late svg, .ad-row__meta .ad-row-date--today svg, .ad-row-date--late svg, .ad-row-date--today svg { color: currentColor; }
 .ad-row-date__icon svg { width: var(--icon-sm); height: var(--icon-sm); }
 
 .ad-todo-check {
   --ad-ring: var(--text-muted);
   display: inline-flex; align-items: center; justify-content: center; flex: none; box-sizing: border-box;
   width: var(--check-size); height: var(--check-size); margin: 0; padding: 0; border: 0; border-radius: var(--radius-round);
-  background: transparent; box-shadow: inset 0 0 0 var(--border-w-strong) var(--ad-ring); color: transparent; cursor: pointer;
+  /* Todoist's ring (ruled 2026-10-28, Jeremy): 2px of its colour, a faint tint of it inside. */
+  background: color-mix(in srgb, var(--ad-ring) 14%, transparent); box-shadow: inset 0 0 0 var(--border-w-ring) var(--ad-ring); color: transparent; cursor: pointer;
 }
 .ad-todo-check--p1 { --ad-ring: var(--priority-p1); }
 .ad-todo-check--p2 { --ad-ring: var(--priority-p2); }
@@ -1985,10 +1991,10 @@ button.ad-milestone:focus-visible { outline: none; box-shadow: var(--ring-select
 .ad-count-pill--p3 { background: var(--priority-p3); }
 .ad-count-pill--p4 { background: var(--priority-p4); }
 .ad-alert { display: flex; align-items: center; gap: var(--space-3); min-height: var(--h-row); padding: 0 var(--space-3); border-top: var(--border-w) solid var(--border); font-size: var(--text-base); }
-.ad-alert__ring { width: var(--check-size); height: var(--check-size); flex: none; box-sizing: border-box; border-radius: var(--radius-round); box-shadow: inset 0 0 0 var(--border-w-strong) var(--text-muted); }
-.ad-alert__ring--p1 { box-shadow: inset 0 0 0 var(--border-w-strong) var(--priority-p1); }
-.ad-alert__ring--p2 { box-shadow: inset 0 0 0 var(--border-w-strong) var(--priority-p2); }
-.ad-alert__ring--p3 { box-shadow: inset 0 0 0 var(--border-w-strong) var(--priority-p3); }
+.ad-alert__ring { width: var(--check-size); height: var(--check-size); flex: none; box-sizing: border-box; border-radius: var(--radius-round); box-shadow: inset 0 0 0 var(--border-w-ring) var(--text-muted); background: color-mix(in srgb, var(--text-muted) 14%, transparent); } /* one ring look, a todo's (2026-10-28) */
+.ad-alert__ring--p1 { box-shadow: inset 0 0 0 var(--border-w-ring) var(--priority-p1); background: color-mix(in srgb, var(--priority-p1) 14%, transparent); }
+.ad-alert__ring--p2 { box-shadow: inset 0 0 0 var(--border-w-ring) var(--priority-p2); background: color-mix(in srgb, var(--priority-p2) 14%, transparent); }
+.ad-alert__ring--p3 { box-shadow: inset 0 0 0 var(--border-w-ring) var(--priority-p3); background: color-mix(in srgb, var(--priority-p3) 14%, transparent); }
 .ad-alert__sentence { min-width: 0; line-height: var(--lh-tight); color: var(--text-primary); }
 .ad-alert__number { font-family: var(--font-mono); font-size: var(--text-xs); color: var(--text-secondary); white-space: nowrap; }
 .ad-alert__actions { display: flex; gap: var(--space-2); flex: none; margin-left: auto; }
