@@ -4039,26 +4039,26 @@ function Board({ children, ariaLabel, className }) {
   return /* @__PURE__ */ jsx36("div", { className: cx("ad-board", className), role: "region", "aria-label": ariaLabel, children });
 }
 function BoardLane({ title, mark, onTitle, titleLabel, children, className }) {
-  return /* @__PURE__ */ jsxs32("section", { className: cx("ad-lane", className), children: [
-    /* @__PURE__ */ jsxs32("h3", { className: "ad-lane__heading", children: [
+  return /* @__PURE__ */ jsxs32("section", { className: cx("ad-board-lane", className), children: [
+    /* @__PURE__ */ jsxs32("h3", { className: "ad-board-lane__heading", children: [
       mark,
-      onTitle ? /* @__PURE__ */ jsx36("button", { type: "button", className: "ad-lane__name ad-lane__name--press", "aria-label": titleLabel, onClick: onTitle, children: title }) : /* @__PURE__ */ jsx36("span", { className: "ad-lane__name", children: title })
+      onTitle ? /* @__PURE__ */ jsx36("button", { type: "button", className: "ad-board-lane__name ad-board-lane__name--press", "aria-label": titleLabel, onClick: onTitle, children: title }) : /* @__PURE__ */ jsx36("span", { className: "ad-board-lane__name", children: title })
     ] }),
-    /* @__PURE__ */ jsx36("div", { className: "ad-lane__cards", children })
+    /* @__PURE__ */ jsx36("div", { className: "ad-board-lane__cards", children })
   ] });
 }
 function BoardCardMeta({ date, icon, face, code: code2, marks, role, deliverable }) {
-  return /* @__PURE__ */ jsxs32("div", { className: "ad-lane__card-meta", children: [
+  return /* @__PURE__ */ jsxs32("div", { className: "ad-board-lane__card-meta", children: [
     date,
-    icon && /* @__PURE__ */ jsx36("span", { "aria-hidden": "true", className: "ad-lane__card-icon", children: slotIcon(icon, { size: "sm" }) }),
-    marks && /* @__PURE__ */ jsx36("span", { className: "ad-lane__card-marks", children: marks }),
-    role && /* @__PURE__ */ jsx36("span", { className: "ad-lane__card-fact", title: String(role), children: /* @__PURE__ */ jsx36("span", { className: "ad-lane__card-fact-word", children: String(role) }) }),
-    deliverable && /* @__PURE__ */ jsxs32("span", { className: "ad-lane__card-fact ad-lane__card-fact--cut", title: String(deliverable), children: [
+    icon && /* @__PURE__ */ jsx36("span", { "aria-hidden": "true", className: "ad-board-lane__card-icon", children: slotIcon(icon, { size: "sm" }) }),
+    marks && /* @__PURE__ */ jsx36("span", { className: "ad-board-lane__card-marks", children: marks }),
+    role && /* @__PURE__ */ jsx36("span", { className: "ad-board-lane__card-fact", title: String(role), children: /* @__PURE__ */ jsx36("span", { className: "ad-board-lane__card-fact-word", children: String(role) }) }),
+    deliverable && /* @__PURE__ */ jsxs32("span", { className: "ad-board-lane__card-fact ad-board-lane__card-fact--cut", title: String(deliverable), children: [
       /* @__PURE__ */ jsx36(Icon, { job: "kind-deliverable", size: "sm" }),
-      /* @__PURE__ */ jsx36("span", { className: "ad-lane__card-fact-word", children: String(deliverable) })
+      /* @__PURE__ */ jsx36("span", { className: "ad-board-lane__card-fact-word", children: String(deliverable) })
     ] }),
-    code2 && /* @__PURE__ */ jsx36("span", { className: "ad-lane__card-code", children: code2 }),
-    face && /* @__PURE__ */ jsx36("span", { className: "ad-lane__card-face", children: face })
+    code2 && /* @__PURE__ */ jsx36("span", { className: "ad-board-lane__card-code", children: code2 }),
+    face && /* @__PURE__ */ jsx36("span", { className: "ad-board-lane__card-face", children: face })
   ] });
 }
 function DropLine() {

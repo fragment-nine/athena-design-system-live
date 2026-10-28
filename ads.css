@@ -1,8 +1,7 @@
-/* Athena Design System — fonts.css: the three faces (Work Sans headers, Instrument Sans body, IBM Plex Mono numbers and subtitles), self-hosted, latin subset, SIL OFL 1.1 (fonts/LICENSE.txt). Generated from fonts/fonts.css; do not edit. Import order, once per app, all four: fonts.css, tokens.css, patterns.css, components.css. */
+/* Athena Design System — fonts.css: the three faces (Work Sans headers, Roboto body, IBM Plex Mono numbers and subtitles), self-hosted, latin subset, SIL OFL 1.1 (fonts/LICENSE.txt). Generated from fonts/fonts.css; do not edit. Import order, once per app, all four: fonts.css, tokens.css, patterns.css, components.css. */
 @font-face { font-family: 'Work Sans'; font-style: normal; font-weight: 600; font-display: swap; src: url('fonts/WorkSans-600.woff2') format('woff2'); }
 @font-face { font-family: 'Work Sans'; font-style: normal; font-weight: 700; font-display: swap; src: url('fonts/WorkSans-700.woff2') format('woff2'); }
-@font-face { font-family: 'Instrument Sans'; font-style: normal; font-weight: 400; font-display: swap; src: url('fonts/InstrumentSans-400.woff2') format('woff2'); }
-@font-face { font-family: 'Instrument Sans'; font-style: normal; font-weight: 600; font-display: swap; src: url('fonts/InstrumentSans-600.woff2') format('woff2'); }
+@font-face { font-family: 'Roboto'; font-style: normal; font-weight: 100 900; font-display: swap; src: url('fonts/Roboto-var.woff2') format('woff2'); }
 @font-face { font-family: 'IBM Plex Mono'; font-style: normal; font-weight: 400; font-display: swap; src: url('fonts/IBMPlexMono-400.woff2') format('woff2'); }
 @font-face { font-family: 'IBM Plex Mono'; font-style: normal; font-weight: 500; font-display: swap; src: url('fonts/IBMPlexMono-500.woff2') format('woff2'); }
 
@@ -97,7 +96,7 @@
   --glow-today: 0 0 6px rgba(225, 109, 72, 0.45);
   --glow-late: 0 0 6px rgba(207, 83, 64, 0.4);
   --glow-clash: 0 0 0 1px #cf5340, 0 0 8px rgba(207, 83, 64, 0.15);
-  --ring-today: 0 0 0 2px #d8d3d2;
+  --ring-today: 0 0 0 2px #efece9;
   --ring-celebrate: 0 0 0 5px rgba(111, 156, 106, 0.28);
   --ring-rest: 0 0 0 0 transparent;
   --shadow-pixx: drop-shadow(0 3px 6px rgba(0, 0, 0, 0.5));
@@ -251,14 +250,14 @@
   --z-dialog: 500;
   --z-undo: 600;
   --z-tip: 9100;
-  --font-display: "Work Sans", "Instrument Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
-  --font-body: "Instrument Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+  --font-display: "Work Sans", "Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+  --font-body: "Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
   --font-mono: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
 }
 /* Work Sans 600: ../fonts/WorkSans-600.woff2 (see fonts/fonts.css) */
 /* Work Sans 700: ../fonts/WorkSans-700.woff2 (see fonts/fonts.css) */
-/* Instrument Sans 400: ../fonts/InstrumentSans-400.woff2 (see fonts/fonts.css) */
-/* Instrument Sans 600: ../fonts/InstrumentSans-600.woff2 (see fonts/fonts.css) */
+/* Roboto 400: ../fonts/Roboto-var.woff2 (see fonts/fonts.css) */
+/* Roboto 600: ../fonts/Roboto-var.woff2 (see fonts/fonts.css) */
 /* IBM Plex Mono 400: ../fonts/IBMPlexMono-400.woff2 (see fonts/fonts.css) */
 /* IBM Plex Mono 500: ../fonts/IBMPlexMono-500.woff2 (see fonts/fonts.css) */
 .ad-type-outlined-title { font-family: var(--font-display); font-size: 56px; line-height: 1.25; font-weight: 600; }
@@ -409,25 +408,25 @@ tr[data-ad-drop="after"] > :is(td, th) { box-shadow: inset 0 calc(var(--bw-selec
 /* src/components/Board/Board.css */
 /* Board, BoardLane (DropLine's look is the one drop line, in base.css) */
 .ad-board { display: flex; gap: var(--space-4); overflow-x: auto; align-items: flex-start; }
-.ad-lane { width: var(--w-lane); flex: none; }
-.ad-lane__heading {
+.ad-board-lane { width: var(--w-lane); flex: none; }
+.ad-board-lane__heading {
   display: flex; align-items: center; gap: var(--space-2); margin: 0 0 var(--space-3); padding-bottom: var(--space-2); border-bottom: var(--border-w) solid var(--border);
   font-family: var(--font-display); font-weight: 600; font-size: var(--text-xs); letter-spacing: var(--track-caps); text-transform: uppercase; color: var(--text-muted);
 }
-.ad-lane__cards { display: flex; flex-direction: column; gap: var(--space-2); }
-.ad-lane__card-meta { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-1) var(--space-2); min-width: 0; }
-.ad-lane__card-meta > * { flex-shrink: 0; }
-.ad-lane__card-icon { display: inline-flex; color: var(--text-muted); }
-.ad-lane__card-icon svg { width: var(--icon-sm); height: var(--icon-sm); }
-.ad-lane__card-face { margin-left: auto; display: inline-flex; }
+.ad-board-lane__cards { display: flex; flex-direction: column; gap: var(--space-2); }
+.ad-board-lane__card-meta { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-1) var(--space-2); min-width: 0; }
+.ad-board-lane__card-meta > * { flex-shrink: 0; }
+.ad-board-lane__card-icon { display: inline-flex; color: var(--text-muted); }
+.ad-board-lane__card-icon svg { width: var(--icon-sm); height: var(--icon-sm); }
+.ad-board-lane__card-face { margin-left: auto; display: inline-flex; }
 /* A lane heading you can press; a card's marks and project code (built 2026-10-25 for Athena). */
-.ad-lane__name--press { margin: 0; padding: 0; border: 0; background: transparent; font: inherit; letter-spacing: inherit; text-transform: inherit; color: inherit; cursor: pointer; border-radius: var(--radius-page); }
-.ad-lane__name--press:hover { color: var(--accent); }
-.ad-lane__name--press:focus-visible { outline: none; box-shadow: var(--ring-select); }
-.ad-lane__card-marks, .ad-lane__card-code { display: inline-flex; align-items: center; gap: var(--space-1); }
-.ad-lane__card-fact { display: inline-flex; align-items: center; gap: var(--space-1); color: var(--text-secondary); white-space: nowrap; }
-.ad-lane__card-meta > .ad-lane__card-fact--cut { flex-shrink: 1; min-width: 0; max-width: 100%; }
-.ad-lane__card-fact-word { overflow: hidden; text-overflow: ellipsis; min-width: 0; }
+.ad-board-lane__name--press { margin: 0; padding: 0; border: 0; background: transparent; font: inherit; letter-spacing: inherit; text-transform: inherit; color: inherit; cursor: pointer; border-radius: var(--radius-page); }
+.ad-board-lane__name--press:hover { color: var(--accent); }
+.ad-board-lane__name--press:focus-visible { outline: none; box-shadow: var(--ring-select); }
+.ad-board-lane__card-marks, .ad-board-lane__card-code { display: inline-flex; align-items: center; gap: var(--space-1); }
+.ad-board-lane__card-fact { display: inline-flex; align-items: center; gap: var(--space-1); color: var(--text-secondary); white-space: nowrap; }
+.ad-board-lane__card-meta > .ad-board-lane__card-fact--cut { flex-shrink: 1; min-width: 0; max-width: 100%; }
+.ad-board-lane__card-fact-word { overflow: hidden; text-overflow: ellipsis; min-width: 0; }
 
 /* src/components/Button/Button.css */
 /* Button and IconButton */
