@@ -614,6 +614,19 @@ button.ad-year__day:focus-visible { outline: none; box-shadow: var(--ring-select
 .ad-day-cell--past { background-image: var(--hatch-fine); }
 .ad-day-cell__travel { position: absolute; top: var(--space-1); right: var(--space-1); color: var(--text-secondary); }
 
+/* Built 2026-10-28 for the Rehearsal calendar: a rich head, the phase band, overlapping entries side by side, the moments strip. */
+.ad-time-grid__head { position: absolute; bottom: 100%; left: 0; right: 0; padding: 0 var(--space-2) var(--space-1); }
+.ad-time-grid__band { --ad-wash: var(--text-muted); height: var(--space-2); margin: 0 0 var(--space-1); background: color-mix(in srgb, var(--ad-wash) var(--tint-lane-wash), transparent); border-top: var(--bw-select) solid color-mix(in srgb, var(--ad-wash) var(--tint-lane-edge), transparent); position: relative; }
+.ad-time-grid__band--unconfirmed { border-top-style: dashed; }
+.ad-time-grid__band-label { position: absolute; left: var(--space-2); top: 100%; font-family: var(--font-body); font-size: var(--text-xs); color: var(--text-muted); white-space: nowrap; }
+.ad-time-grid__slot { --ad-lane-k: 0; --ad-lanes: 1; }
+.ad-time-grid__slot[data-lane] { left: calc(var(--space-1) + (100% - var(--space-2)) * var(--ad-lane-k) / var(--ad-lanes)); right: auto; width: calc((100% - var(--space-2)) / var(--ad-lanes) - var(--space-hair)); }
+.ad-time-grid__body--aside { padding-right: var(--space-6); box-sizing: border-box; }
+.ad-time-grid__body--aside .ad-time-grid__slot { right: calc(var(--space-6) + var(--space-1)); }
+.ad-time-grid__body--aside .ad-time-grid__slot[data-lane] { width: calc((100% - var(--space-6) - var(--space-2)) / var(--ad-lanes) - var(--space-hair)); left: calc(var(--space-1) + (100% - var(--space-6) - var(--space-2)) * var(--ad-lane-k) / var(--ad-lanes)); }
+.ad-time-grid__aside { position: absolute; top: 0; bottom: 0; right: 0; width: var(--space-6); border-left: var(--border-w) solid var(--border); }
+.ad-time-grid__moment { position: absolute; left: 0; right: 0; display: flex; justify-content: center; transform: translateY(-50%); }
+
 /* src/components/Card/Card.css */
 /* Card: a board tile, or a dashboard widget as the Dashboard card draws it (small caps title, More at the right in 600). */
 .ad-card { --ad-tray: var(--bg-base); }
@@ -1728,6 +1741,16 @@ button.ad-row__name:focus-visible { outline: none; box-shadow: var(--ring-select
 
 /* A note tag: words, not a code (2026-10-27). */
 .ad-tag--note { font-family: var(--font-body); text-transform: none; letter-spacing: var(--track-normal); color: var(--text-secondary); }
+
+/* src/components/Text/Text.css */
+/* Text (2026-10-28): the small type pieces a screen writes inside its own sentences and cells. */
+.ad-data-text { color: inherit; }
+.ad-data-text--dim { color: var(--text-secondary); }
+.ad-hint { font-family: var(--font-body); font-weight: 400; font-size: var(--text-13); line-height: var(--lh-tight); color: var(--text-secondary); }
+.ad-figures { display: grid; grid-template-columns: repeat(auto-fit, minmax(0, 1fr)); gap: var(--space-4); margin: 0; }
+.ad-figures__item { display: flex; flex-direction: column; gap: var(--space-1); min-width: 0; }
+.ad-figures__label { margin: 0; font-family: var(--font-display); font-weight: 600; font-size: var(--text-xs); letter-spacing: var(--track-normal); text-transform: uppercase; color: var(--text-secondary); }
+.ad-figures__value { margin: 0; color: var(--text-primary); }
 
 /* src/components/Timeline/Ruler.css */
 /* Ruler and ZoomCluster: a line-strong rule, months in bone mono caps along the top, ticks from the rule (weeks taller than
