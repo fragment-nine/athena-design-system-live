@@ -431,6 +431,14 @@
   --h-stage-top: 64px;
   --h-pop-sm: 220px;
   --h-pop-lg: 320px;
+  --h-field-line-body: 20px;
+  --h-field-line-heading: 24px;
+  --h-field-line-section: 28px;
+  --h-field-line-title: 36px;
+  --h-field-input: 26px;
+  --pixx-panel-lift: 100px;
+  --pixx-phone-pad-bottom: 122px;
+  --w-sheet-min: 180px;
   --h-bottom-bar: 58px;
   --h-date-picker: 330px;
   --h-pop-head: 48px;
