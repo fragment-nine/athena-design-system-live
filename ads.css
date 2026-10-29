@@ -438,6 +438,9 @@
   --plan-review-who: 80px;
   --plan-col-date: 200px;
   --plan-col-name: 240px;
+  --bp-compact: 1000px;
+  --w-pop-time: 150px;
+  --h-stage-top: 64px;
   --border-w: 1px;
   --border-w-ring: 2px;
   --border-w-strong: 1.5px;
