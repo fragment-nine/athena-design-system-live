@@ -602,18 +602,18 @@
 /* Shared by every component. */
 /* Read aloud, not shown. */
 .ad-sr { position: absolute; width: var(--border-w); height: var(--border-w); padding: 0; margin: calc(var(--border-w) * -1); overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
-/* The scrollbar, for the whole page (kept from Athena, ruled 2026-10-26): w-scrollbar thin, a line-strong thumb with a bw-select
-   edge in the ground colour and radius-float corners, on a bg-base track; scroll-thumb-hover under the cursor. */
+/* The scrollbar, for the whole page: w-scrollbar thin, a line-strong thumb with a bw-select
+ edge in the ground colour and radius-float corners, on a bg-base track; scroll-thumb-hover under the cursor. */
 ::-webkit-scrollbar { width: var(--w-scrollbar); height: var(--w-scrollbar); }
 ::-webkit-scrollbar-track { background: var(--bg-base); }
 ::-webkit-scrollbar-thumb { background: var(--line-strong); border: var(--bw-select) solid var(--bg-base); border-radius: var(--radius-float); }
 ::-webkit-scrollbar-thumb:hover { background: var(--scroll-thumb-hover); }
-/* Selected text, for the whole page, as the scrollbar is (kept from Athena, ruled 2026-10-26): coral behind on-accent ink. */
+/* Selected text, for the whole page, as the scrollbar is: coral behind on-accent ink. */
 ::selection { background: var(--accent); color: var(--on-accent); }
-/* The one drop line (ruled 2026-10-26, Jeremy: coral everywhere; dropLine.ts): bw-select of drop-line along the edge where the
-   dragged row will land, above it (before) or below it (after); sideways for a row of chips (before-x, after-x). On a table
-   row it is drawn inside its cells, since a row cannot carry a shadow. The doubled selector lets it stand in for a piece's own
-   resting edge (a tag's hairline) while something is about to land there. */
+/* The one drop line: bw-select of drop-line along the edge where the
+ dragged row will land, above it (before) or below it (after); sideways for a row of chips (before-x, after-x). On a table
+ row it is drawn inside its cells, since a row cannot carry a shadow. The doubled selector lets it stand in for a piece's own
+ resting edge (a tag's hairline) while something is about to land there. */
 [data-ad-drop][data-ad-drop="before"] { box-shadow: 0 calc(var(--bw-select) * -1) 0 0 var(--drop-line); }
 [data-ad-drop][data-ad-drop="after"] { box-shadow: 0 var(--bw-select) 0 0 var(--drop-line); }
 [data-ad-drop][data-ad-drop="before-x"] { box-shadow: calc(var(--bw-select) * -1) 0 0 0 var(--drop-line); }
@@ -682,7 +682,7 @@ tr[data-ad-drop="after"] > :is(td, th) { box-shadow: inset 0 calc(var(--bw-selec
 .ad-board-lane__card-icon { display: inline-flex; color: var(--text-muted); }
 .ad-board-lane__card-icon svg { width: var(--icon-sm); height: var(--icon-sm); }
 .ad-board-lane__card-face { margin-left: auto; display: inline-flex; }
-/* A lane heading you can press; a card's marks and project code (built 2026-10-25 for Athena). */
+/* A lane heading you can press; a card's marks and project code. */
 .ad-board-lane__name--press { margin: 0; padding: 0; border: 0; background: transparent; font: inherit; color: inherit; cursor: pointer; border-radius: var(--radius-page); }
 .ad-board-lane__name--press:hover { color: var(--accent); }
 .ad-board-lane__name--press:focus-visible { outline: none; box-shadow: var(--ring-select); }
@@ -733,29 +733,29 @@ tr[data-ad-drop="after"] > :is(td, th) { box-shadow: inset 0 calc(var(--bw-selec
 }
 .ad-month__cell { grid-row: 1 / -1; display: flex; flex-direction: column; justify-content: space-between; padding: var(--space-1) var(--space-1); border-right: var(--border-w) solid var(--border); border-bottom: var(--border-w) solid var(--border); }
 .ad-month__cell[data-weekend] { background-image: var(--hatch-fine); }
-/* Today's cell, and a cell the app rings (a drop target), wear Athena's 2px bone ring (kept 2026-10-26), drawn over its neighbours' hairlines. */
+/* Today's cell, and a cell the app rings (a drop target), wear Athena's 2px bone ring, drawn over its neighbours' hairlines. */
 .ad-month__cell[data-ring] { position: relative; z-index: 1; box-shadow: var(--ring-today); }
 .ad-month__cell[data-outside] .ad-month__num { color: var(--text-muted); }
 .ad-month__day { display: flex; align-items: center; gap: var(--space-2); align-self: stretch; }
 .ad-month__marks { display: inline-flex; align-items: center; gap: var(--space-1); margin-left: auto; color: var(--text-secondary); }
 .ad-month__num { position: relative; align-self: flex-start; font: var(--type-data); font-size: var(--text-xs); color: var(--text-secondary); }
 .ad-month__num[data-today] { color: var(--text-primary); }
-/* A milestone in the month: its diamond before its name, no bar (2026-10-27): white ahead, grey once past, hatched when unconfirmed. */
+/* A milestone in the month: its diamond before its name, no bar: white ahead, grey once past, hatched when unconfirmed. */
 .ad-month__bar.ad-month__bar--milestone, .ad-month__bar.ad-month__bar--milestone.ad-month__bar--unconfirmed { background: transparent; background-image: none; }
-/* The row glyph's size, as the timeline's (2026-10-29). */
+/* The row glyph's size, as the timeline's. */
 .ad-month__diamond { box-sizing: border-box; flex: none; width: calc(var(--icon-sm) * 0.6); height: calc(var(--icon-sm) * 0.6); margin: calc(var(--icon-sm) * 0.2); transform: rotate(45deg); background: var(--text-primary); }
 .ad-month__bar--past .ad-month__diamond { background: var(--text-muted); }
 .ad-month__bar--unconfirmed .ad-month__diamond { background-color: var(--bg-base); background-image: var(--hatch-ink); border: var(--border-w) solid var(--text-primary); }
 /* One bar across its days, one lane high: solid when confirmed, hatched with its name on a solid patch when not. */
 .ad-month__bar { --ad-bar: var(--bg-hover); --ad-lane: 0; grid-row: calc(var(--ad-lane) + 2); z-index: 1; display: flex; align-items: center; min-width: 0; margin: 0 var(--space-1); padding: 0 var(--space-2); border: 0; border-radius: var(--radius-page); background: var(--ad-bar); color: var(--text-primary); font: var(--type-name); text-align: left; overflow: hidden; }
 /* An item or phase colour is never the fill of a calendar item or a booking: it runs as the side stripe down the left side
-   (`w-stripe`, as SideStripe draws it; ruled 2026-10-27, Jeremy). hue.tsx barColour sets --ad-stripe. */
+. hue.tsx barColour sets --ad-stripe. */
 .ad-month__bar, .ad-booking { --ad-stripe: transparent; }
 .ad-month__bar { position: relative; }
 .ad-month__bar--milestone::before { content: none; }
 .ad-month__bar--cut-start::before { border-radius: 0; }
 .ad-month__bar::before, .ad-booking::before { content: ""; position: absolute; top: 0; bottom: 0; left: 0; width: var(--w-stripe); border-radius: var(--radius-page) 0 0 var(--radius-page); background: var(--ad-stripe); pointer-events: none; }
-/* A department colour is the department's glyph before the name, in its colour (ruled 2026-10-27, Jeremy): Department.tsx DeptGlyph. */
+/* A department colour is the department's glyph before the name, in its colour: Department.tsx DeptGlyph. */
 .ad-month__bar > .ad-dept { flex: none; }
 .ad-booking__name > .ad-dept { margin-right: var(--space-1); vertical-align: middle; }
 .ad-month__bar > span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
@@ -810,8 +810,8 @@ button.ad-booking:focus-visible { outline: none; box-shadow: var(--ring-select);
 .ad-time-grid__body { position: relative; height: calc(var(--ad-hour) * var(--ad-hours)); }
 .ad-time-grid__hour { box-sizing: border-box; height: var(--ad-hour); border-top: var(--border-w) solid var(--border); }
 .ad-time-grid__slot { position: absolute; left: var(--space-1); right: var(--space-1); display: flex; }
-/* The all-day lane over the hours (built 2026-10-25 for Athena): one short bar per thing with a date and no time, as tall as the
-   fullest day; the hours' gutter steps down by the same. */
+/* The all-day lane over the hours: one short bar per thing with a date and no time, as tall as the
+ fullest day; the hours' gutter steps down by the same. */
 .ad-time-grid { --ad-allday-rows: 0; }
 .ad-time-grid__allday-space, .ad-time-grid__allday { height: calc(var(--ad-allday-rows) * (var(--h-bar) + var(--space-1)) + var(--space-1)); }
 .ad-time-grid__allday { display: flex; flex-direction: column; gap: var(--space-1); padding-top: var(--space-1); border-bottom: var(--border-w) solid var(--border); box-sizing: border-box; }
@@ -825,18 +825,18 @@ button.ad-booking:focus-visible { outline: none; box-shadow: var(--ring-select);
 .ad-year__day { position: relative; display: grid; place-items: center; height: var(--space-6); padding: 0; border: 0; border-radius: var(--radius-page); background: transparent; font: var(--type-data); font-size: var(--text-xs); color: var(--text-muted); }
 .ad-year__day[data-busy] { color: var(--text-primary); }
 .ad-year__day[data-busy]::after { content: ""; position: absolute; bottom: var(--space-hair); left: 50%; width: var(--space-hair); height: var(--space-hair); transform: translateX(-50%); border-radius: var(--radius-round); background: var(--text-primary); }
-/* Today: Athena's 2px bone ring (ring-today, kept 2026-10-26). */
+/* Today: Athena's 2px bone ring. */
 .ad-year__day[data-today] { box-shadow: var(--ring-today); }
 button.ad-year__day { cursor: pointer; }
 button.ad-year__day:hover { color: var(--accent); }
 button.ad-year__day:focus-visible { outline: none; box-shadow: var(--ring-select); }
-/* A block too short for its name (ruled 2026-10-26, Athena's day planner): the name lifts just above it, never clipped. */
+/* A block too short for its name: the name lifts just above it, never clipped. */
 .ad-booking--outside { overflow: visible; }
 .ad-booking--outside .ad-booking__name { position: absolute; left: 0; bottom: 100%; max-width: 100%; padding-bottom: var(--space-hair); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; pointer-events: none; }
-/* Every other hour on the inset plane (ruled 2026-10-26, Athena's time grid). */
+/* Every other hour on the inset plane. */
 .ad-time-grid__hour--band { background: var(--bg-inset); }
 
-/* The day planner's asks (2026-10-27): a block's second line; short and thin blocks; a dragged block lifts; a lit drop column; a capped height that scrolls. */
+/* The day planner's asks: a block's second line; short and thin blocks; a dragged block lifts; a lit drop column; a capped height that scrolls. */
 .ad-booking__meta { display: block; font: var(--type-data); font-size: var(--text-xs); color: var(--text-secondary); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .ad-booking--fit .ad-booking__name, .ad-booking--narrow .ad-booking__name { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .ad-booking--dragging { backdrop-filter: blur(var(--blur-glass)); box-shadow: var(--shadow-float); opacity: 0.92; }
@@ -853,11 +853,11 @@ button.ad-year__day:focus-visible { outline: none; box-shadow: var(--ring-select
 .ad-time-grid__item[data-span] { position: relative; z-index: 1; width: calc(var(--ad-span) * 100% + (var(--ad-span) - 1) * var(--border-w)); }
 .ad-time-grid__figure { margin-left: var(--space-2); font: var(--type-data); text-transform: none; color: var(--text-muted); }
 
-/* DayCell (2026-10-27): one day in a week of days. */
+/* DayCell: one day in a week of days. */
 .ad-day-cell { --ad-where: transparent; position: relative; display: flex; flex-direction: column; align-items: center; gap: var(--space-1); padding: var(--space-2) var(--space-1) 0; border-radius: var(--radius-page); }
 .ad-day-cell__letter { font: var(--type-heading); text-transform: uppercase; color: var(--text-primary); }
 .ad-day-cell__number { display: inline-flex; align-items: center; justify-content: center; width: var(--h-btn); height: var(--h-btn); border-radius: var(--radius-page); font: var(--type-data); font-size: var(--text-base); color: var(--text-primary); }
-/* Today: the 2px bone ring round the day's cell, square as every day grid draws it (fixed 2026-10-29, Jeremy: "I only ever approved a square"). */
+/* Today: the 2px bone ring round the day's cell, square as every day grid draws it. */
 .ad-day-cell--today { box-shadow: var(--ring-today); }
 .ad-day-cell--weekend .ad-day-cell__letter, .ad-day-cell--weekend .ad-day-cell__number { color: var(--text-muted); }
 .ad-day-cell__where { align-self: stretch; height: var(--space-2); border-radius: var(--radius-page); background: color-mix(in srgb, var(--ad-where) var(--tint-presence-strip), transparent); }
@@ -866,7 +866,7 @@ button.ad-year__day:focus-visible { outline: none; box-shadow: var(--ring-select
 .ad-day-cell__travel { position: absolute; top: var(--space-1); right: var(--space-1); color: var(--text-secondary); }
 
 /* Built 2026-10-28 for the Rehearsal calendar: a rich head, the phase band, overlapping entries side by side, the moments strip. */
-.ad-time-grid__head { position: absolute; top: calc(-1 * var(--ad-head-h)); left: 0; right: 0; padding: 0 var(--space-2) var(--space-3); } /* every head starts on one line at the top; the grid reserves the tallest (2026-10-28) */
+.ad-time-grid__head { position: absolute; top: calc(-1 * var(--ad-head-h)); left: 0; right: 0; padding: 0 var(--space-2) var(--space-3); } /* every head starts on one line at the top; the grid reserves the tallest */
 .ad-time-grid__band { --ad-wash: var(--text-muted); height: var(--space-2); margin: 0 0 var(--space-1); background: color-mix(in srgb, var(--ad-wash) var(--tint-lane-wash), transparent); border-top: var(--bw-select) solid color-mix(in srgb, var(--ad-wash) var(--tint-lane-edge), transparent); position: relative; }
 .ad-time-grid__band--unconfirmed { border-top-style: dashed; }
 .ad-time-grid__band-label { position: absolute; left: var(--space-2); top: 100%; font: var(--type-detail); color: var(--text-secondary); white-space: nowrap; }
@@ -892,7 +892,7 @@ button.ad-year__day:focus-visible { outline: none; box-shadow: var(--ring-select
 .ad-time-grid__moment-title { min-width: 0; overflow: hidden; text-overflow: ellipsis; font: var(--type-name); color: var(--text-primary); }
 .ad-time-grid__moment-mark { display: inline-block; width: var(--dot-size); height: var(--dot-size); border-radius: var(--radius-round); background: var(--text-secondary); }
 
-/* A call in the strip (2026-10-28): pressed to open, hatched while unconfirmed, its colour as a stripe at its start. */
+/* A call in the strip: pressed to open, hatched while unconfirmed, its colour as a stripe at its start. */
 .ad-time-grid__moment { --ad-stripe: transparent; }
 .ad-time-grid__moment--press { margin: 0; border: 0; background: transparent; font: inherit; color: inherit; text-align: left; cursor: pointer; border-radius: var(--radius-page); }
 .ad-time-grid__moment--press:hover .ad-time-grid__moment-title { color: var(--accent); }
@@ -954,8 +954,8 @@ button.ad-card__name:focus-visible { outline: none; box-shadow: var(--ring-selec
 .ad-card__name-row { display: flex; align-items: flex-start; gap: var(--space-2); margin-bottom: var(--space-2); }
 .ad-card__name-row .ad-card__name { margin-bottom: 0; flex: 1; min-width: 0; }
 .ad-card__lead { display: inline-flex; flex: none; }
-/* Picture (ruled 2026-10-26): the Roadmap's picture of finished work, as Athena draws it (.rm-shot), moved here. The frame
-   carries the Card's corner and nothing else; the picture fills it from the top left, the card tone behind it while it loads. */
+/* Picture: the Roadmap's picture of finished work, as Athena draws it (.rm-shot), moved here. The frame
+ carries the Card's corner and nothing else; the picture fills it from the top left, the card tone behind it while it loads. */
 .ad-picture { display: block; width: 100%; height: 100%; overflow: hidden; border-radius: var(--radius-page); }
 .ad-picture__img { display: block; width: 100%; height: 100%; object-fit: cover; object-position: top left; background: var(--bg-surface); }
 
@@ -998,14 +998,14 @@ button.ad-card__name:focus-visible { outline: none; box-shadow: var(--ring-selec
 .ad-dial__label { font: var(--type-detail); color: var(--text-secondary); text-align: center; }
 .ad-verdict__word { margin: 0 0 var(--space-1); font: var(--type-title); font-size: var(--text-28); line-height: var(--lh-tight); color: var(--text-primary); }
 .ad-verdict__sentence { margin: 0; font: var(--type-body); line-height: var(--lh-normal); color: var(--text-secondary); }
-/* A budget's second reading (built 2026-10-25 for Athena): planned as a lighter layer under the worked part; a named mark where
-   another figure falls (the original budget against the revised estimate). */
+/* A budget's second reading: planned as a lighter layer under the worked part; a named mark where
+ another figure falls (the original budget against the revised estimate). */
 .ad-progress { position: relative; }
 .ad-progress__planned { position: absolute; left: 0; top: 0; bottom: 0; background: var(--bg-hover); }
 .ad-progress__done { z-index: 1; } /* the worked part sits over the planned layer; it keeps its absolute place from the rule above */
 .ad-progress__mark { position: absolute; top: calc(var(--space-hair) * -1); bottom: calc(var(--space-hair) * -1); width: var(--border-w-strong); background: var(--text-primary); transform: translateX(-50%); }
 
-/* A sentence standing alone (no word) is the headline: large, bone (2026-10-29, his Travel Overview picture). */
+/* A sentence standing alone (no word) is the headline: large, bone. */
 .ad-verdict--headline .ad-verdict__sentence { font: var(--type-title); color: var(--text-primary); }
 
 /* src/components/Checkbox/Checkbox.css */
@@ -1023,7 +1023,7 @@ button.ad-card__name:focus-visible { outline: none; box-shadow: var(--ring-selec
 .ad-checkbox__input:focus-visible + .ad-checkbox__box { box-shadow: var(--ring-select); }
 
 /* src/components/Columns/Columns.css */
-/* Columns: main and a fixed side, the side dropping under the main when there is no room for both (2026-10-27). */
+/* Columns: main and a fixed side, the side dropping under the main when there is no room for both. */
 .ad-columns { --ad-side: var(--w-card); display: flex; flex-wrap: wrap; align-items: flex-start; gap: var(--space-6); }
 .ad-columns--side { --ad-side: var(--w-side); }
 .ad-columns__main { flex: 1 1 var(--ad-side); min-width: min(100%, var(--ad-side)); overflow-x: clip; } /* what runs past the main column is clipped at its edge, never drawn over the side */
@@ -1035,7 +1035,7 @@ button.ad-card__name:focus-visible { outline: none; box-shadow: var(--ring-selec
 .ad-dept .ad-icon { color: var(--text-muted); transition: color var(--dur-fast) var(--ease-out); }
 .ad-dept:hover .ad-icon { color: var(--accent); }
 .ad-dept--coloured .ad-icon { color: var(--ad-dept); }
-/* Pressed to narrow the view (built 2026-10-25 for Athena): the same look, coral under the cursor. */
+/* Pressed to narrow the view: the same look, coral under the cursor. */
 .ad-dept--press { margin: 0; padding: 0; border: 0; background: transparent; font: inherit; cursor: pointer; border-radius: var(--radius-page); }
 .ad-dept--press:hover, .ad-dept--press:hover svg { color: var(--accent); }
 .ad-dept--press:focus-visible { outline: none; box-shadow: var(--ring-select); }
@@ -1043,7 +1043,7 @@ button.ad-card__name:focus-visible { outline: none; box-shadow: var(--ring-selec
 /* src/components/Dialog/Dialog.css */
 /* Dialog */
 .ad-scrim { position: fixed; inset: 0; background: var(--scrim); animation: ad-fade-in var(--dur) var(--ease-out); }
-/* The drill card's backdrop (kept from Athena, ruled 2026-10-26): the page behind blurs blur-drill-radius under the dim. */
+/* The drill card's backdrop: the page behind blurs blur-drill-radius under the dim. */
 .ad-scrim--blur { backdrop-filter: blur(var(--blur-drill-radius)); -webkit-backdrop-filter: blur(var(--blur-drill-radius)); }
 .ad-dialog { position: fixed; top: 12vh; left: 50%; transform: translateX(-50%); max-width: calc(100vw - var(--space-8)); padding: var(--space-4); }
 .ad-dialog--dialog { width: var(--w-dialog); }
@@ -1054,7 +1054,7 @@ button.ad-card__name:focus-visible { outline: none; box-shadow: var(--ring-selec
 .ad-dialog__body p { margin: 0; }
 .ad-dialog__actions { display: flex; gap: var(--space-2); }
 .ad-dialog__actions > * { flex: 1; }
-/* A rich body (ruled 2026-10-26, Athena's DialogLayout): pieces 16 apart; the body alone scrolls past h-dialog-cap. */
+/* A rich body: pieces 16 apart; the body alone scrolls past h-dialog-cap. */
 .ad-dialog--rich { display: flex; flex-direction: column; max-height: var(--h-dialog-cap); box-sizing: border-box; }
 .ad-dialog__rich { flex: 1 1 auto; min-height: 0; overflow-y: auto; display: flex; flex-direction: column; gap: var(--space-4); margin: 0 calc(var(--space-1) * -1) var(--space-4); padding: var(--space-1); }
 .ad-dialog__reason { margin: 0 0 var(--space-2); font: var(--type-detail); line-height: var(--lh-normal); color: var(--text-muted); }
@@ -1096,16 +1096,15 @@ button.ad-card__name:focus-visible { outline: none; box-shadow: var(--ring-selec
 /* The label beside its field (a form, a pop-over field): no hairline, the field right after the words. */
 .ad-field-row--beside { min-height: var(--h-field); border-bottom: 0; }
 .ad-field-row--beside .ad-field-row__control { margin-left: 0; }
-/* The field side takes the width left after the name and shrinks inside it (fixed 2026-10-26: in the todo card (--w-card) a long
-   project ran past the card's edge and the Repeat button beside the date was clipped). A field gives way first, its own
-   words ending in "…"; a button beside it keeps its whole label. Nothing runs past the row. */
+/* The field side takes the width left after the name and shrinks inside it. A field gives way first, its own
+ words ending in "…"; a button beside it keeps its whole label. Nothing runs past the row. */
 .ad-field-row--beside .ad-field-row__control { flex: 1 1 0; min-width: 0; max-width: 100%; gap: var(--space-2); }
 .ad-field-row--beside .ad-field-row__control > * { min-width: 0; max-width: 100%; }
 .ad-field-row--beside .ad-field-row__control > :is(.ad-button, .ad-icon-button) { flex: none; }
-/* One straight column (ruled 2026-10-26): the names sit in a fixed column, so every field starts on one vertical line; a longer
-   name wraps inside it. */
+/* One straight column: the names sit in a fixed column, so every field starts on one vertical line; a longer
+ name wraps inside it. */
 .ad-field-row--beside .ad-field-row__label { flex: none; box-sizing: border-box; width: var(--w-field-name); line-height: var(--lh-tight); overflow-wrap: normal; word-break: normal; }
-/* A longer name wraps only at its spaces: a single word never breaks mid-word (ruled 2026-10-26: "Department" broke as "Departme/nt"). */
+/* A longer name wraps only at its spaces: a single word never breaks mid-word. */
 .ad-field-row--beside .ad-field-row__label > label { min-width: 0; }
 .ad-field-row__help { display: inline-flex; align-items: center; justify-content: center; width: var(--target-min); height: var(--target-min); margin: 0; padding: 0; border: 0; border-radius: var(--radius-page); background: transparent; color: var(--text-muted); cursor: help; }
 .ad-field-row__help:hover { color: var(--accent); }
@@ -1114,7 +1113,7 @@ button.ad-card__name:focus-visible { outline: none; box-shadow: var(--ring-selec
 .ad-field__input--mono { font: var(--type-data); font-size: var(--text-xs); }
 /* A chosen option that means "nothing" reads grey. */
 .ad-select__native--quiet { color: var(--text-muted); }
-/* FormSection, FormActions: a long form (ruled 2026-10-24) */
+/* FormSection, FormActions: a long form */
 .ad-form-section { display: flex; flex-direction: column; margin-top: var(--space-4); }
 .ad-form-section__error { margin: 0 0 var(--space-2); }
 .ad-form-actions { display: flex; justify-content: flex-end; gap: var(--space-2); margin-top: var(--space-6); }
@@ -1127,12 +1126,12 @@ button.ad-card__name:focus-visible { outline: none; box-shadow: var(--ring-selec
 .ad-inline-edit:focus-visible { box-shadow: var(--ring-select); }
 .ad-inline-edit::placeholder { color: var(--text-muted); }
 .ad-inline-edit:disabled { background: transparent; cursor: default; }
-/* A canvas page's own title (ruled 2026-10-26, kept from Athena's .pa-bare--title): the words alone, no fill, no ring. */
+/* A canvas page's own title: the words alone, no fill, no ring. */
 .ad-inline-edit--page { font: var(--type-title); font-size: var(--text-28); line-height: var(--lh-tight); padding: var(--space-1) 0; margin: 0; border-radius: 0; }
 .ad-inline-edit--page:hover, .ad-inline-edit--page:focus { background: transparent; }
 .ad-inline-edit--page:focus-visible { box-shadow: none; }
-/* OverlayTextArea (ruled 2026-10-26, Athena's OverlayArea): a see-through box over a copy of its words. Both take the type around
-   them and wrap alike, so the caret lands on the painted words; the mirror sets the height, the box fills it. */
+/* OverlayTextArea: a see-through box over a copy of its words. Both take the type around
+ them and wrap alike, so the caret lands on the painted words; the mirror sets the height, the box fills it. */
 .ad-overlay-text { position: relative; display: block; flex: 1; min-width: 0; }
 .ad-overlay-text__mirror { display: block; color: var(--text-primary); pointer-events: none; white-space: pre-wrap; overflow-wrap: anywhere; }
 .ad-overlay-text__placeholder { color: var(--text-muted); }
@@ -1151,11 +1150,11 @@ button.ad-card__name:focus-visible { outline: none; box-shadow: var(--ring-selec
 .ad-footer__number { font: var(--type-data); color: var(--text-secondary); }
 .ad-footer__venue { overflow: hidden; text-overflow: ellipsis; }
 .ad-footer__run { border-right: 0; }
-/* The undo section, centred on the footer itself (ruled 2026-10-27). */
+/* The undo section, centred on the footer itself. */
 .ad-footer { position: relative; }
 .ad-footer__undo { position: absolute; left: 50%; top: 0; height: 100%; transform: translateX(-50%); display: inline-flex; align-items: center; gap: var(--space-2); max-width: 50%; font: var(--type-body); color: var(--text-secondary); white-space: nowrap; }
 .ad-footer__undo-words { overflow: hidden; text-overflow: ellipsis; }
-/* One size across the footer, the larger one (ruled 2026-10-27, Jeremy: "LOUDBOX and 03 todos … should be the larger one"). */
+/* One size across the footer, the larger one. */
 .ad-footer__page { justify-content: flex-end; gap: var(--space-2); border-right: 0; }
 .ad-footer__page-number { font: var(--type-data); color: var(--text-secondary); }
 .ad-contents { margin: 0; padding: 0; list-style: none; border-top: var(--border-w) solid var(--border); }
@@ -1175,19 +1174,19 @@ button.ad-contents__button:focus-visible { outline: none; box-shadow: var(--ring
 .ad-ground { display: flex; flex-direction: column; min-height: 100%; background-color: var(--bg-base); }
 /* The frame every screen keeps: the rail, then the page (header, one toolbar, the work) in its gutter. */
 .ad-frame { display: flex; align-items: stretch; flex: 1; min-height: 100vh; min-height: 100dvh; }
-/* The page (ruled 2026-10-26, Jeremy's Todos notes): the header at the top with 16 above it, the toolbar 16 under the header, the work
-   24 under the toolbar. The rail runs the whole height of the frame, never shorter than the page. */
+/* The page: the header at the top with 16 above it, the toolbar 16 under the header, the work
+ 24 under the toolbar. The rail runs the whole height of the frame, never shorter than the page. */
 .ad-frame__page { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: var(--space-4); padding: var(--space-4) var(--space-8) var(--space-8) var(--space-6); }
 .ad-frame__page > .ad-toolbar { margin-bottom: var(--space-2); }
 .ad-frame > .ad-rail, .ad-frame > .ad-side { height: auto; align-self: stretch; }
-/* The footer: on a short page it stays at the bottom of the screen, never floating up under the work (ruled 2026-10-27, Jeremy).
-   The frame is never shorter than the window (above), so the page column has room and the footer's top margin takes it; an app
-   places Footer last in the page and does nothing else. */
+/* The footer: on a short page it stays at the bottom of the screen, never floating up under the work.
+ The frame is never shorter than the window (above), so the page column has room and the footer's top margin takes it; an app
+ places Footer last in the page and does nothing else. */
 .ad-frame__page > .ad-footer { margin-top: auto; }
-/* The corner (Pixx): fixed bottom right, over the footer's right edge; the footer's right cell ends before it (ruled 2026-10-27). */
+/* The corner (Pixx): fixed bottom right, over the footer's right edge; the footer's right cell ends before it. */
 .ad-frame__corner { position: fixed; right: var(--space-4); bottom: var(--space-2); z-index: var(--z-float); }
 .ad-frame--corner .ad-footer { padding-right: calc(var(--h-btn) + var(--h-btn-row) + var(--space-4) * 2); }
-/* CloudGlow (ruled 2026-10-26, Athena's .lb-cloud__drift): two soft bone glows behind the cloud art, drifting slowly. */
+/* CloudGlow: two soft bone glows behind the cloud art, drifting slowly. */
 .ad-cloud-glow { position: absolute; inset: 0; overflow: hidden; pointer-events: none; z-index: 0; }
 .ad-cloud-glow__drift {
   position: absolute; inset: -25%;
@@ -1201,7 +1200,7 @@ button.ad-contents__button:focus-visible { outline: none; box-shadow: var(--ring
 
 /* src/components/GroupHeading/GroupHeading.css */
 /* GroupHeading */
-/* Every section label reads the same (ruled 2026-10-26, Jeremy): name text-primary, numeral text-muted; needing you changes nothing here. */
+/* Every section label reads the same: name text-primary, numeral text-muted; needing you changes nothing here. */
 .ad-group-heading { display: flex; align-items: center; gap: var(--space-2); min-height: var(--h-btn); color: var(--text-primary); }
 .ad-group-heading--rule-above { border-top: var(--border-w) solid var(--border); padding-top: var(--space-2); }
 .ad-group-heading--rule-below { border-bottom: var(--border-w) solid var(--border); padding-bottom: var(--space-2); }
@@ -1229,7 +1228,7 @@ button.ad-contents__button:focus-visible { outline: none; box-shadow: var(--ring
 .ad-tour-card--right::before { left: calc(var(--notch-size) / -2); top: var(--ad-notch-y); }
 .ad-tour-card--above::before { bottom: calc(var(--notch-size) / -2); left: var(--ad-notch-x); }
 .ad-tour-card--left::before { right: calc(var(--notch-size) / -2); top: var(--ad-notch-y); }
-/* With onClose (ruled 2026-10-26): the loudbox X in the top right corner; the ticks keep clear of it. */
+/* With onClose: the loudbox X in the top right corner; the ticks keep clear of it. */
 .ad-tour-card--closes .ad-tour-card__ticks { margin-right: var(--space-8); }
 .ad-tour-card__ticks { display: flex; gap: var(--space-1); }
 .ad-tour-card__ticks i { width: var(--space-4); height: calc(var(--border-w) * 3); border-radius: var(--radius-page); background: var(--line-strong); }
@@ -1252,12 +1251,12 @@ button.ad-contents__button:focus-visible { outline: none; box-shadow: var(--ring
 .ad-brief__foot > * { flex: 1; }
 .ad-brief__foot .ad-button--quiet { background: var(--bg-hover); }
 
-/* PixxFigure: the cut-out dog, whole, no box (ruled 2026-10-27). Two layers, the tail under the body, so only the tail wags. */
+/* PixxFigure: the cut-out dog, whole, no box. Two layers, the tail under the body, so only the tail wags. */
 .ad-pixx { position: relative; display: grid; place-items: end center; width: calc(var(--h-btn) + var(--h-btn-row)); height: calc(var(--h-btn) + var(--h-btn-row)); margin: 0; padding: 0; border: 0; background: transparent; cursor: pointer; filter: var(--shadow-pixx); transition: transform var(--dur-fast) var(--ease-out); }
 .ad-pixx--open { filter: var(--shadow-pixx-open); }
 .ad-pixx:active { transform: scale(0.94); }
 .ad-pixx:focus-visible { outline: none; box-shadow: var(--ring-select); border-radius: var(--radius-page); }
-/* The art is pinned inside the box, fitted whole and standing on its floor: the dog never spills past the box (2026-10-27, Jeremy: "why is pixx falling off the bottom of the page"). */
+/* The art is pinned inside the box, fitted whole and standing on its floor: the dog never spills past the box. */
 .ad-pixx__tail, .ad-pixx__body { position: absolute; inset: 0; width: 100%; height: 100%; max-height: 100%; object-fit: contain; object-position: center bottom; pointer-events: none; }
 .ad-pixx__tail { transform-origin: 71.3% 79.4%; } /* the tail's pivot in the art, from Athena's cut-out */
 .ad-pixx--unread .ad-pixx__tail { animation: ad-pixx-wag var(--dur-ack-pulse) ease-in-out infinite alternate; }
@@ -1278,14 +1277,14 @@ button.ad-contents__button:focus-visible { outline: none; box-shadow: var(--ring
 .ad-icon--md { width: var(--icon-md); height: var(--icon-md); }
 .ad-icon--lg { width: var(--icon-lg); height: var(--icon-lg); }
 
-/* A drawing an app handed an icon slot instead of a name: drawn, marked, counted by scanIn (transitional, 2026-10-27). */
+/* A drawing an app handed an icon slot instead of a name: drawn, marked, counted by scanIn. */
 .ad-icon-slot--own { display: inline-flex; }
 
 /* src/components/List/List.css */
 /* List, ListSection, DayHeading, AddRow */
 .ad-list { display: flex; flex-direction: column; gap: var(--space-6); }
 .ad-list-section { display: flex; flex-direction: column; }
-/* One hairline, never two (ruled 2026-10-26, Jeremy): a section's last row draws none, so the next label's line stands alone. */
+/* One hairline, never two: a section's last row draws none, so the next label's line stands alone. */
 .ad-list-section__body > .ad-row:last-child, .ad-list-section__body > .ad-add-row:last-child { border-bottom: 0; }
 .ad-list-section__body[hidden] { display: none; }
 .ad-day-heading {
@@ -1299,20 +1298,20 @@ button.ad-contents__button:focus-visible { outline: none; box-shadow: var(--ring
 .ad-add-row:focus-visible { outline: none; box-shadow: var(--ring-select); border-radius: var(--radius-page); }
 .ad-add-row__icon { display: inline-flex; width: var(--check-size); justify-content: center; }
 .ad-add-row__icon svg { width: var(--icon-md); height: var(--icon-md); }
-/* LoadingRows, LoadError (ruled 2026-10-24) */
+/* LoadingRows, LoadError */
 .ad-loading { display: flex; flex-direction: column; }
 .ad-loading-row .ad-row__name, .ad-loading-row .ad-row__meta { color: var(--text-muted); white-space: pre; }
 .ad-load-error > .ad-button { align-self: flex-start; }
-/* A deliverable over its todos (built 2026-10-25 for Athena): its heading row, the fold before it, and its todos on the joining
-   hairline under it; a section inside is a sub-deliverable, two deep. */
+/* A deliverable over its todos: its heading row, the fold before it, and its todos on the joining
+ hairline under it; a section inside is a sub-deliverable, two deep. */
 .ad-list-section__bar { display: flex; align-items: center; gap: var(--space-1); }
 .ad-list-section__bar > .ad-row { flex: 1; min-width: 0; }
 .ad-list-section__fold { display: inline-flex; align-items: center; justify-content: center; flex: none; width: var(--h-btn-row); height: var(--h-btn-row); margin: 0; padding: 0; border: 0; border-radius: var(--radius-page); background: transparent; color: var(--text-muted); cursor: pointer; }
 .ad-list-section__fold:hover { color: var(--accent); }
 .ad-list-section__fold:focus-visible { outline: none; box-shadow: var(--ring-select); }
 .ad-list-section__body--nested { margin-left: calc(var(--h-btn-row) / 2); padding-left: var(--space-4); border-left: var(--border-w) solid var(--border); }
-/* A list's columns (built 2026-10-25 for Athena's custom fields): headings held at the top in the table-heading look, each row's
-   cells lined up under them at the person's own widths, a heading's edge dragged to resize. */
+/* A list's columns: headings held at the top in the table-heading look, each row's
+ cells lined up under them at the person's own widths, a heading's edge dragged to resize. */
 .ad-list-columns { position: relative; --ad-col: auto; }
 .ad-list-columns__head { position: sticky; top: 0; z-index: 1; display: flex; align-items: center; height: var(--h-btn); padding: 0 var(--space-2); background: var(--bg-base); border-bottom: var(--border-w) solid var(--border); }
 .ad-list-columns__spacer { flex: 1; }
@@ -1326,7 +1325,7 @@ button.ad-contents__button:focus-visible { outline: none; box-shadow: var(--ring
 .ad-row__cells { --ad-col: auto; display: inline-flex; align-items: center; flex: none; }
 .ad-row__cell { flex: none; width: var(--ad-col); padding: 0 var(--space-2); box-sizing: border-box; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--text-secondary); }
 
-/* A drop target (2026-10-27): lit one tone while a row is dragged over; an empty section keeps a row of height. */
+/* A drop target: lit one tone while a row is dragged over; an empty section keeps a row of height. */
 .ad-list-section--over .ad-list-section__body { background: var(--tint-selected); border-radius: var(--radius-page); }
 .ad-list-section__body--empty { min-height: var(--h-row); }
 .ad-list-section__empty { margin: 0; height: var(--h-row); display: flex; align-items: center; padding: 0 var(--space-2); font: var(--type-body); line-height: var(--lh-tight); color: var(--text-secondary); }
@@ -1334,7 +1333,7 @@ button.ad-contents__button:focus-visible { outline: none; box-shadow: var(--ring
 .ad-day-heading__caption { margin: var(--space-1) 0 0; font: var(--type-body); color: var(--text-secondary); }
 
 /* src/components/Map/Map.css */
-/* WorldMap (ruled 2026-10-26, Jeremy): Athena's Where-is-everyone map as it draws it (widgets.css .wx-map-*), in map units. */
+/* WorldMap: Athena's Where-is-everyone map as it draws it (widgets.css.wx-map-*), in map units. */
 .ad-world-map { position: relative; }
 .ad-world-map__svg { display: block; }
 .ad-world-map__land { fill: var(--bg-hover); stroke: var(--line-strong); stroke-linejoin: round; stroke-width: var(--map-line-land); opacity: var(--map-op-land); }
@@ -1364,7 +1363,7 @@ button.ad-contents__button:focus-visible { outline: none; box-shadow: var(--ring
 
 /* src/components/Menu/Menu.css */
 /* Menu */
-.ad-menu { display: flex; flex-direction: column; width: var(--w-menu); padding: var(--space-2); } /* its own layout, no longer borrowed from the left menu's frame through the shared name (2026-10-28) */
+.ad-menu { display: flex; flex-direction: column; width: var(--w-menu); padding: var(--space-2); } /* its own layout, no longer borrowed from the left menu's frame through the shared name */
 .ad-menu__item { display: flex; align-items: center; gap: var(--space-3); box-sizing: border-box; width: 100%; height: var(--h-btn); margin: 0; padding: 0 var(--space-3); border: 0; border-radius: var(--radius-page); background: transparent; font: var(--type-name); color: var(--text-primary); text-align: left; cursor: pointer; }
 .ad-menu__icon { display: inline-flex; color: var(--text-muted); }
 .ad-menu__icon svg { width: var(--icon-md); height: var(--icon-md); }
@@ -1378,7 +1377,7 @@ button.ad-contents__button:focus-visible { outline: none; box-shadow: var(--ring
 .ad-menu__item--danger, .ad-menu__item--danger .ad-menu__icon, .ad-menu__item--danger:hover, .ad-menu__item--danger:hover .ad-menu__icon,
 .ad-menu__item--danger[data-active], .ad-menu__item--danger[data-active] .ad-menu__icon { color: var(--status-error-ink); }
 .ad-menu__item[aria-disabled] { opacity: var(--opacity-disabled); cursor: default; }
-/* The divider as the approved pictures show it: a hairline with a little room (2026-10-28: it used to borrow a second, taller rule through a shared name, so the published copy drew a faint band the pictures never showed). */
+/* The divider as the approved pictures show it: a hairline with a little room. */
 .ad-menu__separator { position: relative; height: var(--border-w); margin: var(--space-1) var(--space-1); background: var(--border); }
 .ad-menu__separator::before { content: ""; position: absolute; left: 0; right: 0; top: 50%; height: var(--border-w); background: var(--border); }
 
@@ -1388,7 +1387,7 @@ button.ad-contents__button:focus-visible { outline: none; box-shadow: var(--ring
 .ad-menu__sub { font: var(--type-detail); line-height: var(--lh-normal); color: var(--text-muted); white-space: normal; }
 .ad-menu__check { display: inline-flex; color: var(--text-secondary); }
 .ad-menu__item:hover .ad-menu__check { color: var(--text-secondary); }
-/* A group's heading (ruled 2026-10-26, Jeremy): the group-heading style inside the menu, over its items. */
+/* A group's heading: the group-heading style inside the menu, over its items. */
 .ad-menu__heading { min-height: var(--h-btn); padding: 0 var(--space-3); }
 /* Opening at a point (a right-click): the zero-size mark the menu drops from. */
 .ad-menu__at { position: fixed; width: 0; height: 0; pointer-events: none; }
@@ -1397,7 +1396,7 @@ button.ad-contents__button:focus-visible { outline: none; box-shadow: var(--ring
 /* Rail, SideMenu, ProjectPill */
 .ad-rail { display: flex; flex-direction: column; align-items: center; gap: var(--space-4); box-sizing: border-box; width: var(--w-rail); height: 100%; padding: var(--space-4) 0 var(--space-3); background: var(--bg-side); }
 .ad-rail__group { display: flex; flex-direction: column; align-items: center; gap: var(--space-1); }
-/* The project pills sit on the icon column's left edge, not centred, rail and open menu alike (ruled 2026-10-27, Jeremy: "make them left justified, not centered"). */
+/* The project pills sit on the icon column's left edge, not centred, rail and open menu alike. */
 .ad-rail__group--projects, .ad-rail__pinned { align-self: stretch; display: flex; flex-direction: column; align-items: flex-start; gap: var(--space-1); padding-left: calc((var(--w-rail) - var(--h-btn)) / 2); }
 .ad-rail__pinned { padding-top: var(--space-1); }
 .ad-rail__foot { margin-top: auto; display: flex; flex-direction: column; align-items: center; gap: var(--space-1); }
@@ -1409,38 +1408,37 @@ button.ad-contents__button:focus-visible { outline: none; box-shadow: var(--ring
 .ad-rail__x { display: inline-block; flex: none; width: var(--icon-md); height: var(--icon-md); background: url('assets/logos/loudbox-x.png') center / contain no-repeat; }
 .ad-rail__project { margin: 0; padding: var(--space-hair); border: 0; border-radius: var(--radius-page); background: transparent; cursor: pointer; }
 .ad-rail__fold svg { width: var(--icon-md); height: var(--icon-md); }
-.ad-project-pill { --ad-pill: var(--line-strong); /* One size everywhere, the menu's: no taller than a name's type, a hair of padding (2026-10-27, Jeremy: \"match the left side menu in size\"). */
+.ad-project-pill { --ad-pill: var(--line-strong); /* One size everywhere, the menu's: no taller than a name's type, a hair of padding. */
   display: inline-flex; align-items: center; justify-content: center; box-sizing: border-box; min-width: 0; height: var(--text-base); padding: 0 var(--space-hair); border-radius: var(--radius-page); box-shadow: inset 0 0 0 var(--border-w) var(--ad-pill); background: transparent; line-height: 1; font: var(--type-data); font-size: var(--text-xs); color: var(--text-secondary); white-space: nowrap; }
-/* Its colour on the outline only, never a fill; no taller than the name beside it (ruled 2026-10-27, Jeremy: "Don't fill the project pill -- just color the outline"). */
+/* Its colour on the outline only, never a fill; no taller than the name beside it. */
 .ad-project-pill[data-coloured] { color: var(--text-primary); }
 /* In the menu only: never wider than the rail leaves right of the icon column, a hair of padding, so a four-letter code fits and nothing runs off
-   (ruled 2026-10-27, Jeremy). Elsewhere (a todo row's code under the face) the pill is as wide as its code. */
-/* In the rail a pill starts at the item's left edge and never reaches the rail's right edge (2026-10-27, Jeremy: "these are still running off the sidebar"). */
+. Elsewhere (a todo row's code under the face) the pill is as wide as its code. */
+/* In the rail a pill starts at the item's left edge and never reaches the rail's right edge. */
 .ad-rail .ad-project-pill, .ad-side .ad-project-pill { max-width: calc(var(--w-rail) - (var(--w-rail) - var(--h-btn)) / 2 - var(--space-1)); overflow: hidden; }
 .ad-project-pill--current { background: var(--text-primary); color: var(--bg-base); box-shadow: none; }
 button:hover > .ad-project-pill:not(.ad-project-pill--current) { color: var(--accent); }
 /* The open menu is the rail, wider: the same top padding, the same icon column (each icon where the rail draws it), the same gap after
-   Home and between groups, the same foot, so opening and closing moves nothing but the width (ruled 2026-10-27, Jeremy: "Its not in the
-   same place when I open and close"). */
+ Home and between groups, the same foot, so opening and closing moves nothing but the width. */
 .ad-side { display: flex; flex-direction: column; box-sizing: border-box; width: var(--w-side); height: 100%; padding: var(--space-4) var(--space-3) var(--space-3) 0; background: var(--bg-side); }
 /* The open menu's rows sit on the rail's pitch: the same row height and the same gap as the rail's items, so folding changes the
-   width and nothing else (ruled 2026-10-27, Jeremy: "the icons and the text squish tighter together when I open the sidebar" / "I like the bigger one"). */
+ width and nothing else. */
 .ad-side__list { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: var(--space-1); }
 .ad-side__list + .ad-side__list { padding-top: 0; }
-/* The pinned projects under the Projects row: indented past its icon, no hairline of their own (ruled 2026-10-27). */
+/* The pinned projects under the Projects row: indented past its icon, no hairline of their own. */
 .ad-side__list--nested { padding: 0; }
 .ad-side__list--nested .ad-side__item { height: var(--h-btn-bar); }
 .ad-side__list + .ad-side__list::before { content: ""; display: block; height: var(--border-w); margin: calc((var(--space-4) - var(--space-1) - var(--border-w)) / 2) var(--space-1); background: var(--border); }
 .ad-side__item { display: flex; align-items: center; gap: var(--space-2); box-sizing: border-box; width: 100%; height: var(--h-btn); margin: 0; padding: 0 var(--space-2) 0 calc((var(--w-rail) - var(--icon-lg)) / 2); border: 0; border-radius: var(--radius-page); background: transparent; font: var(--type-name); color: var(--text-primary); text-align: left; cursor: pointer; }
-/* The menu's words and icons in the primary ink at rest, open and folded (ruled 2026-10-27, Jeremy: "the menu is too dark"). */
+/* The menu's words and icons in the primary ink at rest, open and folded. */
 .ad-side__icon { display: inline-flex; justify-content: center; width: var(--icon-lg); color: var(--text-primary); }
 .ad-side__home { margin-bottom: calc(var(--space-4) - var(--space-1)); }
-/* 20 in the left menu, open or folded (Icons and pictures; fixed 2026-10-27, Jeremy: "when it opens it all scales down"). */
+/* 20 in the left menu, open or folded. */
 .ad-side__icon svg { width: var(--icon-lg); height: var(--icon-lg); }
 .ad-side__item:hover, .ad-side__item:hover .ad-side__icon { color: var(--accent); }
 .ad-side__item:focus-visible { outline: none; box-shadow: var(--ring-select); }
 .ad-side__item[aria-current="page"] { background: var(--tint-selected); color: var(--text-primary); }
-/* The expanded menu's foot: Settings and the fold back to the rail; a dragged item's drop place is the one coral drop line (dropLine.ts, base.css; ruled 2026-10-26). */
+/* The expanded menu's foot: Settings and the fold back to the rail; a dragged item's drop place is the one coral drop line. */
 .ad-side { display: flex; flex-direction: column; }
 .ad-side__foot { margin-top: auto; display: flex; flex-direction: column; align-items: stretch; gap: var(--space-1); }
 .ad-side__foot .ad-side__item { flex: none; }
@@ -1449,13 +1447,13 @@ button:hover > .ad-project-pill:not(.ad-project-pill--current) { color: var(--ac
 .ad-side__fold:hover { color: var(--accent); }
 .ad-side__fold:focus-visible { outline: none; box-shadow: var(--ring-select); }
 .ad-side__list li[draggable] { cursor: grab; }
-/* A pressable pill (a row's, a board card's) keeps the pill's own type, the menu's size (fixed 2026-10-27, Jeremy: "you didn't make the project pills smaller"). */
+/* A pressable pill (a row's, a board card's) keeps the pill's own type, the menu's size. */
 .ad-project-pill--press { margin: 0; border: 0; font: var(--type-data); font-size: var(--text-xs); line-height: 1; cursor: pointer; }
 .ad-project-pill--press:hover { color: var(--accent); }
 .ad-project-pill--press:focus-visible { outline: none; box-shadow: var(--ring-select); }
 /* The row pieces (MenuPieces.tsx): a row is its button and a trail of small buttons; rows under it sit indented; the one separator is
    a hairline; you sit at the foot with your name and role; the build is one small mono line. */
-/* The menu pieces' frame: its own class, apart from the dropdown Menu's `.ad-menu` (2026-10-28: one name, one thing). */
+/* The menu pieces' frame: its own class, apart from the dropdown Menu's `.ad-menu`. */
 .ad-menu-frame { display: flex; flex-direction: column; }
 .ad-menu__row { display: flex; flex-direction: column; }
 .ad-menu__line { display: flex; align-items: center; gap: var(--space-1); }
@@ -1472,7 +1470,7 @@ button:hover > .ad-project-pill:not(.ad-project-pill--current) { color: var(--ac
 }
 .ad-menu__row[draggable] { cursor: grab; }
 
-/* Rail and SideMenu are built from the menu pieces (2026-10-28): the rows keep the places the hand-built menu had. */
+/* Rail and SideMenu are built from the menu pieces: the rows keep the places the hand-built menu had. */
 .ad-rail .ad-menu__row { align-self: stretch; align-items: center; gap: var(--space-1); }
 .ad-rail .ad-menu__line { justify-content: center; }
 .ad-rail__pinned .ad-menu__row, .ad-rail__group--projects .ad-menu__row { align-items: flex-start; }
@@ -1482,7 +1480,7 @@ button:hover > .ad-project-pill:not(.ad-project-pill--current) { color: var(--ac
 .ad-rail .ad-menu__foot .ad-menu__row { align-self: center; }
 .ad-menu__list.ad-rail__group--projects, .ad-menu__list.ad-rail__pinned { padding-left: calc((var(--w-rail) - var(--h-btn)) / 2); }
 .ad-menu__list.ad-rail__pinned { padding-top: var(--space-1); }
-/* The rail's runs span its full width, so a pinned pill sits exactly 8 from the rail's edge whatever the widest row (2026-10-28). */
+/* The rail's runs span its full width, so a pinned pill sits exactly 8 from the rail's edge whatever the widest row. */
 .ad-rail > .ad-menu__list { align-self: stretch; }
 
 /* src/components/PageHeader/PageHeader.css */
@@ -1490,19 +1488,19 @@ button:hover > .ad-project-pill:not(.ad-project-pill--current) { color: var(--ac
 .ad-page-header { position: relative; }
 .ad-page-header__row { display: flex; align-items: center; gap: var(--space-6); }
 .ad-page-header__title { display: flex; align-items: center; gap: var(--space-3); margin: 0; flex: none; white-space: nowrap; font: var(--type-title); font-size: var(--text-display); line-height: var(--lh-none); color: var(--bg-base); -webkit-text-stroke: var(--bw-select) var(--text-primary); paint-order: stroke fill; }
-/* The chrome's icons are one ink, the primary (2026-10-27, Jeremy: "Icon brightness not consistent"): the title's glyph as the rail's. */
+/* The chrome's icons are one ink, the primary: the title's glyph as the rail's. */
 .ad-page-header__icon { display: inline-flex; color: var(--text-primary); -webkit-text-stroke: 0; }
 .ad-page-header__icon svg { width: calc(1em * var(--icon-page)); height: calc(1em * var(--icon-page)); }
-/* HeaderActions (ruled 2026-10-26): Athena's raised box round the header's icon buttons, kept as it was. */
+/* HeaderActions: Athena's raised box round the header's icon buttons, kept as it was. */
 .ad-header-actions { display: inline-flex; flex: none; align-items: center; box-sizing: border-box; gap: var(--space-2); height: var(--h-btn-bar); padding: 0 var(--pad-header-actions); border-radius: var(--radius-page); background: var(--bg-surface); }
 .ad-page-header__row > .ad-header-actions { margin-left: auto; }
-/* The project state, on the title row before the icon buttons (ruled 2026-10-26); alone, it ends the row. */
+/* The project state, on the title row before the icon buttons; alone, it ends the row. */
 .ad-page-header__stamp { flex: none; margin-left: auto; pointer-events: none; white-space: nowrap; font: var(--type-title); font-size: var(--text-44); text-transform: uppercase; color: var(--text-primary); opacity: var(--opacity-stamp); }
 .ad-page-header__stamp + .ad-header-actions { margin-left: 0; }
 /* A project's tabs, under the title row. */
 .ad-page-header__tabs { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-2) var(--space-6); margin-top: var(--space-4); }
 /* The title and its description: beside it while there is room; when the title and stamp leave none, the description and
-   countdown drop under the title instead of squeezing to a word a line (2026-10-27, his form). */
+ countdown drop under the title instead of squeezing to a word a line. */
 .ad-page-header__lead { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-2) var(--space-6); flex: 1 1 auto; min-width: 0; }
 .ad-page-header__aside { display: flex; flex-direction: column; gap: var(--space-1); flex: 1 1 0; min-width: var(--w-menu); }
 .ad-page-header__description { margin: 0; font: var(--type-body); line-height: var(--lh-tight); color: var(--text-secondary); }
@@ -1516,16 +1514,16 @@ button:hover > .ad-project-pill:not(.ad-project-pill--current) { color: var(--ac
 .ad-tab__numeral { font: var(--type-data); color: var(--text-muted); }
 .ad-tab[aria-selected="true"] .ad-tab__numeral { color: var(--text-primary); }
 /* The way back from a detail page: a bare chevron directly before the title, on the title row, no words and no line of its own
-   (2026-10-29, Jeremy: "Move the little < just next to the project name, so this isn't pushing the header lower"). */
+. */
 .ad-page-header__titled { display: flex; align-items: center; gap: var(--space-2); flex: none; min-width: 0; }
 .ad-page-header__back { display: inline-flex; align-items: center; justify-content: center; flex: none; margin: 0; padding: 0; border: 0; background: transparent; color: var(--text-secondary); cursor: pointer; }
 .ad-page-header__back:hover { color: var(--accent); }
 .ad-page-header__back:focus-visible { outline: none; box-shadow: var(--ring-select); border-radius: var(--radius-page); }
-/* A screen's own menu before the gear; the small bone dot says your board differs from the default (ruled 2026-10-25). */
+/* A screen's own menu before the gear; the small bone dot says your board differs from the default. */
 .ad-page-header__menu { position: relative; display: inline-flex; }
 .ad-page-header__mark { position: absolute; top: var(--space-1); right: var(--space-1); width: var(--space-2); height: var(--space-2); border-radius: var(--radius-round); background: var(--text-primary); pointer-events: none; }
 
-/* The header's icon buttons (gear, search, pop out, help) in the primary ink at rest, as the toolbar's and the rail's (2026-10-27, Jeremy: "brightness missed the top right items"). */
+/* The header's icon buttons (gear, search, pop out, help) in the primary ink at rest, as the toolbar's and the rail's. */
 .ad-header-actions .ad-icon-button { color: var(--text-primary); }
 
 /* src/components/Pickers/Pickers.css */
@@ -1549,7 +1547,7 @@ button:hover > .ad-project-pill:not(.ad-project-pill--current) { color: var(--ac
 .ad-picklist__over > * { visibility: hidden; }
 .ad-picklist__over > .ad-picklist__control { visibility: visible; pointer-events: auto; }
 .ad-picklist__place { visibility: hidden; }
-/* A group's heading sits on the same left edge as the rows under it (ruled 2026-10-27, Jeremy: "the objects under a sub header should not be to the left of the title"); it reads as a title, in the primary ink. */
+/* A group's heading sits on the same left edge as the rows under it; it reads as a title, in the primary ink. */
 .ad-picklist__group { padding: var(--space-3) var(--space-2) var(--space-1); font: var(--type-heading); text-transform: uppercase; color: var(--text-primary); }
 .ad-picklist__option, .ad-picklist__over { display: flex; align-items: center; gap: var(--space-3); box-sizing: border-box; height: var(--h-row); padding: 0 var(--space-2); border-radius: var(--radius-page); font: var(--type-name); color: var(--text-primary); cursor: pointer; }
 /* Coral is the light under the cursor only (DR Colour, DR Behaviour): the keyboard's active option keeps the tint, not the ink. */
@@ -1582,15 +1580,15 @@ button:hover > .ad-project-pill:not(.ad-project-pill--current) { color: var(--ac
 .ad-datepicker__day:focus-visible { outline: none; box-shadow: var(--ring-select); }
 .ad-datepicker__day[data-weekend] { color: var(--text-muted); }
 .ad-datepicker__day[data-outside] { color: var(--text-muted); }
-/* Today wears the 2px bone ring, as in every day grid (2026-10-27); the picked day's select ring wins when they are one. */
+/* Today wears the 2px bone ring, as in every day grid; the picked day's select ring wins when they are one. */
 .ad-datepicker__day[aria-current="date"] { color: var(--text-primary); box-shadow: var(--ring-today); }
 .ad-datepicker__day[data-picked] { background: var(--bg-hover); color: var(--text-primary); box-shadow: var(--ring-select); }
 .ad-datefield { display: inline-flex; flex-direction: column; min-width: 0; max-width: 100%; }
 .ad-datefield__field--date .ad-field__input { font: var(--type-data); }
-/* Late (ruled 2026-10-26): the date's words in the late red, as RowDate draws them. */
+/* Late: the date's words in the late red, as RowDate draws them. */
 .ad-datefield__field--late .ad-field__input { color: var(--status-error-ink); }
 .ad-datefield__drop.ad-popover { width: auto; padding: var(--space-2); }
-/* What is picked shows (built 2026-10-25 for Athena): one pick carries a check at the right; picking several draws the tick box before each row. Never coral. */
+/* What is picked shows: one pick carries a check at the right; picking several draws the tick box before each row. Never coral. */
 .ad-picklist__check { display: inline-flex; margin-left: auto; color: var(--text-secondary); }
 .ad-picklist__option .ad-checkbox__box { margin-right: var(--space-1); }
 /* PickField: the field's skin (filled one tone lighter, no edge) holding the pick's face or code, its words, a caret. */
@@ -1603,22 +1601,22 @@ button:hover > .ad-project-pill:not(.ad-project-pill--current) { color: var(--ac
 .ad-pick-field[aria-expanded="true"] { background: var(--bg-hover); }
 .ad-pick-field:focus-visible { outline: none; box-shadow: var(--ring-select); }
 .ad-pick-field__list { width: var(--w-menu); padding: var(--space-2); }
-/* The picker's Repeat line under the month (built 2026-10-25 for Athena): the quick picks' look, its current words in mono at the right. */
+/* The picker's Repeat line under the month: the quick picks' look, its current words in mono at the right. */
 .ad-datepicker__repeat { display: flex; align-items: center; gap: var(--space-2); width: 100%; height: var(--h-btn); margin-top: var(--space-2); padding: 0 var(--space-2); border: 0; border-top: var(--border-w) solid var(--border); border-radius: 0; background: transparent; font: var(--type-name); color: var(--text-primary); cursor: pointer; text-align: left; }
 .ad-datepicker__repeat .ad-datepicker__pick-date { margin-left: auto; }
 .ad-datepicker__repeat:hover { color: var(--accent); }
 .ad-datepicker__repeat:focus-visible { outline: none; box-shadow: var(--ring-select); }
-/* TimeField (built 2026-10-25 for Athena): the field, and the half-hour list dropping from it. */
+/* TimeField: the field, and the half-hour list dropping from it. */
 .ad-timefield { display: inline-flex; flex-direction: column; }
 .ad-timefield__drop { width: var(--w-menu); max-height: calc(var(--h-btn) * 8); }
-/* A mark under a day (how busy it is, a clash), and the key for them under the month (built 2026-10-25 for Athena). */
+/* A mark under a day (how busy it is, a clash), and the key for them under the month. */
 .ad-datepicker__mark { position: absolute; bottom: var(--space-hair); left: 50%; transform: translateX(-50%); display: inline-flex; line-height: 0; }
 .ad-datepicker__key { margin-top: var(--space-2); }
 /* A picked row's own buttons, under it in row size, from the row's start; and the list's footer line, a hairline above
-   (built 2026-10-26 for Athena). */
+. */
 .ad-picklist__actions { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-1); padding: 0 var(--space-2) var(--space-2); }
 .ad-picklist__footer { display: flex; align-items: center; gap: var(--space-2); min-height: var(--h-btn); margin-top: var(--space-2); padding-top: var(--space-2); border-top: var(--border-w) solid var(--border); font: var(--type-body); color: var(--text-secondary); }
-/* Several picked: a mark for each (its face, code or dot), then one plain "…" past the cap (built 2026-10-26 for Athena). */
+/* Several picked: a mark for each (its face, code or dot), then one plain "…" past the cap. */
 .ad-pick-field__marks { display: inline-flex; align-items: center; gap: var(--space-1); flex: none; }
 .ad-pick-field__mark { display: inline-flex; }
 .ad-pick-field__more { font: var(--type-name); color: var(--text-muted); }
@@ -1643,7 +1641,7 @@ button:hover > .ad-project-pill:not(.ad-project-pill--current) { color: var(--ac
 .ad-facts__cell--full { flex-basis: 100%; border-right: 0; border-top: var(--border-w) solid var(--border); padding-left: 0; font: var(--type-data); font-size: var(--text-xs); }
 .ad-facts__icon { display: inline-flex; color: var(--text-muted); }
 .ad-facts__icon svg { width: var(--icon-sm); height: var(--icon-sm); }
-/* 16 between the title, the fields and each section (2026-10-27, his form). */
+/* 16 between the title, the fields and each section. */
 .ad-popover__section { margin-top: var(--space-4); }
 .ad-popover__section-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: var(--space-2); }
 /* With a foot: the body scrolls and the foot stays pinned under it, a hairline above. */
@@ -1662,19 +1660,19 @@ button:hover > .ad-project-pill:not(.ad-project-pill--current) { color: var(--ac
 .ad-popover__title .ad-inline-edit--title { margin-left: calc(var(--space-2) * -1); }
 .ad-popover__title:has(.ad-inline-edit) { flex: 1; min-width: 0; }
 
-/* A section that folds (2026-10-27): the chevron before its label. */
+/* A section that folds: the chevron before its label. */
 .ad-popover__section-fold { display: inline-flex; align-items: center; justify-content: center; width: var(--h-btn-row); height: var(--h-btn-row); margin: 0; padding: 0; border: 0; background: transparent; color: var(--text-muted); cursor: pointer; }
 .ad-popover__section-fold:hover { color: var(--accent); }
 .ad-popover__section-fold:focus-visible { outline: none; box-shadow: var(--ring-select); border-radius: var(--radius-page); }
 
-/* A title renamed through the writing box grows to as many lines as it needs (2026-10-27). */
+/* A title renamed through the writing box grows to as many lines as it needs. */
 .ad-popover__title-read { display: block; white-space: normal; }
 
-/* No scroll area inside a card (ruled 2026-10-27, Jeremy: "You should never have a tiny scroll area inside a popover"): a list inside grows to its rows; the card alone scrolls, and only when it would run off the screen. */
+/* No scroll area inside a card: a list inside grows to its rows; the card alone scrolls, and only when it would run off the screen. */
 .ad-popover .ad-picklist__list, .ad-popover .ad-popover__body { max-height: none; overflow: visible; }
 .ad-popover { overflow-y: auto; }
 
-/* A hairline between a card's sections (ruled 2026-10-27, Jeremy: "add horizontal lines between sections"). */
+/* A hairline between a card's sections. */
 .ad-popover__section + .ad-popover__section { border-top: var(--border-w) solid var(--border); padding-top: var(--space-4); }
 
 /* src/components/Row/Row.css */
@@ -1691,28 +1689,28 @@ button.ad-row__name:focus-visible { outline: none; box-shadow: var(--ring-select
 .ad-row[data-picked] { background: var(--tint-selected); }
 .ad-row__lead { display: inline-flex; align-items: center; flex: none; }
 .ad-row__body { flex: 1; min-width: 0; display: flex; flex-direction: column; }
-/* One body face and one body size across the build, the alerts' (ruled 2026-10-28, Jeremy: "There is ONE body font across this build, and only one"); the second line is 13. */
+/* One body face and one body size across the build, the alerts'; the second line is 13. */
 .ad-row__name { line-height: var(--lh-tight); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .ad-row--heading .ad-row__name { font: var(--type-heading); text-transform: uppercase; }
 /* A heading row (approved Rows card): name, then its status beside it, the review date at the far right. */
 .ad-row--heading .ad-row__body { flex: none; }
 .ad-row--heading .ad-row__dates { margin-left: auto; }
-/* The second line is the body face at 12 (ruled 2026-10-26, Jeremy: not mono): the calendar glyph and the date, the department glyph, the department's name. */
+/* The second line is the body face at 12: the calendar glyph and the date, the department glyph, the department's name. */
 .ad-row__meta { display: flex; align-items: center; gap: var(--space-2); margin-top: var(--space-1); font: var(--type-detail); line-height: var(--lh-tight); color: var(--text-secondary); min-width: 0; }
 .ad-row__meta svg { width: var(--icon-sm); height: var(--icon-sm); color: var(--text-muted); flex: none; }
 .ad-row__status, .ad-row__dates, .ad-row__tags, .ad-row__people, .ad-row__trail { display: inline-flex; align-items: center; gap: var(--space-2); flex: none; }
 .ad-row__trail { gap: var(--space-1); }
 .ad-row-date { display: inline-flex; align-items: center; gap: var(--space-1); font: var(--type-detail); color: var(--text-secondary); white-space: nowrap; }
 .ad-row-date--late { color: var(--status-error-ink); }
-/* Today green, late red, the glyphs in the date's colour (ruled 2026-10-28, Jeremy, from Todoist). */
+/* Today green, late red, the glyphs in the date's colour. */
 .ad-row-date--today { color: var(--status-good); }
 .ad-row-date__repeat { margin-left: calc(var(--space-1) * -0.5); }
-/* A figure that is only a number with its unit or zone is mono; one with a word stays the body face (2026-10-27). */
+/* A figure that is only a number with its unit or zone is mono; one with a word stays the body face. */
 .ad-row-figure--number { font: var(--type-data); }
-/* The countdown (ruled 2026-10-26, Athena's milestone card): body face, regular, text-secondary; red once passed. */
+/* The countdown: body face, regular, text-secondary; red once passed. */
 .ad-row-date--countdown { font: var(--type-name); }
 .ad-row-date__icon { display: inline-flex; }
-/* The date's glyphs take the date's colour: green today, red late (ruled 2026-10-28, Jeremy). */
+/* The date's glyphs take the date's colour: green today, red late. */
 .ad-row__meta .ad-row-date--late svg, .ad-row__meta .ad-row-date--today svg, .ad-row-date--late svg, .ad-row-date--today svg { color: currentColor; }
 .ad-row-date__icon svg { width: var(--icon-sm); height: var(--icon-sm); }
 
@@ -1720,7 +1718,7 @@ button.ad-row__name:focus-visible { outline: none; box-shadow: var(--ring-select
   --ad-ring: var(--text-muted);
   display: inline-flex; align-items: center; justify-content: center; flex: none; box-sizing: border-box;
   width: var(--check-size); height: var(--check-size); margin: 0; padding: 0; border: 0; border-radius: var(--radius-round);
-  /* Todoist's ring (ruled 2026-10-28, Jeremy): 2px of its colour, a faint tint of it inside. */
+  /* Todoist's ring: 2px of its colour, a faint tint of it inside. */
   background: color-mix(in srgb, var(--ad-ring) 14%, transparent); box-shadow: inset 0 0 0 var(--border-w-ring) var(--ad-ring); color: transparent; cursor: pointer;
 }
 .ad-todo-check--p1 { --ad-ring: var(--priority-p1); }
@@ -1731,7 +1729,7 @@ button.ad-row__name:focus-visible { outline: none; box-shadow: var(--ring-select
 .ad-todo-check[aria-checked="true"] { background: var(--text-muted); box-shadow: none; color: var(--bg-base); }
 .ad-todo-check:focus-visible { outline: none; box-shadow: inset 0 0 0 var(--border-w-strong) var(--ad-ring), var(--ring-select); }
 .ad-todo-check:disabled { opacity: var(--opacity-disabled); cursor: default; }
-/* The celebrate pop the moment a todo is ticked off (kept from Athena, ruled 2026-10-26): it swells and the green glow ring flares and fades. */
+/* The celebrate pop the moment a todo is ticked off: it swells and the green glow ring flares and fades. */
 @keyframes ad-check-pop {
   0% { transform: scale(1); box-shadow: var(--ring-rest); }
   40% { transform: scale(1.34); box-shadow: var(--ring-celebrate); }
@@ -1741,18 +1739,18 @@ button.ad-row__name:focus-visible { outline: none; box-shadow: var(--ring-select
 @media (prefers-reduced-motion: reduce) { .ad-todo-check[data-pop] { animation: none; } }
 .ad-row--compact { min-height: calc(var(--h-row) - var(--space-1)); }
 .ad-row--compact.ad-row--two { min-height: calc(var(--h-row-2) - var(--space-1)); }
-/* Assigned to you, not yet acknowledged: the ring is filled in its priority colour; one click acknowledges (ruled 2026-10-25). */
+/* Assigned to you, not yet acknowledged: the ring is filled in its priority colour; one click acknowledges. */
 .ad-todo-check--asked { background: var(--ad-ring); }
 .ad-todo-check--asked:hover { background: var(--accent); box-shadow: none; }
-/* Not acknowledged yet: a slow blink until it is (ruled 2026-10-26, Jeremy, kept from Athena's lb-ack-pulse): full, down to
-   opacity-disabled at the half, back, every dur-ack-pulse. Still under reduce-motion: the filled ring alone says it. */
+/* Not acknowledged yet: a slow blink until it is: full, down to
+ opacity-disabled at the half, back, every dur-ack-pulse. Still under reduce-motion: the filled ring alone says it. */
 @keyframes ad-ack-pulse { 0%, 100% { opacity: 1; } 50% { opacity: var(--opacity-disabled); } }
 .ad-todo-check--asked { animation: ad-ack-pulse var(--dur-ack-pulse) var(--ease-ack-pulse) infinite; }
 @media (prefers-reduced-motion: reduce) { .ad-todo-check--asked { animation: none; opacity: 1; } }
-/* The date line's other facts (ruled 2026-10-25): repeat, the past-deadline flag, the role, the deliverable. */
+/* The date line's other facts: repeat, the past-deadline flag, the role, the deliverable. */
 .ad-row__fact { display: inline-flex; align-items: center; gap: var(--space-1); white-space: nowrap; color: var(--text-secondary); }
 /* A detail line too long for the row: the date and department stay whole; the role and the deliverable shrink and end in "…" (their
-   whole words in the hover), so nothing runs under the faces (2026-10-25). */
+ whole words in the hover), so nothing runs under the faces. */
 .ad-row__meta { overflow: hidden; }
 .ad-row__meta > * { flex-shrink: 0; }
 .ad-row__meta > .ad-row__fact--cut, .ad-row__meta > .ad-row__press:has(.ad-row__fact--cut) { flex-shrink: 1; min-width: 0; }
@@ -1760,11 +1758,11 @@ button.ad-row__name:focus-visible { outline: none; box-shadow: var(--ring-select
 .ad-row__fact--cut { min-width: 0; max-width: 100%; }
 .ad-row__fact-word { min-width: 0; overflow: hidden; text-overflow: ellipsis; }
 .ad-row__fact--late svg { color: var(--status-error-ink); }
-/* Being dragged: it lifts as glass, the same as a dragged card (ruled 2026-10-25). */
+/* Being dragged: it lifts as glass, the same as a dragged card. */
 .ad-row[data-dragging] { background: var(--glass-bg); backdrop-filter: var(--blur-glass); -webkit-backdrop-filter: var(--blur-glass); box-shadow: var(--elev-float); border-radius: var(--radius-float); }
 /* The face, and under it the project's code in a list mixing projects. */
 .ad-row__who { display: inline-flex; flex-direction: column; align-items: flex-end; gap: var(--space-1); }
-/* A fact you press to change it: it looks the same; coral under the cursor (built 2026-10-25 for Athena). */
+/* A fact you press to change it: it looks the same; coral under the cursor. */
 .ad-row__press { display: inline-flex; align-items: center; margin: 0; padding: 0; border: 0; background: transparent; font: inherit; color: inherit; cursor: pointer; border-radius: var(--radius-page); }
 .ad-row__press:hover, .ad-row__press:hover .ad-row-date, .ad-row__press:hover .ad-row__fact { color: var(--accent); }
 .ad-row__press:focus-visible { outline: none; box-shadow: var(--ring-select); }
@@ -1791,7 +1789,7 @@ button.ad-row__name:focus-visible { outline: none; box-shadow: var(--ring-select
 
 /* src/components/Segmented/Segmented.css */
 /* Segmented: pick one of 2 to 5. The choices sit loose and the current one sits on a bg-raised tile, as the view switch draws
-   it (2026-10-27, his form; the darker tray is gone). space-hair between the choices: tight neighbours. */
+ it. space-hair between the choices: tight neighbours. */
 .ad-segmented {
   display: inline-flex; align-items: center; width: max-content; gap: var(--space-hair); box-sizing: border-box; height: var(--h-btn);
 }
@@ -1803,7 +1801,7 @@ button.ad-row__name:focus-visible { outline: none; box-shadow: var(--ring-select
 .ad-segmented__option:disabled { opacity: var(--opacity-disabled); cursor: default; color: var(--text-secondary); }
 .ad-segmented__option svg { width: var(--icon-md); height: var(--icon-md); }
 
-/* The icons form (the view switch, 2026-10-28): a square tile holding the glyph, grey at rest. */
+/* The icons form: a square tile holding the glyph, grey at rest. */
 .ad-segmented__option--icon { width: var(--h-btn); height: var(--h-btn); padding: 0; color: var(--text-muted); }
 
 /* src/components/Settings/Settings.css */
@@ -1818,7 +1816,7 @@ button.ad-row__name:focus-visible { outline: none; box-shadow: var(--ring-select
 .ad-settings__nav-item:focus-visible { outline: none; box-shadow: var(--ring-select); }
 .ad-settings__nav-item[aria-current="page"] { background: var(--tint-selected); color: var(--text-primary); }
 .ad-settings__pane { flex: 1; min-width: 0; max-width: var(--w-prose); display: flex; flex-direction: column; gap: var(--space-6); }
-/* The pane's one big title, the pop-over title's size; the sections under it stay 13px labels (ruled 2026-10-25). */
+/* The pane's one big title, the pop-over title's size; the sections under it stay 13px labels. */
 .ad-settings__title { margin: 0; font: var(--type-title); line-height: var(--lh-tight); color: var(--text-primary); }
 .ad-setting { min-height: var(--h-row); }
 .ad-setting__name { display: inline-flex; align-items: center; gap: var(--space-2); color: var(--text-primary); }
@@ -1826,7 +1824,7 @@ button.ad-row__name:focus-visible { outline: none; box-shadow: var(--ring-select
 /* "No access" sits quiet. */
 
 /* src/components/Splitter/Splitter.css */
-/* Splitter: two panes and the divider between (2026-10-27). */
+/* Splitter: two panes and the divider between. */
 .ad-splitter { --ad-split: var(--w-side); display: flex; min-height: 0; min-width: 0; flex: 1; }
 .ad-splitter__main { flex: 1; min-width: 0; min-height: 0; overflow: auto; }
 .ad-splitter__side { flex: none; width: var(--ad-split); min-width: 0; min-height: 0; overflow: auto; }
@@ -1847,14 +1845,14 @@ button.ad-row__name:focus-visible { outline: none; box-shadow: var(--ring-select
 .ad-dot--good { --ad-dot: var(--status-good); }
 .ad-dot--problem { --ad-dot: var(--status-error); }
 .ad-status { display: inline-flex; align-items: flex-start; gap: var(--space-2); font: var(--type-body); color: var(--text-secondary); }
-/* The words may wrap (ruled 2026-10-26); the dot stays level with the FIRST line, centred on its line box. */
+/* The words may wrap; the dot stays level with the FIRST line, centred on its line box. */
 .ad-status > .ad-dot { margin-top: calc((1lh - var(--dot-size)) / 2); }
 .ad-health { display: inline-flex; align-items: center; }
 /* A priority's dot: the ring's colours (P4 stays the neutral grey). */
 .ad-dot--p1 { --ad-dot: var(--priority-p1); }
 .ad-dot--p2 { --ad-dot: var(--priority-p2); }
 .ad-dot--p3 { --ad-dot: var(--priority-p3); }
-/* SideStripe (ruled 2026-10-26): a 3px stripe down one side, in a named colour, drawn over its child's edge. No padding, no layout. */
+/* SideStripe: a 3px stripe down one side, in a named colour, drawn over its child's edge. No padding, no layout. */
 /* A hidden colour (its switch off) is the neutral tone Dot takes, never absent: the stripe is always drawn. */
 .ad-side-stripe { --ad-stripe: var(--status-neutral); position: relative; display: block; }
 .ad-side-stripe--inline { display: inline-flex; vertical-align: middle; }
@@ -1885,10 +1883,10 @@ button.ad-row__name:focus-visible { outline: none; box-shadow: var(--ring-select
 /* src/components/Table/Table.css */
 /* Table and SelectionBar */
 .ad-table { border-collapse: collapse; width: 100%; font: var(--type-name); color: var(--text-primary); }
-/* `fixed`: columns keep their widths; a cell that fills clips with an ellipsis rather than widening its column (2026-10-27). */
+/* `fixed`: columns keep their widths; a cell that fills clips with an ellipsis rather than widening its column. */
 .ad-table--fixed { table-layout: fixed; }
 .ad-table--fixed td { overflow: hidden; text-overflow: ellipsis; }
-/* The tick column keeps its own width under `fixed`: never cut to "☑…" (2026-10-29). */
+/* The tick column keeps its own width under `fixed`: never cut to "☑…". */
 .ad-table--fixed .ad-table__pick { box-sizing: border-box; width: calc(var(--check-size) + 2 * var(--space-2)); overflow: visible; text-overflow: clip; }
 .ad-table th[scope="col"] { position: sticky; top: 0; z-index: 1; height: var(--h-btn); padding: 0 var(--space-2); text-align: left; white-space: nowrap; background: var(--bg-base); border-bottom: var(--border-w) solid var(--border); font: var(--type-heading); text-transform: uppercase; color: var(--text-primary); }
 .ad-table th[aria-sort="ascending"], .ad-table th[aria-sort="descending"] { color: var(--text-primary); }
@@ -1929,7 +1927,7 @@ button.ad-row__name:focus-visible { outline: none; box-shadow: var(--ring-select
 /* A name with a grey second line: the row is 56. */
 .ad-table th.ad-table__name--two { height: var(--h-row-2); }
 .ad-table__words { display: inline-flex; flex-direction: column; gap: var(--space-hair); }
-/* The second line is words (a role, a place) in the body face; mono is for figures (2026-10-29). */
+/* The second line is words (a role, a place) in the body face; mono is for figures. */
 .ad-table__meta { font: var(--type-detail); color: var(--text-secondary); }
 .ad-selection-bar__lead { display: inline-flex; align-items: center; gap: var(--space-2); }
 .ad-selection-bar__slot { align-self: stretch; display: inline-flex; align-items: center; }
@@ -1960,17 +1958,17 @@ button.ad-row__name:focus-visible { outline: none; box-shadow: var(--ring-select
 .ad-unread { display: inline-block; width: var(--dot-size); height: var(--dot-size); margin-left: var(--space-2); border-radius: var(--radius-round); background: var(--text-primary); vertical-align: middle; }
 .ad-active-filters { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-3); }
 
-/* A note tag: words, not a code (2026-10-27). */
+/* A note tag: words, not a code. */
 .ad-tag--note { font: var(--type-detail); color: var(--text-secondary); }
 
 /* src/components/Text/Text.css */
-/* Text (2026-10-28): the small type pieces a screen writes inside its own sentences and cells. */
+/* Text: the small type pieces a screen writes inside its own sentences and cells. */
 .ad-data-text { font: var(--type-data); color: inherit; }
 .ad-data-text--small { font: var(--type-data); font-size: var(--text-xs); }
 .ad-data-text--dim { color: var(--text-secondary); }
 .ad-hint { font: var(--type-detail); line-height: var(--lh-tight); color: var(--text-secondary); }
 .ad-figures { display: grid; grid-template-columns: repeat(auto-fit, minmax(0, 1fr)); gap: 0; margin: 0; border-top: var(--border-w) solid var(--border); border-bottom: var(--border-w) solid var(--border); }
-/* The cells split by hairlines, as his Overview picture draws them (2026-10-29). */
+/* The cells split by hairlines, as his Overview picture draws them. */
 .ad-figures__item { display: flex; flex-direction: column; gap: var(--space-2); min-width: 0; padding: var(--space-4) var(--space-6); border-left: var(--border-w) solid var(--border); }
 .ad-figures__item:first-child { padding-left: 0; border-left: 0; }
 .ad-figures__label { margin: 0; font: var(--type-heading); text-transform: uppercase; color: var(--text-primary); }
@@ -1978,7 +1976,7 @@ button.ad-row__name:focus-visible { outline: none; box-shadow: var(--ring-select
 
 /* src/components/Timeline/Ruler.css */
 /* Ruler and ZoomCluster: a line-strong rule, months in bone mono caps along the top, ticks from the rule (weeks taller than
-   days), day numbers mono muted centred on their tick. The zoom cluster sits in the toolbar, before View (2026-10-27). */
+ days), day numbers mono muted centred on their tick. The zoom cluster sits in the toolbar, before View. */
 .ad-ruler { position: relative; height: var(--h-row); border-bottom: var(--border-w) solid var(--line-strong); font: var(--type-data); font-size: var(--text-xs); color: var(--text-secondary); }
 .ad-ruler__months { position: relative; height: var(--space-6); }
 .ad-ruler__month { position: absolute; top: 0; padding-left: var(--space-1); color: var(--text-primary); white-space: nowrap; }
@@ -1995,12 +1993,12 @@ button.ad-row__name:focus-visible { outline: none; box-shadow: var(--ring-select
 .ad-zoom__btn:focus-visible { outline: none; box-shadow: var(--ring-select); }
 .ad-zoom__btn:disabled { color: var(--text-muted); cursor: default; }
 .ad-zoom__btn--today { color: var(--text-primary); }
-/* PeriodCluster (built 2026-10-25 for Athena): the span in words in bone, the steps, then the sizes; the current size in bone on the view switch's `bg-raised` tile (ruled 2026-10-27, Jeremy). */
+/* PeriodCluster: the span in words in bone, the steps, then the sizes; the current size in bone on the view switch's `bg-raised` tile. */
 .ad-period .ad-zoom__name { color: var(--text-primary); margin-right: var(--space-1); }
 .ad-period__sizes { display: inline-flex; gap: var(--space-1); margin-left: var(--space-2); }
 .ad-period__size { width: auto; padding: 0 var(--space-2); white-space: nowrap; font: var(--type-name); }
 .ad-period__size[aria-checked="true"] { background: var(--bg-raised); color: var(--text-primary); }
-/* Pinned: held at the top of the scroller on its own ground, above the lanes (built 2026-10-25 for Athena). */
+/* Pinned: held at the top of the scroller on its own ground, above the lanes. */
 .ad-ruler--pinned { position: sticky; top: 0; z-index: 2; background: var(--bg-base); }
 
 /* src/components/Timeline/Timeline.css */
@@ -2008,7 +2006,7 @@ button.ad-row__name:focus-visible { outline: none; box-shadow: var(--ring-select
 .ad-bar { --ad-bar: var(--bg-hover); position: relative; display: flex; align-items: center; box-sizing: border-box; width: 100%; height: var(--h-bar); margin: 0; padding: 0 var(--space-2); border: 0; border-radius: var(--radius-page); background: var(--ad-bar); color: var(--text-primary); font: var(--type-name); text-align: left; white-space: nowrap; transition: box-shadow var(--dur-fast) var(--ease-out); }
 button.ad-bar { cursor: pointer; }
 /* An item or phase colour is never a bar's fill: the bar stays grey and the colour runs as the side stripe down its left
-   side (`w-stripe`, as SideStripe draws it; ruled 2026-10-27, Jeremy). hue.tsx barColour sets --ad-stripe. */
+ side. hue.tsx barColour sets --ad-stripe. */
 .ad-bar { --ad-stripe: transparent; }
 .ad-bar::before { content: ""; position: absolute; top: 0; bottom: 0; left: 0; width: var(--w-stripe); border-radius: var(--radius-page) 0 0 var(--radius-page); background: var(--ad-stripe); pointer-events: none; }
 .ad-bar[role="button"] { cursor: pointer; }
@@ -2024,7 +2022,7 @@ button.ad-bar { cursor: pointer; }
 .ad-bar--thin { background: transparent; box-shadow: inset 0 0 0 var(--border-w) var(--line-strong); color: var(--text-secondary); }
 .ad-bar--unconfirmed { background: transparent; background-image: var(--hatch); box-shadow: inset 0 0 0 var(--border-w) var(--line-strong); }
 /* The name sits on a small ground with the hatch showing round it at both ends, so a short chip still reads as unconfirmed
-   (asked by Rehearsal, 2026-10-25). */
+. */
 .ad-bar--unconfirmed .ad-bar__label { background: var(--bg-base); padding: var(--space-hair) var(--space-1); border-radius: var(--radius-page); }
 /* Deal: the Bars card's dashed text-muted outline, offset outside the bar so it reads. Backup: a dotted one, no fill, the name text-secondary. */
 .ad-bar--deal { outline: var(--border-w-strong) dashed var(--text-muted); outline-offset: var(--space-hair); }
@@ -2055,15 +2053,15 @@ button.ad-bar { cursor: pointer; }
 .ad-bar--label-outside .ad-bar__end--end { display: none; }
 .ad-bar--label-outside { flex: 1; }
 .ad-bar:hover .ad-bar__end { opacity: 1; }
-/* Late is the red date alone, no glow (2026-10-27). */
+/* Late is the red date alone, no glow. */
 .ad-bar--late .ad-bar__end { color: var(--status-error-ink); }
-/* The eye and the plane: icon-md, centred on their date, bone; red when late, no glow (2026-10-27). */
+/* The eye and the plane: icon-md, centred on their date, bone; red when late, no glow. */
 .ad-bar-marker { position: absolute; top: 50%; z-index: 2; display: inline-flex; transform: translate(-50%, -50%); color: var(--text-primary); }
 .ad-bar-marker svg { width: var(--icon-md); height: var(--icon-md); }
 .ad-bar-marker--late { color: var(--status-error-ink); }
 /* The caret sits inside the bar, before the status mark (a sibling in the DOM, so the bar can be a button). */
 .ad-deliverable { --ad-label-max: none; --ad-label-in: 0px; position: relative; display: flex; align-items: center; width: 100%; }
-/* The name stays clear of the date icons (ruled 2026-10-26): pushed past an icon at the start, capped before the next. */
+/* The name stays clear of the date icons: pushed past an icon at the start, capped before the next. */
 .ad-deliverable .ad-bar__label { max-width: var(--ad-label-max); }
 
 .ad-deliverable .ad-bar { flex: 1; }
@@ -2086,13 +2084,13 @@ button.ad-bar { cursor: pointer; }
 .ad-milestone { display: inline-flex; align-items: center; gap: var(--space-2); margin: 0; padding: 0; border: 0; background: transparent; font: var(--type-name); color: var(--text-primary); white-space: nowrap; }
 button.ad-milestone { cursor: pointer; }
 button.ad-milestone:hover .ad-milestone__label { color: var(--accent); }
-/* Milestones share one lane (ruled 2026-10-27, Jeremy): where two names would touch, the later one is drawn over the earlier on its
-   lane's ground, and the covered name reads on hover (the hovered milestone rises). */
+/* Milestones share one lane: where two names would touch, the later one is drawn over the earlier on its
+ lane's ground, and the covered name reads on hover (the hovered milestone rises). */
 .ad-milestone { background: var(--ad-lane-ground, transparent); padding-right: var(--space-1); }
 .ad-milestone:hover { position: relative; z-index: 2; }
 button.ad-milestone:focus-visible { outline: none; box-shadow: var(--ring-select); border-radius: var(--radius-page); }
-/* One diamond size: the row glyph's (2026-10-29, Jeremy: "why two different diamond size? only use the smaller one"). A 0.6 square
-   turned 45° spans 0.85 of the icon box, as the milestone glyph does; the margin keeps the box icon-sm, so nothing beside it moves. */
+/* One diamond size: the row glyph's. A 0.6 square
+ turned 45° spans 0.85 of the icon box, as the milestone glyph does; the margin keeps the box icon-sm, so nothing beside it moves. */
 .ad-milestone__diamond { box-sizing: border-box; width: calc(var(--icon-sm) * 0.6); height: calc(var(--icon-sm) * 0.6); margin: calc(var(--icon-sm) * 0.2); flex: none; transform: rotate(45deg); background: var(--text-primary); }
 .ad-milestone--past { color: var(--text-secondary); }
 .ad-milestone--past .ad-milestone__diamond { background: var(--text-muted); }
@@ -2104,14 +2102,14 @@ button.ad-milestone:focus-visible { outline: none; box-shadow: var(--ring-select
 /* The ⊕: an open ring, as the card's .reg is — no disc, so the today line runs through it. */
 .ad-regmark { position: absolute; top: 0; left: 50%; width: var(--icon-md); height: var(--icon-md); transform: translate(-50%, -50%); color: var(--crop); }
 .ad-past { position: absolute; top: 0; bottom: 0; background-image: var(--hatch-fine); pointer-events: none; }
-/* OverMark (ruled 2026-10-26): Athena's over-capacity block, kept as it was. The app places it; it sits on the line's bottom. */
+/* OverMark: Athena's over-capacity block, kept as it was. The app places it; it sits on the line's bottom. */
 .ad-over-mark { position: absolute; bottom: 0; box-sizing: border-box; display: flex; align-items: center; justify-content: center; gap: var(--space-1); height: var(--h-over-mark); overflow: hidden; border-radius: var(--radius-page); background: var(--status-error); color: var(--bg-base); font: var(--type-detail); line-height: var(--lh-none); white-space: nowrap; }
 .ad-over-mark__figure { font: var(--type-data); }
 .ad-clash { display: flex; width: 100%; border-radius: var(--radius-page); box-shadow: var(--glow-clash); }
 .ad-clash > * { flex: 1; min-width: 0; }
 .ad-offscreen { font: var(--type-data); font-size: var(--text-xs); color: var(--text-secondary); white-space: nowrap; }
 @media (prefers-reduced-motion: reduce) { .ad-bar, .ad-bar__end, .ad-deliverable__chevron { transition: none; } }
-/* ChartKey: each word with its swatch, drawn as the bar draws that mark (ruled 2026-10-25); no "FIG." (2026-10-27). */
+/* ChartKey: each word with its swatch, drawn as the bar draws that mark; no "FIG.". */
 .ad-chart-key { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-2) var(--space-4); font: var(--type-detail); color: var(--text-secondary); }
 .ad-chart-key__item { display: inline-flex; align-items: center; gap: var(--space-2); }
 .ad-chart-key__item--press { padding: 0; border: 0; background: none; color: inherit; font: inherit; cursor: pointer; }
@@ -2122,13 +2120,13 @@ button.ad-milestone:focus-visible { outline: none; box-shadow: var(--ring-select
 .ad-chart-key__swatch--pencilled { background: transparent; background-image: var(--hatch); box-shadow: inset 0 0 0 var(--border-w) var(--line-strong); }
 .ad-chart-key__swatch--deal { background: transparent; outline: var(--border-w) dashed var(--text-muted); outline-offset: calc(var(--border-w) * -1); }
 .ad-chart-key__swatch--backup { background: transparent; outline: var(--border-w) dotted var(--line-strong); outline-offset: calc(var(--border-w) * -1); }
-/* DragBand (ruled 2026-10-26; Athena's GridSelBand): the span a new item will cover while it is dragged out. */
+/* DragBand: the span a new item will cover while it is dragged out. */
 .ad-drag-band { position: absolute; top: 0; bottom: 0; box-sizing: border-box; background: var(--tint-selected); border-left: var(--border-w) dashed var(--accent); border-right: var(--border-w) dashed var(--accent); pointer-events: none; z-index: 1; }
 .ad-drag-band--lane { top: var(--space-1); bottom: var(--space-1); }
-/* GroupBand (ruled 2026-10-26; Athena's gridBand): a group's heading row on the inset plane under a hairline. */
+/* GroupBand: a group's heading row on the inset plane under a hairline. */
 .ad-group-band { background: var(--bg-inset); border-top: var(--border-w) solid var(--border); }
-/* Lanes and Lane (ruled 2026-10-26, Jeremy): one row each, the name at the left in the side-menu width, every second lane washed
-   bg-surface across the whole width; the marks (past hatch, today line) lie over the chart column of every lane. */
+/* Lanes and Lane: one row each, the name at the left in the side-menu width, every second lane washed
+ bg-surface across the whole width; the marks (past hatch, today line) lie over the chart column of every lane. */
 .ad-lanes { position: relative; display: flex; flex-direction: column; }
 /* The ruler's lane keeps room above it for the TODAY word. */
 .ad-lanes--ruler { padding-top: var(--space-4); }
@@ -2140,7 +2138,7 @@ button.ad-milestone:focus-visible { outline: none; box-shadow: var(--ring-select
 .ad-lane--tall .ad-lane__chart { min-height: var(--h-row); }
 .ad-lanes__marks { position: absolute; top: 0; bottom: 0; left: var(--ad-lane-name); right: 0; pointer-events: none; }
 .ad-lanes__marks > * { pointer-events: auto; }
-/* LaneWash (ruled 2026-10-26; Athena's ScheduleBar wash): a named colour at tint-lane-wash behind the lanes. */
+/* LaneWash: a named colour at tint-lane-wash behind the lanes. */
 .ad-lane-wash { --ad-wash: var(--text-muted); position: absolute; top: 0; bottom: 0; box-sizing: border-box; border-radius: var(--radius-page); background: color-mix(in srgb, var(--ad-wash) var(--tint-lane-wash), transparent); pointer-events: none; overflow: hidden; }
 .ad-lane-wash--edge { border-left: var(--bw-select) solid color-mix(in srgb, var(--ad-wash) var(--tint-lane-edge), transparent); }
 .ad-lane-wash--unconfirmed { border-left-style: dashed; }
@@ -2153,56 +2151,56 @@ button.ad-milestone:focus-visible { outline: none; box-shadow: var(--ring-select
 .ad-chart-key__presence--away { background: var(--hatch-fine), color-mix(in srgb, var(--text-muted) var(--tint-presence-strip), transparent); }
 
 /* A day cell (`code`): an outlined box filling its day, the code centred inside, never moved outside; a travel day dashed, a dark day
-   dimmed (2026-10-29, his Plan picture; was a small filled tile, 2026-10-28). */
+ dimmed. */
 .ad-bar--code { --ad-bar: transparent; justify-content: center; padding-left: var(--space-hair); padding-right: var(--space-hair); border: var(--border-w) solid var(--text-muted); }
 .ad-bar--code .ad-bar__label { margin-left: 0; gap: 0; overflow: hidden; }
 .ad-bar--code .ad-bar__name { overflow: hidden; text-overflow: clip; }
 .ad-bar--code.ad-bar--travel { border-style: dashed; }
 .ad-bar--code.ad-bar--dim { color: var(--text-muted); border-color: var(--text-muted); }
-/* labelOutside="never": the name whole inside, or, too long for the bar, not written and its words on hover; never a stub (2026-10-29). */
+/* labelOutside="never": the name whole inside, or, too long for the bar, not written and its words on hover; never a stub. */
 .ad-bar--keep-in .ad-bar__label { overflow: hidden; }
 .ad-bar--name-gone .ad-bar__label > .ad-bar__name { visibility: hidden; }
 
 /* src/components/Toolbar/Toolbar.css */
 /* Toolbar */
-/* No line under the toolbar (ruled 2026-10-26, Jeremy): the work's first section label draws the one hairline. */
+/* No line under the toolbar: the work's first section label draws the one hairline. */
 .ad-toolbar { display: flex; align-items: center; flex-wrap: wrap; gap: var(--space-2); min-height: var(--h-row); }
 .ad-toolbar__separator { width: var(--border-w); height: var(--icon-lg); margin: 0 var(--space-2); background: var(--border); }
 .ad-toolbar__end { margin-left: auto; display: flex; align-items: center; gap: var(--space-2); }
-/* The View button reads as one of the toolbar's tools (ruled 2026-10-26, Jeremy: the word was loud): no fill at rest, text-muted,
-   regular weight, coral under the cursor; filled bg-raised and text-primary only while its pop-over is open. */
+/* The View button reads as one of the toolbar's tools: no fill at rest, text-muted,
+ regular weight, coral under the cursor; filled bg-raised and text-primary only while its pop-over is open. */
 .ad-button--view { background: transparent; color: var(--text-muted); }
 .ad-button--view:hover { background: var(--tint-hover); color: var(--accent); }
 .ad-button--view.ad-button--active { background: var(--bg-raised); color: var(--text-primary); }
-/* Under a finger (a phone), the toolbar's buttons grow to the touch size, so a phone bar never shrinks under h-touch (ruled 2026-10-26). */
+/* Under a finger (a phone), the toolbar's buttons grow to the touch size, so a phone bar never shrinks under h-touch. */
 @media (pointer: coarse) {
   .ad-toolbar .ad-button--bar { height: var(--h-touch); }
   .ad-toolbar .ad-icon-button--bar { width: var(--h-touch); height: var(--h-touch); }
 }
-/* The View pop-over's naming step and sort direction (built 2026-10-25 for Athena). */
+/* The View pop-over's naming step and sort direction. */
 .ad-view-save { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-2); margin-top: var(--space-2); }
 .ad-view-save .ad-field-wrap { flex: 1; min-width: 0; }
 .ad-view-sort { display: flex; align-items: center; gap: var(--space-2); }
 
-/* A narrowed view: the binoculars in the primary ink, the word stays quiet (2026-10-27). */
+/* A narrowed view: the binoculars in the primary ink, the word stays quiet. */
 .ad-button--view-narrowed .ad-icon { color: var(--text-primary); }
 
-/* The View pop-over (2026-10-27): the filter's two halves with "or" between; the sentence when there is no saved view yet. */
+/* The View pop-over: the filter's two halves with "or" between; the sentence when there is no saved view yet. */
 .ad-view-or { display: flex; align-items: center; gap: var(--space-2); margin: var(--space-2) 0; font: var(--type-detail); color: var(--text-secondary); }
 .ad-view-or::before, .ad-view-or::after { content: ''; flex: 1; height: var(--border-w); background: var(--border); }
 .ad-view-none { margin: 0 0 var(--space-2); font: var(--type-body); color: var(--text-muted); }
 
-/* A Show entry in the person's own order (2026-10-27): rows with the handle, dragged into place. */
+/* A Show entry in the person's own order: rows with the handle, dragged into place. */
 .ad-view-order__label { font: var(--type-detail); color: var(--text-secondary); margin-bottom: var(--space-1); }
 .ad-view-order__list { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; }
 .ad-view-order__row { position: relative; display: flex; align-items: center; gap: var(--space-2); height: var(--h-btn-bar); font: var(--type-name); color: var(--text-primary); }
 
-/* The toolbar's icons in the primary ink at rest, as the rail's and the title's (2026-10-27, Jeremy: "Icon brightness not consistent"); the current view's tile and hover stay as they are. */
+/* The toolbar's icons in the primary ink at rest, as the rail's and the title's; the current view's tile and hover stay as they are. */
 .ad-toolbar .ad-icon-button, .ad-toolbar .ad-button--view, .ad-toolbar .ad-segmented__option--icon { color: var(--text-primary); }
 .ad-view-save-row { margin-top: var(--space-4); padding-top: var(--space-2); border-top: var(--border-w) solid var(--border); }
 .ad-view-lock { color: var(--text-muted); }
 
-/* A Show switch that cannot go off now: its reason, under it, once pressed (2026-10-29). */
+/* A Show switch that cannot go off now: its reason, under it, once pressed. */
 .ad-view__reason { display: block; margin: calc(-1 * var(--space-1)) 0 var(--space-2); }
 
 /* src/components/Tooltip/Tooltip.css */
@@ -2227,7 +2225,7 @@ button.ad-milestone:focus-visible { outline: none; box-shadow: var(--ring-select
 .ad-count-pill--p3 { background: var(--priority-p3); }
 .ad-count-pill--p4 { background: var(--priority-p4); }
 .ad-alert { display: flex; align-items: center; gap: var(--space-3); min-height: var(--h-row); padding: 0 var(--space-3); border-top: var(--border-w) solid var(--border); }
-.ad-alert__ring { width: var(--check-size); height: var(--check-size); flex: none; box-sizing: border-box; border-radius: var(--radius-round); box-shadow: inset 0 0 0 var(--border-w-ring) var(--text-muted); background: color-mix(in srgb, var(--text-muted) 14%, transparent); } /* one ring look, a todo's (2026-10-28) */
+.ad-alert__ring { width: var(--check-size); height: var(--check-size); flex: none; box-sizing: border-box; border-radius: var(--radius-round); box-shadow: inset 0 0 0 var(--border-w-ring) var(--text-muted); background: color-mix(in srgb, var(--text-muted) 14%, transparent); } /* one ring look, a todo's */
 .ad-alert__ring--p1 { box-shadow: inset 0 0 0 var(--border-w-ring) var(--priority-p1); background: color-mix(in srgb, var(--priority-p1) 14%, transparent); }
 .ad-alert__ring--p2 { box-shadow: inset 0 0 0 var(--border-w-ring) var(--priority-p2); background: color-mix(in srgb, var(--priority-p2) 14%, transparent); }
 .ad-alert__ring--p3 { box-shadow: inset 0 0 0 var(--border-w-ring) var(--priority-p3); background: color-mix(in srgb, var(--priority-p3) 14%, transparent); }
@@ -2254,12 +2252,12 @@ button.ad-notification:focus-visible { outline: none; box-shadow: var(--ring-sel
 /* The alert bar's pieces: the row's end (the app's project mark, its dismiss) and what opens under a row, lined up with the sentence. */
 .ad-alert__end { display: flex; align-items: center; gap: var(--space-2); }
 .ad-alert__under { padding: 0 var(--space-3) var(--space-2) calc(var(--space-3) * 2 + var(--check-size)); }
-/* A snoozed alert, dimmed (ruled 2026-10-26): the ring, the sentence and the number in the muted ink; its buttons are untouched and
-   stay pressable (an opacity would make them read as off). */
+/* A snoozed alert, dimmed: the ring, the sentence and the number in the muted ink; its buttons are untouched and
+ stay pressable (an opacity would make them read as off). */
 .ad-alert--muted .ad-alert__sentence, .ad-alert--muted .ad-alert__number { color: var(--text-muted); }
 .ad-alert--muted .ad-alert__ring { box-shadow: inset 0 0 0 var(--border-w-strong) var(--text-muted); }
 
-/* The unread mark is UnreadDot (one dot for unread everywhere, 2026-10-28); here it keeps the row's left gutter. */
+/* The unread mark is UnreadDot; here it keeps the row's left gutter. */
 .ad-notification__unread.ad-unread { margin-left: 0; }
 
 /* src/components/Writing/Writing.css */
@@ -2277,14 +2275,14 @@ button.ad-notification:focus-visible { outline: none; box-shadow: var(--ring-sel
 .ad-token-input__box { flex: 1; min-width: 0; box-sizing: border-box; padding: calc((var(--h-field) - var(--text-base) * var(--lh-tight)) / 2) 0; font: var(--type-name); line-height: var(--lh-tight); color: var(--text-primary); white-space: pre-wrap; outline: none; }
 .ad-token-input--query .ad-token-input__box { font: var(--type-data); color: var(--text-secondary); }
 .ad-token-input__box[data-empty]::before { content: attr(data-placeholder); color: var(--text-muted); pointer-events: none; }
-/* In the box the pill is drawn in place behind the letters (kept from Athena, ruled 2026-10-26): no padding and no margin, so the
-   words keep their place and neighbours keep a clear gap. */
+/* In the box the pill is drawn in place behind the letters: no padding and no margin, so the
+ words keep their place and neighbours keep a clear gap. */
 .ad-token-input__box .ad-token { margin: 0; padding: 0; line-height: var(--lh-tight); }
 /* The filter box's suggestions span the box. */
 .ad-token-input--query .ad-picklist { width: 100%; }
 .ad-token-input__resolved { display: flex; flex-wrap: wrap; gap: var(--space-2); }
-/* The understood-word pill, Athena's (kept 2026-10-26): word-pill crimson behind word-pill-ink letters, drawn as background layers
-   (a full-height middle from word-pill-edge, a band word-pill-inset in from each side, four round corners) so nothing is clipped. */
+/* The understood-word pill, Athena's: word-pill crimson behind word-pill-ink letters, drawn as background layers
+ (a full-height middle from word-pill-edge, a band word-pill-inset in from each side, four round corners) so nothing is clipped. */
 .ad-token { display: inline-block; padding: 0 var(--space-2); border-radius: 0; color: var(--word-pill-ink); font: inherit; line-height: var(--lh-normal); white-space: nowrap; background:
     linear-gradient(var(--word-pill), var(--word-pill)) var(--word-pill-edge) 0 / calc(100% - 2 * var(--word-pill-edge)) 100% no-repeat,
     linear-gradient(var(--word-pill), var(--word-pill)) var(--word-pill-inset) var(--word-pill-corner) / calc(100% - 2 * var(--word-pill-inset)) calc(100% - 2 * var(--word-pill-corner)) no-repeat,
@@ -2326,7 +2324,7 @@ button.ad-notification:focus-visible { outline: none; box-shadow: var(--ring-sel
 .ad-rules__add-end { margin-left: auto; }
 
 /* The date column fits the widest date, so one a year back reads whole ("Jun 2025"), and every row's sentence still starts on one
-   line (2026-10-29, Athena's Activity Log). */
+ line. */
 .ad-thread { display: grid; grid-template-columns: minmax(var(--w-col-xs), max-content) minmax(0, 1fr) max-content; column-gap: var(--space-3); }
 .ad-thread__event { display: grid; grid-column: 1 / -1; grid-template-columns: subgrid; align-items: baseline; }
 .ad-thread__date { width: auto; white-space: nowrap; }
