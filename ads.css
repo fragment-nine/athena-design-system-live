@@ -196,8 +196,6 @@
   --map-hover-r: 16;
   --map-pin-line: 1.5;
   --h-dialog-cap: 82vh;
-  --anim-fade: lb-fade var(--athena-dur-mid) var(--ease-out);
-  --anim-pulse: lb-pulse var(--athena-dur-pulse) var(--athena-ease-in-out) infinite;
   --cap-w-float: 92vw;
   --cap-w-sheet: 94vw;
   --cap-h-panel: 68vh;
@@ -293,7 +291,6 @@
   --rm-label-w: 112px;
   --rm-answer-max: 600px;
   --rm-notes-w: 64px;
-  --z-sticky-up: 41px;
   --res-phase-bar-trim: 6px;
   --res-ms-min-x: 6px;
   --res-rail-trim: 3px;
@@ -598,6 +595,10 @@
   .ad-rail, .ad-side, .ad-footer, .ad-popover, .ad-dialog, .ad-tooltip { display: none !important; }
   .ad-bar--unconfirmed, .ad-milestone--unconfirmed .ad-milestone__diamond { background-image: none !important; background-color: var(--print-plane-2) !important; outline: var(--border-w) dashed var(--print-ink); }
 }
+
+/* One line, then "…" (ad-clamp-line); a title at most two lines, then "…", always two lines tall (ad-clamp-2). The rung carries the type; these carry only the clamp. */
+.ad-clamp-line { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.ad-clamp-2 { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; overflow-wrap: anywhere; min-width: 0; min-height: 2lh; }
 
 /* Athena Design System — components.css: the look of every component, plain CSS. Generated from src/components; do not edit. Import order, once per app, all four: fonts.css, tokens.css, patterns.css, components.css. */
 
