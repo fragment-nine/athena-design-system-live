@@ -580,7 +580,7 @@ button.ad-year__day:focus-visible { outline: none; box-shadow: var(--ring-select
 .ad-day-cell__travel { position: absolute; top: var(--space-1); right: var(--space-1); color: var(--text-secondary); }
 
 /* Built 2026-10-28 for the Rehearsal calendar: a rich head, the phase band, overlapping entries side by side, the moments strip. */
-.ad-time-grid__head { position: absolute; top: calc(-1 * var(--ad-head-h)); left: 0; right: 0; padding: 0 var(--space-2) var(--space-1); } /* every head starts on one line at the top; the grid reserves the tallest (2026-10-28) */
+.ad-time-grid__head { position: absolute; top: calc(-1 * var(--ad-head-h)); left: 0; right: 0; padding: 0 var(--space-2) var(--space-3); } /* every head starts on one line at the top; the grid reserves the tallest (2026-10-28) */
 .ad-time-grid__band { --ad-wash: var(--text-muted); height: var(--space-2); margin: 0 0 var(--space-1); background: color-mix(in srgb, var(--ad-wash) var(--tint-lane-wash), transparent); border-top: var(--bw-select) solid color-mix(in srgb, var(--ad-wash) var(--tint-lane-edge), transparent); position: relative; }
 .ad-time-grid__band--unconfirmed { border-top-style: dashed; }
 .ad-time-grid__band-label { position: absolute; left: var(--space-2); top: 100%; font: var(--type-detail); color: var(--text-secondary); white-space: nowrap; }
@@ -628,7 +628,7 @@ button.ad-year__day:focus-visible { outline: none; box-shadow: var(--ring-select
 .ad-time-grid .ad-time-grid__body--aside .ad-time-grid__hour { margin-right: calc(-1 * var(--ad-aside)); }
 /* A call in the wide strip: its time on its small tile at the time, its words under it on up to two lines, a hairline under; the grid
    pushes a call that would cover the one before it down under it (Athena's old strip, kept). */
-.ad-time-grid--aside-wide .ad-time-grid__moment, .ad-time-grid--aside-day .ad-time-grid__moment { flex-direction: column; align-items: stretch; gap: var(--space-hair); padding: 0 var(--space-1) var(--space-1); transform: none; white-space: normal; overflow: visible; border-bottom: var(--border-w) solid var(--border); }
+.ad-time-grid--aside-wide .ad-time-grid__moment, .ad-time-grid--aside-day .ad-time-grid__moment { flex-direction: column; align-items: stretch; gap: var(--space-hair); padding: 0 0 var(--space-1) var(--space-1); transform: none; white-space: normal; overflow: visible; border-bottom: var(--border-w) solid var(--border); }
 .ad-time-grid--aside-wide .ad-time-grid__moment-time, .ad-time-grid--aside-day .ad-time-grid__moment-time { align-self: stretch; padding: 0 var(--space-1); border-radius: var(--radius-page); background: var(--bg-raised); line-height: var(--lh-normal); }
 .ad-time-grid--aside-wide .ad-time-grid__moment-title, .ad-time-grid--aside-day .ad-time-grid__moment-title { display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; line-height: var(--lh-tight); white-space: normal; text-overflow: clip; }
 .ad-time-grid--aside-wide .ad-time-grid__moment--unconfirmed, .ad-time-grid--aside-day .ad-time-grid__moment--unconfirmed { background-image: none; }
@@ -1603,7 +1603,7 @@ button.ad-row__name:focus-visible { outline: none; box-shadow: var(--ring-select
 .ad-table--fixed { table-layout: fixed; }
 .ad-table--fixed td { overflow: hidden; text-overflow: ellipsis; }
 /* The tick column keeps its own width under `fixed`: never cut to "☑…" (2026-10-29). */
-.ad-table--fixed .ad-table__pick { box-sizing: content-box; width: var(--h-btn); min-width: var(--h-btn); overflow: visible; text-overflow: clip; }
+.ad-table--fixed .ad-table__pick { box-sizing: border-box; width: calc(var(--check-size) + 2 * var(--space-2)); overflow: visible; text-overflow: clip; }
 .ad-table th[scope="col"] { position: sticky; top: 0; z-index: 1; height: var(--h-btn); padding: 0 var(--space-2); text-align: left; white-space: nowrap; background: var(--bg-base); border-bottom: var(--border-w) solid var(--border); font: var(--type-heading); text-transform: uppercase; color: var(--text-primary); }
 .ad-table th[aria-sort="ascending"], .ad-table th[aria-sort="descending"] { color: var(--text-primary); }
 .ad-table__sort { display: inline-flex; align-items: center; gap: var(--space-1); margin: 0; padding: 0; border: 0; background: transparent; font: inherit; color: inherit; cursor: pointer; }
@@ -1873,8 +1873,9 @@ button.ad-milestone:focus-visible { outline: none; box-shadow: var(--ring-select
 .ad-bar--code .ad-bar__name { overflow: hidden; text-overflow: clip; }
 .ad-bar--code.ad-bar--travel { border-style: dashed; }
 .ad-bar--code.ad-bar--dim { color: var(--text-muted); border-color: var(--text-muted); }
-/* labelOutside="never": a name too long for its bar stays inside, cut, its words on hover (2026-10-29). */
+/* labelOutside="never": the name whole inside, or, too long for the bar, not written and its words on hover; never a stub (2026-10-29). */
 .ad-bar--keep-in .ad-bar__label { overflow: hidden; }
+.ad-bar--name-gone .ad-bar__label > .ad-bar__name { visibility: hidden; }
 
 /* src/components/Toolbar/Toolbar.css */
 /* Toolbar */
