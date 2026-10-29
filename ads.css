@@ -1149,7 +1149,6 @@ button.ad-contents__button:focus-visible { outline: none; box-shadow: var(--ring
 .ad-rail__group { display: flex; flex-direction: column; align-items: center; gap: var(--space-1); }
 /* The project pills sit on the icon column's left edge, not centred, rail and open menu alike (ruled 2026-10-27, Jeremy: "make them left justified, not centered"). */
 .ad-rail__group--projects, .ad-rail__pinned { align-self: stretch; display: flex; flex-direction: column; align-items: flex-start; gap: var(--space-1); padding-left: calc((var(--w-rail) - var(--h-btn)) / 2); }
-.ad-rail__screen { display: flex; flex-direction: column; align-items: center; gap: var(--space-1); align-self: stretch; }
 .ad-rail__pinned { padding-top: var(--space-1); }
 .ad-rail__foot { margin-top: auto; display: flex; flex-direction: column; align-items: center; gap: var(--space-1); }
 .ad-rail__item { display: inline-flex; align-items: center; justify-content: center; width: var(--h-btn); height: var(--h-btn); margin: 0; padding: 0; border: 0; border-radius: var(--radius-page); background: transparent; color: var(--text-primary); cursor: pointer; }
@@ -1195,9 +1194,8 @@ button:hover > .ad-project-pill:not(.ad-project-pill--current) { color: var(--ac
 .ad-side__icon { display: inline-flex; justify-content: center; width: var(--icon-lg); color: var(--text-primary); }
 .ad-side__home { margin-bottom: calc(var(--space-4) - var(--space-1)); }
 /* 20 in the left menu, open or folded (Icons and pictures; fixed 2026-10-27, Jeremy: "when it opens it all scales down"). */
-.ad-side__icon svg, .ad-side__star { width: var(--icon-lg); height: var(--icon-lg); }
-.ad-side__star { color: var(--text-primary); }
-.ad-side__item:hover, .ad-side__item:hover .ad-side__icon, .ad-side__item:hover .ad-side__star { color: var(--accent); }
+.ad-side__icon svg { width: var(--icon-lg); height: var(--icon-lg); }
+.ad-side__item:hover, .ad-side__item:hover .ad-side__icon { color: var(--accent); }
 .ad-side__item:focus-visible { outline: none; box-shadow: var(--ring-select); }
 .ad-side__item[aria-current="page"] { background: var(--tint-selected); color: var(--text-primary); }
 /* The expanded menu's foot: Settings and the fold back to the rail; a dragged item's drop place is the one coral drop line (dropLine.ts, base.css; ruled 2026-10-26). */
@@ -1891,9 +1889,6 @@ button.ad-bar { cursor: pointer; }
 .ad-deliverable__status .ad-dot { width: var(--icon-sm); height: var(--icon-sm); }
 .ad-deliverable__status .ad-dot--none { box-shadow: inset 0 0 0 var(--border-w-strong) var(--text-muted); }
 .ad-deliverable__status .ad-dot--neutral { --ad-dot: var(--text-muted); }
-.ad-marker-key { display: flex; align-items: center; gap: var(--space-6); margin: 0; font-family: var(--font-mono); font-size: var(--text-xs); color: var(--text-secondary); }
-.ad-marker-key__item { display: inline-flex; align-items: center; gap: var(--space-2); }
-.ad-marker-key__item svg { width: var(--icon-md); height: var(--icon-md); }
 .ad-milestone { display: inline-flex; align-items: center; gap: var(--space-2); margin: 0; padding: 0; border: 0; background: transparent; font-family: var(--font-body); font-size: var(--text-base); color: var(--text-primary); white-space: nowrap; }
 button.ad-milestone { cursor: pointer; }
 button.ad-milestone:hover .ad-milestone__label { color: var(--accent); }
