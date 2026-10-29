@@ -285,7 +285,7 @@
 .ad-ground { position: relative; isolation: isolate; background: var(--bg-base); }
 /* The ground carries the body type (moved from Athena's body, ruled 2026-10-26): the app's own words inside it read right
    without the app naming a face. Every piece still sets its own type over this. */
-.ad-ground { font: var(--type-name); line-height: var(--lh-tight); color: var(--text-primary); }
+.ad-ground { font: var(--type-name); letter-spacing: normal; color: var(--text-primary); }
 .ad-ground::before { content: ''; position: absolute; inset: 0; z-index: -1; pointer-events: none; background: url('assets/textures/grain.jpg') center / cover no-repeat; opacity: var(--grain-opacity); mix-blend-mode: screen; }
 /* Windows high contrast (forced-colors). The system replaces every colour and drops box-shadow, so the
    focus ring — drawn everywhere as `outline: none; box-shadow: var(--ring-select)` — disappears and the
