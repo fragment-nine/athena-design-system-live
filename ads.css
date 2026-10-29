@@ -2030,3 +2030,9 @@ button.ad-notification:focus-visible { outline: none; box-shadow: var(--ring-sel
 .ad-rules__note { margin: 0; font: var(--type-detail); color: var(--text-muted); }
 .ad-rules__add { display: flex; align-items: center; gap: var(--space-2); }
 .ad-rules__add-end { margin-left: auto; }
+
+/* The date column fits the widest date, so one a year back reads whole ("Jun 2025"), and every row's sentence still starts on one
+   line (2026-10-29, Athena's Activity Log). */
+.ad-thread { display: grid; grid-template-columns: minmax(var(--w-col-xs), max-content) minmax(0, 1fr) max-content; column-gap: var(--space-3); }
+.ad-thread__event { display: grid; grid-column: 1 / -1; grid-template-columns: subgrid; align-items: baseline; }
+.ad-thread__date { width: auto; white-space: nowrap; }
