@@ -437,6 +437,11 @@
   --bp-compact: 1000px;
   --w-pop-time: 150px;
   --h-stage-top: 64px;
+  --h-pop-sm: 220px;
+  --h-pop-lg: 320px;
+  --h-bottom-bar: 58px;
+  --h-date-picker: 330px;
+  --h-pop-head: 48px;
   --border-w: 1px;
   --border-w-ring: 2px;
   --border-w-strong: 1.5px;
@@ -467,8 +472,8 @@
   --drag-ghost-opacity: 0.96;
   --cloud-dot-alpha: 0.9;
   --cloud-edge-alpha: 0.8;
-  --cloud-dot-alpha-quiet: 0.9;
-  --cloud-edge-alpha-quiet: 0.8;
+  --cloud-dot-alpha-quiet: 1;
+  --cloud-edge-alpha-quiet: 1;
   --opacity-faint: 0.4;
   --tint-cat-deep: 55%;
   /* The sizes a rung names: 13 Detail and Heading, 14 Name and Body, 20 Title; 12 is Data's smallest slot; 28, 44, 56 and 88 are Title's big sizes. 12 is the floor. */
