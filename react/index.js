@@ -3592,15 +3592,14 @@ function PageHeader({ title, icon, stamp, tabs, back, description, countdown: gi
   const shownStamp = typeof stamp === "string" && STATES.has(stamp);
   const countdown2 = given && typeof given === "object" && given.to instanceof Date ? countdownWords(given) : null;
   return /* @__PURE__ */ jsxs29("header", { className: cx("ad-page-header", className), children: [
-    back && /* @__PURE__ */ jsx32(ButtonSizeScope, { size: "bar", children: /* @__PURE__ */ jsxs29("button", { type: "button", className: "ad-page-header__back", onClick: back.onBack, children: [
-      /* @__PURE__ */ jsx32(Icon, { job: "chevron-left", size: "sm" }),
-      back.label
-    ] }) }),
     /* @__PURE__ */ jsxs29("div", { className: "ad-page-header__row", children: [
       /* @__PURE__ */ jsxs29("div", { className: "ad-page-header__lead", children: [
-        /* @__PURE__ */ jsxs29("h1", { className: "ad-page-header__title", children: [
-          icon && /* @__PURE__ */ jsx32("span", { className: "ad-page-header__icon", "aria-hidden": "true", children: slotIcon(icon, { weight: "light" }) }),
-          scramble ? /* @__PURE__ */ jsx32(TextScramble, { text: title }) : title
+        /* @__PURE__ */ jsxs29("div", { className: "ad-page-header__titled", children: [
+          back && /* @__PURE__ */ jsx32("button", { type: "button", className: "ad-page-header__back", "aria-label": back.label, title: back.label, onClick: back.onBack, children: /* @__PURE__ */ jsx32(Icon, { job: "chevron-left", size: "lg" }) }),
+          /* @__PURE__ */ jsxs29("h1", { className: "ad-page-header__title", children: [
+            icon && /* @__PURE__ */ jsx32("span", { className: "ad-page-header__icon", "aria-hidden": "true", children: slotIcon(icon, { weight: "light" }) }),
+            scramble ? /* @__PURE__ */ jsx32(TextScramble, { text: title }) : title
+          ] })
         ] }),
         (description || countdown2) && /* @__PURE__ */ jsxs29("div", { className: "ad-page-header__aside", children: [
           description && /* @__PURE__ */ jsx32("p", { className: "ad-page-header__description", children: String(description) }),

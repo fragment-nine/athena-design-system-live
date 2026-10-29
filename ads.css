@@ -197,7 +197,7 @@
   --opacity-disabled: 0.5;
   --opacity-dim: 0.75;
   --grain-opacity: 0.25;
-  --opacity-stamp: 0.55;
+  --opacity-stamp: 0.3;
   --tint-presence-strip: 40%;
   --tint-presence-wash: 18%;
   --tint-lane-wash: 8%;
@@ -1281,8 +1281,10 @@ button:hover > .ad-project-pill:not(.ad-project-pill--current) { color: var(--ac
 .ad-tab[aria-selected="true"] { color: var(--text-primary); border-bottom-color: var(--text-primary); }
 .ad-tab__numeral { font-family: var(--font-mono); font-weight: 400; letter-spacing: 0; color: var(--text-faint); }
 .ad-tab[aria-selected="true"] .ad-tab__numeral { color: var(--text-primary); }
-/* The way back from a detail page that is not a project: quiet words with the chevron, on the top line (built 2026-10-25 for Athena). */
-.ad-page-header__back { display: inline-flex; align-items: center; gap: var(--space-1); height: var(--h-btn-bar); margin: 0 0 var(--space-2); padding: 0; border: 0; background: transparent; font-family: var(--font-body); font-size: var(--text-base); color: var(--text-secondary); cursor: pointer; }
+/* The way back from a detail page: a bare chevron directly before the title, on the title row, no words and no line of its own
+   (2026-10-29, Jeremy: "Move the little < just next to the project name, so this isn't pushing the header lower"). */
+.ad-page-header__titled { display: flex; align-items: center; gap: var(--space-2); flex: none; min-width: 0; }
+.ad-page-header__back { display: inline-flex; align-items: center; justify-content: center; flex: none; margin: 0; padding: 0; border: 0; background: transparent; color: var(--text-secondary); cursor: pointer; }
 .ad-page-header__back:hover { color: var(--accent); }
 .ad-page-header__back:focus-visible { outline: none; box-shadow: var(--ring-select); border-radius: var(--radius-page); }
 /* A screen's own menu before the gear; the small bone dot says your board differs from the default (ruled 2026-10-25). */
