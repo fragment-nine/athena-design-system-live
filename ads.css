@@ -141,6 +141,7 @@
   --w-prose: 640px;
   --w-col-xs: 48px;
   --w-field-name: 96px;
+  --w-aside: 112px;
   --w-col-sm: 64px;
   --target-min: 24px;
   --w-page-max: 900px;
@@ -626,6 +627,20 @@ button.ad-year__day:focus-visible { outline: none; box-shadow: var(--ring-select
 .ad-time-grid__body--aside .ad-time-grid__slot[data-lane] { width: calc((100% - var(--space-6) - var(--space-2)) / var(--ad-lanes) - var(--space-hair)); left: calc(var(--space-1) + (100% - var(--space-6) - var(--space-2)) * var(--ad-lane-k) / var(--ad-lanes)); }
 .ad-time-grid__aside { position: absolute; top: 0; bottom: 0; right: 0; width: var(--space-6); border-left: var(--border-w) solid var(--border); }
 .ad-time-grid__moment { position: absolute; left: 0; right: 0; display: flex; justify-content: center; transform: translateY(-50%); }
+
+/* 2026-10-28: the grid makes room for the tallest head; the moments strip in three widths, the wide ones writing a call's time and words. */
+.ad-time-grid { --ad-head-h: 0px; --ad-aside: var(--space-6); }
+.ad-time-grid:has(.ad-time-grid__head) { padding-top: max(var(--space-6), var(--ad-head-h)); }
+.ad-time-grid--aside-wide { --ad-aside: var(--w-aside); }
+.ad-time-grid--aside-day { --ad-aside: var(--w-side); }
+.ad-time-grid .ad-time-grid__body--aside { padding-right: var(--ad-aside); }
+.ad-time-grid .ad-time-grid__aside { width: var(--ad-aside); }
+.ad-time-grid .ad-time-grid__body--aside .ad-time-grid__slot { right: calc(var(--ad-aside) + var(--space-1)); }
+.ad-time-grid .ad-time-grid__body--aside .ad-time-grid__slot[data-lane] { width: calc((100% - var(--ad-aside) - var(--space-2)) / var(--ad-lanes) - var(--space-hair)); left: calc(var(--space-1) + (100% - var(--ad-aside) - var(--space-2)) * var(--ad-lane-k) / var(--ad-lanes)); }
+.ad-time-grid--aside-wide .ad-time-grid__moment, .ad-time-grid--aside-day .ad-time-grid__moment { justify-content: flex-start; gap: var(--space-1); padding: 0 var(--space-1); white-space: nowrap; overflow: hidden; }
+.ad-time-grid__moment-time { flex: none; font-family: var(--font-mono); font-size: var(--text-xs); color: var(--text-secondary); }
+.ad-time-grid__moment-title { min-width: 0; overflow: hidden; text-overflow: ellipsis; font-family: var(--font-body); font-size: var(--text-xs); color: var(--text-primary); }
+.ad-time-grid__moment-mark { display: inline-block; width: var(--dot-size); height: var(--dot-size); border-radius: var(--radius-round); background: var(--text-secondary); }
 
 /* src/components/Card/Card.css */
 /* Card: a board tile, or a dashboard widget as the Dashboard card draws it (small caps title, More at the right in 600). */

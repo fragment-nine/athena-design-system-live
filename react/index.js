@@ -4605,7 +4605,7 @@ function PeriodCluster({ shown, periods, period, onPeriod, onPrevious, onNext, o
 }
 
 // src/components/Calendar/Calendar.tsx
-import { useEffect as useEffect13, useRef as useRef24 } from "react";
+import { useEffect as useEffect13, useLayoutEffect as useLayoutEffect8, useRef as useRef24, useState as useState24 } from "react";
 import { Fragment as Fragment17, jsx as jsx43, jsxs as jsxs40 } from "react/jsx-runtime";
 var code = (it) => it.code ? /* @__PURE__ */ jsx43(ProjectPill, { code: it.code, color: it.color?.startsWith("project-") ? it.color : void 0 }) : null;
 var hooksOf2 = (h) => {
@@ -4757,9 +4757,26 @@ function WeekendShade({ children, className }) {
   return /* @__PURE__ */ jsx43("div", { className: cx(on && "ad-weekend", className), children });
 }
 var clockHour = (h) => String((h + 11) % 12 + 1);
-function TimeGrid({ startHour, endHour, bookings = [], columns, now, hourLabel = clockHour, onOpen, itemProps, columnProps, ariaLabel, bandHours, onPressAt, over, visibleHours, scrollTo, className }) {
+function TimeGrid({ startHour, endHour, bookings = [], columns, now, hourLabel = clockHour, onOpen, itemProps, columnProps, ariaLabel, bandHours, onPressAt, over, visibleHours, scrollTo, asideWidth = "narrow", className }) {
   const hours = Math.max(1, endHour - startHour);
   const frame = useRef24(null);
+  const [headH, setHeadH] = useState24(0);
+  useLayoutEffect8(() => {
+    const el = frame.current;
+    if (!el) return;
+    const measure = () => {
+      let h = 0;
+      el.querySelectorAll(".ad-time-grid__head").forEach((n) => {
+        h = Math.max(h, n.offsetHeight);
+      });
+      setHeadH((was) => was === h ? was : h);
+    };
+    measure();
+    if (typeof ResizeObserver === "undefined") return;
+    const ro = new ResizeObserver(measure);
+    el.querySelectorAll(".ad-time-grid__head").forEach((n) => ro.observe(n));
+    return () => ro.disconnect();
+  });
   useEffect13(() => {
     const el = frame.current;
     if (!el || scrollTo == null) return;
@@ -4778,7 +4795,7 @@ function TimeGrid({ startHour, endHour, bookings = [], columns, now, hourLabel =
   const cols = columns ?? [{ id: "day", label: "", bookings }];
   const hueOf = useHueOf();
   const allDayRows = cols.some((c) => c.allDay) ? Math.max(1, ...cols.map((c) => c.allDay?.length ?? 0)) : 0;
-  return /* @__PURE__ */ jsxs40("div", { ref: frame, className: cx("ad-time-grid", !!visibleHours && "ad-time-grid--scrolls", className), role: "group", "aria-label": ariaLabel, style: { ["--ad-hours"]: hours, ["--ad-allday-rows"]: allDayRows, ...visibleHours ? { ["--ad-visible-hours"]: visibleHours } : {} }, children: [
+  return /* @__PURE__ */ jsxs40("div", { ref: frame, className: cx("ad-time-grid", !!visibleHours && "ad-time-grid--scrolls", `ad-time-grid--aside-${asideWidth}`, className), role: "group", "aria-label": ariaLabel, style: { ["--ad-hours"]: hours, ["--ad-allday-rows"]: allDayRows, ...visibleHours ? { ["--ad-visible-hours"]: visibleHours } : {}, ...headH ? { ["--ad-head-h"]: `${headH}px` } : {} }, children: [
     /* @__PURE__ */ jsxs40("div", { className: "ad-time-grid__gutter", "aria-hidden": "true", children: [
       allDayRows > 0 && /* @__PURE__ */ jsx43("div", { className: "ad-time-grid__allday-space" }),
       /* @__PURE__ */ jsxs40("div", { className: "ad-time-grid__hours", children: [
@@ -4812,7 +4829,10 @@ function TimeGrid({ startHour, endHour, bookings = [], columns, now, hourLabel =
           const n = Math.max(1, b.lanes ?? 1), k = Math.min(n - 1, Math.max(0, b.lane ?? 0));
           return /* @__PURE__ */ jsx43("div", { className: "ad-time-grid__slot", "data-lane": n > 1 ? `${k + 1}/${n}` : void 0, style: { top: at(b.start), height: `calc(${at(b.end)} - ${at(b.start)})`, ...n > 1 ? { ["--ad-lane-k"]: k, ["--ad-lanes"]: n } : {} }, children: b.node }, b.id);
         }),
-        c.aside && /* @__PURE__ */ jsx43("div", { className: "ad-time-grid__aside", "aria-hidden": "false", children: c.aside.map((m, i) => /* @__PURE__ */ jsx43("span", { className: "ad-time-grid__moment", style: { top: at(m.at) }, children: m.node }, i)) }),
+        c.aside && /* @__PURE__ */ jsx43("div", { className: "ad-time-grid__aside", children: c.aside.map((m, i) => /* @__PURE__ */ jsx43("span", { className: "ad-time-grid__moment", style: { top: at(m.at) }, title: asideWidth === "narrow" && m.title ? [m.time, m.title].filter(Boolean).join(" ") : void 0, children: m.node ?? (asideWidth === "narrow" ? /* @__PURE__ */ jsx43("span", { className: "ad-time-grid__moment-mark", "aria-label": [m.time, m.title].filter(Boolean).join(" "), role: "img" }) : /* @__PURE__ */ jsxs40(Fragment17, { children: [
+          m.time && /* @__PURE__ */ jsx43("span", { className: "ad-time-grid__moment-time", children: m.time }),
+          m.title && /* @__PURE__ */ jsx43("span", { className: "ad-time-grid__moment-title", children: m.title })
+        ] })) }, i)) }),
         Array.from({ length: hours }, (_, i) => /* @__PURE__ */ jsx43("div", { className: cx("ad-time-grid__hour", bandHours && i % 2 === 1 && "ad-time-grid__hour--band"), "aria-hidden": "true" }, i)),
         c.bookings.map(({ id, start, end, ...b }) => /* @__PURE__ */ jsx43("div", { className: "ad-time-grid__slot", style: { top: at(start), height: `calc(${at(end)} - ${at(start)})` }, children: /* @__PURE__ */ jsx43(Booking, { ...b, style: { height: "100%" } }) }, id))
       ] })
@@ -4846,7 +4866,7 @@ function PhaseBand({ label, color, unconfirmed }) {
 }
 
 // src/components/Map/Map.tsx
-import { useEffect as useEffect14, useMemo as useMemo3, useRef as useRef25, useState as useState24 } from "react";
+import { useEffect as useEffect14, useMemo as useMemo3, useRef as useRef25, useState as useState25 } from "react";
 
 // src/components/Map/worldGeo.ts
 var GEO_LAT_MAX = 84;
@@ -4915,10 +4935,10 @@ var LABEL_ALL_FROM = 760;
 var LABEL_SOME_FROM = 380;
 var PICKS = new Set(pickColours);
 function WorldMap({ pins, at, ariaLabel, onPin, hoverCard, pinProps }) {
-  const [hover, setHover] = useState24(null);
+  const [hover, setHover] = useState25(null);
   const night = useMemo3(() => nightPath(at), [at]);
   const wrap = useRef25(null);
-  const [w, setW] = useState24(0);
+  const [w, setW] = useState25(0);
   useEffect14(() => {
     const el = wrap.current;
     if (!el) return;
@@ -5099,13 +5119,13 @@ function CommandSearch({ open, onClose, query, onQuery, results, onPick, label =
 }
 
 // src/components/Guidance/Guidance.tsx
-import { useEffect as useEffect15, useLayoutEffect as useLayoutEffect8, useRef as useRef27, useState as useState25 } from "react";
+import { useEffect as useEffect15, useLayoutEffect as useLayoutEffect9, useRef as useRef27, useState as useState26 } from "react";
 import { Fragment as Fragment19, jsx as jsx47, jsxs as jsxs43 } from "react/jsx-runtime";
-var useIsoLayoutEffect3 = typeof window === "undefined" ? useEffect15 : useLayoutEffect8;
+var useIsoLayoutEffect3 = typeof window === "undefined" ? useEffect15 : useLayoutEffect9;
 function TourStep({ open, anchor, step, total, title, children, onBack, onNext, onExit, backLabel = "Back", nextLabel = "Next", progressLabel = (s, t) => `${s} of ${t}`, placement, side: older, onClose, closeLabel }) {
   const card = useRef27(null);
-  const [rect, setRect] = useState25(null);
-  const [size, setSize] = useState25(null);
+  const [rect, setRect] = useState26(null);
+  const [size, setSize] = useState26(null);
   const asked = placement ?? older ?? "below";
   const doc = useFloatingDocument() ?? document;
   useFocusReturn(open, card);
