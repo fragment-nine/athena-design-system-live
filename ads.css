@@ -1205,6 +1205,8 @@ button:hover > .ad-project-pill:not(.ad-project-pill--current) { color: var(--ac
 .ad-rail .ad-menu__foot .ad-menu__row { align-self: center; }
 .ad-menu__list.ad-rail__group--projects, .ad-menu__list.ad-rail__pinned { padding-left: calc((var(--w-rail) - var(--h-btn)) / 2); }
 .ad-menu__list.ad-rail__pinned { padding-top: var(--space-1); }
+/* The rail's runs span its full width, so a pinned pill sits exactly 8 from the rail's edge whatever the widest row (2026-10-28). */
+.ad-rail > .ad-menu__list { align-self: stretch; }
 
 /* src/components/PageHeader/PageHeader.css */
 /* PageHeader and Tabs */
