@@ -2038,6 +2038,9 @@ button.ad-milestone:focus-visible { outline: none; box-shadow: var(--ring-select
 .ad-view-save-row { margin-top: var(--space-4); padding-top: var(--space-2); border-top: var(--border-w) solid var(--border); }
 .ad-view-lock { color: var(--text-muted); }
 
+/* A Show switch that cannot go off now: its reason, under it, once pressed (2026-10-29). */
+.ad-view__reason { display: block; margin: calc(-1 * var(--space-1)) 0 var(--space-2); }
+
 /* src/components/Tooltip/Tooltip.css */
 /* Tooltip */
 .ad-tooltip {

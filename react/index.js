@@ -3652,7 +3652,7 @@ function Tabs({ tabs, value, onChange, ariaLabel, numbered = true, panelId, clas
 }
 
 // src/components/Toolbar/Toolbar.tsx
-import { forwardRef as forwardRef8, useRef as useRef20, useState as useState20 } from "react";
+import { forwardRef as forwardRef8, useEffect as useEffect13, useRef as useRef20, useState as useState20 } from "react";
 
 // src/components/Writing/Writing.tsx
 import { forwardRef as forwardRef7, useEffect as useEffect12, useRef as useRef19 } from "react";
@@ -3709,7 +3709,7 @@ var RuleValue = forwardRef7(function RuleValue2({ icon, end, mono, className, ty
 });
 
 // src/components/Toolbar/Toolbar.tsx
-import { jsx as jsx34, jsxs as jsxs31 } from "react/jsx-runtime";
+import { Fragment as Fragment14, jsx as jsx34, jsxs as jsxs31 } from "react/jsx-runtime";
 function Toolbar({ children, end, ariaLabel, className }) {
   return /* @__PURE__ */ jsx34("div", { className: cx("ad-toolbar", className), role: "group", "aria-label": ariaLabel, children: /* @__PURE__ */ jsxs31(ButtonSizeScope, { size: "bar", children: [
     children,
@@ -3877,7 +3877,7 @@ function ViewPopover({ open, onClose, anchor, builtInViews = [], savedViews, cur
         }
       ) })
     ] }) }),
-    show && show.length > 0 && /* @__PURE__ */ jsx34(PopoverSection, { label: L.show, children: show.map((s) => s.kind === "order" ? /* @__PURE__ */ jsx34(OrderList, { label: s.label, items: s.items, onReorder: s.onReorder }, s.id) : /* @__PURE__ */ jsx34(FieldRow, { label: s.label, children: s.kind === "switch" ? /* @__PURE__ */ jsx34(Switch, { checked: s.on, onChange: s.onChange, "aria-label": s.label }) : /* @__PURE__ */ jsx34(Select, { "aria-label": s.label, value: s.value, onChange: (e) => s.onChange(e.target.value), options: s.options }) }, s.id)) }),
+    show && show.length > 0 && /* @__PURE__ */ jsx34(PopoverSection, { label: L.show, children: show.map((s) => s.kind === "order" ? /* @__PURE__ */ jsx34(OrderList, { label: s.label, items: s.items, onReorder: s.onReorder }, s.id) : s.kind === "switch" ? /* @__PURE__ */ jsx34(ShowSwitch, { setting: s }, s.id) : /* @__PURE__ */ jsx34(FieldRow, { label: s.label, children: /* @__PURE__ */ jsx34(Select, { "aria-label": s.label, value: s.value, onChange: (e) => s.onChange(e.target.value), options: s.options }) }, s.id)) }),
     savedViews && onSaveView && /* @__PURE__ */ jsx34("div", { className: "ad-view-save-row", children: !naming ? /* @__PURE__ */ jsx34(ButtonSizeScope, { size: "row", children: /* @__PURE__ */ jsx34(Button, { icon: "plus", unavailable: saveOff, onClick: () => setNaming(true), children: L.saveView }) }) : /* @__PURE__ */ jsxs31("div", { className: "ad-view-save", children: [
       /* @__PURE__ */ jsx34(TextField, { autoFocus: true, "aria-label": L.viewName, placeholder: L.viewName, value: name, onChange: (e) => setName(e.target.value), onKeyDown: (e) => {
         if (e.key === "Enter") finishSave();
@@ -3936,10 +3936,27 @@ function OrderList({ label, items, onReorder }) {
     )) })
   ] });
 }
+function ShowSwitch({ setting: s }) {
+  const [said, setSaid] = useState20(false);
+  const locked = s.on && !!s.reason;
+  useEffect13(() => {
+    if (!locked) setSaid(false);
+  }, [locked]);
+  return /* @__PURE__ */ jsxs31(Fragment14, { children: [
+    /* @__PURE__ */ jsx34(FieldRow, { label: s.label, children: /* @__PURE__ */ jsx34(Switch, { checked: s.on, "aria-label": s.label, onChange: (on) => {
+      if (locked && !on) {
+        setSaid(true);
+        return;
+      }
+      s.onChange(on);
+    } }) }),
+    locked && said && /* @__PURE__ */ jsx34("p", { className: "ad-hint ad-view__reason", role: "status", children: s.reason })
+  ] });
+}
 
 // src/components/Warnings/Warnings.tsx
 import { forwardRef as forwardRef9, useId as useId12, useState as useState21 } from "react";
-import { Fragment as Fragment14, jsx as jsx35, jsxs as jsxs32 } from "react/jsx-runtime";
+import { Fragment as Fragment15, jsx as jsx35, jsxs as jsxs32 } from "react/jsx-runtime";
 function AlertBar({ alerts, label = "Alerts", snoozeLabel = "Snooze", pillLabel = (p, n) => `${n} priority ${p}`, priorityLabel = (p) => `Priority ${p}`, defaultOpen = false, open, onOpenChange, className }) {
   const [own, setOwn] = useState21(defaultOpen);
   const isOpen = open ?? own;
@@ -3959,7 +3976,7 @@ function AlertBar({ alerts, label = "Alerts", snoozeLabel = "Snooze", pillLabel 
         priorityLabel: priorityLabel(a.priority),
         sentence: a.sentence,
         number: a.number,
-        actions: /* @__PURE__ */ jsxs32(Fragment14, { children: [
+        actions: /* @__PURE__ */ jsxs32(Fragment15, { children: [
           a.action && /* @__PURE__ */ jsx35(Button, { onClick: a.action.onSelect, children: a.action.label }),
           a.onSnooze && /* @__PURE__ */ jsx35(Button, { onClick: a.onSnooze, children: snoozeLabel })
         ] })
@@ -3985,7 +4002,7 @@ function AlertList({ children, id, hidden, ariaLabel, listProps }) {
   return /* @__PURE__ */ jsx35("div", { ...strip3(listProps), id, hidden, role: "list", "aria-label": ariaLabel, children });
 }
 function AlertRow({ priority, priorityLabel = `Priority ${priority}`, sentence, number, actions, end, children, rowProps, muted }) {
-  const line = /* @__PURE__ */ jsxs32(Fragment14, { children: [
+  const line = /* @__PURE__ */ jsxs32(Fragment15, { children: [
     /* @__PURE__ */ jsx35("span", { className: cx("ad-alert__ring", `ad-alert__ring--p${priority}`), role: "img", "aria-label": priorityLabel }),
     /* @__PURE__ */ jsx35("span", { className: "ad-alert__sentence", children: sentence }),
     number != null && number !== "" && /* @__PURE__ */ jsx35("span", { className: "ad-alert__number", children: number }),
@@ -4022,7 +4039,7 @@ function NotificationList({ days, unreadLabel = "Unread" }) {
       /* @__PURE__ */ jsx35("span", { className: "ad-notifications__date", children: d.date })
     ] }),
     d.items.map((n) => {
-      const body = /* @__PURE__ */ jsxs32(Fragment14, { children: [
+      const body = /* @__PURE__ */ jsxs32(Fragment15, { children: [
         n.unread ? /* @__PURE__ */ jsx35(UnreadDot, { className: "ad-notification__unread", label: unreadLabel }) : /* @__PURE__ */ jsx35("span", { className: "ad-notification__read" }),
         n.face && /* @__PURE__ */ jsx35("span", { className: "ad-notification__face", children: n.face }),
         /* @__PURE__ */ jsx35("span", { className: "ad-notification__sentence", children: n.sentence }),
@@ -4067,7 +4084,7 @@ function DropLine() {
 
 // src/components/Splitter/Splitter.tsx
 import { useRef as useRef21 } from "react";
-import { Fragment as Fragment15, jsx as jsx37, jsxs as jsxs34 } from "react/jsx-runtime";
+import { Fragment as Fragment16, jsx as jsx37, jsxs as jsxs34 } from "react/jsx-runtime";
 function Splitter({ main, side, size, onResize, min = 0, max = Number.POSITIVE_INFINITY, at = "end", label, className }) {
   const box = useRef21(null);
   const clamp = (n) => Math.max(min, Math.min(max, Math.round(n)));
@@ -4121,12 +4138,12 @@ function Splitter({ main, side, size, onResize, min = 0, max = Number.POSITIVE_I
     }
   );
   return /* @__PURE__ */ jsxs34("div", { ref: box, className: cx("ad-splitter", `ad-splitter--${at}`, className), style: { ["--ad-split"]: `${size}px` }, children: [
-    at === "start" && /* @__PURE__ */ jsxs34(Fragment15, { children: [
+    at === "start" && /* @__PURE__ */ jsxs34(Fragment16, { children: [
       /* @__PURE__ */ jsx37("div", { className: "ad-splitter__side", children: side }),
       divider
     ] }),
     /* @__PURE__ */ jsx37("div", { className: "ad-splitter__main", children: main }),
-    at === "end" && /* @__PURE__ */ jsxs34(Fragment15, { children: [
+    at === "end" && /* @__PURE__ */ jsxs34(Fragment16, { children: [
       divider,
       /* @__PURE__ */ jsx37("div", { className: "ad-splitter__side", children: side })
     ] })
@@ -4284,7 +4301,7 @@ function SelectionBarRoom() {
 
 // src/components/Timeline/Timeline.tsx
 import { useLayoutEffect as useLayoutEffect7, useRef as useRef23, useState as useState23 } from "react";
-import { Fragment as Fragment16, jsx as jsx41, jsxs as jsxs38 } from "react/jsx-runtime";
+import { Fragment as Fragment17, jsx as jsx41, jsxs as jsxs38 } from "react/jsx-runtime";
 var strip4 = (h) => {
   if (!h) return {};
   const { className: _c, style: _s, ...rest } = h;
@@ -4486,7 +4503,7 @@ function OverMark({ left, width, label, "aria-label": ariaLabel, markProps }) {
       "aria-label": read2,
       className: "ad-over-mark",
       style: { left: `${Number.isFinite(left) ? left : 0}px`, width: `${Math.max(1, Number.isFinite(width) ? width : 1)}px` },
-      children: typeof label === "string" && label && (m ? /* @__PURE__ */ jsxs38(Fragment16, { children: [
+      children: typeof label === "string" && label && (m ? /* @__PURE__ */ jsxs38(Fragment17, { children: [
         /* @__PURE__ */ jsx41("span", { className: "ad-over-mark__figure", children: m[1] }),
         /* @__PURE__ */ jsx41("span", { children: m[3] })
       ] }) : /* @__PURE__ */ jsx41("span", { children: label }))
@@ -4607,8 +4624,8 @@ function PeriodCluster({ shown, periods, period, onPeriod, onPrevious, onNext, o
 }
 
 // src/components/Calendar/Calendar.tsx
-import { useEffect as useEffect13, useLayoutEffect as useLayoutEffect8, useRef as useRef24, useState as useState24 } from "react";
-import { Fragment as Fragment17, jsx as jsx43, jsxs as jsxs40 } from "react/jsx-runtime";
+import { useEffect as useEffect14, useLayoutEffect as useLayoutEffect8, useRef as useRef24, useState as useState24 } from "react";
+import { Fragment as Fragment18, jsx as jsx43, jsxs as jsxs40 } from "react/jsx-runtime";
 var code = (it) => it.code ? /* @__PURE__ */ jsx43(ProjectPill, { code: it.code, color: it.color?.startsWith("project-") ? it.color : void 0 }) : null;
 var hooksOf2 = (h) => {
   if (!h) return {};
@@ -4660,7 +4677,7 @@ function MonthCalendar({ month, items, today: todayIn, weekStart = 1, locale = "
           const ms = !!item.milestone;
           const cls = cx("ad-month__bar", ms && "ad-month__bar--milestone", ms && diff(item.end, today) < 0 && "ad-month__bar--past", item.unconfirmed && "ad-month__bar--unconfirmed", cutStart && "ad-month__bar--cut-start", cutEnd && "ad-month__bar--cut-end");
           const hooks = hooksOf2(itemProps?.(item));
-          const inner = /* @__PURE__ */ jsxs40(Fragment17, { children: [
+          const inner = /* @__PURE__ */ jsxs40(Fragment18, { children: [
             ms && /* @__PURE__ */ jsx43("span", { className: "ad-month__diamond", "aria-hidden": "true" }),
             code(item),
             /* @__PURE__ */ jsx43(DeptGlyph, { hue: item.color }),
@@ -4704,7 +4721,7 @@ function Booking({ name, time, unconfirmed, color, style, onOpen, bookingProps, 
   const grip = (side, h) => h && /* @__PURE__ */ jsx43("span", { role: h["aria-label"] ? "button" : void 0, "aria-hidden": h["aria-label"] ? void 0 : true, ...hooksOf2(h), className: `ad-booking__grip ad-booking__grip--${side}` });
   const inControl = (t) => !!t.closest(".ad-booking__grip, .ad-booking__actions");
   const beside = !!onOpen && !asButton;
-  const controls = /* @__PURE__ */ jsxs40(Fragment17, { children: [
+  const controls = /* @__PURE__ */ jsxs40(Fragment18, { children: [
     grip("start", ends?.start),
     actions != null && /* @__PURE__ */ jsx43("span", { className: "ad-booking__actions", children: /* @__PURE__ */ jsx43(ButtonSizeScope, { size: "row", children: actions }) }),
     grip("end", ends?.end)
@@ -4789,7 +4806,7 @@ function TimeGrid({ startHour, endHour, bookings = [], columns, now, hourLabel =
     el.querySelectorAll(".ad-time-grid__head").forEach((n) => ro.observe(n));
     return () => ro.disconnect();
   });
-  useEffect13(() => {
+  useEffect14(() => {
     const el = frame.current;
     if (!el || scrollTo == null) return;
     const hourPx = el.scrollHeight / Math.max(1, hours + (el.querySelector(".ad-time-grid__allday") ? 1 : 0));
@@ -4832,7 +4849,7 @@ function TimeGrid({ startHour, endHour, bookings = [], columns, now, hourLabel =
         const hooks = hooksOf2(itemProps?.(item));
         const cls = cx("ad-month__bar", "ad-time-grid__item", item.unconfirmed && "ad-month__bar--unconfirmed");
         const style = { ...barColour(item.color, hueOf(item.color)), ...item.span && item.span > 1 ? { ["--ad-span"]: item.span } : {} };
-        const inner = /* @__PURE__ */ jsxs40(Fragment17, { children: [
+        const inner = /* @__PURE__ */ jsxs40(Fragment18, { children: [
           code(item),
           item.icon ? slotIcon(item.icon, { size: "sm" }) : /* @__PURE__ */ jsx43(DeptGlyph, { hue: item.color }),
           /* @__PURE__ */ jsx43("span", { children: item.label })
@@ -4849,7 +4866,7 @@ function TimeGrid({ startHour, endHour, bookings = [], columns, now, hourLabel =
         }),
         c.aside && /* @__PURE__ */ jsx43("div", { className: "ad-time-grid__aside", children: [...c.aside].sort((x, y) => x.at - y.at).map((m, i) => {
           const words = [m.time, m.title].filter(Boolean).join(" ");
-          const inner = m.node ?? (asideWidth === "narrow" ? /* @__PURE__ */ jsx43("span", { className: "ad-time-grid__moment-mark", "aria-label": m.onPress ? void 0 : words, role: m.onPress ? void 0 : "img" }) : /* @__PURE__ */ jsxs40(Fragment17, { children: [
+          const inner = m.node ?? (asideWidth === "narrow" ? /* @__PURE__ */ jsx43("span", { className: "ad-time-grid__moment-mark", "aria-label": m.onPress ? void 0 : words, role: m.onPress ? void 0 : "img" }) : /* @__PURE__ */ jsxs40(Fragment18, { children: [
             m.time && /* @__PURE__ */ jsx43("span", { className: "ad-time-grid__moment-time", children: m.time }),
             m.title && /* @__PURE__ */ jsx43("span", { className: "ad-time-grid__moment-title", title: m.title, children: m.title })
           ] }));
@@ -4898,7 +4915,7 @@ function PhaseBand({ label, color, unconfirmed }) {
 }
 
 // src/components/Map/Map.tsx
-import { useEffect as useEffect14, useMemo as useMemo3, useRef as useRef25, useState as useState25 } from "react";
+import { useEffect as useEffect15, useMemo as useMemo3, useRef as useRef25, useState as useState25 } from "react";
 
 // src/components/Map/worldGeo.ts
 var GEO_LAT_MAX = 84;
@@ -4971,7 +4988,7 @@ function WorldMap({ pins, at, ariaLabel, onPin, hoverCard, pinProps }) {
   const night = useMemo3(() => nightPath(at), [at]);
   const wrap = useRef25(null);
   const [w, setW] = useState25(0);
-  useEffect14(() => {
+  useEffect15(() => {
     const el = wrap.current;
     if (!el) return;
     setW(el.getBoundingClientRect().width);
@@ -5050,7 +5067,7 @@ function MapNightDot() {
 }
 
 // src/components/Charts/Charts.tsx
-import { Fragment as Fragment18, jsx as jsx45, jsxs as jsxs42 } from "react/jsx-runtime";
+import { Fragment as Fragment19, jsx as jsx45, jsxs as jsxs42 } from "react/jsx-runtime";
 function AmountBars({ items, max, ariaLabel, className }) {
   const top = max ?? Math.max(1, ...items.map((i) => i.value));
   return /* @__PURE__ */ jsx45("div", { className: cx("ad-amounts", className), role: "list", "aria-label": ariaLabel, children: items.map((i) => /* @__PURE__ */ jsxs42("div", { className: "ad-amounts__row", role: "listitem", children: [
@@ -5069,7 +5086,7 @@ function BudgetBar({ fraction, figure, note = "worked", remainder, end, ariaLabe
       /* @__PURE__ */ jsx45("span", { children: note }),
       /* @__PURE__ */ jsxs42("span", { children: [
         remainder,
-        end && /* @__PURE__ */ jsxs42(Fragment18, { children: [
+        end && /* @__PURE__ */ jsxs42(Fragment19, { children: [
           " \xB7 ",
           end
         ] })
@@ -5151,9 +5168,9 @@ function CommandSearch({ open, onClose, query, onQuery, results, onPick, label =
 }
 
 // src/components/Guidance/Guidance.tsx
-import { useEffect as useEffect15, useLayoutEffect as useLayoutEffect9, useRef as useRef27, useState as useState26 } from "react";
-import { Fragment as Fragment19, jsx as jsx47, jsxs as jsxs43 } from "react/jsx-runtime";
-var useIsoLayoutEffect3 = typeof window === "undefined" ? useEffect15 : useLayoutEffect9;
+import { useEffect as useEffect16, useLayoutEffect as useLayoutEffect9, useRef as useRef27, useState as useState26 } from "react";
+import { Fragment as Fragment20, jsx as jsx47, jsxs as jsxs43 } from "react/jsx-runtime";
+var useIsoLayoutEffect3 = typeof window === "undefined" ? useEffect16 : useLayoutEffect9;
 function TourStep({ open, anchor, step, total, title, children, onBack, onNext, onExit, backLabel = "Back", nextLabel = "Next", progressLabel = (s, t) => `${s} of ${t}`, placement, side: older, onClose, closeLabel }) {
   const card = useRef27(null);
   const [rect, setRect] = useState26(null);
@@ -5249,7 +5266,7 @@ function PixxBrief({ open, face, greeting, children, onSnooze, onGotIt, snoozeLa
 function PixxFigure({ onPress, open, unread = 0, tip = "Pixx", motion, body, tail, hooks, className }) {
   const { triggerProps, node } = useTooltip(tip, { describes: false });
   const data = hooks ? Object.fromEntries(Object.entries(hooks).filter(([k]) => k.startsWith("data-"))) : {};
-  return /* @__PURE__ */ jsxs43(Fragment19, { children: [
+  return /* @__PURE__ */ jsxs43(Fragment20, { children: [
     /* @__PURE__ */ jsxs43(
       "button",
       {
@@ -5272,7 +5289,7 @@ function PixxFigure({ onPress, open, unread = 0, tip = "Pixx", motion, body, tai
 }
 
 // src/components/Furniture/Furniture.tsx
-import { Fragment as Fragment20, jsx as jsx48, jsxs as jsxs44 } from "react/jsx-runtime";
+import { Fragment as Fragment21, jsx as jsx48, jsxs as jsxs44 } from "react/jsx-runtime";
 function Footer({ code: code2, number, venue, pageNumber, page, undo }) {
   return /* @__PURE__ */ jsxs44("footer", { className: "ad-footer", children: [
     /* @__PURE__ */ jsxs44("span", { className: "ad-footer__cell ad-footer__code", children: [
@@ -5281,7 +5298,7 @@ function Footer({ code: code2, number, venue, pageNumber, page, undo }) {
     ] }),
     /* @__PURE__ */ jsx48("span", { className: "ad-footer__cell ad-footer__venue", children: venue }),
     /* @__PURE__ */ jsx48("span", { className: "ad-footer__cell ad-footer__run", "aria-hidden": "true" }),
-    /* @__PURE__ */ jsx48("span", { className: "ad-footer__undo", role: "status", "aria-live": "polite", children: undo && /* @__PURE__ */ jsxs44(Fragment20, { children: [
+    /* @__PURE__ */ jsx48("span", { className: "ad-footer__undo", role: "status", "aria-live": "polite", children: undo && /* @__PURE__ */ jsxs44(Fragment21, { children: [
       /* @__PURE__ */ jsx48("span", { className: "ad-footer__undo-words", children: undo.message }),
       undo.onUndo && /* @__PURE__ */ jsx48(ButtonSizeScope, { size: "row", children: /* @__PURE__ */ jsx48(Button, { onClick: undo.onUndo, children: undo.label ?? "Undo" }) })
     ] }) }),
@@ -5293,7 +5310,7 @@ function Footer({ code: code2, number, venue, pageNumber, page, undo }) {
 }
 function Contents({ entries, ariaLabel = "Contents" }) {
   return /* @__PURE__ */ jsx48("ol", { className: "ad-contents", "aria-label": ariaLabel, children: entries.map((e, i) => {
-    const inner = /* @__PURE__ */ jsxs44(Fragment20, { children: [
+    const inner = /* @__PURE__ */ jsxs44(Fragment21, { children: [
       /* @__PURE__ */ jsx48("span", { className: "ad-contents__numeral", children: String(i + 1).padStart(2, "0") }),
       /* @__PURE__ */ jsxs44("span", { className: "ad-contents__body", children: [
         /* @__PURE__ */ jsx48("span", { className: "ad-contents__name", children: e.name }),
@@ -5336,7 +5353,7 @@ function Ground({ children, className, style }) {
 }
 
 // src/runtime/AdsProvider.tsx
-import { useContext as useContext9, useEffect as useEffect16, useMemo as useMemo4 } from "react";
+import { useContext as useContext9, useEffect as useEffect17, useMemo as useMemo4 } from "react";
 import { jsx as jsx49 } from "react/jsx-runtime";
 var MODE = typeof process !== "undefined" && process.env && process.env.NODE_ENV || "development";
 var pending = [];
@@ -5364,11 +5381,11 @@ ${describeViolations(all)}`);
 }
 function AdsProvider({ strict = false, show, children }) {
   const on = strict && MODE !== "production";
-  useEffect16(() => {
+  useEffect17(() => {
     if (!on) return;
     report(scanIn(document.body), true);
   });
-  useEffect16(() => {
+  useEffect17(() => {
     if (!on) return;
     const look = () => report(scanIn(document.body), false);
     const watch = new MutationObserver(look);
