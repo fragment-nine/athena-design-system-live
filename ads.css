@@ -1073,7 +1073,7 @@ button.ad-contents__button:focus-visible { outline: none; box-shadow: var(--ring
 
 /* src/components/Menu/Menu.css */
 /* Menu */
-.ad-menu { width: var(--w-menu); padding: var(--space-2); }
+.ad-menu { display: flex; flex-direction: column; width: var(--w-menu); padding: var(--space-2); } /* its own layout, no longer borrowed from the left menu's frame through the shared name (2026-10-28) */
 .ad-menu__item {
   display: flex; align-items: center; gap: var(--space-3); box-sizing: border-box; width: 100%; height: var(--h-btn);
   margin: 0; padding: 0 var(--space-3); border: 0; border-radius: var(--radius-page); background: transparent;
@@ -1091,7 +1091,10 @@ button.ad-contents__button:focus-visible { outline: none; box-shadow: var(--ring
 .ad-menu__item--danger, .ad-menu__item--danger .ad-menu__icon, .ad-menu__item--danger:hover, .ad-menu__item--danger:hover .ad-menu__icon,
 .ad-menu__item--danger[data-active], .ad-menu__item--danger[data-active] .ad-menu__icon { color: var(--status-error-ink); }
 .ad-menu__item[aria-disabled] { opacity: var(--opacity-disabled); cursor: default; }
-.ad-menu__separator { height: var(--border-w); margin: var(--space-1) var(--space-1); background: var(--border); }
+/* The divider as the approved pictures show it: a hairline with a little room (2026-10-28: it used to borrow a second, taller rule through a shared name, so the published copy drew a faint band the pictures never showed). */
+.ad-menu__separator { position: relative; height: var(--border-w); margin: var(--space-1) var(--space-1); background: var(--border); }
+.ad-menu__separator::before { content: ""; position: absolute; left: 0; right: 0; top: 50%; height: var(--border-w); background: var(--border); }
+
 /* Two lines: the words, then a grey line under them (what it does, or why it is off). The current choice carries a check, never coral. */
 .ad-menu__item--two { height: auto; min-height: var(--h-row-2); padding-block: var(--space-2); align-items: flex-start; }
 .ad-menu__words { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: var(--space-hair); }
@@ -1175,7 +1178,8 @@ button:hover > .ad-project-pill:not(.ad-project-pill--current) { color: var(--ac
 .ad-project-pill--press:focus-visible { outline: none; box-shadow: var(--ring-select); }
 /* The row pieces (MenuPieces.tsx): a row is its button and a trail of small buttons; rows under it sit indented; the one separator is
    a hairline; you sit at the foot with your name and role; the build is one small mono line. */
-.ad-menu { display: flex; flex-direction: column; }
+/* The menu pieces' frame: its own class, apart from the dropdown Menu's `.ad-menu` (2026-10-28: one name, one thing). */
+.ad-menu-frame { display: flex; flex-direction: column; }
 .ad-menu__row { display: flex; flex-direction: column; }
 .ad-menu__line { display: flex; align-items: center; gap: var(--space-1); }
 .ad-side .ad-menu__line > .ad-side__item { flex: 1; min-width: 0; }
@@ -1183,32 +1187,24 @@ button:hover > .ad-project-pill:not(.ad-project-pill--current) { color: var(--ac
 .ad-menu__trail { display: inline-flex; align-items: center; gap: var(--space-hair); }
 .ad-side .ad-menu__row > .ad-side__list, .ad-side .ad-menu__row > ul { padding: var(--space-1) 0 var(--space-1) var(--space-4); }
 .ad-menu__list { margin: 0; padding: 0; list-style: none; }
-.ad-menu__body { flex: 1; min-height: 0; overflow-y: auto; display: flex; flex-direction: column; }
-.ad-rail .ad-menu__body { align-items: center; }
-.ad-menu__brand { display: flex; align-items: center; gap: var(--space-1); padding: var(--space-2) var(--space-1); }
-.ad-rail .ad-menu__brand { flex-direction: column; }
-.ad-menu__mark { margin: 0; padding: 0 var(--space-1); border: 0; background: none; font-family: var(--font-display); font-weight: 600; font-size: var(--text-20); line-height: var(--lh-none); color: var(--text-primary); cursor: pointer; border-radius: var(--radius-page); }
-.ad-menu__mark:hover { color: var(--accent); }
-.ad-menu__mark:focus-visible { outline: none; box-shadow: var(--ring-select); }
-.ad-menu__brand > .ad-menu__trail { margin-left: auto; }
-.ad-rail .ad-menu__brand > .ad-menu__trail { margin-left: 0; }
 .ad-menu__code { flex: none; min-width: var(--w-col-xs); }
 /* The separator: a hairline inside a row-tall grab area. */
-.ad-menu__separator { position: relative; height: var(--space-4); margin: 0 var(--space-1); }
-.ad-menu__separator::before { content: ""; position: absolute; left: 0; right: 0; top: 50%; height: var(--border-w); background: var(--border); }
 /* On a touch screen every row and button in the menu is finger-sized. */
 @media (pointer: coarse) {
-  .ad-menu .ad-side__item, .ad-menu .ad-rail__item, .ad-menu__mark { min-height: var(--h-touch); }
-  .ad-menu__separator { height: var(--h-touch); }
+  .ad-menu-frame .ad-side__item, .ad-menu-frame .ad-rail__item { min-height: var(--h-touch); }
 }
-.ad-menu__separator[draggable] { cursor: grab; }
 .ad-menu__row[draggable] { cursor: grab; }
-.ad-menu__person { display: flex; align-items: center; gap: var(--space-2); padding: var(--space-2) var(--space-1); border-top: var(--border-w) solid var(--border); }
-.ad-menu__face { margin: 0; padding: 0; border: 0; border-radius: var(--radius-round); background: none; cursor: pointer; }
-.ad-menu__face:focus-visible { outline: none; box-shadow: var(--ring-select); }
-.ad-menu__who { display: flex; flex-direction: column; min-width: 0; flex: 1; }
-.ad-menu__name { font-family: var(--font-body); font-weight: 600; font-size: var(--text-base); color: var(--text-primary); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.ad-menu__role { font-family: var(--font-body); font-size: var(--text-xs); color: var(--text-secondary); }
+
+/* Rail and SideMenu are built from the menu pieces (2026-10-28): the rows keep the places the hand-built menu had. */
+.ad-rail .ad-menu__row { align-self: stretch; align-items: center; gap: var(--space-1); }
+.ad-rail .ad-menu__line { justify-content: center; }
+.ad-rail__pinned .ad-menu__row, .ad-rail__group--projects .ad-menu__row { align-items: flex-start; }
+.ad-rail__pinned .ad-menu__line, .ad-rail__group--projects .ad-menu__line { justify-content: flex-start; }
+.ad-rail__pinned { margin: 0; list-style: none; }
+.ad-side .ad-menu__row > .ad-side__list--nested { padding: 0; }
+.ad-rail .ad-menu__foot .ad-menu__row { align-self: center; }
+.ad-menu__list.ad-rail__group--projects, .ad-menu__list.ad-rail__pinned { padding-left: calc((var(--w-rail) - var(--h-btn)) / 2); }
+.ad-menu__list.ad-rail__pinned { padding-top: var(--space-1); }
 
 /* src/components/PageHeader/PageHeader.css */
 /* PageHeader and Tabs */
@@ -1555,6 +1551,9 @@ button.ad-row__name:focus-visible { outline: none; box-shadow: var(--ring-select
 .ad-segmented__option:focus-visible { outline: none; box-shadow: var(--ring-select); }
 .ad-segmented__option:disabled { opacity: var(--opacity-disabled); cursor: default; color: var(--text-secondary); }
 .ad-segmented__option svg { width: var(--icon-md); height: var(--icon-md); }
+
+/* The icons form (the view switch, 2026-10-28): a square tile holding the glyph, grey at rest. */
+.ad-segmented__option--icon { width: var(--h-btn); height: var(--h-btn); padding: 0; color: var(--text-muted); }
 
 /* src/components/Settings/Settings.css */
 /* Settings */
@@ -1960,16 +1959,6 @@ button.ad-milestone:focus-visible { outline: none; box-shadow: var(--ring-select
   animation: ad-fade-in var(--dur-fast) var(--ease-out);
 }
 @media (prefers-reduced-motion: reduce) { .ad-tooltip { animation: none; } }
-
-/* src/components/ViewSwitch/ViewSwitch.css */
-/* ViewSwitch */
-.ad-view-switch { display: inline-flex; gap: var(--space-hair); }
-/* Each view a 32 tile (the Page-frame card), the icon 16; the current one on bg-raised. */
-.ad-view-switch__option { display: inline-flex; align-items: center; justify-content: center; width: var(--h-btn); height: var(--h-btn); margin: 0; padding: 0; border: 0; border-radius: var(--radius-page); background: transparent; color: var(--text-muted); cursor: pointer; }
-.ad-view-switch__option svg { width: var(--icon-md); height: var(--icon-md); }
-.ad-view-switch__option:hover { color: var(--accent); }
-.ad-view-switch__option:focus-visible { outline: none; box-shadow: var(--ring-select); }
-.ad-view-switch__option[aria-checked="true"] { background: var(--bg-raised); color: var(--text-primary); }
 
 /* src/components/Warnings/Warnings.css */
 /* AlertBar, CountPill, Bell, NotificationList */
