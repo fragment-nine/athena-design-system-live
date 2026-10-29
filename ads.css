@@ -206,11 +206,11 @@
   --h-res-lane: 24px;
   --h-res-lane-pitch: 28px;
   --h-res-presence: 18px;
-  --h-res-presence-run: calc(var(--athena-h-res-presence) - var(--space-1) / 2);
+  --h-res-presence-run: 16px;
   --h-res-placeholder: 34px;
   --h-res-empty: 64px;
   --h-res-load-strip: 9px;
-  --h-res-load-strip-box: calc(var(--athena-h-res-load-strip) - var(--space-1) / 2);
+  --h-res-load-strip-box: 7px;
   --h-res-nrow: 30px;
   --h-res-nline: 28px;
   --h-res-nkind: 28px;
@@ -227,7 +227,6 @@
   --res-scroll-zone: 40px;
   --res-ruler-trim: 2px;
   --space-12: 48px;
-  --row-trim-half: calc(var(--athena-row-trim) / 2);
   --float-stack-y: 140px;
   --tap-clear: 29px;
   --h-strip: 30px;
@@ -253,7 +252,7 @@
   --mbb-safe: env(safe-area-inset-bottom, 0);
   --size-control-md: 30px;
   --size-lead-slot: 18px;
-  --w-leaver-pick: calc(var(--athena-space-16) * 2.5);
+  --w-leaver-pick: 160px;
   --h-rm-shot: 288px;
   --w-rm-body: 640px;
   --w-rm-reply: 600px;
