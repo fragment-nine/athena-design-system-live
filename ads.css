@@ -303,6 +303,13 @@
   .ad-bar--selected { outline: var(--border-w-strong) solid Highlight !important; outline-offset: var(--space-hair); }
 }
 
+/* Held for Athena until her swap lands (2026-10-29): the type ladder deleted `--text-faint` and `.ad-type-data-small`, which she
+   still types in 30 files and 3. Removing them before her swap left those words with no ink of their own on Jeremy's screen.
+   Both read as their replacements: the faint ink is the quiet ink, the small figure is the data face at 12. Delete this block once
+   Athena types neither. */
+:root { --text-faint: var(--text-muted); }
+.ad-type-data-small { font: var(--type-data); font-size: var(--text-xs); }
+
 /* Athena Design System — components.css: the look of every component, plain CSS. Generated from src/components; do not edit. Import order, once per app, all four: fonts.css, tokens.css, patterns.css, components.css. */
 
 /* src/components/base.css */
