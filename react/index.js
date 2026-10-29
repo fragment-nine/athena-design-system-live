@@ -3606,7 +3606,7 @@ function PageHeader({ title, icon, stamp, tabs, back, description, countdown: gi
           countdown2 && /* @__PURE__ */ jsx32("p", { className: "ad-page-header__countdown", children: countdown2 })
         ] })
       ] }),
-      shownStamp && /* @__PURE__ */ jsx32("div", { className: "ad-type-stamp ad-page-header__stamp", children: stamp }),
+      shownStamp && /* @__PURE__ */ jsx32("div", { className: "ad-page-header__stamp", children: stamp }),
       anyEnd && /* @__PURE__ */ jsxs29(HeaderActions, { groupProps: { "aria-label": headerLabels?.group ?? "Screen actions" }, children: [
         gear && /* @__PURE__ */ jsx32(ShowOptionsGear, { ...gear }),
         onSearch && /* @__PURE__ */ jsx32(IconButton, { label: headerLabels?.search ?? "Search", onClick: onSearch, children: /* @__PURE__ */ jsx32(Icon, { job: "search", size: "md" }) }),
@@ -4153,7 +4153,7 @@ function Splitter({ main, side, size, onResize, min = 0, max = Number.POSITIVE_I
 // src/components/Text/Text.tsx
 import { jsx as jsx38, jsxs as jsxs35 } from "react/jsx-runtime";
 function DataText({ children, dim, small, className }) {
-  return /* @__PURE__ */ jsx38("span", { className: cx(small ? "ad-type-data-small" : "ad-type-data", "ad-data-text", dim && "ad-data-text--dim", className), children });
+  return /* @__PURE__ */ jsx38("span", { className: cx("ad-type-data", "ad-data-text", small && "ad-data-text--small", dim && "ad-data-text--dim", className), children });
 }
 function Hint({ children, className }) {
   return /* @__PURE__ */ jsx38("span", { className: cx("ad-hint", className), children });
@@ -4161,7 +4161,7 @@ function Hint({ children, className }) {
 function Figures({ items, ariaLabel, className }) {
   return /* @__PURE__ */ jsx38("dl", { className: cx("ad-figures", className), "aria-label": ariaLabel, children: items.slice(0, 4).map((f) => /* @__PURE__ */ jsxs35("div", { className: "ad-figures__item", children: [
     /* @__PURE__ */ jsx38("dt", { className: "ad-figures__label", children: f.label }),
-    /* @__PURE__ */ jsx38("dd", { className: "ad-figures__value ad-type-big-number", children: f.value })
+    /* @__PURE__ */ jsx38("dd", { className: "ad-figures__value", children: f.value })
   ] }, f.label)) });
 }
 
