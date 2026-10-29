@@ -30,10 +30,8 @@
   --cloud-coral: #e16d48;
   --accent-hover: #ec8059;
   --on-accent: #0d0d0d;
-  --brand-orange: var(--accent);
   --status-error: #cf5340;
   --status-error-ink: #dc8274;
-  --status-error-bg: rgba(207, 83, 64, 0.15);
   --word-pill: #5a1a26;
   --word-pill-ink: #f3d6da;
   --status-warn: #d9a441;
@@ -66,7 +64,7 @@
   --project-11: #6c467f;
   --project-12: #7c4069;
   --item-phase: #7e74b4;
-  --item-milestone: var(--brand-orange);
+  --item-milestone: var(--accent);
   --item-deliverable: #5987a6;
   --item-travel: #378add;
   --item-todo: #8e8f88;
@@ -91,7 +89,6 @@
   --ring-select: inset 0 0 0 2px #aaa6a1;
   --glow-hover: 0 0 8px rgba(225, 109, 72, 0.35);
   --glow-today: 0 0 6px rgba(225, 109, 72, 0.45);
-  --glow-late: 0 0 6px rgba(207, 83, 64, 0.4);
   --glow-clash: 0 0 0 1px #cf5340, 0 0 8px rgba(207, 83, 64, 0.15);
   --ring-today: 0 0 0 2px #efece9;
   --ring-celebrate: 0 0 0 5px rgba(111, 156, 106, 0.28);
@@ -244,7 +241,6 @@
   --z-popover: 300;
   --z-toast: 400;
   --z-dialog: 500;
-  --z-undo: 600;
   --z-tip: 9100;
   --font-display: "Work Sans", "Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
   --font-body: "Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
