@@ -3118,7 +3118,7 @@ function PersonPicker({ people, ...rest }) {
   return /* @__PURE__ */ jsx25(PickList, { ...rest, options: people.map((p) => ({ id: p.id, label: p.name, keywords: p.email, lead: /* @__PURE__ */ jsx25(Avatar, { name: p.name, initials: p.initials, src: p.src }) })) });
 }
 function ProjectPicker({ projects, ...rest }) {
-  return /* @__PURE__ */ jsx25(PickList, { ...rest, options: projects.map((p) => ({ id: p.id, label: p.name, keywords: p.code, lead: /* @__PURE__ */ jsx25(Tag, { children: p.code }) })) });
+  return /* @__PURE__ */ jsx25(PickList, { ...rest, options: projects.map((p) => ({ id: p.id, label: p.name, keywords: p.code, lead: /* @__PURE__ */ jsx25(ProjectPill, { code: p.code }) })) });
 }
 function StatusPicker({ statuses, noSearch = true, ...rest }) {
   return /* @__PURE__ */ jsx25(PickList, { ...rest, noSearch, options: statuses.map((s) => ({ id: s.id, label: s.label, lead: /* @__PURE__ */ jsx25(Dot, { tone: s.tone }) })) });
@@ -4026,7 +4026,7 @@ function NotificationList({ days, unreadLabel = "Unread" }) {
     ] }),
     d.items.map((n) => {
       const body = /* @__PURE__ */ jsxs31(Fragment14, { children: [
-        n.unread ? /* @__PURE__ */ jsx35("span", { className: "ad-notification__unread", role: "img", "aria-label": unreadLabel }) : /* @__PURE__ */ jsx35("span", { className: "ad-notification__read" }),
+        n.unread ? /* @__PURE__ */ jsx35(UnreadDot, { className: "ad-notification__unread", label: unreadLabel }) : /* @__PURE__ */ jsx35("span", { className: "ad-notification__read" }),
         n.face && /* @__PURE__ */ jsx35("span", { className: "ad-notification__face", children: n.face }),
         /* @__PURE__ */ jsx35("span", { className: "ad-notification__sentence", children: n.sentence }),
         /* @__PURE__ */ jsx35("span", { className: "ad-notification__time", children: n.time })
@@ -4434,18 +4434,7 @@ function Lane({ name, children, tall, laneProps }) {
   ] });
 }
 function MarkerKey({ review = "review date \xB7 internal", deadline = "deadline \xB7 sent out" }) {
-  return /* @__PURE__ */ jsxs36("p", { className: "ad-marker-key", children: [
-    /* @__PURE__ */ jsxs36("span", { className: "ad-marker-key__item", children: [
-      /* @__PURE__ */ jsx40(Icon, { name: "eye", fill: true }),
-      " ",
-      review
-    ] }),
-    /* @__PURE__ */ jsxs36("span", { className: "ad-marker-key__item", children: [
-      /* @__PURE__ */ jsx40(Icon, { name: "paper-plane-tilt", fill: true }),
-      " ",
-      deadline
-    ] })
-  ] });
+  return /* @__PURE__ */ jsx40(ChartKey, { items: [{ mark: /* @__PURE__ */ jsx40(Icon, { name: "eye", fill: true }), label: String(review) }, { mark: /* @__PURE__ */ jsx40(Icon, { name: "paper-plane-tilt", fill: true }), label: String(deadline) }] });
 }
 function Milestone({ label, past, unconfirmed, opening, ariaLabel, onOpen }) {
   const Tag2 = onOpen ? "button" : "span";
@@ -5002,14 +4991,9 @@ function AmountBars({ items, max, ariaLabel, className }) {
   ] }, i.id)) });
 }
 function BudgetBar({ fraction, figure, note = "worked", remainder, end, ariaLabel, planned, marks = [], className }) {
-  const done = Math.max(0, Math.min(1, fraction));
   return /* @__PURE__ */ jsxs40("div", { className: cx("ad-budget", className), children: [
     /* @__PURE__ */ jsx44("div", { className: "ad-budget__figure", children: figure }),
-    /* @__PURE__ */ jsxs40("div", { className: "ad-progress", role: "meter", "aria-label": ariaLabel, "aria-valuemin": 0, "aria-valuemax": Math.max(100, Math.round(fraction * 100)), "aria-valuenow": Math.round(fraction * 100), children: [
-      planned != null && /* @__PURE__ */ jsx44("span", { className: "ad-progress__planned", style: { width: `${Math.max(0, Math.min(1, planned)) * 100}%` } }),
-      /* @__PURE__ */ jsx44("span", { className: "ad-progress__done", style: { width: `${done * 100}%` } }),
-      marks.map((m) => /* @__PURE__ */ jsx44("span", { className: "ad-progress__mark", role: "img", "aria-label": m.label, title: m.label, style: { left: `${Math.max(0, Math.min(1, m.at)) * 100}%` } }, m.label))
-    ] }),
+    /* @__PURE__ */ jsx44(ProgressBar, { meter: true, fraction, ariaLabel: ariaLabel ?? String(figure), planned, marks: marks.length ? marks : void 0 }),
     /* @__PURE__ */ jsxs40("div", { className: "ad-budget__foot", children: [
       /* @__PURE__ */ jsx44("span", { children: note }),
       /* @__PURE__ */ jsxs40("span", { children: [
@@ -5022,8 +5006,13 @@ function BudgetBar({ fraction, figure, note = "worked", remainder, end, ariaLabe
     ] })
   ] });
 }
-function ProgressBar({ fraction, ariaLabel, thin }) {
-  return /* @__PURE__ */ jsx44("div", { className: cx("ad-progress", thin && "ad-progress--thin"), role: "progressbar", "aria-label": ariaLabel, "aria-valuemin": 0, "aria-valuemax": 100, "aria-valuenow": Math.round(fraction * 100), children: /* @__PURE__ */ jsx44("span", { className: "ad-progress__done", style: { width: `${Math.max(0, Math.min(1, fraction)) * 100}%` } }) });
+function ProgressBar({ fraction, ariaLabel, thin, planned, marks = [], meter: asMeter }) {
+  const meter = !!asMeter || planned != null || marks.length > 0;
+  return /* @__PURE__ */ jsxs40("div", { className: cx("ad-progress", thin && "ad-progress--thin"), role: meter ? "meter" : "progressbar", "aria-label": ariaLabel, "aria-valuemin": 0, "aria-valuemax": meter ? Math.max(100, Math.round(fraction * 100)) : 100, "aria-valuenow": Math.round(fraction * 100), children: [
+    planned != null && /* @__PURE__ */ jsx44("span", { className: "ad-progress__planned", style: { width: `${Math.max(0, Math.min(1, planned)) * 100}%` } }),
+    /* @__PURE__ */ jsx44("span", { className: "ad-progress__done", style: { width: `${Math.max(0, Math.min(1, fraction)) * 100}%` } }),
+    marks.map((m) => /* @__PURE__ */ jsx44("span", { className: "ad-progress__mark", role: "img", "aria-label": m.label, title: m.label, style: { left: `${Math.max(0, Math.min(1, m.at)) * 100}%` } }, m.label))
+  ] });
 }
 function OverTime({ periods, currentId, grid = [], ariaLabel, className }) {
   const top = Math.max(1, ...periods.map((p) => p.value), ...grid.map((g) => g.value));
@@ -5084,7 +5073,7 @@ function CommandSearch({ open, onClose, query, onQuery, results, onPick, label =
         onPick(id);
         onClose();
       },
-      options: results.map((r) => ({ id: r.id, label: r.label, group: r.group, lead: slotIcon(r.icon), hint: r.code ? /* @__PURE__ */ jsx45(Tag, { children: r.code }) : void 0 })),
+      options: results.map((r) => ({ id: r.id, label: r.label, group: r.group, lead: slotIcon(r.icon), hint: r.code ? /* @__PURE__ */ jsx45(ProjectPill, { code: r.code }) : void 0 })),
       className: "ad-search__list"
     }
   ) }) });
