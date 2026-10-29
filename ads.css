@@ -131,7 +131,7 @@
   --h-btn-bar: 28px;
   --pad-header-actions: 3px;
   --h-btn: 32px;
-  --h-field: 32px;
+  --h-field: var(--h-btn);
   --icon-sm: 14px;
   --icon-md: 20px;
   --icon-lg: 24px;
@@ -153,29 +153,29 @@
   --w-col-xs: 48px;
   --w-field-name: 96px;
   --w-aside: 112px;
-  --h-hour-roomy: 44px;
+  --h-hour-roomy: var(--h-touch);
   --w-col-sm: 64px;
   --target-min: 24px;
   --w-page-max: 900px;
-  --w-rail: 48px;
-  --h-footer: 28px;
+  --w-rail: var(--w-col-xs);
+  --h-footer: var(--h-btn-bar);
   --numeral-contents: 26px;
   --h-seg: 26px;
   --check-size: 18px;
   --knob-size: 14px;
   --dot-size: 6px;
   --w-dialog: 400px;
-  --h-close: 24px;
+  --h-close: var(--h-btn-row);
   --day-cell: 32px;
-  --w-lane: 240px;
-  --h-float-bar: 44px;
+  --w-lane: var(--w-menu);
+  --h-float-bar: var(--h-touch);
   --dial-size: 64px;
   --dial-stroke: 5px;
   --cal-cell: 96px;
   --notch-size: 12px;
   --w-brief: 330px;
   --w-tour: 320px;
-  --h-bar: 24px;
+  --h-bar: var(--h-btn-row);
   --h-bar-dense: 17px;
   --h-over-mark: 16px;
   --blur-glass-radius: 22px;
@@ -205,33 +205,33 @@
   --cap-h-canvas-menu: 40vh;
   --pixx-phone-edge: 4vw;
   --h-res-phase: 22px;
-  --h-res-lane: 24px;
-  --h-res-lane-pitch: 28px;
+  --h-res-lane: var(--h-btn-row);
+  --h-res-lane-pitch: var(--h-btn-bar);
   --h-res-presence: 18px;
-  --h-res-presence-run: 16px;
+  --h-res-presence-run: var(--h-over-mark);
   --h-res-placeholder: 34px;
   --h-res-empty: 64px;
   --h-res-load-strip: 9px;
   --h-res-load-strip-box: 7px;
   --h-res-nrow: 30px;
-  --h-res-nline: 28px;
-  --h-res-nkind: 28px;
+  --h-res-nline: var(--h-btn-bar);
+  --h-res-nkind: var(--h-btn-bar);
   --w-res-names: 285px;
   --w-res-edge: 6px;
   --w-res-edge-touch: 18px;
   --res-min-x: 2px;
-  --res-ms-trim: 2px;
-  --res-clash-x: 2px;
+  --res-ms-trim: var(--res-min-x);
+  --res-clash-x: var(--res-min-x);
   --res-clash-y: 3px;
-  --res-where-extra: 3px;
+  --res-where-extra: var(--res-clash-y);
   --res-label-slack: 21px;
   --res-grid-min: 280px;
   --res-scroll-zone: 40px;
-  --res-ruler-trim: 2px;
+  --res-ruler-trim: var(--res-min-x);
   --space-12: 48px;
   --float-stack-y: 140px;
   --tap-clear: 29px;
-  --h-strip: 30px;
+  --h-strip: var(--h-res-nrow);
   --w-form-label: 104px;
   --w-column: 720px;
   --card-min-md: 240px;
@@ -246,7 +246,7 @@
   --w-attach-label: 110px;
   --w-scale: 34px;
   --w-number-box: 72px;
-  --w-composer-min: 72px;
+  --w-composer-min: var(--w-number-box);
   --w-num-field: 56px;
   --h-mobile-head: 52px;
   --h-list-max: 380px;
@@ -256,60 +256,60 @@
   --size-lead-slot: 18px;
   --w-leaver-pick: 160px;
   --h-rm-shot: 288px;
-  --w-rm-body: 640px;
+  --w-rm-body: var(--w-prose);
   --w-rm-reply: 600px;
   --w-rm-search: 384px;
   --h-dash-row: 54px;
   --h-pop-md: 240px;
   --st-label-w: 220px;
-  --st-field-w: 220px;
+  --st-field-w: var(--st-label-w);
   --st-col-w: 128px;
   --st-dot-btn: 22px;
   --st-tile-h: 64px;
   --st-demo-md: 280px;
   --w-pl-name: 176px;
   --w-pl-kd-date: 152px;
-  --h-pl-axis: 18px;
+  --h-pl-axis: var(--h-res-presence);
   --w-pl-tt-col: 168px;
   --w-field-lg: 280px;
-  --w-field-wide: 420px;
+  --w-field-wide: var(--w-card);
   --h-cv-cover: 200px;
-  --w-cv-outline: 200px;
-  --w-cv-marker-min: 18px;
+  --w-cv-outline: var(--w-tip);
+  --w-cv-marker-min: var(--w-res-edge-touch);
   --h-cv-media-max: 480px;
   --w-cv-link-max: 150px;
   --w-st-chips-max: 260px;
   --w-phase-number: 14px;
   --pixx-hop: 7px;
   --pixx-hop-sm: 3px;
-  --w-tpl-name-max: 260px;
+  --w-tpl-name-max: var(--w-st-chips-max);
   --w-subnav: 208px;
   --w-checkin-input-min: 120px;
   --hair-offset: 1px;
-  --w-hint-clamp: 96px;
+  --w-hint-clamp: var(--w-field-name);
   --w-tm-rail: 216px;
   --w-tm-search: 128px;
   --rm-label-w: 112px;
   --rm-answer-max: 600px;
   --rm-notes-w: 64px;
   --res-phase-bar-trim: 6px;
-  --res-ms-min-x: 6px;
-  --res-rail-trim: 3px;
-  --res-scroll-step: 6px;
-  --res-edge-grab: 3px;
+  --res-ms-min-x: var(--res-phase-bar-trim);
+  --res-rail-trim: var(--res-clash-y);
+  --res-scroll-step: var(--res-phase-bar-trim);
+  --res-edge-grab: var(--res-clash-y);
   --space-16: 64px;
   --card-min-sm: 168px;
   --w-cal-min: 540px;
-  --h-lx-rail-line: 13px;
-  --w-section-pick: 150px;
+  --h-lx-rail-line: var(--h-pin-chip);
+  --w-section-pick: var(--w-cv-link-max);
   --st-tile-w: 120px;
-  --st-demo-sm: 220px;
+  --st-demo-sm: var(--st-label-w);
   --st-demo-bar: 160px;
-  --w-pl-tree-label: 320px;
+  --w-pl-tree-label: var(--w-tour);
   --h-pl-dept-card: 252px;
-  --w-cv-handle: 10px;
+  --w-cv-handle: var(--w-scrollbar);
   --offscreen: -100vw;
-  --w-st-kd-date: 150px;
+  --w-st-kd-date: var(--w-cv-link-max);
   --w-cal-cell-min: 46px;
   --rm-q-min: 448px;
   --rm-shot-w: 480px;
@@ -322,8 +322,8 @@
   --mini-tl-legend-room: 72px;
   --mini-tl-edge-slack: 4px;
   --mini-tl-weekend-day: 6px;
-  --mini-tl-beside: 4px;
-  --mini-tl-month-edge: 4px;
+  --mini-tl-beside: var(--mini-tl-edge-slack);
+  --mini-tl-month-edge: var(--mini-tl-edge-slack);
   --view-section: 28px;
   --view-pop-day: 190px;
   --view-pop-plan: 300px;
@@ -335,22 +335,22 @@
   --view-nd-phone: 88px;
   --view-nd-empty: 30px;
   --view-nd-folded: 76px;
-  --view-day-plan: 380px;
-  --view-day-plan-lo: 300px;
+  --view-day-plan: var(--view-pop-add);
+  --view-day-plan-lo: var(--view-pop-plan);
   --view-day-plan-hi: 760px;
   --view-day-plan-chrome: 520px;
   --view-track-lane: 192px;
-  --view-tk-grip: 28px;
+  --view-tk-grip: var(--view-section);
   --view-tk-show: 72px;
   --view-tk-trk: 56px;
   --view-tk-title: 168px;
-  --view-tk-bpm: 72px;
+  --view-tk-bpm: var(--view-tk-show);
   --view-tk-tc: 108px;
   --view-tk-frame: 112px;
   --view-tk-open: 36px;
   --view-cf-meta: 52px;
   --view-strip-min: 16px;
-  --view-strip-day-top: 16px;
+  --view-strip-day-top: var(--view-strip-min);
   --view-strip-month-dx: 5px;
   --view-strip-month-top: 4px;
   --view-strip-now-top: 17px;
@@ -360,14 +360,14 @@
   --view-pl-band-label-min: 24px;
   --view-toolbar-chevron: 8px;
   --view-phone-check: 22px;
-  --view-card-title-line: 16px;
+  --view-card-title-line: var(--view-strip-min);
   --view-phone-title-line: 21px;
-  --view-phone-meta-block: 21px;
+  --view-phone-meta-block: var(--view-phone-title-line);
   --view-suggest-min-quick: 180px;
   --view-suggest-max-quick: 220px;
-  --view-suggest-min: 220px;
+  --view-suggest-min: var(--view-suggest-max-quick);
   --view-suggest-min-time: 260px;
-  --view-suggest-max: 260px;
+  --view-suggest-max: var(--view-suggest-min-time);
   --view-tl-bar-max-code: 316px;
   --view-tl-bar-max: 276px;
   --place-tl-dot: 11px;
@@ -386,24 +386,24 @@
   --place-outline-gone-below: 40px;
   --place-outline-gone-above: 100px;
   --place-slash-menu-cap: 260px;
-  --place-slash-menu-min: 120px;
+  --place-slash-menu-min: var(--place-sel-menu-min);
   --place-cf-col-min: 56px;
   --place-cf-col-max: 320px;
   --place-cf-col-default: 104px;
   --place-rail-tight-below: 170px;
-  --place-rail-full: 150px;
+  --place-rail-full: var(--place-outline-drop);
   --place-rail-tight: 92px;
-  --place-rail-primary-max: 150px;
-  --place-outline-line: 60px;
+  --place-rail-primary-max: var(--place-outline-drop);
+  --place-outline-line: var(--place-outline-bottom);
   --place-outline-leeway: 10px;
-  --place-strip-now-shift: 6px;
+  --place-strip-now-shift: var(--place-link-card-drop);
   --place-strip-day-nudge: 3px;
-  --place-res-tick-day: 10px;
+  --place-res-tick-day: var(--place-outline-leeway);
   --place-res-tick-week: 4px;
-  --place-res-chip-pad: 10px;
+  --place-res-chip-pad: var(--place-outline-leeway);
   --place-icon-snap-md: 14px;
   --place-icon-snap-lg: 18px;
-  --place-tick-min: 4px;
+  --place-tick-min: var(--place-res-tick-week);
   --place-tick-every-day: 9px;
   --place-day-plan-step: 24px;
   --place-flash-seconds: 1.4px;
@@ -421,23 +421,23 @@
   --plan-name-lead: 24px;
   --plan-name-lead-review: 48px;
   --plan-review-phase: 92px;
-  --plan-review-due: 96px;
-  --plan-review-deadline: 96px;
+  --plan-review-due: var(--plan-plan-name-room);
+  --plan-review-deadline: var(--plan-plan-name-room);
   --plan-review-repeats: 56px;
   --plan-review-priority: 52px;
   --plan-review-who: 80px;
   --plan-col-date: 200px;
   --plan-col-name: 240px;
   --bp-compact: 1000px;
-  --w-pop-time: 150px;
-  --h-stage-top: 64px;
+  --w-pop-time: var(--w-cv-link-max);
+  --h-stage-top: var(--h-res-empty);
   --h-pop-sm: 220px;
   --h-pop-lg: 320px;
   --h-field-line-body: 20px;
-  --h-field-line-heading: 24px;
-  --h-field-line-section: 28px;
+  --h-field-line-heading: var(--h-btn-row);
+  --h-field-line-section: var(--h-btn-bar);
   --h-field-line-title: 36px;
-  --h-field-input: 26px;
+  --h-field-input: var(--h-seg);
   --pixx-panel-lift: 100px;
   --pixx-phone-pad-bottom: 122px;
   --w-sheet-min: 180px;
@@ -464,7 +464,7 @@
   --map-op-border: 0.5;
   --map-op-parallel: 0.3;
   --map-op-meridian: 0.32;
-  --map-op-utc: 0.5;
+  --map-op-utc: var(--map-op-border);
   --map-op-label: 0.85;
   --map-op-route: 0.6;
   --map-op-halo: 0.22;
@@ -475,7 +475,7 @@
   --cloud-dot-alpha: 0.9;
   --cloud-edge-alpha: 0.8;
   --cloud-dot-alpha-quiet: 1;
-  --cloud-edge-alpha-quiet: 1;
+  --cloud-edge-alpha-quiet: var(--cloud-dot-alpha-quiet);
   --opacity-faint: 0.4;
   --tint-cat-deep: 55%;
   /* The sizes a rung names: 13 Detail and Heading, 14 Name and Body, 20 Title; 12 is Data's smallest slot; 28, 44, 56 and 88 are Title's big sizes. 12 is the floor. */
@@ -503,7 +503,7 @@
   --dur-ack-pulse: 2.4s;
   --ease-ack-pulse: ease-in-out;
   --dur-drift: 90s;
-  --ease-drift: ease-in-out;
+  --ease-drift: var(--ease-ack-pulse);
   --dur-wag: 720ms;
   --dur-pixx-happy: 900ms;
   --ease-flip: cubic-bezier(0.5, 0.05, 0.3, 1);
@@ -606,6 +606,24 @@
 .ad-clamp-line { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .ad-clamp-2 { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; overflow-wrap: anywhere; min-width: 0; min-height: 2lh; }
 
+/* Looks several pieces share, written once. */
+/* A diamond glyph the size of a small icon: a milestone on a timeline or in a month. */
+.ad-diamond { box-sizing: border-box; flex: none; width: calc(var(--icon-sm) * 0.6); height: calc(var(--icon-sm) * 0.6); margin: calc(var(--icon-sm) * 0.2); transform: rotate(45deg); background: var(--text-primary); }
+/* A bar's department stripe down its left edge (the host is positioned and sets --ad-stripe). */
+.ad-striped::before { content: ""; position: absolute; top: 0; bottom: 0; left: 0; width: var(--w-stripe); border-radius: var(--radius-page) 0 0 var(--radius-page); background: var(--ad-stripe); }
+/* A quiet small glyph beside words: the caret of a pick field, any glyph in a row's meta. */
+.ad-glyph-quiet, .ad-row__meta svg { width: var(--icon-sm); height: var(--icon-sm); color: var(--text-muted); flex: none; }
+/* A column head's sort button: the words themselves, coral under the cursor. */
+.ad-sort-button { display: inline-flex; align-items: center; gap: var(--space-1); margin: 0; padding: 0; border: 0; background: transparent; font: inherit; color: inherit; cursor: pointer; }
+.ad-sort-button:hover { color: var(--accent); }
+.ad-sort-button:focus-visible { outline: none; box-shadow: var(--ring-select); border-radius: var(--radius-page); }
+/* A quiet glyph button at the touch target: a date picker's month arrows, a filter tag's x. */
+.ad-glyph-button { display: inline-flex; align-items: center; justify-content: center; width: var(--target-min); height: var(--target-min); margin: 0; padding: 0; border: 0; border-radius: var(--radius-page); background: transparent; color: var(--text-muted); cursor: pointer; }
+.ad-glyph-button svg { width: var(--icon-sm); height: var(--icon-sm); }
+.ad-glyph-button:hover { color: var(--accent); }
+/* A small data note that never wraps: a time, a count, an off-screen date. */
+.ad-note-data { font: var(--type-data); font-size: var(--text-xs); white-space: nowrap; }
+
 /* Athena Design System — components.css: the look of every component, plain CSS. Generated from src/components; do not edit. Import order, once per app, all four: fonts.css, tokens.css, patterns.css, components.css. */
 
 /* src/components/base.css */
@@ -674,7 +692,6 @@ tr[data-ad-drop="after"] > :is(td, th) { box-shadow: inset 0 calc(var(--bw-selec
 .ad-avatar-stack__more { display: inline-flex; align-items: center; justify-content: center; background: var(--bg-raised); color: var(--text-secondary); font: var(--type-data); font-size: var(--text-xs); }
 
 .ad-person { display: inline-flex; align-items: center; gap: var(--space-2); font: var(--type-name); line-height: var(--lh-tight); color: var(--text-primary); }
-.ad-person__name { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 /* Where the person is: a small dot at the lower right, ringed in the plane so it reads on the face. */
 .ad-avatar { position: relative; }
 .ad-avatar .ad-avatar__presence { position: absolute; right: calc(var(--space-hair) * -1); bottom: calc(var(--space-hair) * -1); box-shadow: 0 0 0 var(--border-w-strong) var(--bg-base); }
@@ -697,7 +714,6 @@ tr[data-ad-drop="after"] > :is(td, th) { box-shadow: inset 0 calc(var(--bw-selec
 .ad-board-lane__name--press:hover { color: var(--accent); }
 .ad-board-lane__name--press:focus-visible { outline: none; box-shadow: var(--ring-select); }
 .ad-board-lane__card-marks, .ad-board-lane__card-code { display: inline-flex; align-items: center; gap: var(--space-1); }
-.ad-board-lane__card-fact { display: inline-flex; align-items: center; gap: var(--space-1); color: var(--text-secondary); white-space: nowrap; }
 .ad-board-lane__card-meta > .ad-board-lane__card-fact--cut { flex-shrink: 1; min-width: 0; max-width: 100%; }
 .ad-board-lane__card-fact-word { overflow: hidden; text-overflow: ellipsis; min-width: 0; }
 
@@ -753,7 +769,6 @@ tr[data-ad-drop="after"] > :is(td, th) { box-shadow: inset 0 calc(var(--bw-selec
 /* A milestone in the month: its diamond before its name, no bar: white ahead, grey once past, hatched when unconfirmed. */
 .ad-month__bar.ad-month__bar--milestone, .ad-month__bar.ad-month__bar--milestone.ad-month__bar--unconfirmed { background: transparent; background-image: none; }
 /* The row glyph's size, as the timeline's. */
-.ad-month__diamond { box-sizing: border-box; flex: none; width: calc(var(--icon-sm) * 0.6); height: calc(var(--icon-sm) * 0.6); margin: calc(var(--icon-sm) * 0.2); transform: rotate(45deg); background: var(--text-primary); }
 .ad-month__bar--past .ad-month__diamond { background: var(--text-muted); }
 .ad-month__bar--unconfirmed .ad-month__diamond { background-color: var(--bg-base); background-image: var(--hatch-ink); border: var(--border-w) solid var(--text-primary); }
 /* One bar across its days, one lane high: solid when confirmed, hatched with its name on a solid patch when not. */
@@ -764,7 +779,6 @@ tr[data-ad-drop="after"] > :is(td, th) { box-shadow: inset 0 calc(var(--bw-selec
 .ad-month__bar { position: relative; }
 .ad-month__bar--milestone::before { content: none; }
 .ad-month__bar--cut-start::before { border-radius: 0; }
-.ad-month__bar::before, .ad-booking::before { content: ""; position: absolute; top: 0; bottom: 0; left: 0; width: var(--w-stripe); border-radius: var(--radius-page) 0 0 var(--radius-page); background: var(--ad-stripe); pointer-events: none; }
 /* A department colour is the department's glyph before the name, in its colour: Department.tsx DeptGlyph. */
 .ad-month__bar > .ad-dept { flex: none; }
 .ad-booking__name > .ad-dept { margin-right: var(--space-1); vertical-align: middle; }
@@ -949,7 +963,7 @@ button.ad-card__name:focus-visible { outline: none; box-shadow: var(--ring-selec
 .ad-card__title-open { padding: 0; border: 0; background: transparent; font: inherit; color: inherit; cursor: pointer; }
 .ad-card__title-open:focus-visible { outline: none; box-shadow: var(--ring-select); border-radius: var(--radius-page); }
 .ad-card--opens:hover .ad-card__title-open { color: var(--accent); }
-.ad-card__title { margin: 0; font: var(--type-heading); text-transform: uppercase; color: var(--text-primary); }
+.ad-card__title { margin: 0; }
 .ad-card__more { margin: 0 0 0 auto; padding: 0; border: 0; background: transparent; font: var(--type-name); color: var(--text-primary); cursor: pointer; }
 .ad-card__more:hover { color: var(--accent); }
 .ad-card__more:focus-visible { outline: none; box-shadow: var(--ring-select); border-radius: var(--radius-page); }
@@ -1327,9 +1341,6 @@ button.ad-contents__button:focus-visible { outline: none; box-shadow: var(--ring
 .ad-list-columns__spacer { flex: 1; }
 .ad-list-columns__heading { position: relative; display: inline-flex; align-items: center; flex: none; width: var(--ad-col); padding: 0 var(--space-2); box-sizing: border-box; font: var(--type-heading); text-transform: uppercase; color: var(--text-primary); white-space: nowrap; }
 .ad-list-columns__heading[aria-sort] { color: var(--text-primary); }
-.ad-list-columns__sort { display: inline-flex; align-items: center; gap: var(--space-1); margin: 0; padding: 0; border: 0; background: transparent; font: inherit; color: inherit; cursor: pointer; }
-.ad-list-columns__sort:hover { color: var(--accent); }
-.ad-list-columns__sort:focus-visible { outline: none; box-shadow: var(--ring-select); border-radius: var(--radius-page); }
 .ad-list-columns__edge { position: absolute; top: 0; right: 0; bottom: 0; width: var(--space-2); cursor: col-resize; }
 .ad-list-columns__edge:hover { box-shadow: inset calc(var(--border-w) * -1) 0 0 var(--text-muted); }
 .ad-row__cells { --ad-col: auto; display: inline-flex; align-items: center; flex: none; }
@@ -1377,7 +1388,7 @@ button.ad-contents__button:focus-visible { outline: none; box-shadow: var(--ring
 .ad-menu__item { display: flex; align-items: center; gap: var(--space-3); box-sizing: border-box; width: 100%; height: var(--h-btn); margin: 0; padding: 0 var(--space-3); border: 0; border-radius: var(--radius-page); background: transparent; font: var(--type-name); color: var(--text-primary); text-align: left; cursor: pointer; }
 .ad-menu__icon { display: inline-flex; color: var(--text-muted); }
 .ad-menu__icon svg { width: var(--icon-md); height: var(--icon-md); }
-.ad-menu__label { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.ad-menu__label { flex: 1; }
 .ad-menu__shortcut { font: var(--type-data); font-size: var(--text-xs); color: var(--text-muted); }
 /* The row lifts one tone under the cursor or the arrow keys; coral is the light under the cursor only (DR Colour, DR Behaviour),
    so the keyboard's active row keeps its tint and its ink. */
@@ -1468,7 +1479,6 @@ button:hover > .ad-project-pill:not(.ad-project-pill--current) { color: var(--ac
 .ad-menu__row { display: flex; flex-direction: column; }
 .ad-menu__line { display: flex; align-items: center; gap: var(--space-1); }
 .ad-side .ad-menu__line > .ad-side__item { flex: 1; min-width: 0; }
-.ad-menu__label { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .ad-menu__trail { display: inline-flex; align-items: center; gap: var(--space-hair); }
 .ad-side .ad-menu__row > .ad-side__list, .ad-side .ad-menu__row > ul { padding: var(--space-1) 0 var(--space-1) var(--space-4); }
 .ad-menu__list { margin: 0; padding: 0; list-style: none; }
@@ -1565,7 +1575,7 @@ button:hover > .ad-project-pill:not(.ad-project-pill--current) { color: var(--ac
 .ad-picklist__option:hover, .ad-picklist__option:hover .ad-picklist__lead, .ad-picklist__option[data-hover], .ad-picklist__over[data-hover] .ad-picklist__lead { color: var(--accent); }
 .ad-picklist__option[aria-disabled] { opacity: var(--opacity-disabled); cursor: default; }
 .ad-picklist__lead { display: inline-flex; align-items: center; flex: none; }
-.ad-picklist__label { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.ad-picklist__label { flex: 1; }
 .ad-picklist__hint { font: var(--type-data); font-size: var(--text-xs); color: var(--text-muted); }
 .ad-picklist__empty { padding: var(--space-2) var(--space-2); font: var(--type-body); color: var(--text-muted); }
 
@@ -1579,9 +1589,6 @@ button:hover > .ad-project-pill:not(.ad-project-pill--current) { color: var(--ac
 .ad-datepicker__month { display: flex; align-items: center; justify-content: space-between; padding: var(--space-1) var(--space-2) var(--space-2); }
 .ad-datepicker__navs { display: inline-flex; align-items: center; }
 .ad-datepicker__month-name { font: var(--type-heading); text-transform: uppercase; }
-.ad-datepicker__nav { display: inline-flex; align-items: center; justify-content: center; width: var(--target-min); height: var(--target-min); margin: 0; padding: 0; border: 0; border-radius: var(--radius-page); background: transparent; color: var(--text-muted); cursor: pointer; }
-.ad-datepicker__nav svg { width: var(--icon-sm); height: var(--icon-sm); }
-.ad-datepicker__nav:hover { color: var(--accent); }
 .ad-datepicker__nav:focus-visible { outline: none; box-shadow: var(--ring-select); }
 .ad-datepicker__week { display: grid; grid-template-columns: repeat(7, var(--day-cell)); }
 .ad-datepicker__dow { height: var(--space-6); display: flex; align-items: center; justify-content: center; font: var(--type-data); font-size: var(--text-xs); color: var(--text-muted); }
@@ -1604,9 +1611,8 @@ button:hover > .ad-project-pill:not(.ad-project-pill--current) { color: var(--ac
 /* PickField: the field's skin (filled one tone lighter, no edge) holding the pick's face or code, its words, a caret. */
 .ad-pick-field { cursor: pointer; text-align: left; padding-right: var(--space-3); max-width: 100%; }
 .ad-pick-field__lead { display: inline-flex; flex: none; }
-.ad-pick-field__words { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.ad-pick-field__words { flex: 1; }
 .ad-pick-field__words--empty { color: var(--text-muted); }
-.ad-pick-field__caret { width: var(--icon-sm); height: var(--icon-sm); flex: none; color: var(--text-muted); }
 .ad-pick-field:hover .ad-pick-field__caret { color: var(--accent); }
 .ad-pick-field[aria-expanded="true"] { background: var(--bg-hover); }
 .ad-pick-field:focus-visible { outline: none; box-shadow: var(--ring-select); }
@@ -1639,10 +1645,10 @@ button:hover > .ad-project-pill:not(.ad-project-pill--current) { color: var(--ac
 .ad-popover--wide { width: var(--w-wide); }
 .ad-popover--menu { width: var(--w-menu); }
 .ad-popover__header { margin-right: var(--space-8); margin-bottom: var(--space-4); }
-.ad-popover__eyebrow, .ad-popover__section-label { margin: 0; font: var(--type-heading); text-transform: uppercase; color: var(--text-primary); }
+.ad-popover__eyebrow, .ad-popover__section-label { margin: 0; }
 .ad-popover__chip { margin-top: var(--space-1); display: flex; }
 .ad-popover__title-row { display: flex; align-items: center; gap: var(--space-3); margin-top: var(--space-1); }
-.ad-popover__title { margin: 0; font: var(--type-title); line-height: var(--lh-tight); color: var(--text-primary); }
+.ad-popover__title { margin: 0; }
 .ad-popover__description { margin: var(--space-1) 0 0; font: var(--type-body); color: var(--text-secondary); }
 .ad-facts { display: flex; flex-wrap: wrap; margin: var(--space-3) 0; border-top: var(--border-w) solid var(--border); border-bottom: var(--border-w) solid var(--border); }
 .ad-facts__cell { flex: auto; display: flex; align-items: center; gap: var(--space-2); padding: var(--space-2) var(--space-3); border-right: var(--border-w) solid var(--border); white-space: nowrap; }
@@ -1707,7 +1713,6 @@ button.ad-row__name:focus-visible { outline: none; box-shadow: var(--ring-select
 .ad-row--heading .ad-row__dates { margin-left: auto; }
 /* The second line is the body face at 12: the calendar glyph and the date, the department glyph, the department's name. */
 .ad-row__meta { display: flex; align-items: center; gap: var(--space-2); margin-top: var(--space-1); font: var(--type-detail); line-height: var(--lh-tight); color: var(--text-secondary); min-width: 0; }
-.ad-row__meta svg { width: var(--icon-sm); height: var(--icon-sm); color: var(--text-muted); flex: none; }
 .ad-row__status, .ad-row__dates, .ad-row__tags, .ad-row__people, .ad-row__trail { display: inline-flex; align-items: center; gap: var(--space-2); flex: none; }
 .ad-row__trail { gap: var(--space-1); }
 .ad-row-date { display: inline-flex; align-items: center; gap: var(--space-1); font: var(--type-detail); color: var(--text-secondary); white-space: nowrap; }
@@ -1797,6 +1802,17 @@ button.ad-row__name:focus-visible { outline: none; box-shadow: var(--ring-select
 .ad-search .ad-picklist__lead svg { width: var(--icon-md); height: var(--icon-md); }
 .ad-search .ad-picklist__option:hover .ad-picklist__lead { color: var(--accent); }
 
+/* src/components/Section/Section.css */
+/* Section and SectionFrame: the one region every screen is built from. The look of a section (its ground, corner and shadow,
+   none at rest) lives here and nowhere else; ListSection, SettingsSection and FormSection carry .ad-section too. */
+/* The frame: a screen's sections, 24 apart. */
+.ad-section-frame { display: flex; flex-direction: column; gap: var(--space-6); min-width: 0; }
+/* The section: its heading, then its body. */
+.ad-section { display: flex; flex-direction: column; min-width: 0; }
+/* The body: the section's groups, 16 apart. */
+.ad-section__body { display: flex; flex-direction: column; gap: var(--space-4); min-width: 0; }
+.ad-section__body[hidden] { display: none; }
+
 /* src/components/Segmented/Segmented.css */
 /* Segmented: pick one of 2 to 5. The choices sit loose and the current one sits on a bg-raised tile, as the view switch draws
  it. space-hair between the choices: tight neighbours. */
@@ -1827,7 +1843,7 @@ button.ad-row__name:focus-visible { outline: none; box-shadow: var(--ring-select
 .ad-settings__nav-item[aria-current="page"] { background: var(--tint-selected); color: var(--text-primary); }
 .ad-settings__pane { flex: 1; min-width: 0; max-width: var(--w-settings); display: flex; flex-direction: column; gap: var(--space-6); }
 /* The pane's one big title, the pop-over title's size; the sections under it stay 13px labels. */
-.ad-settings__title { margin: 0; font: var(--type-title); line-height: var(--lh-tight); color: var(--text-primary); }
+.ad-settings__title { margin: 0; }
 .ad-setting { min-height: var(--h-row); }
 .ad-setting__name { display: inline-flex; align-items: center; gap: var(--space-2); color: var(--text-primary); }
 /* A set-time field ("9:00 – 18:00") reads in mono. */
@@ -1905,9 +1921,6 @@ button.ad-row__name:focus-visible { outline: none; box-shadow: var(--ring-select
 .ad-table--fixed .ad-table__pick { box-sizing: border-box; width: calc(var(--check-size) + 2 * var(--space-2)); overflow: visible; text-overflow: clip; }
 .ad-table th[scope="col"] { position: sticky; top: 0; z-index: 1; height: var(--h-btn); padding: 0 var(--space-2); text-align: left; white-space: nowrap; background: var(--bg-base); border-bottom: var(--border-w) solid var(--border); font: var(--type-heading); text-transform: uppercase; color: var(--text-primary); }
 .ad-table th[aria-sort="ascending"], .ad-table th[aria-sort="descending"] { color: var(--text-primary); }
-.ad-table__sort { display: inline-flex; align-items: center; gap: var(--space-1); margin: 0; padding: 0; border: 0; background: transparent; font: inherit; color: inherit; cursor: pointer; }
-.ad-table__sort:hover { color: var(--accent); }
-.ad-table__sort:focus-visible { outline: none; box-shadow: var(--ring-select); border-radius: var(--radius-page); }
 .ad-table__arrow { width: var(--icon-sm); height: var(--icon-sm); }
 .ad-table td, .ad-table th[scope="row"] { height: var(--h-row); padding: 0 var(--space-2); border-bottom: var(--border-w) solid var(--border); text-align: left; white-space: nowrap; }
 .ad-table .ad-mono { font: var(--type-data); font-size: var(--text-xs); color: var(--text-secondary); }
@@ -1961,12 +1974,6 @@ button.ad-row__name:focus-visible { outline: none; box-shadow: var(--ring-select
 .ad-filter-tag__icon { display: inline-flex; color: var(--text-muted); }
 .ad-filter-tag__icon svg { width: var(--icon-sm); height: var(--icon-sm); }
 .ad-filter-tag__axis { color: var(--text-muted); }
-.ad-filter-tag__remove {
-  display: inline-flex; align-items: center; justify-content: center; width: var(--target-min); height: var(--target-min);
-  margin: 0; padding: 0; border: 0; border-radius: var(--radius-page); background: transparent; color: var(--text-muted); cursor: pointer;
-}
-.ad-filter-tag__remove svg { width: var(--icon-sm); height: var(--icon-sm); }
-.ad-filter-tag__remove:hover { color: var(--accent); }
 .ad-filter-tag__remove:focus-visible { outline: none; box-shadow: var(--ring-select); }
 
 /* Unread: a small bone dot after the word ("Notes ·"), never a count. */
@@ -1986,7 +1993,7 @@ button.ad-row__name:focus-visible { outline: none; box-shadow: var(--ring-select
 /* The cells split by hairlines, as his Overview picture draws them. */
 .ad-figures__item { display: flex; flex-direction: column; gap: var(--space-2); min-width: 0; padding: var(--space-4) var(--space-6); border-left: var(--border-w) solid var(--border); }
 .ad-figures__item:first-child { padding-left: 0; border-left: 0; }
-.ad-figures__label { margin: 0; font: var(--type-heading); text-transform: uppercase; color: var(--text-primary); }
+.ad-figures__label { margin: 0; }
 .ad-figures__value { margin: 0; font: var(--type-data); font-size: var(--text-20); line-height: var(--lh-none); color: var(--text-primary); }
 
 /* src/components/Timeline/Ruler.css */
@@ -2023,7 +2030,6 @@ button.ad-bar { cursor: pointer; }
 /* An item or phase colour is never a bar's fill: the bar stays grey and the colour runs as the side stripe down its left
  side. hue.tsx barColour sets --ad-stripe. */
 .ad-bar { --ad-stripe: transparent; }
-.ad-bar::before { content: ""; position: absolute; top: 0; bottom: 0; left: 0; width: var(--w-stripe); border-radius: var(--radius-page) 0 0 var(--radius-page); background: var(--ad-stripe); pointer-events: none; }
 .ad-bar[role="button"] { cursor: pointer; }
 /* Grab handles: a short bone tick inside each end, shown on hover or focus; the cursor says it resizes. */
 .ad-bar__grip { position: absolute; top: 0; bottom: 0; width: var(--space-2); cursor: ew-resize; z-index: 1; }
@@ -2106,7 +2112,6 @@ button.ad-milestone:hover .ad-milestone__label { color: var(--accent); }
 button.ad-milestone:focus-visible { outline: none; box-shadow: var(--ring-select); border-radius: var(--radius-page); }
 /* One diamond size: the row glyph's. A 0.6 square
  turned 45° spans 0.85 of the icon box, as the milestone glyph does; the margin keeps the box icon-sm, so nothing beside it moves. */
-.ad-milestone__diamond { box-sizing: border-box; width: calc(var(--icon-sm) * 0.6); height: calc(var(--icon-sm) * 0.6); margin: calc(var(--icon-sm) * 0.2); flex: none; transform: rotate(45deg); background: var(--text-primary); }
 .ad-milestone--past { color: var(--text-secondary); }
 .ad-milestone--past .ad-milestone__diamond { background: var(--text-muted); }
 /* Unconfirmed: bone ink hatch inside a bone hairline (the cards' recipe, so it reads hatched at this size, not hollow). */
@@ -2122,7 +2127,7 @@ button.ad-milestone:focus-visible { outline: none; box-shadow: var(--ring-select
 .ad-over-mark__figure { font: var(--type-data); }
 .ad-clash { display: flex; width: 100%; border-radius: var(--radius-page); box-shadow: var(--glow-clash); }
 .ad-clash > * { flex: 1; min-width: 0; }
-.ad-offscreen { font: var(--type-data); font-size: var(--text-xs); color: var(--text-secondary); white-space: nowrap; }
+.ad-offscreen { color: var(--text-secondary); }
 @media (prefers-reduced-motion: reduce) { .ad-bar, .ad-bar__end, .ad-deliverable__chevron { transition: none; } }
 /* ChartKey: each word with its swatch, drawn as the bar draws that mark; no "FIG.". */
 .ad-chart-key { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-2) var(--space-4); font: var(--type-detail); color: var(--text-secondary); }
@@ -2245,7 +2250,7 @@ button.ad-milestone:focus-visible { outline: none; box-shadow: var(--ring-select
 .ad-alert__ring--p2 { box-shadow: inset 0 0 0 var(--border-w-ring) var(--priority-p2); background: color-mix(in srgb, var(--priority-p2) 14%, transparent); }
 .ad-alert__ring--p3 { box-shadow: inset 0 0 0 var(--border-w-ring) var(--priority-p3); background: color-mix(in srgb, var(--priority-p3) 14%, transparent); }
 .ad-alert__sentence { min-width: 0; line-height: var(--lh-tight); color: var(--text-primary); }
-.ad-alert__number { font: var(--type-data); font-size: var(--text-xs); color: var(--text-secondary); white-space: nowrap; }
+.ad-alert__number { color: var(--text-secondary); }
 .ad-alert__actions { display: flex; gap: var(--space-2); flex: none; margin-left: auto; }
 .ad-bell { position: relative; }
 .ad-bell svg { width: var(--icon-lg); height: var(--icon-lg); }
@@ -2261,7 +2266,7 @@ button.ad-notification:hover .ad-notification__sentence { color: var(--accent); 
 button.ad-notification:focus-visible { outline: none; box-shadow: var(--ring-select); border-radius: var(--radius-page); }
 .ad-notification__face { flex: none; }
 .ad-notification__sentence { flex: 1; min-width: 0; }
-.ad-notification__time { flex: none; font: var(--type-data); font-size: var(--text-xs); color: var(--text-muted); white-space: nowrap; }
+.ad-notification__time { flex: none; color: var(--text-muted); }
 .ad-notification__unread, .ad-notification__read { flex: none; width: var(--dot-size); height: var(--dot-size); margin-top: var(--space-2); border-radius: var(--radius-round); }
 .ad-notification__unread { background: var(--text-primary); }
 /* The alert bar's pieces: the row's end (the app's project mark, its dismiss) and what opens under a row, lined up with the sentence. */
@@ -2315,7 +2320,7 @@ button.ad-notification:focus-visible { outline: none; box-shadow: var(--ring-sel
 .ad-thread__event::before { content: ""; position: absolute; left: calc(var(--space-6) * -1 + var(--space-2) - var(--space-1)); top: calc(var(--space-2) + var(--space-hair)); width: var(--space-2); height: var(--space-2); box-sizing: border-box; border-radius: var(--radius-round); background: var(--bg-base); box-shadow: inset 0 0 0 var(--border-w-strong) var(--text-muted); }
 .ad-thread__date { width: var(--w-col-xs); flex: none; font: var(--type-data); font-size: var(--text-xs); color: var(--text-muted); }
 .ad-thread__sentence { flex: 1; min-width: 0; }
-.ad-thread__time { flex: none; font: var(--type-data); font-size: var(--text-xs); color: var(--text-muted); white-space: nowrap; }
+.ad-thread__time { flex: none; color: var(--text-muted); }
 .ad-rules { display: flex; flex-direction: column; gap: var(--space-2); }
 .ad-rules__match { display: flex; align-items: center; gap: var(--space-2); font: var(--type-body); line-height: var(--lh-tight); color: var(--text-secondary); }
 .ad-rules__row { display: flex; align-items: center; gap: var(--space-2); }
