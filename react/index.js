@@ -1646,7 +1646,7 @@ var Select = forwardRef2(function Select2({ options, placeholder, quiet, classNa
       placeholder != null && /* @__PURE__ */ jsx9("option", { value: "", disabled: true, children: placeholder }),
       options.map((o) => /* @__PURE__ */ jsx9("option", { value: o.value, disabled: o.disabled, children: o.label }, o.value))
     ] }),
-    /* @__PURE__ */ jsx9(Icon, { name: "caret-down", className: "ad-select__caret" })
+    /* @__PURE__ */ jsx9(Icon, { name: "caret-down", size: "sm", className: "ad-select__caret" })
   ] });
 });
 function FieldRow({ label, children, help, beside, htmlFor, className }) {
@@ -4290,7 +4290,7 @@ var strip4 = (h) => {
   const { className: _c, style: _s, ...rest } = h;
   return rest;
 };
-function Bar({ code: code2, label, unconfirmed, deal, backup, color, selected, startLabel, endLabel, lead, children, thin, labelOutside, onOpen, ends, barProps, labelInset, labelHidden, late, dense, fade, onCramped, className, style }) {
+function Bar({ code: code2, travel, dim, label, unconfirmed, deal, backup, color, selected, startLabel, endLabel, lead, children, thin, labelOutside, onOpen, ends, barProps, labelInset, labelHidden, late, dense, fade, onCramped, className, style }) {
   const asButton = !!onOpen && !ends;
   const Tag2 = asButton ? "button" : "div";
   const hue = useHue(color);
@@ -4319,7 +4319,9 @@ function Bar({ code: code2, label, unconfirmed, deal, backup, color, selected, s
     if (lab) ro?.observe(lab);
     return () => ro?.disconnect();
   }, [label]);
-  const outside = !code2 && (labelOutside || cramped);
+  const keepIn = !!code2 || labelOutside === "never";
+  const outside = !keepIn && (labelOutside === true || labelOutside === "before" || labelOutside === "after" || cramped);
+  const tip = keepIn && cramped && typeof label === "string" && !hooks.title ? label : void 0;
   const name = /* @__PURE__ */ jsx41("span", { className: "ad-bar__name", children: label });
   const grip = (side, h) => h && /* @__PURE__ */ jsx41("span", { "aria-hidden": h["aria-label"] ? void 0 : true, ...strip4(h), className: `ad-bar__grip ad-bar__grip--${side}` });
   return /* @__PURE__ */ jsxs38(
@@ -4343,7 +4345,8 @@ function Bar({ code: code2, label, unconfirmed, deal, backup, color, selected, s
         }
       },
       "aria-current": selected || void 0,
-      className: cx("ad-bar", code2 && "ad-bar--code", labelOutside === "before" && "ad-bar--label-before", unconfirmed && "ad-bar--unconfirmed", deal && "ad-bar--deal", backup && "ad-bar--backup", thin && "ad-bar--thin", outside && "ad-bar--label-outside", selected && "ad-bar--selected", late && "ad-bar--late", dense && "ad-bar--dense", fade && `ad-bar--fade-${fade}`, labelHidden && "ad-bar--label-hidden", className),
+      title: tip ?? hooks.title,
+      className: cx("ad-bar", code2 && "ad-bar--code", code2 && travel && "ad-bar--travel", code2 && dim && "ad-bar--dim", labelOutside === "never" && "ad-bar--keep-in", labelOutside === "before" && "ad-bar--label-before", unconfirmed && "ad-bar--unconfirmed", deal && "ad-bar--deal", backup && "ad-bar--backup", thin && "ad-bar--thin", outside && "ad-bar--label-outside", selected && "ad-bar--selected", late && "ad-bar--late", dense && "ad-bar--dense", fade && `ad-bar--fade-${fade}`, labelHidden && "ad-bar--label-hidden", className),
       style: { ...style, ...barColour(color, hue), ...labelInset ? { ["--ad-label-in"]: `${Math.max(0, labelInset)}px` } : {} },
       children: [
         grip("start", ends?.start),
@@ -4756,7 +4759,7 @@ function WeekendShade({ children, className }) {
   return /* @__PURE__ */ jsx43("div", { className: cx(on && "ad-weekend", className), children });
 }
 var clockHour = (h) => String((h + 11) % 12 + 1);
-function TimeGrid({ startHour, endHour, bookings = [], columns, now, hourLabel = clockHour, onOpen, itemProps, columnProps, ariaLabel, bandHours, onPressAt, over, visibleHours, scrollTo, asideWidth = "narrow", className }) {
+function TimeGrid({ startHour, endHour, bookings = [], columns, now, hourLabel = clockHour, onOpen, itemProps, columnProps, ariaLabel, bandHours, onPressAt, over, visibleHours, scrollTo, asideWidth = "narrow", hourHeight = "compact", bandHeading, className }) {
   const hours = Math.max(1, endHour - startHour);
   const frame = useRef24(null);
   const [headH, setHeadH] = useState24(0);
@@ -4769,6 +4772,16 @@ function TimeGrid({ startHour, endHour, bookings = [], columns, now, hourLabel =
         h = Math.max(h, n.offsetHeight);
       });
       setHeadH((was) => was === h ? was : h);
+      if (asideWidth === "narrow") return;
+      el.querySelectorAll(".ad-time-grid__aside").forEach((a) => {
+        let floor = -Infinity;
+        a.querySelectorAll(":scope > .ad-time-grid__moment").forEach((m) => {
+          m.style.marginTop = "";
+          const top = m.offsetTop, push = Math.max(0, floor - top);
+          m.style.marginTop = `${push}px`;
+          floor = top + push + m.offsetHeight;
+        });
+      });
     };
     measure();
     if (typeof ResizeObserver === "undefined") return;
@@ -4794,8 +4807,11 @@ function TimeGrid({ startHour, endHour, bookings = [], columns, now, hourLabel =
   const cols = columns ?? [{ id: "day", label: "", bookings }];
   const hueOf = useHueOf();
   const allDayRows = cols.some((c) => c.allDay) ? Math.max(1, ...cols.map((c) => c.allDay?.length ?? 0)) : 0;
-  return /* @__PURE__ */ jsxs40("div", { ref: frame, className: cx("ad-time-grid", !!visibleHours && "ad-time-grid--scrolls", `ad-time-grid--aside-${asideWidth}`, className), role: "group", "aria-label": ariaLabel, style: { ["--ad-hours"]: hours, ["--ad-allday-rows"]: allDayRows, ...visibleHours ? { ["--ad-visible-hours"]: visibleHours } : {}, ...headH ? { ["--ad-head-h"]: `${headH}px` } : {} }, children: [
+  const anyBand = cols.some((c) => c.band);
+  const headBand = !!bandHeading && anyBand;
+  return /* @__PURE__ */ jsxs40("div", { ref: frame, className: cx("ad-time-grid", !!visibleHours && "ad-time-grid--scrolls", `ad-time-grid--aside-${asideWidth}`, hourHeight === "roomy" && "ad-time-grid--roomy", className), role: "group", "aria-label": ariaLabel, style: { ["--ad-hours"]: hours, ["--ad-allday-rows"]: allDayRows, ...visibleHours ? { ["--ad-visible-hours"]: visibleHours } : {}, ...headH ? { ["--ad-head-h"]: `${headH}px` } : {} }, children: [
     /* @__PURE__ */ jsxs40("div", { className: "ad-time-grid__gutter", "aria-hidden": "true", children: [
+      anyBand && !headBand && /* @__PURE__ */ jsx43("div", { className: "ad-time-grid__band-space" }),
       allDayRows > 0 && /* @__PURE__ */ jsx43("div", { className: "ad-time-grid__allday-space" }),
       /* @__PURE__ */ jsxs40("div", { className: "ad-time-grid__hours", children: [
         Array.from({ length: hours }, (_, i) => /* @__PURE__ */ jsx43("span", { className: "ad-time-grid__hour-label", style: { top: at(startHour + i) }, children: hourLabel(startHour + i) }, i)),
@@ -4803,12 +4819,15 @@ function TimeGrid({ startHour, endHour, bookings = [], columns, now, hourLabel =
       ] })
     ] }),
     cols.map((c) => /* @__PURE__ */ jsxs40("div", { className: cx("ad-time-grid__column", over === c.id && "ad-time-grid__column--over"), role: "group", "aria-label": c.label || void 0, children: [
-      c.head != null ? /* @__PURE__ */ jsx43("div", { className: "ad-time-grid__head", children: c.head }) : c.label && /* @__PURE__ */ jsxs40("span", { className: "ad-time-grid__day", children: [
+      c.head != null || headBand ? /* @__PURE__ */ jsxs40("div", { className: "ad-time-grid__head", children: [
+        headBand && /* @__PURE__ */ jsx43(BandHeading, { band: c.band }),
+        c.head
+      ] }) : c.label && /* @__PURE__ */ jsxs40("span", { className: "ad-time-grid__day", children: [
         c.label,
         c.marks != null && /* @__PURE__ */ jsx43("span", { className: "ad-time-grid__marks", children: c.marks }),
         c.figure != null && /* @__PURE__ */ jsx43("span", { className: "ad-time-grid__figure", children: c.figure })
       ] }),
-      c.band && /* @__PURE__ */ jsx43(PhaseBand, { ...c.band }),
+      anyBand && !headBand && (c.band ? /* @__PURE__ */ jsx43(PhaseBand, { ...c.band }) : /* @__PURE__ */ jsx43("div", { className: "ad-time-grid__band-space" })),
       allDayRows > 0 && /* @__PURE__ */ jsx43("div", { role: "group", ...hooksOf2(columnProps?.(c.id)), className: "ad-time-grid__allday", children: (c.allDay ?? []).map((item) => {
         const hooks = hooksOf2(itemProps?.(item));
         const cls = cx("ad-month__bar", "ad-time-grid__item", item.unconfirmed && "ad-month__bar--unconfirmed");
@@ -4828,11 +4847,11 @@ function TimeGrid({ startHour, endHour, bookings = [], columns, now, hourLabel =
           const n = Math.max(1, b.lanes ?? 1), k = Math.min(n - 1, Math.max(0, b.lane ?? 0));
           return /* @__PURE__ */ jsx43("div", { className: "ad-time-grid__slot", "data-lane": n > 1 ? `${k + 1}/${n}` : void 0, style: { top: at(b.start), height: `calc(${at(b.end)} - ${at(b.start)})`, ...n > 1 ? { ["--ad-lane-k"]: k, ["--ad-lanes"]: n } : {} }, children: b.node }, b.id);
         }),
-        c.aside && /* @__PURE__ */ jsx43("div", { className: "ad-time-grid__aside", children: c.aside.map((m, i) => {
+        c.aside && /* @__PURE__ */ jsx43("div", { className: "ad-time-grid__aside", children: [...c.aside].sort((x, y) => x.at - y.at).map((m, i) => {
           const words = [m.time, m.title].filter(Boolean).join(" ");
           const inner = m.node ?? (asideWidth === "narrow" ? /* @__PURE__ */ jsx43("span", { className: "ad-time-grid__moment-mark", "aria-label": m.onPress ? void 0 : words, role: m.onPress ? void 0 : "img" }) : /* @__PURE__ */ jsxs40(Fragment17, { children: [
             m.time && /* @__PURE__ */ jsx43("span", { className: "ad-time-grid__moment-time", children: m.time }),
-            m.title && /* @__PURE__ */ jsx43("span", { className: "ad-time-grid__moment-title", children: m.title })
+            m.title && /* @__PURE__ */ jsx43("span", { className: "ad-time-grid__moment-title", title: m.title, children: m.title })
           ] }));
           const shown = m.hue ? hueOf(m.hue) : void 0;
           const style = { top: at(m.at), ...shown ? { ["--ad-stripe"]: shown } : {} };
@@ -4868,6 +4887,10 @@ function DayCell({ day, today, where, whereLabel, away, travel, letter, dayProps
       ]
     }
   );
+}
+function BandHeading({ band }) {
+  if (!band) return /* @__PURE__ */ jsx43("div", { className: "ad-time-grid__band-heading ad-time-grid__band-heading--none", "aria-hidden": "true" });
+  return /* @__PURE__ */ jsx43("div", { className: cx("ad-group-heading", "ad-group-heading--rule-above", "ad-time-grid__band-heading", band.unconfirmed && "ad-time-grid__band-heading--unconfirmed"), children: band.label ? /* @__PURE__ */ jsx43("h2", { className: "ad-group-heading__title ad-time-grid__band-name", children: band.label }) : null });
 }
 function PhaseBand({ label, color, unconfirmed }) {
   const drawn = useNamedColour(color);
@@ -5095,7 +5118,7 @@ function Dial({ fraction, label, className }) {
   ] });
 }
 function Verdict({ word, sentence }) {
-  return /* @__PURE__ */ jsxs42("div", { className: "ad-verdict", children: [
+  return /* @__PURE__ */ jsxs42("div", { className: word ? "ad-verdict" : "ad-verdict ad-verdict--headline", children: [
     word ? /* @__PURE__ */ jsx45("p", { className: "ad-verdict__word", children: String(word).split(/\s+/)[0] }) : null,
     /* @__PURE__ */ jsx45("p", { className: "ad-verdict__sentence", children: String(sentence) })
   ] });
