@@ -148,6 +148,8 @@
   --w-wide: 680px;
   --w-side: 228px;
   --w-prose: 640px;
+  --w-settings: 1280px;
+  --w-setting-param: 300px;
   --w-col-xs: 48px;
   --w-field-name: 96px;
   --w-aside: 112px;
@@ -1823,13 +1825,18 @@ button.ad-row__name:focus-visible { outline: none; box-shadow: var(--ring-select
 .ad-settings__nav-item:hover, .ad-settings__nav-item:hover .ad-settings__nav-icon { color: var(--accent); }
 .ad-settings__nav-item:focus-visible { outline: none; box-shadow: var(--ring-select); }
 .ad-settings__nav-item[aria-current="page"] { background: var(--tint-selected); color: var(--text-primary); }
-.ad-settings__pane { flex: 1; min-width: 0; max-width: var(--w-prose); display: flex; flex-direction: column; gap: var(--space-6); }
+.ad-settings__pane { flex: 1; min-width: 0; max-width: var(--w-settings); display: flex; flex-direction: column; gap: var(--space-6); }
 /* The pane's one big title, the pop-over title's size; the sections under it stay 13px labels. */
 .ad-settings__title { margin: 0; font: var(--type-title); line-height: var(--lh-tight); color: var(--text-primary); }
 .ad-setting { min-height: var(--h-row); }
 .ad-setting__name { display: inline-flex; align-items: center; gap: var(--space-2); color: var(--text-primary); }
 /* A set-time field ("9:00 – 18:00") reads in mono. */
 /* "No access" sits quiet. */
+ 
+/* A row's own settings under it: columns across the pane from the left, each label beside its control; the label takes the room, the control its own size. */
+.ad-setting-params { display: grid; grid-template-columns: repeat(auto-fill, minmax(var(--w-setting-param), 1fr)); gap: var(--space-2) var(--space-6); padding: var(--space-2) 0 var(--space-3) var(--space-6); }
+.ad-setting-params .ad-field-row--beside .ad-field-row__label { width: auto; flex: 1 1 0; min-width: 0; }
+.ad-setting-params .ad-field-row--beside .ad-field-row__control { flex: none; }
 
 /* src/components/Splitter/Splitter.css */
 /* Splitter: two panes and the divider between. */

@@ -3545,6 +3545,9 @@ function SettingsSection({ title, help, number, fold, children }) {
 function SettingRow(props) {
   return /* @__PURE__ */ jsx30(FieldRow, { ...props, className: cx("ad-setting", props.className) });
 }
+function SettingParams({ children, className, ...rest }) {
+  return /* @__PURE__ */ jsx30("div", { ...rest, className: cx("ad-setting-params", className), children });
+}
 function AccessRow({ face, name, className, ...rest }) {
   return /* @__PURE__ */ jsx30(FieldRow, { ...rest, label: /* @__PURE__ */ jsxs27("span", { className: "ad-setting__name", children: [
     face,
@@ -5535,6 +5538,7 @@ export {
   Select,
   SelectionBar,
   SelectionBarRoom,
+  SettingParams,
   SettingRow,
   SettingsLayout,
   SettingsNav,
