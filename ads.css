@@ -581,13 +581,6 @@
   .ad-bar--selected { outline: var(--border-w-strong) solid Highlight !important; outline-offset: var(--space-hair); }
 }
 
-/* Held for Athena until her swap lands (2026-10-29): the type ladder deleted `--text-faint` and `.ad-type-data-small`, which she
-   still types in 30 files and 3. Removing them before her swap left those words with no ink of their own on Jeremy's screen.
-   Both read as their replacements: the faint ink is the quiet ink, the small figure is the data face at 12. Delete this block once
-   Athena types neither. */
-:root { --text-faint: var(--text-muted); }
-.ad-type-data-small { font: var(--type-data); font-size: var(--text-xs); }
-
 /* On paper (print): the page is white and the ink black, the tones between them the print tokens; a floating thing, a rail and a
    footer do not print. A pencilled (unconfirmed) bar keeps its meaning as a dashed edge on a light plane, since a gradient hatch
    prints as a solid block. */
