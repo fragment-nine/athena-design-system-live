@@ -1970,7 +1970,7 @@ button.ad-milestone:focus-visible { outline: none; box-shadow: var(--ring-select
 .ad-view-order__row { position: relative; display: flex; align-items: center; gap: var(--space-2); height: var(--h-btn-bar); font-family: var(--font-body); font-size: var(--text-base); color: var(--text-primary); }
 
 /* The toolbar's icons in the primary ink at rest, as the rail's and the title's (2026-10-27, Jeremy: "Icon brightness not consistent"); the current view's tile and hover stay as they are. */
-.ad-toolbar .ad-icon-button, .ad-toolbar .ad-button--view, .ad-toolbar .ad-view-switch button { color: var(--text-primary); }
+.ad-toolbar .ad-icon-button, .ad-toolbar .ad-button--view, .ad-toolbar .ad-segmented__option--icon { color: var(--text-primary); }
 .ad-view-save-row { margin-top: var(--space-4); padding-top: var(--space-2); border-top: var(--border-w) solid var(--border); }
 .ad-view-lock { color: var(--text-muted); }
 
