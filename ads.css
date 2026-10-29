@@ -605,8 +605,9 @@ button.ad-year__day:focus-visible { outline: none; box-shadow: var(--ring-select
 /* DayCell (2026-10-27): one day in a week of days. */
 .ad-day-cell { --ad-where: transparent; position: relative; display: flex; flex-direction: column; align-items: center; gap: var(--space-1); padding: var(--space-2) var(--space-1) 0; border-radius: var(--radius-page); }
 .ad-day-cell__letter { font-family: var(--font-display); font-weight: 600; font-size: var(--text-xs); text-transform: uppercase; color: var(--text-muted); }
-.ad-day-cell__number { display: inline-flex; align-items: center; justify-content: center; width: var(--h-btn); height: var(--h-btn); border-radius: var(--radius-round); font-family: var(--font-mono); font-size: var(--text-base); color: var(--text-primary); }
-.ad-day-cell--today .ad-day-cell__number { box-shadow: var(--ring-today); }
+.ad-day-cell__number { display: inline-flex; align-items: center; justify-content: center; width: var(--h-btn); height: var(--h-btn); border-radius: var(--radius-page); font-family: var(--font-mono); font-size: var(--text-base); color: var(--text-primary); }
+/* Today: the 2px bone ring round the day's cell, square as every day grid draws it (fixed 2026-10-29, Jeremy: "I only ever approved a square"). */
+.ad-day-cell--today { box-shadow: var(--ring-today); }
 .ad-day-cell--weekend .ad-day-cell__letter, .ad-day-cell--weekend .ad-day-cell__number { color: var(--text-muted); }
 .ad-day-cell__where { align-self: stretch; height: var(--space-2); border-radius: var(--radius-page); background: color-mix(in srgb, var(--ad-where) var(--tint-presence-strip), transparent); }
 .ad-day-cell--away .ad-day-cell__where { background: var(--hatch-fine), color-mix(in srgb, var(--ad-where) var(--tint-presence-strip), transparent); }
