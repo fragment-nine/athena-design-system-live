@@ -485,7 +485,8 @@ tr[data-ad-drop="after"] > :is(td, th) { box-shadow: inset 0 calc(var(--bw-selec
 .ad-month__num[data-today] { color: var(--text-primary); }
 /* A milestone in the month: its diamond before its name, no bar (2026-10-27): white ahead, grey once past, hatched when unconfirmed. */
 .ad-month__bar.ad-month__bar--milestone, .ad-month__bar.ad-month__bar--milestone.ad-month__bar--unconfirmed { background: transparent; background-image: none; }
-.ad-month__diamond { box-sizing: border-box; flex: none; width: var(--icon-sm); height: var(--icon-sm); transform: scale(0.75) rotate(45deg); background: var(--text-primary); }
+/* The row glyph's size, as the timeline's (2026-10-29). */
+.ad-month__diamond { box-sizing: border-box; flex: none; width: calc(var(--icon-sm) * 0.6); height: calc(var(--icon-sm) * 0.6); margin: calc(var(--icon-sm) * 0.2); transform: rotate(45deg); background: var(--text-primary); }
 .ad-month__bar--past .ad-month__diamond { background: var(--text-muted); }
 .ad-month__bar--unconfirmed .ad-month__diamond { background-color: var(--bg-base); background-image: var(--hatch-ink); border: var(--border-w) solid var(--text-primary); }
 /* One bar across its days, one lane high: solid when confirmed, hatched with its name on a solid patch when not. */
@@ -1901,7 +1902,9 @@ button.ad-milestone:hover .ad-milestone__label { color: var(--accent); }
 .ad-milestone { background: var(--ad-lane-ground, transparent); padding-right: var(--space-1); }
 .ad-milestone:hover { position: relative; z-index: 2; }
 button.ad-milestone:focus-visible { outline: none; box-shadow: var(--ring-select); border-radius: var(--radius-page); }
-.ad-milestone__diamond { box-sizing: border-box; width: var(--icon-sm); height: var(--icon-sm); flex: none; transform: rotate(45deg); background: var(--text-primary); }
+/* One diamond size: the row glyph's (2026-10-29, Jeremy: "why two different diamond size? only use the smaller one"). A 0.6 square
+   turned 45° spans 0.85 of the icon box, as the milestone glyph does; the margin keeps the box icon-sm, so nothing beside it moves. */
+.ad-milestone__diamond { box-sizing: border-box; width: calc(var(--icon-sm) * 0.6); height: calc(var(--icon-sm) * 0.6); margin: calc(var(--icon-sm) * 0.2); flex: none; transform: rotate(45deg); background: var(--text-primary); }
 .ad-milestone--past { color: var(--text-secondary); }
 .ad-milestone--past .ad-milestone__diamond { background: var(--text-muted); }
 /* Unconfirmed: bone ink hatch inside a bone hairline (the cards' recipe, so it reads hatched at this size, not hollow). */
