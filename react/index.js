@@ -5382,7 +5382,7 @@ function Footer({ code: code2, number, venue, pageNumber, page, undo }) {
 function Contents({ entries, ariaLabel = "Contents" }) {
   return /* @__PURE__ */ jsx49("ol", { className: "ad-contents", "aria-label": ariaLabel, children: entries.map((e, i) => {
     const inner = /* @__PURE__ */ jsxs45(Fragment21, { children: [
-      /* @__PURE__ */ jsx49("span", { className: "ad-contents__numeral", children: String(i + 1).padStart(2, "0") }),
+      /* @__PURE__ */ jsx49("span", { className: "ad-contents__numeral", children: e.numeral ?? String(i + 1).padStart(2, "0") }),
       /* @__PURE__ */ jsxs45("span", { className: "ad-contents__body", children: [
         /* @__PURE__ */ jsx49("span", { className: "ad-contents__name", children: e.name }),
         e.summary && /* @__PURE__ */ jsx49("span", { className: "ad-contents__summary", children: e.summary })

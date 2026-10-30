@@ -730,7 +730,9 @@ tr[data-ad-drop="after"] > :is(td, th) { box-shadow: inset 0 calc(var(--bw-selec
 .ad-button { display: inline-flex; align-items: center; justify-content: center; gap: var(--space-2); box-sizing: border-box; border: var(--border-w) solid var(--border); border-radius: var(--radius-control); margin: 0; font: var(--type-name); line-height: var(--lh-none); white-space: nowrap; background: var(--ad-lift, var(--bg-raised)); color: var(--text-primary); cursor: pointer; }
 .ad-button--md { height: var(--h-btn); padding: 0 var(--space-4); }
 .ad-button--bar { height: var(--h-btn-bar); padding: 0 var(--space-3); }
-.ad-button--row { height: var(--h-btn-row); padding: 0 var(--space-3); }
+/* A button on a row is bare: the same action repeats on every row, so it is words, coral under the cursor, never a box. */
+.ad-button--row { height: var(--h-btn-row); padding: 0 var(--space-2); background: transparent; border-width: 0; }
+.ad-button--row:hover { background: var(--bg-raised); }
 .ad-button:hover { color: var(--accent); }
 .ad-button:focus-visible, .ad-icon-button:focus-visible { outline: none; box-shadow: var(--ring-select); }
 /* The ring has to read against the coral, where the bone ring does not. */
