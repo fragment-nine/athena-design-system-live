@@ -3699,7 +3699,7 @@ function ShowOptionsGear({ value, onChange, options = [...showOrder], labels: l 
 
 // src/components/PageHeader/PageHeader.tsx
 import { jsx as jsx33, jsxs as jsxs30 } from "react/jsx-runtime";
-var STATES = /* @__PURE__ */ new Set(["Pencilled", "Deal", "Active", "Close out", "Cancelled", "Archived"]);
+var STATES = /* @__PURE__ */ new Set(["Deal", "Active", "Close out", "Cancelled", "Archived"]);
 function countdownWords(c) {
   const n = daysBetween(c.today, c.to);
   if (!(n >= 0)) return null;
@@ -4678,7 +4678,7 @@ function OffscreenStart({ date, side = "start" }) {
     date
   ] });
 }
-var KEY_MARKS = /* @__PURE__ */ new Set(["confirmed", "hatched", "pencilled", "deal", "backup", "clash"]);
+var KEY_MARKS = /* @__PURE__ */ new Set(["confirmed", "hatched", "deal", "backup", "clash"]);
 function ChartKey({ items, ariaLabel = "Key" }) {
   return /* @__PURE__ */ jsx42("div", { className: "ad-chart-key", role: "group", "aria-label": ariaLabel, children: items.map((it, i) => {
     const swatch = typeof it.mark === "string" && KEY_MARKS.has(it.mark) ? /* @__PURE__ */ jsx42("span", { "aria-hidden": "true", className: `ad-chart-key__swatch ad-chart-key__swatch--${it.mark}` }) : it.mark === "away" ? /* @__PURE__ */ jsx42("span", { "aria-hidden": "true", className: "ad-chart-key__presence ad-chart-key__presence--away" }) : it.mark && typeof it.mark === "object" && "presence" in it.mark ? /* @__PURE__ */ jsx42(PresenceSwatch, { colour: it.mark.presence }) : /* @__PURE__ */ jsx42("span", { "aria-hidden": "true", className: "ad-chart-key__mark", children: it.mark });
