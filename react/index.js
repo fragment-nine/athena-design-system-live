@@ -2431,7 +2431,7 @@ function SectionFrame({ children, level, numbering, className, ...rest }) {
   };
   return /* @__PURE__ */ jsx21(Ctx.Provider, { value, children: /* @__PURE__ */ jsx21("div", { ...rest, "data-section-frame": frameId, className: cx("ad-section-frame", className), children }) });
 }
-var Section = forwardRef6(function Section2({ title, children, className, bodyId, rule, needsYou, lead, end, help, collapsible, collapsed, onToggle, ...rest }, ref) {
+var Section = forwardRef6(function Section2({ title, day, beside, children, className, bodyId, rule, needsYou, lead, end, help, collapsible, collapsed, onToggle, ...rest }, ref) {
   const frame = useContext7(Ctx);
   if (!frame) throw new Error("Section: a section sits inside a SectionFrame; a heading on its own is a GroupHeading used as a label.");
   const own = useRef9(null);
@@ -2449,11 +2449,11 @@ var Section = forwardRef6(function Section2({ title, children, className, bodyId
     if (!el) return;
     const wrap = el.closest("[data-section-frame]");
     if (!wrap || wrap.getAttribute("data-section-frame") !== frame.frameId) return;
-    const all = Array.from(wrap.querySelectorAll("[data-section]")).filter((s) => s.closest("[data-section-frame]") === wrap);
+    const all = Array.from(wrap.querySelectorAll("[data-section]")).filter((s) => s.closest("[data-section-frame]") === wrap && s.getAttribute("data-section") !== "day");
     const next = all.indexOf(el);
     if (next !== index) setIndex(next);
   });
-  const number = frame.numbering === "numbers" ? index + 1 : frame.numbering === "letters" ? String.fromCharCode(65 + index) : void 0;
+  const number = day ? void 0 : frame.numbering === "numbers" ? index + 1 : frame.numbering === "letters" ? String.fromCharCode(65 + index) : void 0;
   return /* @__PURE__ */ jsxs18(
     "section",
     {
@@ -2463,11 +2463,15 @@ var Section = forwardRef6(function Section2({ title, children, className, bodyId
         if (typeof ref === "function") ref(el);
         else if (ref) ref.current = el;
       },
-      "data-section": "",
+      "data-section": day ? "day" : "",
       "data-collapsed": collapsible ? String(shut) : void 0,
       className: cx("ad-section", className),
       children: [
-        /* @__PURE__ */ jsx21(GroupHeading, { number, level: frame.level, controls: collapsible ? body : void 0, rule, needsYou, lead, end, help, collapsible, collapsed: shut, onToggle: toggle, children: title }),
+        day ? /* @__PURE__ */ jsxs18("div", { className: "ad-section__day", children: [
+          /* @__PURE__ */ jsx21(DayHeading, { day: day.day, today: day.today, level: frame.level === 2 ? 2 : frame.level === 3 ? 3 : 4 }),
+          beside,
+          end != null && /* @__PURE__ */ jsx21("span", { className: "ad-section__day-end", children: end })
+        ] }) : /* @__PURE__ */ jsx21(GroupHeading, { number, level: frame.level, controls: collapsible ? body : void 0, rule, needsYou, lead, end, help, collapsible, collapsed: shut, onToggle: toggle, children: title }),
         /* @__PURE__ */ jsx21("div", { id: body, className: "ad-section__body", hidden: collapsible ? shut : void 0, children })
       ]
     }
@@ -2797,7 +2801,7 @@ function PopoverSection({ label, children, end, collapsible, collapsed, onToggle
       label != null && /* @__PURE__ */ jsx23("h3", { className: "ad-popover__section-label ad-type-heading", children: label }),
       end
     ] }),
-    /* @__PURE__ */ jsx23("div", { id: bodyId, hidden: collapsible ? shut : void 0, children })
+    /* @__PURE__ */ jsx23("div", { id: bodyId, className: "ad-popover__section-body", hidden: collapsible ? shut : void 0, children })
   ] });
 }
 
@@ -3561,6 +3565,9 @@ function CardName({ children, lead, onRename, renameLabel }) {
 }
 function Dials({ children }) {
   return /* @__PURE__ */ jsx30("div", { className: "ad-card__dials", children });
+}
+function CardGrid({ children, columns = 3, className, style, ...rest }) {
+  return /* @__PURE__ */ jsx30("div", { ...rest, style: { ...style, "--ad-cols": columns }, className: cx("ad-card-grid", className), children });
 }
 function Picture({ src, alt, ...rest }) {
   const [failed, setFailed] = useState18(null);
@@ -5501,6 +5508,7 @@ export {
   Button,
   Caption,
   Card,
+  CardGrid,
   CardName,
   ChartKey,
   Checkbox,
