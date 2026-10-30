@@ -4429,7 +4429,7 @@ function SelectionBarRoom() {
 
 // src/components/Timeline/Timeline.tsx
 import { useLayoutEffect as useLayoutEffect8, useRef as useRef25, useState as useState24 } from "react";
-import { Fragment as Fragment17, jsx as jsx42, jsxs as jsxs39 } from "react/jsx-runtime";
+import { jsx as jsx42, jsxs as jsxs39 } from "react/jsx-runtime";
 var strip4 = (h) => {
   if (!h) return {};
   const { className: _c, style: _s, ...rest } = h;
@@ -4624,23 +4624,20 @@ function PastHatch({ style, away }) {
 function Clash({ children, className }) {
   return /* @__PURE__ */ jsx42("div", { className: cx("ad-clash", className), children });
 }
-function OverMark({ left, width, label, "aria-label": ariaLabel, markProps }) {
+function OverMark({ left, width, amount, label, "aria-label": ariaLabel, markProps }) {
   const hooks = strip4(markProps);
-  const m = typeof label === "string" ? /^(\S*\d\S*)(\s+)(.*)$/.exec(label) : null;
   const read2 = ariaLabel ?? (typeof label === "string" ? label : void 0);
+  const shade = Number.isFinite(amount) ? Math.min(1, Math.max(0, amount)) : void 0;
   return /* @__PURE__ */ jsx42(
     "span",
     {
       role: read2 ? "img" : void 0,
       "aria-hidden": read2 ? void 0 : true,
+      title: typeof label === "string" && label ? label : read2,
       ...hooks,
       "aria-label": read2,
       className: "ad-over-mark",
-      style: { left: `${Number.isFinite(left) ? left : 0}px`, width: `${Math.max(1, Number.isFinite(width) ? width : 1)}px` },
-      children: typeof label === "string" && label && (m ? /* @__PURE__ */ jsxs39(Fragment17, { children: [
-        /* @__PURE__ */ jsx42("span", { className: "ad-over-mark__figure", children: m[1] }),
-        /* @__PURE__ */ jsx42("span", { children: m[3] })
-      ] }) : /* @__PURE__ */ jsx42("span", { children: label }))
+      style: { left: `${Number.isFinite(left) ? left : 0}px`, width: `${Math.max(1, Number.isFinite(width) ? width : 1)}px`, ...shade != null ? { ["--ad-over"]: shade } : {} }
     }
   );
 }
@@ -4759,7 +4756,7 @@ function PeriodCluster({ shown, periods, period, onPeriod, onPrevious, onNext, o
 
 // src/components/Calendar/Calendar.tsx
 import { useEffect as useEffect14, useLayoutEffect as useLayoutEffect9, useRef as useRef26, useState as useState25 } from "react";
-import { Fragment as Fragment18, jsx as jsx44, jsxs as jsxs41 } from "react/jsx-runtime";
+import { Fragment as Fragment17, jsx as jsx44, jsxs as jsxs41 } from "react/jsx-runtime";
 var code = (it) => it.code ? /* @__PURE__ */ jsx44(ProjectPill, { code: it.code, color: it.color?.startsWith("project-") ? it.color : void 0 }) : null;
 var hooksOf2 = (h) => {
   if (!h) return {};
@@ -4811,7 +4808,7 @@ function MonthCalendar({ month, items, today: todayIn, weekStart = 1, locale = "
           const ms = !!item.milestone;
           const cls = cx("ad-month__bar", "ad-striped", ms && "ad-month__bar--milestone", ms && diff(item.end, today) < 0 && "ad-month__bar--past", item.unconfirmed && "ad-month__bar--unconfirmed", cutStart && "ad-month__bar--cut-start", cutEnd && "ad-month__bar--cut-end");
           const hooks = hooksOf2(itemProps?.(item));
-          const inner = /* @__PURE__ */ jsxs41(Fragment18, { children: [
+          const inner = /* @__PURE__ */ jsxs41(Fragment17, { children: [
             ms && /* @__PURE__ */ jsx44("span", { className: "ad-month__diamond ad-diamond", "aria-hidden": "true" }),
             code(item),
             /* @__PURE__ */ jsx44(DeptGlyph, { hue: item.color }),
@@ -4855,7 +4852,7 @@ function Booking({ name, time, unconfirmed, color, style, onOpen, bookingProps, 
   const grip = (side, h) => h && /* @__PURE__ */ jsx44("span", { role: h["aria-label"] ? "button" : void 0, "aria-hidden": h["aria-label"] ? void 0 : true, ...hooksOf2(h), className: `ad-booking__grip ad-booking__grip--${side}` });
   const inControl = (t) => !!t.closest(".ad-booking__grip, .ad-booking__actions");
   const beside = !!onOpen && !asButton;
-  const controls = /* @__PURE__ */ jsxs41(Fragment18, { children: [
+  const controls = /* @__PURE__ */ jsxs41(Fragment17, { children: [
     grip("start", ends?.start),
     actions != null && /* @__PURE__ */ jsx44("span", { className: "ad-booking__actions", children: /* @__PURE__ */ jsx44(ButtonSizeScope, { size: "row", children: actions }) }),
     grip("end", ends?.end)
@@ -4994,7 +4991,7 @@ function TimeGrid({ startHour, endHour, bookings = [], columns, now, hourLabel =
         const hooks = hooksOf2(itemProps?.(item));
         const cls = cx("ad-month__bar", "ad-striped", "ad-time-grid__item", item.unconfirmed && "ad-month__bar--unconfirmed");
         const style = { ...barColour(item.color, hueOf(item.color)), ...item.span && item.span > 1 ? { ["--ad-span"]: item.span } : {} };
-        const inner = /* @__PURE__ */ jsxs41(Fragment18, { children: [
+        const inner = /* @__PURE__ */ jsxs41(Fragment17, { children: [
           code(item),
           item.icon ? slotIcon(item.icon, { size: "sm" }) : /* @__PURE__ */ jsx44(DeptGlyph, { hue: item.color }),
           /* @__PURE__ */ jsx44("span", { children: item.label })
@@ -5011,7 +5008,7 @@ function TimeGrid({ startHour, endHour, bookings = [], columns, now, hourLabel =
         }),
         c.aside && /* @__PURE__ */ jsx44("div", { className: "ad-time-grid__aside", children: [...c.aside].sort((x, y) => x.at - y.at).map((m, i) => {
           const words = [m.time, m.title].filter(Boolean).join(" ");
-          const inner = m.node ?? (asideWidth === "narrow" ? /* @__PURE__ */ jsx44("span", { className: "ad-time-grid__moment-mark", "aria-label": m.onPress ? void 0 : words, role: m.onPress ? void 0 : "img" }) : /* @__PURE__ */ jsxs41(Fragment18, { children: [
+          const inner = m.node ?? (asideWidth === "narrow" ? /* @__PURE__ */ jsx44("span", { className: "ad-time-grid__moment-mark", "aria-label": m.onPress ? void 0 : words, role: m.onPress ? void 0 : "img" }) : /* @__PURE__ */ jsxs41(Fragment17, { children: [
             m.time && /* @__PURE__ */ jsx44("span", { className: "ad-time-grid__moment-time", children: m.time }),
             m.title && /* @__PURE__ */ jsx44("span", { className: "ad-time-grid__moment-title", title: m.title, children: m.title })
           ] }));
@@ -5212,7 +5209,7 @@ function MapNightDot() {
 }
 
 // src/components/Charts/Charts.tsx
-import { Fragment as Fragment19, jsx as jsx46, jsxs as jsxs43 } from "react/jsx-runtime";
+import { Fragment as Fragment18, jsx as jsx46, jsxs as jsxs43 } from "react/jsx-runtime";
 function AmountBars({ items, max, ariaLabel, className }) {
   const top = max ?? Math.max(1, ...items.map((i) => i.value));
   return /* @__PURE__ */ jsx46("div", { className: cx("ad-amounts", className), role: "list", "aria-label": ariaLabel, children: items.map((i) => /* @__PURE__ */ jsxs43("div", { className: "ad-amounts__row", role: "listitem", children: [
@@ -5231,7 +5228,7 @@ function BudgetBar({ fraction, figure, note = "worked", remainder, end, ariaLabe
       /* @__PURE__ */ jsx46("span", { children: note }),
       /* @__PURE__ */ jsxs43("span", { children: [
         remainder,
-        end && /* @__PURE__ */ jsxs43(Fragment19, { children: [
+        end && /* @__PURE__ */ jsxs43(Fragment18, { children: [
           " \xB7 ",
           end
         ] })
@@ -5314,7 +5311,7 @@ function CommandSearch({ open, onClose, query, onQuery, results, onPick, label =
 
 // src/components/Guidance/Guidance.tsx
 import { useEffect as useEffect16, useLayoutEffect as useLayoutEffect10, useRef as useRef29, useState as useState27 } from "react";
-import { Fragment as Fragment20, jsx as jsx48, jsxs as jsxs44 } from "react/jsx-runtime";
+import { Fragment as Fragment19, jsx as jsx48, jsxs as jsxs44 } from "react/jsx-runtime";
 var useIsoLayoutEffect3 = typeof window === "undefined" ? useEffect16 : useLayoutEffect10;
 function TourStep({ open, anchor, step, total, title, children, onBack, onNext, onExit, backLabel = "Back", nextLabel = "Next", progressLabel = (s, t) => `${s} of ${t}`, placement, side: older, onClose, closeLabel }) {
   const card = useRef29(null);
@@ -5411,7 +5408,7 @@ function PixxBrief({ open, face, greeting, children, onSnooze, onGotIt, snoozeLa
 function PixxFigure({ onPress, open, unread = 0, tip = "Pixx", motion, body, tail, hooks, className }) {
   const { triggerProps, node } = useTooltip(tip, { describes: false });
   const data = hooks ? Object.fromEntries(Object.entries(hooks).filter(([k]) => k.startsWith("data-"))) : {};
-  return /* @__PURE__ */ jsxs44(Fragment20, { children: [
+  return /* @__PURE__ */ jsxs44(Fragment19, { children: [
     /* @__PURE__ */ jsxs44(
       "button",
       {
@@ -5434,7 +5431,7 @@ function PixxFigure({ onPress, open, unread = 0, tip = "Pixx", motion, body, tai
 }
 
 // src/components/Furniture/Furniture.tsx
-import { Fragment as Fragment21, jsx as jsx49, jsxs as jsxs45 } from "react/jsx-runtime";
+import { Fragment as Fragment20, jsx as jsx49, jsxs as jsxs45 } from "react/jsx-runtime";
 function Footer({ code: code2, number, venue, pageNumber, page, undo }) {
   return /* @__PURE__ */ jsxs45("footer", { className: "ad-footer", children: [
     /* @__PURE__ */ jsxs45("span", { className: "ad-footer__cell ad-footer__code", children: [
@@ -5443,7 +5440,7 @@ function Footer({ code: code2, number, venue, pageNumber, page, undo }) {
     ] }),
     /* @__PURE__ */ jsx49("span", { className: "ad-footer__cell ad-footer__venue", children: venue }),
     /* @__PURE__ */ jsx49("span", { className: "ad-footer__cell ad-footer__run", "aria-hidden": "true" }),
-    /* @__PURE__ */ jsx49("span", { className: "ad-footer__undo", role: "status", "aria-live": "polite", children: undo && /* @__PURE__ */ jsxs45(Fragment21, { children: [
+    /* @__PURE__ */ jsx49("span", { className: "ad-footer__undo", role: "status", "aria-live": "polite", children: undo && /* @__PURE__ */ jsxs45(Fragment20, { children: [
       /* @__PURE__ */ jsx49("span", { className: "ad-footer__undo-words", children: undo.message }),
       undo.onUndo && /* @__PURE__ */ jsx49(ButtonSizeScope, { size: "row", children: /* @__PURE__ */ jsx49(Button, { onClick: undo.onUndo, children: undo.label ?? "Undo" }) })
     ] }) }),
@@ -5455,7 +5452,7 @@ function Footer({ code: code2, number, venue, pageNumber, page, undo }) {
 }
 function Contents({ entries, ariaLabel = "Contents" }) {
   return /* @__PURE__ */ jsx49("ol", { className: "ad-contents", "aria-label": ariaLabel, children: entries.map((e, i) => {
-    const inner = /* @__PURE__ */ jsxs45(Fragment21, { children: [
+    const inner = /* @__PURE__ */ jsxs45(Fragment20, { children: [
       /* @__PURE__ */ jsx49("span", { className: "ad-contents__numeral", children: e.numeral ?? String(i + 1).padStart(2, "0") }),
       /* @__PURE__ */ jsxs45("span", { className: "ad-contents__body", children: [
         /* @__PURE__ */ jsx49("span", { className: "ad-contents__name", children: e.name }),
@@ -5487,7 +5484,7 @@ function Frame({ rail, corner, header, toolbar, key, footer, work = "reading", c
   const slots = header !== void 0 || toolbar !== void 0 || footer !== void 0;
   return /* @__PURE__ */ jsxs45("div", { className: cx("ad-frame", corner != null && "ad-frame--corner", className), children: [
     rail,
-    /* @__PURE__ */ jsx49("div", { className: "ad-frame__page", children: slots ? /* @__PURE__ */ jsxs45(Fragment21, { children: [
+    /* @__PURE__ */ jsx49("div", { className: "ad-frame__page", children: slots ? /* @__PURE__ */ jsxs45(Fragment20, { children: [
       header,
       /* @__PURE__ */ jsx49(FrameToolbar, { children: toolbar }),
       key != null && /* @__PURE__ */ jsx49(FrameKey, { children: key }),

@@ -184,7 +184,6 @@
   --w-tour: 320px;
   --h-bar: var(--h-btn-row);
   --h-bar-dense: 17px;
-  --h-over-mark: 16px;
   --blur-glass-radius: 22px;
   --blur-drill-radius: 3px;
   --w-scrollbar: 10px;
@@ -215,7 +214,7 @@
   --h-res-lane: var(--h-btn-row);
   --h-res-lane-pitch: var(--h-btn-bar);
   --h-res-presence: 18px;
-  --h-res-presence-run: var(--h-over-mark);
+  --h-res-presence-run: 16px;
   --h-res-placeholder: 34px;
   --h-res-empty: 64px;
   --h-res-load-strip: 9px;
@@ -464,6 +463,8 @@
   --grain-opacity: 0.25;
   --opacity-stamp: 0.28;
   --tint-presence-strip: 40%;
+  --tint-over-min: 25%;
+  --tint-over-max: 85%;
   --tint-presence-wash: 18%;
   --tint-lane-wash: 8%;
   --tint-lane-edge: 45%;
@@ -2197,8 +2198,7 @@ button.ad-milestone:focus-visible { outline: none; box-shadow: var(--ring-select
 .ad-past { position: absolute; top: 0; bottom: 0; background-image: var(--hatch-fine); pointer-events: none; }
 .ad-past--away { background-image: var(--hatch-away); }
 /* OverMark: Athena's over-capacity block, kept as it was. The app places it; it sits on the line's bottom. */
-.ad-over-mark { position: absolute; bottom: 0; box-sizing: border-box; display: flex; align-items: center; justify-content: center; gap: var(--space-1); height: var(--h-over-mark); overflow: hidden; border-radius: var(--radius-page); background: var(--status-error); color: var(--bg-base); font: var(--type-detail); line-height: var(--lh-none); white-space: nowrap; }
-.ad-over-mark__figure { font: var(--type-data); }
+.ad-over-mark { --ad-over: 0.5; position: absolute; bottom: 0; box-sizing: border-box; height: var(--h-bar); border-radius: var(--radius-mark); background: color-mix(in srgb, var(--status-error) calc(var(--tint-over-min) + var(--ad-over) * (var(--tint-over-max) - var(--tint-over-min))), transparent); }
 .ad-clash { display: flex; width: 100%; border-radius: var(--radius-page); box-shadow: var(--glow-clash); }
 .ad-clash > * { flex: 1; min-width: 0; }
 .ad-offscreen { color: var(--text-secondary); }
