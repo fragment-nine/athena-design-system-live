@@ -4880,19 +4880,19 @@ function TimeGrid({ startHour, endHour, bookings = [], columns, now, hourLabel =
   useEffect14(() => {
     const el = frame.current;
     if (!el || scrollTo == null) return;
-    let raf = 0;
-    let tries = 0;
     const go = () => {
       const hour = el.querySelector(".ad-time-grid__hour");
       const hourPx = hour?.offsetHeight || el.scrollHeight / Math.max(1, hours + (el.querySelector(".ad-time-grid__allday") ? 1 : 0));
-      if (!hourPx && tries++ < 10) {
-        raf = requestAnimationFrame(go);
-        return;
-      }
+      if (!hourPx) return false;
       el.scrollTop = Math.max(0, (scrollTo - startHour) * hourPx);
+      return true;
     };
-    raf = requestAnimationFrame(go);
-    return () => cancelAnimationFrame(raf);
+    if (go() || typeof ResizeObserver === "undefined") return;
+    const ro = new ResizeObserver(() => {
+      if (go()) ro.disconnect();
+    });
+    ro.observe(el);
+    return () => ro.disconnect();
   }, [scrollTo, startHour, hours]);
   const pressAt = (colId) => (e) => {
     if (!onPressAt) return;
