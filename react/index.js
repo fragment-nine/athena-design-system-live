@@ -2431,7 +2431,7 @@ function SectionFrame({ children, level, numbering, className, ...rest }) {
   };
   return /* @__PURE__ */ jsx21(Ctx.Provider, { value, children: /* @__PURE__ */ jsx21("div", { ...rest, "data-section-frame": frameId, className: cx("ad-section-frame", className), children }) });
 }
-var Section = forwardRef6(function Section2({ title, day, beside, children, className, bodyId, rule, needsYou, lead, end, help, collapsible, collapsed, onToggle, ...rest }, ref) {
+var Section = forwardRef6(function Section2({ title, day, beside, children, className, bodyId, rule, needsYou, lead, end, help, collapsible, collapsed, onToggle, look, ...rest }, ref) {
   const frame = useContext7(Ctx);
   if (!frame) throw new Error("Section: a section sits inside a SectionFrame; a heading on its own is a GroupHeading used as a label.");
   const own = useRef9(null);
@@ -2465,7 +2465,7 @@ var Section = forwardRef6(function Section2({ title, day, beside, children, clas
       },
       "data-section": day ? "day" : "",
       "data-collapsed": collapsible ? String(shut) : void 0,
-      className: cx("ad-section", className),
+      className: cx("ad-section", look === "rule" && "ad-section--rule", className),
       children: [
         day ? /* @__PURE__ */ jsxs18("div", { className: "ad-section__day", children: [
           /* @__PURE__ */ jsx21(DayHeading, { day: day.day, today: day.today, level: frame.level === 2 ? 2 : frame.level === 3 ? 3 : 4 }),

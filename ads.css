@@ -1,25 +1,26 @@
 /* Athena Design System — fonts.css: the three faces (Work Sans headers, Roboto body, IBM Plex Mono numbers and subtitles), self-hosted, latin subset, SIL OFL 1.1 (fonts/LICENSE.txt). Generated from fonts/fonts.css; do not edit. Import order, once per app, all four: fonts.css, tokens.css, patterns.css, components.css. */
 @font-face { font-family: 'Work Sans'; font-style: normal; font-weight: 600; font-display: swap; src: url('fonts/WorkSans-600.woff2') format('woff2'); }
+@font-face { font-family: 'Work Sans'; font-style: normal; font-weight: 800; font-display: swap; src: url('fonts/WorkSans-800.woff2') format('woff2'); }
 @font-face { font-family: 'Roboto'; font-style: normal; font-weight: 100 900; font-display: swap; src: url('fonts/Roboto-var.woff2') format('woff2'); }
 @font-face { font-family: 'IBM Plex Mono'; font-style: normal; font-weight: 400; font-display: swap; src: url('fonts/IBMPlexMono-400.woff2') format('woff2'); }
 
 /* Athena Design System — tokens.css: every token as a CSS custom property, plus the six type rungs (--type-<rung> and .ad-type-<rung>). Plain CSS; no build step needed. Import order, once per app, all four: fonts.css, tokens.css, patterns.css, components.css. */
 :root, [data-theme="dark"] {
   color-scheme: dark;
-  --bg-base: #0d0d0d;
-  --bg-side: #0a0a0b;
+  --bg-base: #09090b;
+  --bg-side: rgba(255, 255, 255, 0.025);
   --bg-inset: #050505;
-  --bg-surface: #141416;
-  --bg-raised: #1b1b1e;
-  --bg-hover: #222225;
+  --bg-surface: rgba(255, 255, 255, 0.035);
+  --bg-raised: rgba(255, 255, 255, 0.08);
+  --bg-hover: rgba(255, 255, 255, 0.115);
   --bg-float: #121213;
   --glass-bg: rgba(18, 18, 20, 0.92);
   --scrim: rgba(0, 0, 0, 0.62);
   --text-primary: #efece9;
   --text-secondary: #c9c5c0;
   --text-muted: #a9a5a0;
-  --border: rgba(216, 211, 210, 0.07);
-  --line-strong: rgba(216, 211, 210, 0.15);
+  --border: rgba(255, 255, 255, 0.10);
+  --line-strong: rgba(255, 255, 255, 0.24);
   --scroll-thumb-hover: #7a7b74;
   --drop-line: var(--accent);
   --bitrate-grey: #666666;
@@ -99,8 +100,10 @@
   --print-plane-4: #e5e5e5;
   --print-line: #d4d4d4;
   --print-line-strong: #a0a0a0;
-  --shadow-float: 0 12px 32px rgba(0, 0, 0, 0.5);
-  --elev-float: inset 0 1px 0 rgba(255, 255, 255, 0.34), 0 12px 32px rgba(0, 0, 0, 0.5);
+  --wash-warm: rgba(225, 109, 72, 0.14);
+  --wash-cool: rgba(111, 159, 196, 0.10);
+  --shadow-float: 0 20px 50px rgba(0, 0, 0, 0.5);
+  --elev-float: inset 0 1px 0 rgba(255, 255, 255, 0.08), 0 20px 50px rgba(0, 0, 0, 0.5);
   --ring-select: inset 0 0 0 2px #aaa6a1;
   --glow-hover: 0 0 8px rgba(225, 109, 72, 0.35);
   --glow-today: 0 0 6px rgba(225, 109, 72, 0.45);
@@ -120,10 +123,13 @@
   --space-4: 16px;
   --space-6: 24px;
   --space-8: 32px;
-  --radius-page: 4px;
-  --radius-float: 8px;
+  --radius-page: 8px;
+  --radius-float: var(--radius-page);
   --radius-round: 50%;
   --radius-pill: 999px;
+  --radius-tile: 6px;
+  --radius-control: 3px;
+  --radius-mark: 2px;
   /* Fixed sizes the rulebook names. Use these; never type a height. */
   --h-row: 40px;
   --h-row-2: 56px;
@@ -156,7 +162,7 @@
   --h-hour-roomy: var(--h-touch);
   --w-col-sm: 64px;
   --target-min: 24px;
-  --w-page-max: 900px;
+  --w-page-max: 1080px;
   --w-rail: var(--w-col-xs);
   --h-footer: var(--h-btn-bar);
   --numeral-contents: 26px;
@@ -455,7 +461,7 @@
   --opacity-disabled: 0.5;
   --opacity-dim: 0.75;
   --grain-opacity: 0.25;
-  --opacity-stamp: 0.3;
+  --opacity-stamp: 0.28;
   --tint-presence-strip: 40%;
   --tint-presence-wash: 18%;
   --tint-lane-wash: 8%;
@@ -483,7 +489,7 @@
   --text-base: 14px;
   --text-20: 20px;
   --text-28: 28px;
-  --text-display: 56px;
+  --text-display: 48px;
   --size-hero: 88px;
   --text-13: 13px;
   --text-44: 44px;
@@ -526,6 +532,7 @@
   --z-local-4: 4;
   --z-local-5: 5;
   --z-local-6: 6;
+  --track-caps: 0.14em;
   --font-display: "Work Sans", "Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
   --font-body: "Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
   --font-mono: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
@@ -534,19 +541,20 @@
 /* Roboto 400: ../fonts/Roboto-var.woff2 (see fonts/fonts.css) */
 /* Roboto 600: ../fonts/Roboto-var.woff2 (see fonts/fonts.css) */
 /* IBM Plex Mono 400: ../fonts/IBMPlexMono-400.woff2 (see fonts/fonts.css) */
+/* Work Sans 800: ../fonts/WorkSans-800.woff2 (see fonts/fonts.css) */
 :root {
   --type-title: 600 var(--text-20)/var(--lh-tight) var(--font-display);
-  --type-heading: 600 var(--text-base)/var(--lh-tight) var(--font-display);
+  --type-heading: 400 var(--text-xs)/var(--lh-tight) var(--font-mono);
   --type-name: 400 var(--text-base)/var(--lh-tight) var(--font-body);
   --type-body: 400 var(--text-base)/var(--lh-normal) var(--font-body);
-  --type-detail: 400 var(--text-13)/var(--lh-tight) var(--font-body);
+  --type-detail: 400 var(--text-xs)/var(--lh-tight) var(--font-body);
   --type-data: 400 1em/var(--lh-tight) var(--font-mono);
 }
 .ad-type-title { font: var(--type-title); color: var(--text-primary); }
-.ad-type-heading { font: var(--type-heading); text-transform: uppercase; color: var(--text-primary); }
+.ad-type-heading { font: var(--type-heading); text-transform: uppercase; letter-spacing: var(--track-caps); color: var(--text-secondary); }
 .ad-type-name { font: var(--type-name); color: var(--text-primary); }
 .ad-type-body { font: var(--type-body); color: var(--text-secondary); }
-.ad-type-detail { font: var(--type-detail); color: var(--text-secondary); }
+.ad-type-detail { font: var(--type-detail); color: var(--text-muted); }
 .ad-type-data { font: var(--type-data); }
 
 /* Athena Design System — patterns.css: the hatch, outline and ground recipes (.ad-hatched, .ad-ground, …), plain CSS. Generated from src/css/patterns.css; do not edit. Import order, once per app, all four: fonts.css, tokens.css, patterns.css, components.css. */
@@ -570,7 +578,7 @@
 /* The ground carries the body type (moved from Athena's body, ruled 2026-10-26): the app's own words inside it read right
    without the app naming a face. Every piece still sets its own type over this. */
 .ad-ground { font: var(--type-name); letter-spacing: normal; color: var(--text-primary); }
-.ad-ground::before { content: ''; position: absolute; inset: 0; z-index: -1; pointer-events: none; background: url('assets/textures/grain.jpg') center / cover no-repeat; opacity: var(--grain-opacity); mix-blend-mode: screen; }
+/* The grain plate is retired (Studio glass, locked 2026-10-29): it fought the hairlines. The ground's washes are drawn by Furniture.css. */
 /* Windows high contrast (forced-colors). The system replaces every colour and drops box-shadow, so the
    focus ring — drawn everywhere as `outline: none; box-shadow: var(--ring-select)` — disappears and the
    keyboard user cannot see where they are. DR: "Keyboard focus always shows the same ring." These rules
@@ -702,7 +710,7 @@ tr[data-ad-drop="after"] > :is(td, th) { box-shadow: inset 0 calc(var(--bw-selec
 /* Board, BoardLane (DropLine's look is the one drop line, in base.css) */
 .ad-board { display: flex; gap: var(--space-4); overflow-x: auto; align-items: flex-start; }
 .ad-board-lane { width: var(--w-lane); flex: none; }
-.ad-board-lane__heading { display: flex; align-items: center; gap: var(--space-2); margin: 0 0 var(--space-3); padding-bottom: var(--space-2); border-bottom: var(--border-w) solid var(--border); font: var(--type-heading); text-transform: uppercase; color: var(--text-primary); }
+.ad-board-lane__heading { display: flex; align-items: center; gap: var(--space-2); margin: 0 0 var(--space-3); padding-bottom: var(--space-2); border-bottom: var(--border-w) solid var(--border); font: var(--type-heading); text-transform: uppercase; color: var(--text-secondary); }
 .ad-board-lane__cards { display: flex; flex-direction: column; gap: var(--space-2); }
 .ad-board-lane__card-meta { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-1) var(--space-2); min-width: 0; }
 .ad-board-lane__card-meta > * { flex-shrink: 0; }
@@ -719,7 +727,7 @@ tr[data-ad-drop="after"] > :is(td, th) { box-shadow: inset 0 calc(var(--bw-selec
 
 /* src/components/Button/Button.css */
 /* Button and IconButton */
-.ad-button { display: inline-flex; align-items: center; justify-content: center; gap: var(--space-2); border: 0; border-radius: var(--radius-page); margin: 0; font: var(--type-name); line-height: var(--lh-none); white-space: nowrap; background: var(--ad-lift, var(--bg-raised)); color: var(--text-primary); cursor: pointer; }
+.ad-button { display: inline-flex; align-items: center; justify-content: center; gap: var(--space-2); box-sizing: border-box; border: var(--border-w) solid var(--border); border-radius: var(--radius-control); margin: 0; font: var(--type-name); line-height: var(--lh-none); white-space: nowrap; background: var(--ad-lift, var(--bg-raised)); color: var(--text-primary); cursor: pointer; }
 .ad-button--md { height: var(--h-btn); padding: 0 var(--space-4); }
 .ad-button--bar { height: var(--h-btn-bar); padding: 0 var(--space-3); }
 .ad-button--row { height: var(--h-btn-row); padding: 0 var(--space-3); }
@@ -727,7 +735,7 @@ tr[data-ad-drop="after"] > :is(td, th) { box-shadow: inset 0 calc(var(--bw-selec
 .ad-button:focus-visible, .ad-icon-button:focus-visible { outline: none; box-shadow: var(--ring-select); }
 /* The ring has to read against the coral, where the bone ring does not. */
 .ad-button--main:focus-visible { box-shadow: inset 0 0 0 var(--border-w-strong) var(--on-accent); }
-.ad-button--main { background: var(--accent); color: var(--on-accent); font-weight: 600; }
+.ad-button--main { background: var(--accent); border-color: var(--accent); color: var(--on-accent); font-weight: 600; box-shadow: var(--glow-hover); }
 .ad-button--main:hover { background: var(--accent-hover); color: var(--on-accent); }
 .ad-button--danger { color: var(--status-error-ink); }
 .ad-button--active { background: var(--bg-hover); }
@@ -844,7 +852,7 @@ button.ad-booking:focus-visible { outline: none; box-shadow: var(--ring-select);
 .ad-time-grid__marks { display: inline-flex; align-items: center; gap: var(--space-1); margin-left: var(--space-1); vertical-align: middle; }
 /* YearCalendar: twelve small months in a grid; days in mono, grey, a day that holds work in bone with a dot under it, today ringed. */
 .ad-year { display: grid; grid-template-columns: repeat(auto-fill, minmax(calc(var(--space-6) * 7), 1fr)); gap: var(--space-6); }
-.ad-year__name { margin-bottom: var(--space-2); font: var(--type-heading); text-transform: uppercase; color: var(--text-primary); }
+.ad-year__name { margin-bottom: var(--space-2); font: var(--type-heading); text-transform: uppercase; color: var(--text-secondary); }
 .ad-year__days { display: grid; grid-template-columns: repeat(7, 1fr); gap: var(--space-hair); }
 .ad-year__day { position: relative; display: grid; place-items: center; height: var(--space-6); padding: 0; border: 0; border-radius: var(--radius-page); background: transparent; font: var(--type-data); font-size: var(--text-xs); color: var(--text-muted); }
 .ad-year__day[data-busy] { color: var(--text-primary); }
@@ -879,7 +887,7 @@ button.ad-year__day:focus-visible { outline: none; box-shadow: var(--ring-select
 
 /* DayCell: one day in a week of days. */
 .ad-day-cell { --ad-where: transparent; position: relative; display: flex; flex-direction: column; align-items: center; gap: var(--space-1); padding: var(--space-2) var(--space-1) 0; border-radius: var(--radius-page); }
-.ad-day-cell__letter { font: var(--type-heading); text-transform: uppercase; color: var(--text-primary); }
+.ad-day-cell__letter { font: var(--type-heading); text-transform: uppercase; color: var(--text-secondary); }
 .ad-day-cell__number { display: inline-flex; align-items: center; justify-content: center; width: var(--h-btn); height: var(--h-btn); border-radius: var(--radius-page); font: var(--type-data); font-size: var(--text-base); color: var(--text-primary); }
 /* Today: the 2px bone ring round the day's cell, square as every day grid draws it. */
 .ad-day-cell--today { box-shadow: var(--ring-today); }
@@ -893,7 +901,7 @@ button.ad-year__day:focus-visible { outline: none; box-shadow: var(--ring-select
 .ad-time-grid__head { position: absolute; top: calc(-1 * var(--ad-head-h)); left: 0; right: 0; padding: 0 var(--space-2) var(--space-3); } /* every head starts on one line at the top; the grid reserves the tallest */
 .ad-time-grid__band { --ad-wash: var(--text-muted); height: var(--space-2); margin: 0 0 var(--space-1); background: color-mix(in srgb, var(--ad-wash) var(--tint-lane-wash), transparent); border-top: var(--bw-select) solid color-mix(in srgb, var(--ad-wash) var(--tint-lane-edge), transparent); position: relative; }
 .ad-time-grid__band--unconfirmed { border-top-style: dashed; }
-.ad-time-grid__band-label { position: absolute; left: var(--space-2); top: 100%; font: var(--type-detail); color: var(--text-secondary); white-space: nowrap; }
+.ad-time-grid__band-label { position: absolute; left: var(--space-2); top: 100%; font: var(--type-detail); color: var(--text-muted); white-space: nowrap; }
 .ad-time-grid__slot { --ad-lane-k: 0; --ad-lanes: 1; }
 .ad-time-grid__slot[data-lane] { left: calc(var(--space-1) + (100% - var(--space-2)) * var(--ad-lane-k) / var(--ad-lanes)); right: auto; width: calc((100% - var(--space-2)) / var(--ad-lanes) - var(--space-hair)); }
 .ad-time-grid__body--aside { padding-right: var(--space-6); box-sizing: border-box; }
@@ -949,9 +957,16 @@ button.ad-year__day:focus-visible { outline: none; box-shadow: var(--ring-select
 /* src/components/Card/Card.css */
 /* Card: a board tile, or a dashboard widget as the Dashboard card draws it (small caps title, More at the right in 600). */
 .ad-card { --ad-tray: var(--bg-base); }
-.ad-card { position: relative; box-sizing: border-box; border-radius: var(--radius-page); background: var(--bg-surface); color: var(--text-primary); font: var(--type-name); }
-.ad-card--tile { padding: var(--space-3); }
-.ad-card--widget { padding: var(--space-4) var(--space-4); }
+/* Studio glass (locked 2026-10-29): a card is frosted glass over the ground, a 1px edge, one bright top pixel and a long soft lift; a tile inside a panel keeps the glass but not the lift. */
+.ad-card { position: relative; box-sizing: border-box; border-radius: var(--radius-page); border: var(--border-w) solid var(--border); background: var(--bg-surface); box-shadow: var(--elev-float); backdrop-filter: var(--blur-glass); -webkit-backdrop-filter: var(--blur-glass); color: var(--text-primary); font: var(--type-name); }
+.ad-card .ad-card, .ad-section .ad-card { border-radius: var(--radius-tile); box-shadow: none; backdrop-filter: none; -webkit-backdrop-filter: none; }
+.ad-card--tile { padding: var(--space-2) var(--space-3) var(--space-3); }
+.ad-card--widget { padding: var(--space-3) var(--space-4) var(--space-4); counter-increment: widget; }
+/* The site's small index on each piece of work: 01.01, bottom right of a widget, in the quiet ink. */
+.ad-card--widget::after { content: "0" counter(widget) ".01"; position: absolute; right: var(--space-4); bottom: var(--space-3); font: var(--type-data); font-size: var(--text-xs); color: var(--text-muted); opacity: var(--opacity-dim); pointer-events: none; }
+/* The alert bar is drawn on a widget card but is not a widget: no index, and it does not count. */
+.ad-card--widget:has(> .ad-alert-bar__head) { counter-increment: none; }
+.ad-card--widget:has(> .ad-alert-bar__head)::after { content: none; }
 .ad-card--opens { cursor: pointer; }
 .ad-card--opens:hover { background: var(--bg-raised); }
 .ad-card--opens:hover .ad-card__name { color: var(--accent); }
@@ -959,13 +974,15 @@ button.ad-year__day:focus-visible { outline: none; box-shadow: var(--ring-select
 button.ad-card__name { display: block; width: 100%; padding: 0; border: 0; background: transparent; font: inherit; color: inherit; text-align: left; cursor: pointer; }
 button.ad-card__name:focus-visible { outline: none; box-shadow: var(--ring-select); border-radius: var(--radius-page); }
 .ad-card[data-dragging] { background: var(--glass-bg); backdrop-filter: var(--blur-glass); -webkit-backdrop-filter: var(--blur-glass); box-shadow: var(--elev-float); }
-.ad-card__head { display: flex; align-items: center; gap: var(--space-2); margin-bottom: var(--space-3); }
+.ad-card__head { display: flex; align-items: center; gap: var(--space-2); margin-bottom: var(--space-2); }
 .ad-card__title-open { padding: 0; border: 0; background: transparent; font: inherit; color: inherit; cursor: pointer; }
 .ad-card__title-open:focus-visible { outline: none; box-shadow: var(--ring-select); border-radius: var(--radius-page); }
 .ad-card--opens:hover .ad-card__title-open { color: var(--accent); }
 .ad-card__title { margin: 0; }
-.ad-card__more { margin: 0 0 0 auto; padding: 0; border: 0; background: transparent; font: var(--type-name); color: var(--text-primary); cursor: pointer; }
-.ad-card__more:hover { color: var(--accent); }
+/* More is the site's "VIEW ALL": coral tracked caps with a short rule before it. */
+.ad-card__more { display: inline-flex; align-items: center; gap: var(--space-2); margin: 0 0 0 auto; padding: 0; border: 0; background: transparent; font: var(--type-heading); text-transform: uppercase; letter-spacing: var(--track-caps); color: var(--accent); cursor: pointer; }
+.ad-card__more::before { content: ""; display: inline-block; width: var(--space-6); height: var(--border-w); background: currentColor; opacity: var(--opacity-dim); }
+.ad-card__more:hover { color: var(--accent-hover); }
 .ad-card__more:focus-visible { outline: none; box-shadow: var(--ring-select); border-radius: var(--radius-page); }
 .ad-card__name { line-height: var(--lh-tight); margin-bottom: var(--space-2); }
 /* A widget's dials: three across, as the Dashboard card lays them. */
@@ -1000,9 +1017,9 @@ button.ad-card__name:focus-visible { outline: none; box-shadow: var(--ring-selec
 .ad-budget { font: var(--type-name); }
 .ad-budget__figure { margin-bottom: var(--space-3); font: var(--type-data); font-size: var(--text-base); color: var(--text-secondary); }
 .ad-budget__figure strong { margin-right: var(--space-2); font: var(--type-title); font-size: var(--text-28); color: var(--text-primary); }
-.ad-progress { position: relative; height: var(--h-bar); overflow: hidden; border-radius: var(--radius-page); background-image: var(--hatch); box-shadow: inset 0 0 0 var(--border-w) var(--line-strong); }
+.ad-progress { position: relative; height: var(--h-bar); overflow: hidden; border-radius: var(--radius-mark); background-image: var(--hatch); box-shadow: inset 0 0 0 var(--border-w) var(--line-strong); }
 .ad-progress--thin { height: var(--space-3); }
-.ad-progress__done { position: absolute; left: 0; top: 0; bottom: 0; border-radius: var(--radius-page) 0 0 var(--radius-page); background: var(--bitrate-grey); }
+.ad-progress__done { position: absolute; left: 0; top: 0; bottom: 0; border-radius: var(--radius-mark) 0 0 var(--radius-mark); background: var(--bitrate-grey); }
 .ad-budget__foot { display: flex; justify-content: space-between; margin-top: var(--space-2); font: var(--type-data); font-size: var(--text-xs); color: var(--text-muted); }
 .ad-overtime { margin: 0; font: var(--type-data); font-size: var(--text-xs); }
 .ad-overtime__plot { position: relative; height: calc(var(--cal-cell) * 1.5); margin-left: var(--space-8); }
@@ -1023,8 +1040,9 @@ button.ad-card__name:focus-visible { outline: none; box-shadow: var(--ring-selec
 .ad-dial__track { stroke: var(--bg-hover); }
 .ad-dial__arc { stroke: var(--bitrate-grey); }
 .ad-dial__value { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font: var(--type-data); font-size: var(--text-xs); color: var(--text-primary); }
-.ad-dial__label { font: var(--type-detail); color: var(--text-secondary); text-align: center; }
-.ad-verdict__word { margin: 0 0 var(--space-1); font: var(--type-title); font-size: var(--text-28); line-height: var(--lh-tight); color: var(--text-primary); }
+.ad-dial__label { font: var(--type-detail); color: var(--text-muted); text-align: center; }
+/* The verdict is the one headline on a screen: the site's weight, a faint coral glow. */
+.ad-verdict__word { margin: 0 0 var(--space-1); font: var(--type-title); font-size: var(--text-28); font-weight: 800; line-height: var(--lh-tight); color: var(--text-primary); text-shadow: var(--glow-hover); }
 .ad-verdict__sentence { margin: 0; font: var(--type-body); line-height: var(--lh-normal); color: var(--text-secondary); }
 /* A budget's second reading: planned as a lighter layer under the worked part; a named mark where
  another figure falls (the original budget against the revised estimate). */
@@ -1118,11 +1136,12 @@ button.ad-card__name:focus-visible { outline: none; box-shadow: var(--ring-selec
 .ad-select__native option { background: var(--bg-float); color: var(--text-primary); }
 .ad-select__caret { position: absolute; right: var(--space-3); width: var(--icon-sm); height: var(--icon-sm); color: var(--text-muted); pointer-events: none; }
 .ad-select:hover .ad-select__caret { color: var(--accent); }
-.ad-field-row { display: flex; align-items: center; gap: var(--space-3); min-height: var(--h-row); border-bottom: var(--border-w) solid var(--border); }
+/* A settings row: the label in one column, its control right beside it (never across the screen), a hairline under. */
+.ad-field-row { display: grid; grid-template-columns: var(--w-menu) minmax(0, var(--w-card)); justify-content: start; align-items: center; column-gap: var(--space-4); min-height: var(--h-row); border-bottom: var(--border-w) solid var(--border); }
 .ad-field-row__label { display: inline-flex; align-items: center; gap: var(--space-2); font: var(--type-body); line-height: var(--lh-tight); color: var(--text-secondary); }
-.ad-field-row__control { margin-left: auto; display: flex; align-items: center; }
+.ad-field-row__control { display: flex; align-items: center; justify-self: start; }
 /* The label beside its field (a form, a pop-over field): no hairline, the field right after the words. */
-.ad-field-row--beside { min-height: var(--h-field); border-bottom: 0; }
+.ad-field-row--beside { display: flex; gap: var(--space-3); min-height: var(--h-field); border-bottom: 0; }
 .ad-field-row--beside .ad-field-row__control { margin-left: 0; }
 /* The field side takes the width left after the name and shrinks inside it. A field gives way first, its own
  words ending in "…"; a button beside it keeps its whole label. Nothing runs past the row. */
@@ -1172,7 +1191,7 @@ button.ad-card__name:focus-visible { outline: none; box-shadow: var(--ring-selec
 
 /* src/components/Furniture/Furniture.css */
 /* Footer, Contents, Caption, DualUnit, Ground, Frame */
-.ad-footer { display: grid; grid-template-columns: max-content minmax(0, 1fr) minmax(0, 2fr) max-content; height: var(--h-footer); border-top: var(--border-w) solid var(--line-strong); font: var(--type-heading); text-transform: uppercase; color: var(--text-primary); white-space: nowrap; }
+.ad-footer { display: grid; grid-template-columns: max-content minmax(0, 1fr) minmax(0, 2fr) max-content; height: var(--h-footer); border-top: var(--border-w) solid var(--border); background: var(--bg-side); font: var(--type-heading); text-transform: uppercase; letter-spacing: var(--track-caps); color: var(--text-secondary); white-space: nowrap; }
 .ad-footer__cell { display: flex; align-items: center; padding: 0 var(--space-4); border-right: var(--border-w) solid var(--border); }
 .ad-footer__code { gap: var(--space-2); }
 .ad-footer__number { font: var(--type-data); color: var(--text-secondary); }
@@ -1199,7 +1218,8 @@ button.ad-contents__button:focus-visible { outline: none; box-shadow: var(--ring
 .ad-contents__summary { font: var(--type-body); color: var(--text-secondary); }
 .ad-caption { font: var(--type-data); font-size: var(--text-xs); text-transform: lowercase; color: var(--text-muted); }
 .ad-dual { font: var(--type-data); font-variant-numeric: tabular-nums; }
-.ad-ground { display: flex; flex-direction: column; min-height: 100%; background-color: var(--bg-base); }
+/* The ground: the deep black with a warm wash top left and a cool one bottom right (Studio glass, locked 2026-10-29). No grain. */
+.ad-ground { display: flex; flex-direction: column; min-height: 100%; background-color: var(--bg-base); background-image: radial-gradient(80% 70% at 15% -10%, var(--wash-warm), transparent 60%), radial-gradient(60% 60% at 105% 105%, var(--wash-cool), transparent 60%); background-attachment: fixed; counter-reset: widget; }
 /* The frame every screen keeps: the rail, then the page (header, one toolbar, the work) in its gutter. */
 .ad-frame { display: flex; align-items: stretch; flex: 1; min-height: 100vh; min-height: 100dvh; }
 /* The page: the header at the top with 16 above it, the toolbar 16 under the header, the work
@@ -1229,11 +1249,11 @@ button.ad-contents__button:focus-visible { outline: none; box-shadow: var(--ring
 /* src/components/GroupHeading/GroupHeading.css */
 /* GroupHeading */
 /* Every section label reads the same: name text-primary, numeral text-muted, capitals whether or not it folds (a button's own text-transform is undone); needing you changes nothing here. */
-.ad-group-heading { display: flex; align-items: center; gap: var(--space-2); min-height: var(--h-btn); color: var(--text-primary); }
+.ad-group-heading { display: flex; align-items: center; gap: var(--space-2); min-height: var(--h-btn); color: var(--text-secondary); }
 .ad-group-heading--rule-above { border-top: var(--border-w) solid var(--border); padding-top: var(--space-2); }
 .ad-group-heading--rule-below { border-bottom: var(--border-w) solid var(--border); padding-bottom: var(--space-2); }
-.ad-group-heading__title { display: flex; align-items: center; margin: 0; min-width: 0; font: var(--type-heading); text-transform: uppercase; line-height: var(--lh-tight); color: inherit; }
-.ad-group-heading__button { display: inline-flex; align-items: center; gap: var(--space-2); margin: 0; padding: 0; border: 0; background: transparent; font: var(--type-heading); text-transform: uppercase; color: inherit; cursor: pointer; border-radius: var(--radius-page); }
+.ad-group-heading__title { display: flex; align-items: center; margin: 0; min-width: 0; font: var(--type-heading); text-transform: uppercase; letter-spacing: var(--track-caps); line-height: var(--lh-tight); color: inherit; }
+.ad-group-heading__button { display: inline-flex; align-items: center; gap: var(--space-2); margin: 0; padding: 0; border: 0; background: transparent; font: var(--type-heading); text-transform: uppercase; letter-spacing: var(--track-caps); color: inherit; cursor: pointer; border-radius: var(--radius-control); }
 .ad-group-heading__button:hover { color: var(--accent); }
 .ad-group-heading__button:focus-visible { outline: none; box-shadow: var(--ring-select); }
 .ad-group-heading__title > *, .ad-group-heading__button > * { flex: none; }
@@ -1310,7 +1330,7 @@ button.ad-contents__button:focus-visible { outline: none; box-shadow: var(--ring
 
 /* src/components/List/List.css */
 /* List, ListSection, DayHeading, AddRow */
-.ad-list { display: flex; flex-direction: column; gap: var(--space-6); }
+.ad-list { display: flex; flex-direction: column; gap: var(--space-6); max-width: var(--w-page-max); }
 .ad-list-section { display: flex; flex-direction: column; }
 /* One hairline, never two: a section's last row draws none, so the next label's line stands alone. */
 .ad-list-section__body > .ad-row:last-child, .ad-list-section__body > .ad-add-row:last-child { border-bottom: 0; }
@@ -1319,7 +1339,7 @@ button.ad-contents__button:focus-visible { outline: none; box-shadow: var(--ring
   display: flex; align-items: baseline; gap: var(--space-3); margin: 0; padding-bottom: var(--space-2);
   border-bottom: var(--border-w) solid var(--border);
 }
-.ad-day-heading__name { font: var(--type-heading); text-transform: uppercase; color: var(--text-primary); }
+.ad-day-heading__name { font: var(--type-heading); text-transform: uppercase; color: var(--text-secondary); }
 .ad-day-heading__date { font: var(--type-data); font-size: var(--text-xs); color: var(--text-muted); }
 .ad-add-row { display: flex; align-items: center; gap: var(--space-3); box-sizing: border-box; width: 100%; height: var(--h-row); margin: 0; padding: 0 var(--space-2); border: 0; border-bottom: var(--border-w) solid var(--border); background: transparent; font: var(--type-name); color: var(--text-muted); text-align: left; cursor: text; }
 .ad-add-row:hover { color: var(--accent); }
@@ -1343,7 +1363,7 @@ button.ad-contents__button:focus-visible { outline: none; box-shadow: var(--ring
 .ad-list-columns { position: relative; --ad-col: auto; }
 .ad-list-columns__head { position: sticky; top: 0; z-index: 1; display: flex; align-items: center; height: var(--h-btn); padding: 0 var(--space-2); background: var(--bg-base); border-bottom: var(--border-w) solid var(--border); }
 .ad-list-columns__spacer { flex: 1; }
-.ad-list-columns__heading { position: relative; display: inline-flex; align-items: center; flex: none; width: var(--ad-col); padding: 0 var(--space-2); box-sizing: border-box; font: var(--type-heading); text-transform: uppercase; color: var(--text-primary); white-space: nowrap; }
+.ad-list-columns__heading { position: relative; display: inline-flex; align-items: center; flex: none; width: var(--ad-col); padding: 0 var(--space-2); box-sizing: border-box; font: var(--type-heading); text-transform: uppercase; color: var(--text-secondary); white-space: nowrap; }
 .ad-list-columns__heading[aria-sort] { color: var(--text-primary); }
 .ad-list-columns__edge { position: absolute; top: 0; right: 0; bottom: 0; width: var(--space-2); cursor: col-resize; }
 .ad-list-columns__edge:hover { box-shadow: inset calc(var(--border-w) * -1) 0 0 var(--text-muted); }
@@ -1419,7 +1439,7 @@ button.ad-contents__button:focus-visible { outline: none; box-shadow: var(--ring
 
 /* src/components/Navigation/Navigation.css */
 /* Rail, SideMenu, ProjectPill */
-.ad-rail { display: flex; flex-direction: column; align-items: center; gap: var(--space-4); box-sizing: border-box; width: var(--w-rail); height: 100%; padding: var(--space-4) 0 var(--space-3); background: var(--bg-side); }
+.ad-rail { display: flex; flex-direction: column; align-items: center; gap: var(--space-4); box-sizing: border-box; width: var(--w-rail); height: 100%; padding: var(--space-4) 0 var(--space-3); background: var(--bg-side); border-right: var(--border-w) solid var(--border); backdrop-filter: var(--blur-glass); -webkit-backdrop-filter: var(--blur-glass); }
 .ad-rail__group { display: flex; flex-direction: column; align-items: center; gap: var(--space-1); }
 /* The project pills sit on the icon column's left edge, not centred, rail and open menu alike. */
 .ad-rail__group--projects, .ad-rail__pinned { align-self: stretch; display: flex; flex-direction: column; align-items: flex-start; gap: var(--space-1); padding-left: calc((var(--w-rail) - var(--h-btn)) / 2); }
@@ -1445,7 +1465,7 @@ button.ad-contents__button:focus-visible { outline: none; box-shadow: var(--ring
 button:hover > .ad-project-pill:not(.ad-project-pill--current) { color: var(--accent); }
 /* The open menu is the rail, wider: the same top padding, the same icon column (each icon where the rail draws it), the same gap after
  Home and between groups, the same foot, so opening and closing moves nothing but the width. */
-.ad-side { display: flex; flex-direction: column; box-sizing: border-box; width: var(--w-side); height: 100%; padding: var(--space-4) var(--space-3) var(--space-3) 0; background: var(--bg-side); }
+.ad-side { display: flex; flex-direction: column; box-sizing: border-box; width: var(--w-side); height: 100%; padding: var(--space-4) var(--space-3) var(--space-3) 0; background: var(--bg-side); border-right: var(--border-w) solid var(--border); backdrop-filter: var(--blur-glass); -webkit-backdrop-filter: var(--blur-glass); }
 /* The open menu's rows sit on the rail's pitch: the same row height and the same gap as the rail's items, so folding changes the
  width and nothing else. */
 .ad-side__list { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: var(--space-1); }
@@ -1511,15 +1531,17 @@ button:hover > .ad-project-pill:not(.ad-project-pill--current) { color: var(--ac
 /* PageHeader and Tabs */
 .ad-page-header { position: relative; }
 .ad-page-header__row { display: flex; align-items: center; gap: var(--space-6); }
-.ad-page-header__title { display: flex; align-items: center; gap: var(--space-3); margin: 0; flex: none; white-space: nowrap; font: var(--type-title); font-size: var(--text-display); line-height: var(--lh-none); color: var(--bg-base); -webkit-text-stroke: var(--bw-select) var(--text-primary); paint-order: stroke fill; }
+/* The page title: the site's headline, Work Sans 800 in caps, solid, in the second ink (never white: the title is decoration, the verdict is the thing). */
+.ad-page-header__title { display: flex; align-items: center; gap: var(--space-3); margin: 0; flex: none; white-space: nowrap; font: var(--type-title); font-size: var(--text-display); font-weight: 800; text-transform: uppercase; line-height: var(--lh-none); color: var(--text-secondary); }
 /* The chrome's icons are one ink, the primary: the title's glyph as the rail's. */
-.ad-page-header__icon { display: inline-flex; color: var(--text-primary); -webkit-text-stroke: 0; }
+.ad-page-header__icon { display: inline-flex; color: var(--text-secondary); }
 .ad-page-header__icon svg { width: calc(1em * var(--icon-page)); height: calc(1em * var(--icon-page)); }
 /* HeaderActions: Athena's raised box round the header's icon buttons, kept as it was. */
 .ad-header-actions { display: inline-flex; flex: none; align-items: center; box-sizing: border-box; gap: var(--space-2); height: var(--h-btn-bar); padding: 0 var(--pad-header-actions); border-radius: var(--radius-page); background: var(--bg-surface); }
 .ad-page-header__row > .ad-header-actions { margin-left: auto; }
 /* The project state, on the title row before the icon buttons; alone, it ends the row. */
-.ad-page-header__stamp { flex: none; margin-left: auto; pointer-events: none; white-space: nowrap; font: var(--type-title); font-size: var(--text-44); text-transform: uppercase; color: var(--text-primary); opacity: var(--opacity-stamp); }
+/* The stamp is the site's ghost type: tracked caps, faint. */
+.ad-page-header__stamp { flex: none; margin-left: auto; pointer-events: none; white-space: nowrap; font: var(--type-title); font-size: var(--text-28); text-transform: uppercase; letter-spacing: var(--track-caps); color: var(--text-primary); opacity: var(--opacity-stamp); }
 .ad-page-header__stamp + .ad-header-actions { margin-left: 0; }
 /* A project's tabs, under the title row. */
 .ad-page-header__tabs { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-2) var(--space-6); margin-top: var(--space-4); }
@@ -1527,16 +1549,17 @@ button:hover > .ad-project-pill:not(.ad-project-pill--current) { color: var(--ac
  countdown drop under the title instead of squeezing to a word a line. */
 .ad-page-header__lead { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-2) var(--space-6); flex: 1 1 auto; min-width: 0; }
 .ad-page-header__aside { display: flex; flex-direction: column; gap: var(--space-1); flex: 1 1 0; min-width: var(--w-menu); }
-.ad-page-header__description { margin: 0; font: var(--type-body); line-height: var(--lh-tight); color: var(--text-secondary); }
+.ad-page-header__description { margin: 0; font: var(--type-heading); text-transform: uppercase; letter-spacing: var(--track-caps); line-height: var(--lh-tight); color: var(--text-secondary); }
 .ad-page-header__countdown { margin: 0; font: var(--type-data); font-size: var(--text-xs); color: var(--text-muted); }
 .ad-tabs { display: flex; flex-wrap: wrap; gap: var(--space-2) var(--space-6); }
-.ad-tab { display: inline-flex; align-items: baseline; gap: var(--space-2); margin: 0; padding: 0 0 var(--space-2); border: 0; border-bottom: var(--border-w) solid transparent; background: transparent; cursor: pointer; font: var(--type-heading); text-transform: uppercase; color: var(--text-primary); }
+.ad-tab { display: inline-flex; align-items: baseline; gap: var(--space-2); margin: 0; padding: 0 0 var(--space-2); border: 0; border-bottom: var(--border-w) solid transparent; background: transparent; cursor: pointer; font: var(--type-heading); text-transform: uppercase; letter-spacing: var(--track-caps); color: var(--text-secondary); }
 .ad-tab:not([aria-selected="true"]) { color: var(--text-secondary); }
 .ad-tab:hover { color: var(--accent); }
-.ad-tab:focus-visible { outline: none; box-shadow: var(--ring-select); border-radius: var(--radius-page); }
-.ad-tab[aria-selected="true"] { color: var(--text-primary); border-bottom-color: var(--text-primary); }
+.ad-tab:focus-visible { outline: none; box-shadow: var(--ring-select); border-radius: var(--radius-control); }
+/* The current tab is coral, as THE WORK goes coral on the site when you are in it (ruled 2026-10-29). */
+.ad-tab[aria-selected="true"] { color: var(--accent); border-bottom-color: var(--accent); }
 .ad-tab__numeral { font: var(--type-data); color: var(--text-muted); }
-.ad-tab[aria-selected="true"] .ad-tab__numeral { color: var(--text-primary); }
+.ad-tab[aria-selected="true"] .ad-tab__numeral { color: var(--accent); opacity: var(--opacity-dim); }
 /* The way back from a detail page: a bare chevron directly before the title, on the title row, no words and no line of its own
 . */
 .ad-page-header__titled { display: flex; align-items: center; gap: var(--space-2); flex: none; min-width: 0; }
@@ -1572,7 +1595,7 @@ button:hover > .ad-project-pill:not(.ad-project-pill--current) { color: var(--ac
 .ad-picklist__over > .ad-picklist__control { visibility: visible; pointer-events: auto; }
 .ad-picklist__place { visibility: hidden; }
 /* A group's heading sits on the same left edge as the rows under it; it reads as a title, in the primary ink. */
-.ad-picklist__group { padding: var(--space-3) var(--space-2) var(--space-1); font: var(--type-heading); text-transform: uppercase; color: var(--text-primary); }
+.ad-picklist__group { padding: var(--space-3) var(--space-2) var(--space-1); font: var(--type-heading); text-transform: uppercase; color: var(--text-secondary); }
 .ad-picklist__option, .ad-picklist__over { display: flex; align-items: center; gap: var(--space-3); box-sizing: border-box; height: var(--h-row); padding: 0 var(--space-2); border-radius: var(--radius-page); font: var(--type-name); color: var(--text-primary); cursor: pointer; }
 /* Coral is the light under the cursor only (DR Colour, DR Behaviour): the keyboard's active option keeps the tint, not the ink. */
 .ad-picklist__option[data-active], .ad-picklist__option:hover, .ad-picklist__option[data-hover] { background: var(--tint-hover); }
@@ -1720,10 +1743,10 @@ button.ad-row__name:focus-visible { outline: none; box-shadow: var(--ring-select
 .ad-row--heading .ad-row__body { flex: none; }
 .ad-row--heading .ad-row__dates { margin-left: auto; }
 /* The second line is the body face at 12: the calendar glyph and the date, the department glyph, the department's name. */
-.ad-row__meta { display: flex; align-items: center; gap: var(--space-2); margin-top: var(--space-1); font: var(--type-detail); line-height: var(--lh-tight); color: var(--text-secondary); min-width: 0; }
+.ad-row__meta { display: flex; align-items: center; gap: var(--space-2); margin-top: var(--space-1); font: var(--type-detail); line-height: var(--lh-tight); color: var(--text-muted); min-width: 0; }
 .ad-row__status, .ad-row__dates, .ad-row__tags, .ad-row__people, .ad-row__trail { display: inline-flex; align-items: center; gap: var(--space-2); flex: none; }
 .ad-row__trail { gap: var(--space-1); }
-.ad-row-date { display: inline-flex; align-items: center; gap: var(--space-1); font: var(--type-detail); color: var(--text-secondary); white-space: nowrap; }
+.ad-row-date { display: inline-flex; align-items: center; gap: var(--space-1); font: var(--type-detail); color: var(--text-muted); white-space: nowrap; }
 .ad-row-date--late { color: var(--status-error-ink); }
 /* Today green, late red, the glyphs in the date's colour. */
 .ad-row-date--today { color: var(--status-good); }
@@ -1813,10 +1836,15 @@ button.ad-row__name:focus-visible { outline: none; box-shadow: var(--ring-select
 /* src/components/Section/Section.css */
 /* Section and SectionFrame: the one region every screen is built from. The look of a section (its ground, corner and shadow,
    none at rest) lives here and nowhere else; ListSection, SettingsSection and FormSection carry .ad-section too. */
-/* The frame: a screen's sections, 24 apart. */
-.ad-section-frame { display: flex; flex-direction: column; gap: var(--space-6); min-width: 0; }
-/* The section: its heading, then its body. */
-.ad-section { display: flex; flex-direction: column; min-width: 0; }
+/* The frame: a screen's sections, 32 apart, at a reading width (a label sits beside its value, never across the screen). */
+.ad-section-frame { display: flex; flex-direction: column; gap: var(--space-8); min-width: 0; max-width: var(--w-page-max); }
+/* The section: a glass panel (Studio glass, locked 2026-10-29) holding its heading, then its body. `ad-section--rule` is the
+   list-only form: no panel, a strong rule over its heading, as the Loudbox site separates blocks. Inside a card or another
+   section, a section is never a panel of its own (no card in a card). */
+.ad-section { display: flex; flex-direction: column; min-width: 0; box-sizing: border-box; padding: var(--space-3) var(--space-6) var(--space-6); border: var(--border-w) solid var(--border); border-radius: var(--radius-page); background: var(--bg-surface); box-shadow: var(--elev-float); backdrop-filter: var(--blur-glass); -webkit-backdrop-filter: var(--blur-glass); }
+.ad-section > .ad-group-heading--rule-above { border-top: 0; padding-top: 0; }
+.ad-section--rule, .ad-card .ad-section, .ad-section .ad-section { padding: 0; border: 0; border-radius: 0; background: transparent; box-shadow: none; backdrop-filter: none; -webkit-backdrop-filter: none; }
+.ad-section--rule > .ad-group-heading--rule-above { border-top: var(--border-w) solid var(--line-strong); padding-top: var(--space-2); }
 /* The body: the section's groups, 16 apart. */
 .ad-section__body { display: flex; flex-direction: column; gap: var(--space-4); min-width: 0; }
 .ad-section__body[hidden] { display: none; }
@@ -1828,10 +1856,11 @@ button.ad-row__name:focus-visible { outline: none; box-shadow: var(--ring-select
 /* src/components/Segmented/Segmented.css */
 /* Segmented: pick one of 2 to 5. The choices sit loose and the current one sits on a bg-raised tile, as the view switch draws
  it. space-hair between the choices: tight neighbours. */
+/* Studio glass: the tray is a glass box with a hairline edge; the choices are tracked mono caps; the current one a square-ish tile. */
 .ad-segmented {
-  display: inline-flex; align-items: center; width: max-content; gap: var(--space-hair); box-sizing: border-box; height: var(--h-btn);
+  display: inline-flex; align-items: center; width: max-content; gap: var(--space-hair); box-sizing: border-box; height: var(--h-btn); padding: var(--space-hair); border: var(--border-w) solid var(--border); border-radius: var(--radius-control); background: var(--bg-surface);
 }
-.ad-segmented__option { display: inline-flex; align-items: center; justify-content: center; gap: var(--space-2); height: var(--h-seg); padding: 0 var(--space-3); margin: 0; border: 0; border-radius: var(--radius-page); background: transparent; font: var(--type-name); line-height: var(--lh-none); cursor: pointer; }
+.ad-segmented__option { display: inline-flex; align-items: center; justify-content: center; gap: var(--space-2); height: var(--h-seg); padding: 0 var(--space-3); margin: 0; border: 0; border-radius: var(--radius-control); background: transparent; font: var(--type-heading); text-transform: uppercase; letter-spacing: var(--track-caps); line-height: var(--lh-none); cursor: pointer; }
 .ad-segmented__option:hover { color: var(--accent); }
 .ad-segmented__option:not([aria-checked="true"]) { color: var(--text-secondary); }
 .ad-segmented__option[aria-checked="true"] { background: var(--bg-raised); color: var(--text-primary); }
@@ -1931,7 +1960,7 @@ button.ad-row__name:focus-visible { outline: none; box-shadow: var(--ring-select
 .ad-table--fixed td { overflow: hidden; text-overflow: ellipsis; }
 /* The tick column keeps its own width under `fixed`: never cut to "☑…". */
 .ad-table--fixed .ad-table__pick { box-sizing: border-box; width: calc(var(--check-size) + 2 * var(--space-2)); overflow: visible; text-overflow: clip; }
-.ad-table th[scope="col"] { position: sticky; top: 0; z-index: 1; height: var(--h-btn); padding: 0 var(--space-2); text-align: left; white-space: nowrap; background: var(--bg-base); border-bottom: var(--border-w) solid var(--border); font: var(--type-heading); text-transform: uppercase; color: var(--text-primary); }
+.ad-table th[scope="col"] { position: sticky; top: 0; z-index: 1; height: var(--h-btn); padding: 0 var(--space-2); text-align: left; white-space: nowrap; background: var(--bg-base); border-bottom: var(--border-w) solid var(--border); font: var(--type-heading); text-transform: uppercase; color: var(--text-secondary); }
 .ad-table th[aria-sort="ascending"], .ad-table th[aria-sort="descending"] { color: var(--text-primary); }
 .ad-table__arrow { width: var(--icon-sm); height: var(--icon-sm); }
 .ad-table td, .ad-table th[scope="row"] { height: var(--h-row); padding: 0 var(--space-2); border-bottom: var(--border-w) solid var(--border); text-align: left; white-space: nowrap; }
@@ -1959,7 +1988,7 @@ button.ad-row__name:focus-visible { outline: none; box-shadow: var(--ring-select
 .ad-table__frozen--end { right: 0; }
 .ad-table th[scope="col"].ad-table__frozen--start, .ad-table th[scope="col"].ad-table__frozen--end { z-index: 2; }
 /* A group heading row: the section-label look, one hairline under. */
-.ad-table__group th { height: var(--h-btn); padding: var(--space-4) var(--space-2) 0; text-align: left; border-bottom: var(--border-w) solid var(--border); font: var(--type-heading); text-transform: uppercase; color: var(--text-primary); }
+.ad-table__group th { height: var(--h-btn); padding: var(--space-4) var(--space-2) 0; text-align: left; border-bottom: var(--border-w) solid var(--border); font: var(--type-heading); text-transform: uppercase; color: var(--text-secondary); }
 /* A child row: indented one step per level, an elbow before its name. */
 .ad-table th.ad-table__name { --ad-depth: 0; padding-left: calc(var(--space-2) + var(--ad-depth) * var(--space-6)); }
 .ad-table th.ad-table__name:not(.ad-table__frozen--start) { position: relative; }
@@ -1968,7 +1997,7 @@ button.ad-row__name:focus-visible { outline: none; box-shadow: var(--ring-select
 .ad-table th.ad-table__name--two { height: var(--h-row-2); }
 .ad-table__words { display: inline-flex; flex-direction: column; gap: var(--space-hair); }
 /* The second line is words (a role, a place) in the body face; mono is for figures. */
-.ad-table__meta { font: var(--type-detail); color: var(--text-secondary); }
+.ad-table__meta { font: var(--type-detail); color: var(--text-muted); }
 .ad-selection-bar__lead { display: inline-flex; align-items: center; gap: var(--space-2); }
 .ad-selection-bar__slot { align-self: stretch; display: inline-flex; align-items: center; }
 
@@ -1976,7 +2005,7 @@ button.ad-row__name:focus-visible { outline: none; box-shadow: var(--ring-select
 
 /* src/components/Tag/Tag.css */
 /* Tag, FilterTag, UnreadDot. (TokenPill's look is .ad-token, in Writing.css: one red pill.) */
-.ad-tag { display: inline-flex; align-items: center; justify-content: center; box-sizing: border-box; height: var(--icon-lg); padding: 0 var(--space-1); border-radius: var(--radius-page); box-shadow: inset 0 0 0 var(--border-w) var(--line-strong); font: var(--type-data); font-size: var(--text-xs); line-height: var(--lh-none); color: var(--text-secondary); white-space: nowrap; }
+.ad-tag { display: inline-flex; align-items: center; justify-content: center; box-sizing: border-box; height: var(--icon-lg); padding: 0 var(--space-1); border-radius: var(--radius-mark); box-shadow: inset 0 0 0 var(--border-w) var(--line-strong); font: var(--type-data); font-size: var(--text-xs); line-height: var(--lh-none); text-transform: uppercase; color: var(--text-secondary); white-space: nowrap; }
 .ad-tag--current { background: var(--text-primary); color: var(--bg-base); box-shadow: none; }
 
 /* An active filter (the Labels card): filled one tone lighter, 28 tall; the axis grey, the value bone, its x at the end. */
@@ -1993,14 +2022,14 @@ button.ad-row__name:focus-visible { outline: none; box-shadow: var(--ring-select
 .ad-active-filters { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-3); }
 
 /* A note tag: words, not a code. */
-.ad-tag--note { font: var(--type-detail); color: var(--text-secondary); }
+.ad-tag--note { font: var(--type-detail); color: var(--text-muted); }
 
 /* src/components/Text/Text.css */
 /* Text: the small type pieces a screen writes inside its own sentences and cells. */
 .ad-data-text { font: var(--type-data); color: inherit; }
 .ad-data-text--small { font: var(--type-data); font-size: var(--text-xs); }
 .ad-data-text--dim { color: var(--text-secondary); }
-.ad-hint { font: var(--type-detail); line-height: var(--lh-tight); color: var(--text-secondary); }
+.ad-hint { font: var(--type-detail); line-height: var(--lh-tight); color: var(--text-muted); }
 .ad-figures { display: grid; grid-template-columns: repeat(auto-fit, minmax(0, 1fr)); gap: 0; margin: 0; border-top: var(--border-w) solid var(--border); border-bottom: var(--border-w) solid var(--border); }
 /* The cells split by hairlines, as his Overview picture draws them. */
 .ad-figures__item { display: flex; flex-direction: column; gap: var(--space-2); min-width: 0; padding: var(--space-4) var(--space-6); border-left: var(--border-w) solid var(--border); }
@@ -2030,7 +2059,7 @@ button.ad-row__name:focus-visible { outline: none; box-shadow: var(--ring-select
 /* PeriodCluster: the span in words in bone, the steps, then the sizes; the current size in bone on the view switch's `bg-raised` tile. */
 .ad-period .ad-zoom__name { color: var(--text-primary); margin-right: var(--space-1); }
 .ad-period__sizes { display: inline-flex; gap: var(--space-1); margin-left: var(--space-2); }
-.ad-period__size { width: auto; padding: 0 var(--space-2); white-space: nowrap; font: var(--type-name); }
+.ad-period__size { width: auto; padding: 0 var(--space-2); white-space: nowrap; font: var(--type-heading); text-transform: uppercase; letter-spacing: var(--track-caps); }
 .ad-period__size[aria-checked="true"] { background: var(--bg-raised); color: var(--text-primary); }
 /* Pinned: held at the top of the scroller on its own ground, above the lanes. */
 .ad-ruler--pinned { position: sticky; top: 0; z-index: 2; background: var(--bg-base); }
@@ -2142,7 +2171,7 @@ button.ad-milestone:focus-visible { outline: none; box-shadow: var(--ring-select
 .ad-offscreen { color: var(--text-secondary); }
 @media (prefers-reduced-motion: reduce) { .ad-bar, .ad-bar__end, .ad-deliverable__chevron { transition: none; } }
 /* ChartKey: each word with its swatch, drawn as the bar draws that mark; no "FIG.". */
-.ad-chart-key { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-2) var(--space-4); font: var(--type-detail); color: var(--text-secondary); }
+.ad-chart-key { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-2) var(--space-4); font: var(--type-detail); color: var(--text-muted); }
 .ad-chart-key__item { display: inline-flex; align-items: center; gap: var(--space-2); }
 .ad-chart-key__item--press { padding: 0; border: 0; background: none; color: inherit; font: inherit; cursor: pointer; }
 .ad-chart-key__item--press:hover { color: var(--accent); }
@@ -2174,7 +2203,7 @@ button.ad-milestone:focus-visible { outline: none; box-shadow: var(--ring-select
 .ad-lane-wash { --ad-wash: var(--text-muted); position: absolute; top: 0; bottom: 0; box-sizing: border-box; border-radius: var(--radius-page); background: color-mix(in srgb, var(--ad-wash) var(--tint-lane-wash), transparent); pointer-events: none; overflow: hidden; }
 .ad-lane-wash--edge { border-left: var(--bw-select) solid color-mix(in srgb, var(--ad-wash) var(--tint-lane-edge), transparent); }
 .ad-lane-wash--unconfirmed { border-left-style: dashed; }
-.ad-lane-wash__label { position: absolute; top: var(--space-8); left: var(--space-1); white-space: nowrap; overflow: hidden; font: var(--type-detail); color: var(--text-secondary); } /* Detail: over a wash the dim ink still clears 4.5:1 (DR Colour) */
+.ad-lane-wash__label { position: absolute; top: var(--space-8); left: var(--space-1); white-space: nowrap; overflow: hidden; font: var(--type-detail); color: var(--text-muted); } /* Detail: over a wash the dim ink still clears 4.5:1 (DR Colour) */
 
 /* Built 2026-10-27 for My Plate: the name before the bar, the off-window end mark, the presence marks in the key. */
 .ad-bar--label-before .ad-bar__outside { left: auto; right: calc(100% + var(--space-4)); justify-content: flex-end; }
@@ -2218,12 +2247,12 @@ button.ad-milestone:focus-visible { outline: none; box-shadow: var(--ring-select
 .ad-button--view-narrowed .ad-icon { color: var(--text-primary); }
 
 /* The View pop-over: the filter's two halves with "or" between; the sentence when there is no saved view yet. */
-.ad-view-or { display: flex; align-items: center; gap: var(--space-2); margin: var(--space-2) 0; font: var(--type-detail); color: var(--text-secondary); }
+.ad-view-or { display: flex; align-items: center; gap: var(--space-2); margin: var(--space-2) 0; font: var(--type-detail); color: var(--text-muted); }
 .ad-view-or::before, .ad-view-or::after { content: ''; flex: 1; height: var(--border-w); background: var(--border); }
 .ad-view-none { margin: 0 0 var(--space-2); font: var(--type-body); color: var(--text-muted); }
 
 /* A Show entry in the person's own order: rows with the handle, dragged into place. */
-.ad-view-order__label { font: var(--type-detail); color: var(--text-secondary); margin-bottom: var(--space-1); }
+.ad-view-order__label { font: var(--type-detail); color: var(--text-muted); margin-bottom: var(--space-1); }
 .ad-view-order__list { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; }
 .ad-view-order__row { position: relative; display: flex; align-items: center; gap: var(--space-2); height: var(--h-btn-bar); font: var(--type-name); color: var(--text-primary); }
 
@@ -2269,7 +2298,7 @@ button.ad-milestone:focus-visible { outline: none; box-shadow: var(--ring-select
 .ad-bell[data-unread]::after { content: ""; position: absolute; top: var(--space-2); right: var(--space-2); width: var(--dot-size); height: var(--dot-size); border-radius: var(--radius-round); background: var(--text-primary); box-shadow: 0 0 0 var(--bw-select) var(--bg-base); }
 .ad-notifications { display: flex; flex-direction: column; gap: var(--space-4); }
 .ad-notifications__heading { display: flex; align-items: baseline; gap: var(--space-3); margin: 0 0 var(--space-1); padding-bottom: var(--space-2); border-bottom: var(--border-w) solid var(--border); }
-.ad-notifications__name { font: var(--type-heading); text-transform: uppercase; color: var(--text-primary); }
+.ad-notifications__name { font: var(--type-heading); text-transform: uppercase; color: var(--text-secondary); }
 .ad-notifications__date { font: var(--type-data); font-size: var(--text-xs); color: var(--text-muted); }
 .ad-notification { display: flex; align-items: flex-start; gap: var(--space-3); box-sizing: border-box; width: 100%; margin: 0; padding: var(--space-2) 0; border: 0; border-bottom: var(--border-w) solid var(--border); background: transparent; font: var(--type-body); line-height: var(--lh-normal); color: var(--text-secondary); text-align: left; }
 .ad-notification:last-child { border-bottom: 0; }
@@ -2322,7 +2351,7 @@ button.ad-notification:focus-visible { outline: none; box-shadow: var(--ring-sel
     radial-gradient(circle at 0 100%, var(--word-pill) var(--word-pill-r), transparent var(--word-pill-corner)) calc(100% - var(--word-pill-inset)) 0 / var(--word-pill-corner) var(--word-pill-corner) no-repeat,
     radial-gradient(circle at 100% 0, var(--word-pill) var(--word-pill-r), transparent var(--word-pill-corner)) var(--word-pill-inset) 100% / var(--word-pill-corner) var(--word-pill-corner) no-repeat,
     radial-gradient(circle at 0 0, var(--word-pill) var(--word-pill-r), transparent var(--word-pill-corner)) calc(100% - var(--word-pill-inset)) 100% / var(--word-pill-corner) var(--word-pill-corner) no-repeat; }
-.ad-note-label { margin: 0 0 var(--space-2); font: var(--type-heading); text-transform: uppercase; color: var(--text-primary); }
+.ad-note-label { margin: 0 0 var(--space-2); font: var(--type-heading); text-transform: uppercase; color: var(--text-secondary); }
 .ad-note-box { display: block; box-sizing: border-box; width: 100%; min-height: calc(var(--h-row) * 1.5); margin: 0; padding: var(--space-3) var(--space-3); border: 0; border-radius: var(--radius-page); background: var(--bg-raised); color: var(--text-secondary); font: var(--type-body); line-height: var(--lh-normal); resize: none; overflow: hidden; }
 .ad-note-box::placeholder { color: var(--text-muted); }
 .ad-note-box:focus { outline: none; background: var(--bg-hover); box-shadow: var(--ring-select); }
