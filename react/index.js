@@ -4443,6 +4443,8 @@ function Bar({ code: code2, travel, dim, label, unconfirmed, deal, backup, color
   const Tag2 = asButton ? "button" : "div";
   const hue = useHue(color);
   const hooks = strip4(barProps);
+  const paint = barColour(color, hue);
+  const plain = !thin && !code2 && !fade;
   const root = useRef25(null);
   const [cramped, setCramped] = useState24(false);
   const tell = useRef25(onCramped);
@@ -4494,8 +4496,8 @@ function Bar({ code: code2, travel, dim, label, unconfirmed, deal, backup, color
       },
       "aria-current": selected || void 0,
       title: tip ?? hooks.title,
-      className: cx("ad-bar", "ad-striped", code2 && "ad-bar--code", code2 && travel && "ad-bar--travel", code2 && dim && "ad-bar--dim", labelOutside === "never" && "ad-bar--keep-in", labelOutside === "never" && cramped && "ad-bar--name-gone", labelOutside === "before" && "ad-bar--label-before", unconfirmed && "ad-bar--unconfirmed", deal && "ad-bar--deal", backup && "ad-bar--backup", thin && "ad-bar--thin", outside && "ad-bar--label-outside", selected && "ad-bar--selected", late && "ad-bar--late", dense && "ad-bar--dense", fade && `ad-bar--fade-${fade}`, labelHidden && "ad-bar--label-hidden", className),
-      style: { ...style, ...barColour(color, hue), ...labelInset ? { ["--ad-label-in"]: `${Math.max(0, labelInset)}px` } : {}, ...fade && fadeStart != null ? { ["--ad-fade-start"]: `${Math.max(0, fadeStart)}px` } : {}, ...fade && fadeEnd != null ? { ["--ad-fade-end"]: `${Math.max(0, fadeEnd)}px` } : {} },
+      className: cx("ad-bar", "ad-striped", code2 && "ad-bar--code", code2 && travel && "ad-bar--travel", code2 && dim && "ad-bar--dim", labelOutside === "never" && "ad-bar--keep-in", labelOutside === "never" && cramped && "ad-bar--name-gone", labelOutside === "before" && "ad-bar--label-before", plain && !!paint["--ad-bar"] && "ad-bar--hued", plain && !unconfirmed && !deal && !backup && "ad-bar--confirmed", unconfirmed && "ad-bar--unconfirmed", deal && "ad-bar--deal", backup && "ad-bar--backup", thin && "ad-bar--thin", outside && "ad-bar--label-outside", selected && "ad-bar--selected", late && "ad-bar--late", dense && "ad-bar--dense", fade && `ad-bar--fade-${fade}`, labelHidden && "ad-bar--label-hidden", className),
+      style: { ...style, ...paint, ...labelInset ? { ["--ad-label-in"]: `${Math.max(0, labelInset)}px` } : {}, ...fade && fadeStart != null ? { ["--ad-fade-start"]: `${Math.max(0, fadeStart)}px` } : {}, ...fade && fadeEnd != null ? { ["--ad-fade-end"]: `${Math.max(0, fadeEnd)}px` } : {} },
       children: [
         fade && /* @__PURE__ */ jsx42("span", { className: "ad-bar__ground", "aria-hidden": "true" }),
         (fade === "start" || fade === "both") && /* @__PURE__ */ jsx42(Envelope, { side: "start" }),

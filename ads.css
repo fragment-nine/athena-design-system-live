@@ -2108,21 +2108,25 @@ button.ad-bar { cursor: pointer; }
 .ad-bar__grip:focus-visible { outline: none; box-shadow: var(--ring-select); border-radius: var(--radius-page); }
 @media (prefers-reduced-motion: reduce) { .ad-bar__grip::after { transition: none; } }
 /* A part line: outlined only, no fill, the name text-secondary at the small size. */
+/* Project colours on: the colour on the left stripe and the edge, and a very faint fill of it, never a solid fill (Jeremy, 2026-10-14). */
+.ad-bar--hued { --ad-edge: var(--ad-bar); --ad-stripe: var(--ad-bar); background: color-mix(in srgb, var(--ad-bar) var(--tint-lane-wash), transparent); }
 .ad-bar--thin { background: transparent; box-shadow: inset 0 0 0 var(--border-w) var(--line-strong); color: var(--text-secondary); }
 .ad-bar--unconfirmed { background: transparent; background-image: var(--hatch); box-shadow: inset 0 0 0 var(--border-w) var(--line-strong); }
 /* The name sits on a small ground with the hatch showing round it at both ends, so a short chip still reads as unconfirmed
 . */
 .ad-bar--unconfirmed .ad-bar__label { background: var(--bg-base); padding: var(--space-hair) var(--space-1); border-radius: var(--radius-page); }
-/* Deal: the Bars card's dashed text-muted outline, offset outside the bar so it reads. Backup: a dotted one, no fill, the name text-secondary. */
-.ad-bar--deal { outline: var(--border-w-strong) dashed var(--text-muted); outline-offset: calc(var(--border-w-strong) * -1); }
-.ad-bar--backup { background: transparent; outline: var(--border-w-strong) dotted var(--line-strong); outline-offset: calc(var(--border-w-strong) * -1); color: var(--text-secondary); }
+/* A bar's own edge, inside it. Confirmed is solid, Deal dashed, Backup dotted, the same place and width; no fill on a Backup, the name text-secondary. With Project colours on, the edge is the project's (--ad-edge). */
+.ad-bar--confirmed { outline: var(--border-w-strong) solid var(--ad-edge, var(--text-muted)); outline-offset: calc(var(--border-w-strong) * -1); }
+.ad-bar--deal { outline: var(--border-w-strong) dashed var(--ad-edge, var(--text-muted)); outline-offset: calc(var(--border-w-strong) * -1); }
+.ad-bar--backup { background: transparent; outline: var(--border-w-strong) dotted var(--ad-edge, var(--line-strong)); outline-offset: calc(var(--border-w-strong) * -1); color: var(--text-secondary); }
 .ad-bar:hover { box-shadow: var(--glow-hover); }
 .ad-bar--unconfirmed:hover, .ad-bar--thin:hover { box-shadow: inset 0 0 0 var(--border-w) var(--line-strong), var(--glow-hover); }
 .ad-bar:hover .ad-bar__name { color: var(--accent); }
 .ad-bar--selected, .ad-bar:focus-visible { outline: none; box-shadow: var(--ring-select); }
-/* Selected or focused, a deal or backup keeps its outline: the ring is the selection, the dashes are still what it is. */
-.ad-bar--deal.ad-bar--selected, .ad-bar--deal:focus-visible { outline: var(--border-w-strong) dashed var(--text-muted); }
-.ad-bar--backup.ad-bar--selected, .ad-bar--backup:focus-visible { outline: var(--border-w-strong) dotted var(--line-strong); }
+/* Selected or focused, a bar keeps its edge: the ring is the selection, the edge is still what it is. */
+.ad-bar--confirmed.ad-bar--selected, .ad-bar--confirmed:focus-visible { outline: var(--border-w-strong) solid var(--ad-edge, var(--text-muted)); }
+.ad-bar--deal.ad-bar--selected, .ad-bar--deal:focus-visible { outline: var(--border-w-strong) dashed var(--ad-edge, var(--text-muted)); }
+.ad-bar--backup.ad-bar--selected, .ad-bar--backup:focus-visible { outline: var(--border-w-strong) dotted var(--ad-edge, var(--line-strong)); }
 .ad-bar__label { position: relative; z-index: 1; display: inline-flex; align-items: center; gap: var(--space-2); min-width: 0; margin-left: var(--ad-label-in); }
 .ad-bar--label-hidden .ad-bar__label, .ad-bar--label-hidden .ad-bar__outside { opacity: 0; }
 .ad-bar--dense { height: var(--h-bar-dense); padding: 0 var(--space-1); }
@@ -2210,7 +2214,7 @@ button.ad-milestone:focus-visible { outline: none; box-shadow: var(--ring-select
 .ad-chart-key__item--press:hover { color: var(--accent); }
 .ad-chart-key__item--press:focus-visible { outline: none; box-shadow: var(--ring-select); border-radius: var(--radius-page); }
 .ad-chart-key__mark { display: inline-flex; align-items: center; }
-.ad-chart-key__swatch { flex: none; width: var(--space-6); height: var(--space-3); border-radius: var(--radius-round); background: var(--bg-hover); }
+.ad-chart-key__swatch { flex: none; width: var(--space-6); height: var(--space-3); border-radius: var(--radius-control); background: var(--bg-hover); }
 .ad-chart-key__swatch--confirmed { box-shadow: inset 0 0 0 var(--border-w) var(--text-muted); }
 .ad-chart-key__swatch--clash { box-shadow: var(--glow-clash); }
 .ad-chart-key__swatch--hatched, .ad-chart-key__swatch--pencilled { background: transparent; background-image: var(--hatch); box-shadow: inset 0 0 0 var(--border-w) var(--line-strong); }
@@ -2243,7 +2247,7 @@ button.ad-milestone:focus-visible { outline: none; box-shadow: var(--ring-select
 /* Built 2026-10-27 for My Plate: the name before the bar, the off-window end mark, the presence marks in the key. */
 .ad-bar--label-before .ad-bar__outside { left: auto; right: calc(100% + var(--space-4)); justify-content: flex-end; }
 .ad-offscreen--end { display: inline-block; text-align: right; }
-.ad-chart-key__presence { --ad-where: transparent; display: inline-block; width: var(--space-6); height: var(--space-2); border-radius: var(--radius-page); background: color-mix(in srgb, var(--ad-where) var(--tint-presence-strip), transparent); }
+.ad-chart-key__presence { --ad-where: transparent; display: inline-block; width: var(--space-6); height: var(--space-2); border-radius: var(--radius-control); background: color-mix(in srgb, var(--ad-where) var(--tint-presence-strip), transparent); }
 .ad-chart-key__presence--away { background: var(--hatch-away), color-mix(in srgb, var(--text-muted) var(--tint-presence-strip), transparent); }
 
 /* A day cell (`code`): an outlined box filling its day, the code centred inside, never moved outside; a travel day dashed, a dark day
