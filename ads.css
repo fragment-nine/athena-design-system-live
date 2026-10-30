@@ -536,7 +536,7 @@
 /* IBM Plex Mono 400: ../fonts/IBMPlexMono-400.woff2 (see fonts/fonts.css) */
 :root {
   --type-title: 600 var(--text-20)/var(--lh-tight) var(--font-display);
-  --type-heading: 600 var(--text-13)/var(--lh-tight) var(--font-display);
+  --type-heading: 600 var(--text-base)/var(--lh-tight) var(--font-display);
   --type-name: 400 var(--text-base)/var(--lh-tight) var(--font-body);
   --type-body: 400 var(--text-base)/var(--lh-normal) var(--font-body);
   --type-detail: 400 var(--text-13)/var(--lh-tight) var(--font-body);
@@ -1228,12 +1228,12 @@ button.ad-contents__button:focus-visible { outline: none; box-shadow: var(--ring
 
 /* src/components/GroupHeading/GroupHeading.css */
 /* GroupHeading */
-/* Every section label reads the same: name text-primary, numeral text-muted; needing you changes nothing here. */
+/* Every section label reads the same: name text-primary, numeral text-muted, capitals whether or not it folds (a button's own text-transform is undone); needing you changes nothing here. */
 .ad-group-heading { display: flex; align-items: center; gap: var(--space-2); min-height: var(--h-btn); color: var(--text-primary); }
 .ad-group-heading--rule-above { border-top: var(--border-w) solid var(--border); padding-top: var(--space-2); }
 .ad-group-heading--rule-below { border-bottom: var(--border-w) solid var(--border); padding-bottom: var(--space-2); }
 .ad-group-heading__title { display: flex; align-items: center; margin: 0; min-width: 0; font: var(--type-heading); text-transform: uppercase; line-height: var(--lh-tight); color: inherit; }
-.ad-group-heading__button { display: inline-flex; align-items: center; gap: var(--space-2); margin: 0; padding: 0; border: 0; background: transparent; font: inherit; color: inherit; cursor: pointer; border-radius: var(--radius-page); }
+.ad-group-heading__button { display: inline-flex; align-items: center; gap: var(--space-2); margin: 0; padding: 0; border: 0; background: transparent; font: var(--type-heading); text-transform: uppercase; color: inherit; cursor: pointer; border-radius: var(--radius-page); }
 .ad-group-heading__button:hover { color: var(--accent); }
 .ad-group-heading__button:focus-visible { outline: none; box-shadow: var(--ring-select); }
 .ad-group-heading__title > *, .ad-group-heading__button > * { flex: none; }
