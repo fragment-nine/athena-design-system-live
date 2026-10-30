@@ -562,6 +562,9 @@ var REGULAR = {
   "cube": [
     "M223.68,66.15,135.68,18h0a15.88,15.88,0,0,0-15.36,0l-88,48.17a16,16,0,0,0-8.32,14v95.64a16,16,0,0,0,8.32,14l88,48.17a15.88,15.88,0,0,0,15.36,0l88-48.17a16,16,0,0,0,8.32-14V80.18A16,16,0,0,0,223.68,66.15ZM128,32h0l80.34,44L128,120,47.66,76ZM40,90l80,43.78v85.79L40,175.82Zm96,129.57V133.82L216,90v85.78Z"
   ],
+  "currency-dollar": [
+    "M152,120H136V56h8a32,32,0,0,1,32,32,8,8,0,0,0,16,0,48.05,48.05,0,0,0-48-48h-8V24a8,8,0,0,0-16,0V40h-8a48,48,0,0,0,0,96h8v64H104a32,32,0,0,1-32-32,8,8,0,0,0-16,0,48.05,48.05,0,0,0,48,48h16v16a8,8,0,0,0,16,0V216h16a48,48,0,0,0,0-96Zm-40,0a32,32,0,0,1,0-64h8v64Zm40,80H136V136h16a32,32,0,0,1,0,64Z"
+  ],
   "device-mobile": [
     "M176,16H80A24,24,0,0,0,56,40V216a24,24,0,0,0,24,24h96a24,24,0,0,0,24-24V40A24,24,0,0,0,176,16ZM72,64H184V192H72Zm8-32h96a8,8,0,0,1,8,8v8H72V40A8,8,0,0,1,80,32Zm96,192H80a8,8,0,0,1-8-8v-8H184v8A8,8,0,0,1,176,224Z"
   ],
@@ -1340,6 +1343,7 @@ var JOBS = {
   "swap": "arrows-left-right",
   "sync": "cloud-arrow-up",
   "tag": "tag",
+  "service": "currency-dollar",
   "template": "copy-simple",
   "time-off": "sun-horizon",
   "timeline": "align-left",
@@ -2799,7 +2803,7 @@ function PopoverSection({ label, children, end, collapsible, collapsed, onToggle
     headed && /* @__PURE__ */ jsxs20("div", { className: "ad-popover__section-head", children: [
       collapsible && /* @__PURE__ */ jsx23("button", { type: "button", className: "ad-popover__section-fold", "aria-expanded": !shut, "aria-controls": bodyId, "aria-label": label != null ? String(label) : "Section", onClick: toggle, children: /* @__PURE__ */ jsx23(Icon, { job: shut ? "chevron-right" : "chevron-down", size: "sm" }) }),
       label != null && /* @__PURE__ */ jsx23("h3", { className: "ad-popover__section-label ad-type-heading", children: label }),
-      end
+      end != null && /* @__PURE__ */ jsx23("div", { className: "ad-popover__section-end", children: end })
     ] }),
     /* @__PURE__ */ jsx23("div", { id: bodyId, className: "ad-popover__section-body", hidden: collapsible ? shut : void 0, children })
   ] });
@@ -3202,12 +3206,13 @@ function ProjectPicker({ projects, ...rest }) {
 function StatusPicker({ statuses, noSearch = true, ...rest }) {
   return /* @__PURE__ */ jsx27(PickList, { ...rest, noSearch, options: statuses.map((s) => ({ id: s.id, label: s.label, lead: /* @__PURE__ */ jsx27(Dot, { tone: s.tone }) })) });
 }
-function PickField({ options, value, onPick, label, placeholder, search, disabled, className, trigger, marks, footer }) {
+function PickField({ options, value, onPick, label, placeholder, search, disabled, className, trigger, marks, footer, typed, onTyped }) {
   const [open, setOpen] = useState15(false);
+  const [draft, setDraft] = useState15(null);
   const anchor = useRef15(null);
   const box = useRef15(null);
   const style = usePlacement(open, anchor, box, "drop");
-  const opener = () => (anchor.current?.matches("button, [tabindex]") ? anchor.current : anchor.current?.querySelector("button, [tabindex]")) ?? null;
+  const opener = () => (anchor.current?.matches("button, [tabindex]") ? anchor.current : anchor.current?.querySelector("button, [tabindex], input")) ?? null;
   const close = () => {
     setOpen(false);
     opener()?.focus({ preventScroll: true });
@@ -3233,6 +3238,51 @@ function PickField({ options, value, onPick, label, placeholder, search, disable
       }
     }
   ) }) });
+  if (typed) {
+    const words2 = draft ?? words;
+    const narrowed = draft ? options.filter((o) => String(o.label).toLowerCase().includes(draft.trim().toLowerCase())) : options;
+    return /* @__PURE__ */ jsxs24(Fragment12, { children: [
+      /* @__PURE__ */ jsxs24("span", { ref: anchor, className: cx("ad-field", "ad-pick-field", "ad-pick-field--typed", disabled && "ad-field--disabled", className), children: [
+        /* @__PURE__ */ jsx27(
+          "input",
+          {
+            className: "ad-field__input",
+            role: "combobox",
+            "aria-label": label,
+            "aria-haspopup": "listbox",
+            "aria-expanded": open,
+            disabled,
+            placeholder: placeholder ?? label,
+            value: words2,
+            onChange: (e) => {
+              setDraft(e.target.value);
+              setOpen(true);
+            },
+            onClick: () => setOpen(true),
+            onKeyDown: (e) => {
+              if (e.key === "Enter" && draft?.trim()) {
+                e.preventDefault();
+                onTyped?.(draft.trim());
+                setDraft(null);
+                setOpen(false);
+              }
+              if (e.key === "ArrowDown") {
+                e.preventDefault();
+                setOpen(true);
+                requestAnimationFrame(() => box.current?.querySelector('[role="listbox"]')?.focus());
+              }
+            }
+          }
+        ),
+        /* @__PURE__ */ jsx27(Icon, { name: "caret-down", className: "ad-pick-field__caret ad-glyph-quiet" })
+      ] }),
+      open && narrowed.length > 0 && /* @__PURE__ */ jsx27(Portal, { children: /* @__PURE__ */ jsx27("div", { ref: box, style: { ...style, zIndex: z }, className: "ad-float ad-pick-field__list", children: /* @__PURE__ */ jsx27(PickList, { options: narrowed, value, searchLabel: label, noSearch: true, footer, onPick: (id) => {
+        onPick(id);
+        setDraft(null);
+        close();
+      } }) }) })
+    ] });
+  }
   if (trigger && isValidElement2(trigger)) {
     const own = trigger;
     return /* @__PURE__ */ jsxs24(Fragment12, { children: [
@@ -3936,19 +3986,21 @@ function ViewPopover({ open, onClose, anchor, builtInViews = [], savedViews, cur
       rules && /* @__PURE__ */ jsx35("div", { className: "ad-view-or", "aria-hidden": "true", children: /* @__PURE__ */ jsx35("span", { children: L.or }) }),
       rules && /* @__PURE__ */ jsx35(RuleBuilder, { ...rules })
     ] }),
-    groupBy && /* @__PURE__ */ jsx35(PopoverSection, { label: L.groupBy, children: /* @__PURE__ */ jsx35(Select, { "aria-label": L.groupBy, value: groupBy.value, onChange: (e) => groupBy.onChange(e.target.value), options: groupBy.options }) }),
-    sortBy && /* @__PURE__ */ jsx35(PopoverSection, { label: L.sortBy, children: /* @__PURE__ */ jsxs32("div", { className: "ad-view-sort", children: [
-      /* @__PURE__ */ jsx35(Select, { "aria-label": L.sortBy, value: sortBy.value, onChange: (e) => sortBy.onChange(e.target.value), options: sortBy.options }),
-      sortBy.direction && /* @__PURE__ */ jsx35(ButtonSizeScope, { size: "row", children: /* @__PURE__ */ jsx35(
-        IconButton,
-        {
-          label: sortBy.direction.off ? `${sortBy.direction.value === "ascending" ? L.ascending : L.descending} \u2014 ${sortBy.direction.off}` : sortBy.direction.value === "ascending" ? L.ascending : L.descending,
-          disabled: !!sortBy.direction.off,
-          onClick: () => sortBy.direction.onChange(sortBy.direction.value === "ascending" ? "descending" : "ascending"),
-          children: /* @__PURE__ */ jsx35(Icon, { job: sortBy.direction.value === "ascending" ? "arrow-up" : "arrow-down" })
-        }
-      ) })
-    ] }) }),
+    (groupBy || sortBy) && /* @__PURE__ */ jsxs32("div", { className: "ad-view-halves", children: [
+      groupBy && /* @__PURE__ */ jsx35(PopoverSection, { label: L.groupBy, children: /* @__PURE__ */ jsx35(Select, { "aria-label": L.groupBy, value: groupBy.value, onChange: (e) => groupBy.onChange(e.target.value), options: groupBy.options }) }),
+      sortBy && /* @__PURE__ */ jsx35(PopoverSection, { label: L.sortBy, children: /* @__PURE__ */ jsxs32("div", { className: "ad-view-sort", children: [
+        /* @__PURE__ */ jsx35(Select, { "aria-label": L.sortBy, value: sortBy.value, onChange: (e) => sortBy.onChange(e.target.value), options: sortBy.options }),
+        sortBy.direction && /* @__PURE__ */ jsx35(ButtonSizeScope, { size: "row", children: /* @__PURE__ */ jsx35(
+          IconButton,
+          {
+            label: sortBy.direction.off ? `${sortBy.direction.value === "ascending" ? L.ascending : L.descending} \u2014 ${sortBy.direction.off}` : sortBy.direction.value === "ascending" ? L.ascending : L.descending,
+            disabled: !!sortBy.direction.off,
+            onClick: () => sortBy.direction.onChange(sortBy.direction.value === "ascending" ? "descending" : "ascending"),
+            children: /* @__PURE__ */ jsx35(Icon, { job: sortBy.direction.value === "ascending" ? "arrow-up" : "arrow-down" })
+          }
+        ) })
+      ] }) })
+    ] }),
     show && show.length > 0 && /* @__PURE__ */ jsx35(PopoverSection, { label: L.show, children: show.map((s) => s.kind === "order" ? /* @__PURE__ */ jsx35(OrderList, { label: s.label, items: s.items, onReorder: s.onReorder }, s.id) : s.kind === "switch" ? /* @__PURE__ */ jsx35(ShowSwitch, { setting: s }, s.id) : /* @__PURE__ */ jsx35(FieldRow, { label: s.label, children: /* @__PURE__ */ jsx35(Select, { "aria-label": s.label, value: s.value, onChange: (e) => s.onChange(e.target.value), options: s.options }) }, s.id)) }),
     savedViews && onSaveView && /* @__PURE__ */ jsx35("div", { className: "ad-view-save-row", children: !naming ? /* @__PURE__ */ jsx35(ButtonSizeScope, { size: "row", children: /* @__PURE__ */ jsx35(Button, { icon: "plus", unavailable: saveOff, onClick: () => setNaming(true), children: L.saveView }) }) : /* @__PURE__ */ jsxs32("div", { className: "ad-view-save", children: [
       /* @__PURE__ */ jsx35(TextField, { autoFocus: true, "aria-label": L.viewName, placeholder: L.viewName, value: name, onChange: (e) => setName(e.target.value), onKeyDown: (e) => {
@@ -4383,7 +4435,10 @@ var strip4 = (h) => {
   const { className: _c, style: _s, ...rest } = h;
   return rest;
 };
-function Bar({ code: code2, travel, dim, label, unconfirmed, deal, backup, color, selected, startLabel, endLabel, lead, children, thin, labelOutside, onOpen, ends, barProps, labelInset, labelHidden, late, dense, fade, onCramped, className, style }) {
+function Envelope({ side }) {
+  return /* @__PURE__ */ jsx42("svg", { className: `ad-bar__envelope ad-bar__envelope--${side}`, viewBox: "0 0 100 100", preserveAspectRatio: "none", "aria-hidden": "true", children: /* @__PURE__ */ jsx42("path", { d: "M0 100 C 35 100, 45 0, 100 0", vectorEffect: "non-scaling-stroke" }) });
+}
+function Bar({ code: code2, travel, dim, label, unconfirmed, deal, backup, color, selected, startLabel, endLabel, lead, children, thin, labelOutside, onOpen, ends, barProps, labelInset, labelHidden, late, dense, fade, fadeStart, fadeEnd, onCramped, className, style }) {
   const asButton = !!onOpen && !ends;
   const Tag2 = asButton ? "button" : "div";
   const hue = useHue(color);
@@ -4440,8 +4495,11 @@ function Bar({ code: code2, travel, dim, label, unconfirmed, deal, backup, color
       "aria-current": selected || void 0,
       title: tip ?? hooks.title,
       className: cx("ad-bar", "ad-striped", code2 && "ad-bar--code", code2 && travel && "ad-bar--travel", code2 && dim && "ad-bar--dim", labelOutside === "never" && "ad-bar--keep-in", labelOutside === "never" && cramped && "ad-bar--name-gone", labelOutside === "before" && "ad-bar--label-before", unconfirmed && "ad-bar--unconfirmed", deal && "ad-bar--deal", backup && "ad-bar--backup", thin && "ad-bar--thin", outside && "ad-bar--label-outside", selected && "ad-bar--selected", late && "ad-bar--late", dense && "ad-bar--dense", fade && `ad-bar--fade-${fade}`, labelHidden && "ad-bar--label-hidden", className),
-      style: { ...style, ...barColour(color, hue), ...labelInset ? { ["--ad-label-in"]: `${Math.max(0, labelInset)}px` } : {} },
+      style: { ...style, ...barColour(color, hue), ...labelInset ? { ["--ad-label-in"]: `${Math.max(0, labelInset)}px` } : {}, ...fade && fadeStart != null ? { ["--ad-fade-start"]: `${Math.max(0, fadeStart)}px` } : {}, ...fade && fadeEnd != null ? { ["--ad-fade-end"]: `${Math.max(0, fadeEnd)}px` } : {} },
       children: [
+        fade && /* @__PURE__ */ jsx42("span", { className: "ad-bar__ground", "aria-hidden": "true" }),
+        (fade === "start" || fade === "both") && /* @__PURE__ */ jsx42(Envelope, { side: "start" }),
+        (fade === "end" || fade === "both") && /* @__PURE__ */ jsx42(Envelope, { side: "end" }),
         grip("start", ends?.start),
         startLabel && /* @__PURE__ */ jsx42("span", { className: "ad-bar__end ad-bar__end--start", children: startLabel }),
         /* @__PURE__ */ jsxs39("span", { className: "ad-bar__label", children: [
@@ -4560,8 +4618,8 @@ function RegMark() {
     /* @__PURE__ */ jsx42("path", { d: "M8 0v16M0 8h16", stroke: "currentColor", strokeWidth: "1" })
   ] });
 }
-function PastHatch({ style }) {
-  return /* @__PURE__ */ jsx42("div", { className: "ad-past", style, "aria-hidden": "true" });
+function PastHatch({ style, away }) {
+  return /* @__PURE__ */ jsx42("div", { className: away ? "ad-past ad-past--away" : "ad-past", style, "aria-hidden": "true" });
 }
 function Clash({ children, className }) {
   return /* @__PURE__ */ jsx42("div", { className: cx("ad-clash", className), children });
@@ -4621,7 +4679,7 @@ function OffscreenStart({ date, side = "start" }) {
     date
   ] });
 }
-var KEY_MARKS = /* @__PURE__ */ new Set(["confirmed", "pencilled", "deal", "backup"]);
+var KEY_MARKS = /* @__PURE__ */ new Set(["confirmed", "pencilled", "deal", "backup", "clash"]);
 function ChartKey({ items, ariaLabel = "Key" }) {
   return /* @__PURE__ */ jsx42("div", { className: "ad-chart-key", role: "group", "aria-label": ariaLabel, children: items.map((it, i) => {
     const swatch = typeof it.mark === "string" && KEY_MARKS.has(it.mark) ? /* @__PURE__ */ jsx42("span", { "aria-hidden": "true", className: `ad-chart-key__swatch ad-chart-key__swatch--${it.mark}` }) : it.mark === "away" ? /* @__PURE__ */ jsx42("span", { "aria-hidden": "true", className: "ad-chart-key__presence ad-chart-key__presence--away" }) : it.mark && typeof it.mark === "object" && "presence" in it.mark ? /* @__PURE__ */ jsx42(PresenceSwatch, { colour: it.mark.presence }) : /* @__PURE__ */ jsx42("span", { "aria-hidden": "true", className: "ad-chart-key__mark", children: it.mark });
