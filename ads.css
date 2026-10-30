@@ -2286,7 +2286,7 @@ button.ad-milestone:focus-visible { outline: none; box-shadow: var(--ring-select
 @media (prefers-reduced-motion: reduce) { .ad-tooltip { animation: none; } }
 
 /* src/components/Warnings/Warnings.css */
-/* AlertBar, CountPill, Bell, NotificationList */
+/* AlertsLine, AlertsFloat, CountPill, Bell, NotificationList */
 .ad-alert-bar { border-radius: var(--radius-page); background: var(--bg-surface); }
 .ad-alert-bar__head {
   display: flex; align-items: center; gap: var(--space-3); box-sizing: border-box; width: 100%; height: var(--h-row);

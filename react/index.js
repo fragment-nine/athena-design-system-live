@@ -4029,34 +4029,6 @@ function ShowSwitch({ setting: s }) {
 // src/components/Warnings/Warnings.tsx
 import { forwardRef as forwardRef10, useId as useId13, useRef as useRef22, useState as useState22 } from "react";
 import { Fragment as Fragment15, jsx as jsx36, jsxs as jsxs33 } from "react/jsx-runtime";
-function AlertBar({ alerts, label = "Alerts", snoozeLabel = "Snooze", pillLabel = (p, n) => `${n} priority ${p}`, priorityLabel = (p) => `Priority ${p}`, defaultOpen = false, open, onOpenChange, className }) {
-  const [own, setOwn] = useState22(defaultOpen);
-  const isOpen = open ?? own;
-  const listId = useId13();
-  if (!alerts.length) return null;
-  const counts = [1, 2, 3, 4].map((p) => [p, alerts.filter((a) => a.priority === p).length]);
-  const toggle = () => {
-    setOwn(!isOpen);
-    onOpenChange?.(!isOpen);
-  };
-  return /* @__PURE__ */ jsxs33("section", { className: cx("ad-alert-bar", className), "aria-label": label, children: [
-    /* @__PURE__ */ jsx36(AlertBarHead, { open: isOpen, onToggle: toggle, label, counts, pillLabel, controls: listId }),
-    /* @__PURE__ */ jsx36(AlertList, { id: listId, hidden: !isOpen, children: alerts.map((a) => /* @__PURE__ */ jsx36(
-      AlertRow,
-      {
-        priority: a.priority,
-        priorityLabel: priorityLabel(a.priority),
-        sentence: a.sentence,
-        number: a.number,
-        actions: /* @__PURE__ */ jsxs33(Fragment15, { children: [
-          a.action && /* @__PURE__ */ jsx36(Button, { onClick: a.action.onSelect, children: a.action.label }),
-          a.onSnooze && /* @__PURE__ */ jsx36(Button, { onClick: a.onSnooze, children: snoozeLabel })
-        ] })
-      },
-      a.id
-    )) })
-  ] });
-}
 function AlertsFloat({ open, onClose, anchor, ariaLabel = "Alerts", id, children }) {
   return /* @__PURE__ */ jsx36(Popover, { open, onClose, anchor, placement: "drop", width: "wide", ariaLabel, noClose: true, id, className: "ad-alerts-float", children: /* @__PURE__ */ jsx36("div", { role: "list", "aria-label": ariaLabel, children }) });
 }
@@ -5550,7 +5522,6 @@ export {
   AddRow,
   AdsProvider,
   AdsScope,
-  AlertBar,
   AlertBarHead,
   AlertList,
   AlertRow,
