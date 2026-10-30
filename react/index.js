@@ -3656,7 +3656,7 @@ function countdownWords(c) {
   const days = n === 0 ? "Today" : `${n} ${n === 1 ? "day" : "days"} to`;
   return `${days} ${c.what}`;
 }
-function PageHeader({ title, icon, stamp, tabs, back, description, countdown: given, gear, onSearch, onPopOut, onHelp, menu, headerLabels, scramble = true, className }) {
+function PageHeader({ title, icon, stamp, tabs, back, description, countdown: given, alerts, gear, onSearch, onPopOut, onHelp, menu, headerLabels, scramble = true, className }) {
   const anyEnd = gear || onSearch || onPopOut || onHelp || menu;
   const [menuOpen, setMenuOpen] = useState20(false);
   const menuAt = useRef19(null);
@@ -3677,6 +3677,7 @@ function PageHeader({ title, icon, stamp, tabs, back, description, countdown: gi
           countdown2 && /* @__PURE__ */ jsx33("p", { className: "ad-page-header__countdown", children: countdown2 })
         ] })
       ] }),
+      alerts && /* @__PURE__ */ jsx33("div", { className: "ad-page-header__alerts", children: alerts }),
       shownStamp && /* @__PURE__ */ jsx33("div", { className: "ad-page-header__stamp", children: stamp }),
       anyEnd && /* @__PURE__ */ jsxs30(HeaderActions, { groupProps: { "aria-label": headerLabels?.group ?? "Screen actions" }, children: [
         gear && /* @__PURE__ */ jsx33(ShowOptionsGear, { ...gear }),
@@ -4026,7 +4027,7 @@ function ShowSwitch({ setting: s }) {
 }
 
 // src/components/Warnings/Warnings.tsx
-import { forwardRef as forwardRef10, useId as useId13, useState as useState22 } from "react";
+import { forwardRef as forwardRef10, useId as useId13, useRef as useRef22, useState as useState22 } from "react";
 import { Fragment as Fragment15, jsx as jsx36, jsxs as jsxs33 } from "react/jsx-runtime";
 function AlertBar({ alerts, label = "Alerts", snoozeLabel = "Snooze", pillLabel = (p, n) => `${n} priority ${p}`, priorityLabel = (p) => `Priority ${p}`, defaultOpen = false, open, onOpenChange, className }) {
   const [own, setOwn] = useState22(defaultOpen);
@@ -4041,6 +4042,38 @@ function AlertBar({ alerts, label = "Alerts", snoozeLabel = "Snooze", pillLabel 
   return /* @__PURE__ */ jsxs33("section", { className: cx("ad-alert-bar", className), "aria-label": label, children: [
     /* @__PURE__ */ jsx36(AlertBarHead, { open: isOpen, onToggle: toggle, label, counts, pillLabel, controls: listId }),
     /* @__PURE__ */ jsx36(AlertList, { id: listId, hidden: !isOpen, children: alerts.map((a) => /* @__PURE__ */ jsx36(
+      AlertRow,
+      {
+        priority: a.priority,
+        priorityLabel: priorityLabel(a.priority),
+        sentence: a.sentence,
+        number: a.number,
+        actions: /* @__PURE__ */ jsxs33(Fragment15, { children: [
+          a.action && /* @__PURE__ */ jsx36(Button, { onClick: a.action.onSelect, children: a.action.label }),
+          a.onSnooze && /* @__PURE__ */ jsx36(Button, { onClick: a.onSnooze, children: snoozeLabel })
+        ] })
+      },
+      a.id
+    )) })
+  ] });
+}
+function AlertsFloat({ open, onClose, anchor, ariaLabel = "Alerts", id, children }) {
+  return /* @__PURE__ */ jsx36(Popover, { open, onClose, anchor, placement: "drop", width: "wide", ariaLabel, noClose: true, id, className: "ad-alerts-float", children: /* @__PURE__ */ jsx36("div", { role: "list", "aria-label": ariaLabel, children }) });
+}
+function AlertsLine({ alerts, label = "Alerts", snoozeLabel = "Snooze", pillLabel = (p, n) => `${n} priority ${p}`, priorityLabel = (p) => `Priority ${p}`, defaultOpen = false, open, onOpenChange, className }) {
+  const [own, setOwn] = useState22(defaultOpen);
+  const isOpen = open ?? own;
+  const box = useRef22(null);
+  const listId = useId13();
+  if (!alerts.length) return null;
+  const counts = [1, 2, 3, 4].map((p) => [p, alerts.filter((a) => a.priority === p).length]);
+  const set = (next) => {
+    setOwn(next);
+    onOpenChange?.(next);
+  };
+  return /* @__PURE__ */ jsxs33("div", { ref: box, className: cx("ad-alerts-line", className), children: [
+    /* @__PURE__ */ jsx36(AlertBarHead, { open: isOpen, onToggle: () => set(!isOpen), label, counts, pillLabel, controls: listId }),
+    /* @__PURE__ */ jsx36(AlertsFloat, { open: isOpen, onClose: () => set(false), anchor: box, ariaLabel: label, id: listId, children: alerts.map((a) => /* @__PURE__ */ jsx36(
       AlertRow,
       {
         priority: a.priority,
@@ -4154,10 +4187,10 @@ function DropLine() {
 }
 
 // src/components/Splitter/Splitter.tsx
-import { useRef as useRef22 } from "react";
+import { useRef as useRef23 } from "react";
 import { Fragment as Fragment16, jsx as jsx38, jsxs as jsxs35 } from "react/jsx-runtime";
 function Splitter({ main, side, size, onResize, min = 0, max = Number.POSITIVE_INFINITY, at = "end", label, className }) {
-  const box = useRef22(null);
+  const box = useRef23(null);
   const clamp = (n) => Math.max(min, Math.min(max, Math.round(n)));
   const onPointerDown2 = (e) => {
     const el = e.currentTarget;
@@ -4246,7 +4279,7 @@ function Columns({ main, side, sideWidth = "card", className }) {
 }
 
 // src/components/Table/Table.tsx
-import { useLayoutEffect as useLayoutEffect7, useRef as useRef23, useState as useState23 } from "react";
+import { useLayoutEffect as useLayoutEffect7, useRef as useRef24, useState as useState23 } from "react";
 import { jsx as jsx41, jsxs as jsxs38 } from "react/jsx-runtime";
 var Arrow = ({ up }) => /* @__PURE__ */ jsx41(Icon, { name: up ? "arrow-up" : "arrow-down", size: "sm", className: "ad-table__arrow" });
 function Table({ columns, rows, rowId, caption, sort, onSort, picked, onPickedChange, onPickAllChange, pickLabel, pickAllLabel = "Pick all", onOpen, rowProps, group, depth, nameColumn, fixed, className }) {
@@ -4254,7 +4287,7 @@ function Table({ columns, rows, rowId, caption, sort, onSort, picked, onPickedCh
   let lastGroup;
   const all = rows.length > 0 && rows.every((r) => picked?.has(rowId(r)));
   const nameAt = Math.max(0, nameColumn ? columns.findIndex((c) => c.id === nameColumn) : 0);
-  const headRow = useRef23(null);
+  const headRow = useRef24(null);
   const [held, setHeld] = useState23({});
   const heldKey = columns.filter((c) => c.frozen === "start").map((c) => c.id).join(" ");
   useLayoutEffect7(() => {
@@ -4275,7 +4308,7 @@ function Table({ columns, rows, rowId, caption, sort, onSort, picked, onPickedCh
     tr.querySelectorAll("th").forEach((th) => seen.observe(th));
     return () => seen.disconnect();
   }, [heldKey, onPickedChange]);
-  const wrap = useRef23(null);
+  const wrap = useRef24(null);
   useKeyScroll(wrap);
   const at = (c) => c.frozen === "start" && held[c.id] ? { ["--ad-held"]: `${held[c.id]}px` } : {};
   return /* @__PURE__ */ jsx41("div", { ref: wrap, className: cx("ad-table-wrap", className), children: /* @__PURE__ */ jsxs38("table", { className: cx("ad-table", fixed && "ad-table--fixed"), children: [
@@ -4323,7 +4356,7 @@ function Table({ columns, rows, rowId, caption, sort, onSort, picked, onPickedCh
 }
 function SelectionBar({ count, countLabel = (n) => `${n} selected`, actions, lead, onClear, clearLabel = "Clear", showAtZero, emptyLabel = "Nothing selected", onExit, exitLabel = "Exit", className }) {
   const [open, setOpen] = useState23(null);
-  const anchor = useRef23(null);
+  const anchor = useRef24(null);
   const ordered2 = [...actions.filter((a) => !a.danger), ...actions.filter((a) => a.danger)];
   if (count <= 0 && !showAtZero) return null;
   const zero = count <= 0;
@@ -4371,7 +4404,7 @@ function SelectionBarRoom() {
 }
 
 // src/components/Timeline/Timeline.tsx
-import { useLayoutEffect as useLayoutEffect8, useRef as useRef24, useState as useState24 } from "react";
+import { useLayoutEffect as useLayoutEffect8, useRef as useRef25, useState as useState24 } from "react";
 import { Fragment as Fragment17, jsx as jsx42, jsxs as jsxs39 } from "react/jsx-runtime";
 var strip4 = (h) => {
   if (!h) return {};
@@ -4383,9 +4416,9 @@ function Bar({ code: code2, travel, dim, label, unconfirmed, deal, backup, color
   const Tag2 = asButton ? "button" : "div";
   const hue = useHue(color);
   const hooks = strip4(barProps);
-  const root = useRef24(null);
+  const root = useRef25(null);
   const [cramped, setCramped] = useState24(false);
-  const tell = useRef24(onCramped);
+  const tell = useRef25(onCramped);
   tell.current = onCramped;
   useLayoutEffect8(() => {
     const el = root.current;
@@ -4473,7 +4506,7 @@ function DeliverableBar({ parts, ...props }) {
 }
 function DeliverableRow({ status, showStatus, statusLabel, markers: given, expandable, expanded, onToggle, toggleLabel = "Show parts", className, ...bar }) {
   const done = status === "good";
-  const row = useRef24(null);
+  const row = useRef25(null);
   const [marksOff, setMarksOff] = useState24(null);
   const onCramped = (c) => {
     const width = row.current?.clientWidth ?? 0;
@@ -4504,7 +4537,7 @@ function DeliverableRow({ status, showStatus, statusLabel, markers: given, expan
 }
 var LEAD_AT = 0.12;
 function Lanes({ children, marks, ariaLabel, nameWidth, className }) {
-  const box = useRef24(null);
+  const box = useRef25(null);
   const [fit, setFit] = useState24(null);
   useLayoutEffect8(() => {
     const el = box.current;
@@ -4695,7 +4728,7 @@ function PeriodCluster({ shown, periods, period, onPeriod, onPrevious, onNext, o
 }
 
 // src/components/Calendar/Calendar.tsx
-import { useEffect as useEffect14, useLayoutEffect as useLayoutEffect9, useRef as useRef25, useState as useState25 } from "react";
+import { useEffect as useEffect14, useLayoutEffect as useLayoutEffect9, useRef as useRef26, useState as useState25 } from "react";
 import { Fragment as Fragment18, jsx as jsx44, jsxs as jsxs41 } from "react/jsx-runtime";
 var code = (it) => it.code ? /* @__PURE__ */ jsx44(ProjectPill, { code: it.code, color: it.color?.startsWith("project-") ? it.color : void 0 }) : null;
 var hooksOf2 = (h) => {
@@ -4849,7 +4882,7 @@ function WeekendShade({ children, className }) {
 var clockHour = (h) => String((h + 11) % 12 + 1);
 function TimeGrid({ startHour, endHour, bookings = [], columns, now, hourLabel = clockHour, onOpen, itemProps, columnProps, ariaLabel, bandHours, onPressAt, over, visibleHours, scrollTo, asideWidth = "narrow", hourHeight = "compact", bandHeading, className }) {
   const hours = Math.max(1, endHour - startHour);
-  const frame = useRef25(null);
+  const frame = useRef26(null);
   const [headH, setHeadH] = useState25(0);
   useLayoutEffect9(() => {
     const el = frame.current;
@@ -4997,7 +5030,7 @@ function PhaseBand({ label, color, unconfirmed }) {
 }
 
 // src/components/Map/Map.tsx
-import { useEffect as useEffect15, useMemo as useMemo3, useRef as useRef26, useState as useState26 } from "react";
+import { useEffect as useEffect15, useMemo as useMemo3, useRef as useRef27, useState as useState26 } from "react";
 
 // src/components/Map/worldGeo.ts
 var GEO_LAT_MAX = 84;
@@ -5068,7 +5101,7 @@ var PICKS = new Set(pickColours);
 function WorldMap({ pins, at, ariaLabel, onPin, hoverCard, pinProps }) {
   const [hover, setHover] = useState26(null);
   const night = useMemo3(() => nightPath(at), [at]);
-  const wrap = useRef26(null);
+  const wrap = useRef27(null);
   const [w, setW] = useState26(0);
   useEffect15(() => {
     const el = wrap.current;
@@ -5224,10 +5257,10 @@ function Verdict({ word, sentence }) {
 }
 
 // src/components/Search/Search.tsx
-import { useRef as useRef27 } from "react";
+import { useRef as useRef28 } from "react";
 import { jsx as jsx47 } from "react/jsx-runtime";
 function CommandSearch({ open, onClose, query, onQuery, results, onPick, label = "Search everything", noMatch = "Nothing by that name" }) {
-  const box = useRef27(null);
+  const box = useRef28(null);
   const z = useLayer(open, onClose, [box], "dialog");
   usePageInert(open, [box]);
   useFocusReturn(open, box);
@@ -5250,11 +5283,11 @@ function CommandSearch({ open, onClose, query, onQuery, results, onPick, label =
 }
 
 // src/components/Guidance/Guidance.tsx
-import { useEffect as useEffect16, useLayoutEffect as useLayoutEffect10, useRef as useRef28, useState as useState27 } from "react";
+import { useEffect as useEffect16, useLayoutEffect as useLayoutEffect10, useRef as useRef29, useState as useState27 } from "react";
 import { Fragment as Fragment20, jsx as jsx48, jsxs as jsxs44 } from "react/jsx-runtime";
 var useIsoLayoutEffect3 = typeof window === "undefined" ? useEffect16 : useLayoutEffect10;
 function TourStep({ open, anchor, step, total, title, children, onBack, onNext, onExit, backLabel = "Back", nextLabel = "Next", progressLabel = (s, t) => `${s} of ${t}`, placement, side: older, onClose, closeLabel }) {
-  const card = useRef28(null);
+  const card = useRef29(null);
   const [rect, setRect] = useState27(null);
   const [size, setSize] = useState27(null);
   const asked = placement ?? older ?? "below";
@@ -5420,12 +5453,28 @@ function DualUnit({ primary, secondary }) {
     ] })
   ] });
 }
-function Frame({ rail, corner, children, className }) {
+function Frame({ rail, corner, header, toolbar, key, footer, work = "reading", children, className }) {
+  const slots = header !== void 0 || toolbar !== void 0 || footer !== void 0;
   return /* @__PURE__ */ jsxs45("div", { className: cx("ad-frame", corner != null && "ad-frame--corner", className), children: [
     rail,
-    /* @__PURE__ */ jsx49("div", { className: "ad-frame__page", children }),
+    /* @__PURE__ */ jsx49("div", { className: "ad-frame__page", children: slots ? /* @__PURE__ */ jsxs45(Fragment21, { children: [
+      header,
+      /* @__PURE__ */ jsx49(FrameToolbar, { children: toolbar }),
+      key != null && /* @__PURE__ */ jsx49(FrameKey, { children: key }),
+      /* @__PURE__ */ jsx49(FrameWork, { wide: work === "wide", children }),
+      footer
+    ] }) : children }),
     corner != null && /* @__PURE__ */ jsx49("div", { className: "ad-frame__corner", children: corner })
   ] });
+}
+function FrameToolbar({ children }) {
+  return /* @__PURE__ */ jsx49("div", { className: "ad-frame__toolbar", children });
+}
+function FrameKey({ children }) {
+  return /* @__PURE__ */ jsx49("div", { className: "ad-frame__key", children });
+}
+function FrameWork({ wide, children }) {
+  return /* @__PURE__ */ jsx49("div", { className: cx("ad-frame__work", wide ? "ad-frame__work--wide" : "ad-frame__work--reading"), children });
 }
 function CloudGlow() {
   return /* @__PURE__ */ jsx49("div", { className: "ad-cloud-glow", "aria-hidden": "true", children: /* @__PURE__ */ jsx49("div", { className: "ad-cloud-glow__drift" }) });
@@ -5505,6 +5554,8 @@ export {
   AlertBarHead,
   AlertList,
   AlertRow,
+  AlertsFloat,
+  AlertsLine,
   AmountBars,
   Avatar,
   AvatarStack,
@@ -5556,6 +5607,9 @@ export {
   FormActions,
   FormSection,
   Frame,
+  FrameKey,
+  FrameToolbar,
+  FrameWork,
   Ground,
   GroupBand,
   GroupHeading,
