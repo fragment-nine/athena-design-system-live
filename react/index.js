@@ -203,6 +203,45 @@ function useCoarsePointer() {
   const [coarse] = useState2(() => !!win?.matchMedia?.("(pointer: coarse)").matches);
   return coarse;
 }
+function useStaysInWindow(box) {
+  const doc = useFloatingDocument();
+  const fit = useRef2(() => {
+  });
+  fit.current = () => {
+    const el = box.current;
+    if (!el) return;
+    const win = doc?.defaultView ?? window;
+    el.style.translate = "";
+    el.style.minWidth = "";
+    el.style.width = "";
+    if (win.getComputedStyle(el).position !== "fixed" || el.classList.contains("ad-popover--sheet")) return;
+    const edge = tokenPx("--space-2", 8, doc);
+    const room = win.innerWidth - edge * 2;
+    if (el.offsetWidth > room) {
+      el.style.minWidth = "0";
+      el.style.width = `${room}px`;
+    }
+    const over = el.offsetLeft + el.offsetWidth - (win.innerWidth - edge);
+    const by = Math.min(Math.max(0, over), Math.max(0, el.offsetLeft - edge));
+    el.style.translate = by > 0 ? `${-Math.round(by)}px 0` : "";
+  };
+  useIsoLayoutEffect(() => {
+    fit.current();
+  });
+  useIsoLayoutEffect(() => {
+    const el = box.current;
+    if (!el) return;
+    const win = doc?.defaultView ?? window;
+    const run = () => fit.current();
+    const ro = typeof ResizeObserver !== "undefined" ? new ResizeObserver(run) : null;
+    ro?.observe(el);
+    win.addEventListener("resize", run);
+    return () => {
+      ro?.disconnect();
+      win.removeEventListener("resize", run);
+    };
+  }, [doc]);
+}
 function usePlacement(open, anchor, floating, placement, within) {
   const [pos, setPos] = useState2(null);
   const doc = useFloatingDocument();
@@ -244,8 +283,17 @@ function usePlacement(open, anchor, floating, placement, within) {
     const next = { top: placedTop, left: Math.round(Math.max(edge, left)), maxHeight: Math.max(0, Math.round(vh - placedTop - edge)) };
     setPos((p) => p && p.top === next.top && p.left === next.left && p.maxHeight === next.maxHeight ? p : next);
   };
+  const watched = useRef2(null);
   useIsoLayoutEffect(() => {
-    if (open) place.current();
+    if (!open) return;
+    place.current();
+    const el = floating.current;
+    if (el && watched.current?.el !== el && typeof ResizeObserver !== "undefined") {
+      watched.current?.ro.disconnect();
+      const ro = new ResizeObserver(() => place.current());
+      ro.observe(el);
+      watched.current = { el, ro };
+    }
   });
   useIsoLayoutEffect(() => {
     if (!open) {
@@ -253,13 +301,12 @@ function usePlacement(open, anchor, floating, placement, within) {
       return;
     }
     const run = () => place.current();
-    const ro = typeof ResizeObserver !== "undefined" && floating.current ? new ResizeObserver(run) : null;
-    if (ro && floating.current) ro.observe(floating.current);
     const win = doc?.defaultView ?? window;
     win.addEventListener("resize", run);
     win.addEventListener("scroll", run, true);
     return () => {
-      ro?.disconnect();
+      watched.current?.ro.disconnect();
+      watched.current = null;
       win.removeEventListener("resize", run);
       win.removeEventListener("scroll", run, true);
     };
@@ -2309,6 +2356,9 @@ function TodoCheck({ hooks, checked, onChange, priority = 4, ariaLabel, disabled
     }
   );
 }
+function UnseenDeliverable({ onAcknowledge, acknowledgeLabel }) {
+  return /* @__PURE__ */ jsx18(ButtonSizeScope, { size: "row", children: /* @__PURE__ */ jsx18(IconButton, { label: acknowledgeLabel, onClick: onAcknowledge, className: "ad-unseen-mark", children: /* @__PURE__ */ jsx18(Icon, { job: "kind-deliverable", size: "sm", fill: true }) }) });
+}
 function TodoRow({ ringProps, factProps, dragging, name, priority, done, onTick, due, review, deadline, today, dept, who, selected, onOpen, completeLabel = "Complete", unacknowledged, onAcknowledge, acknowledgeLabel = "Acknowledge", repeat, pastDeadline, pastDeadlineLabel = "Due date passed", role, deliverable, project, picking, onPressDate, onPressWho, onPressDeliverable, pressLabels, onRename, onPressProject, onPressDept, rowProps, cells, ring = true, whoMax }) {
   const d = (k) => factProps?.[k] ? Object.fromEntries(Object.entries(factProps[k]).filter(([n]) => n.startsWith("data-"))) : {};
   const roleWords = Array.isArray(role) ? role.join(" \xB7 ") : role;
@@ -2616,7 +2666,7 @@ var Section = forwardRef6(function Section2({ title, day, beside, children, clas
 });
 
 // src/components/Popover/Popover.tsx
-import { createContext as createContext7, useContext as useContext8, useId as useId6, useRef as useRef12, useState as useState12 } from "react";
+import { createContext as createContext7, useCallback as useCallback3, useContext as useContext8, useId as useId6, useRef as useRef12, useState as useState12 } from "react";
 
 // src/components/Writing/TokenInput.tsx
 import { useEffect as useEffect8, useLayoutEffect as useLayoutEffect4, useRef as useRef11, useState as useState11 } from "react";
@@ -2859,6 +2909,13 @@ function PopoverCard({ onClose, width = "card", ariaLabel, noClose, closeLabel, 
   const titleId = useId6();
   const { className: _c, style: _s, ...hooks } = cardProps ?? {};
   const framed = header != null || rail != null || foot != null;
+  const own = useRef12(null);
+  const setCard = useCallback3((el) => {
+    own.current = el;
+    if (typeof cardRef === "function") cardRef(el);
+    else if (cardRef) cardRef.current = el;
+  }, [cardRef]);
+  useStaysInWindow(own);
   const pos = {};
   if (style) {
     for (const k of ["position", "top", "left", "right", "bottom", "inset", "maxHeight", "zIndex", "visibility"]) if (style[k] !== void 0) pos[k] = style[k];
@@ -2867,7 +2924,7 @@ function PopoverCard({ onClose, width = "card", ariaLabel, noClose, closeLabel, 
     "div",
     {
       ...hooks,
-      ref: cardRef,
+      ref: setCard,
       id,
       role: "dialog",
       "aria-label": ariaLabel,
@@ -3563,7 +3620,7 @@ function DroppedDatePicker({ open, anchor, onClose, repeatEditor, backLabel, ...
       }),
       anchor,
       placement: "drop",
-      width: "card",
+      width: "fit",
       noClose: true,
       ariaLabel: stay ? picker.labels?.repeat ?? EN.repeat : backLabel ?? "Date",
       foot: stay ? /* @__PURE__ */ jsx28(Button, { onClick: () => setRepeating(false), children: backLabel ?? "Back" }) : void 0,
@@ -3939,7 +3996,7 @@ function ShowOptionsGear({ value, onChange, options = [...showOrder], labels: l 
   const gearLabel = l.gear ?? "Show options";
   return /* @__PURE__ */ jsxs29(Fragment14, { children: [
     /* @__PURE__ */ jsx32(IconButton, { ref: gear, label: gearLabel, active: open, "aria-expanded": open, "aria-haspopup": "dialog", onClick: () => setOpen(!open), children: /* @__PURE__ */ jsx32(Icon, { job: "settings" }) }),
-    /* @__PURE__ */ jsx32(Popover, { open, onClose: () => setOpen(false), anchor: gear, ariaLabel: gearLabel, children: /* @__PURE__ */ jsx32(PopoverSection, { label: gearLabel, children: shown.map((o) => /* @__PURE__ */ jsx32(SettingRow, { label: l[o] ?? WORDS[o], children: /* @__PURE__ */ jsx32(Switch, { checked: now[o], "aria-label": l[o] ?? WORDS[o], onChange: (on) => onChange({ ...now, [o]: on }) }) }, o)) }) })
+    /* @__PURE__ */ jsx32(Popover, { open, onClose: () => setOpen(false), anchor: gear, width: "menu", ariaLabel: gearLabel, children: /* @__PURE__ */ jsx32(PopoverSection, { label: gearLabel, children: shown.map((o) => /* @__PURE__ */ jsx32(SettingRow, { label: l[o] ?? WORDS[o], children: /* @__PURE__ */ jsx32(Switch, { checked: now[o], "aria-label": l[o] ?? WORDS[o], onChange: (on) => onChange({ ...now, [o]: on }) }) }, o)) }) })
   ] });
 }
 
@@ -5209,6 +5266,11 @@ function WeekendShade({ children, className }) {
   return /* @__PURE__ */ jsx44("div", { className: cx(on && "ad-weekend", className), children });
 }
 var clockHour = (h) => String((h + 11) % 12 + 1);
+function scrollerAbove(el) {
+  let box = el.parentElement;
+  while (box && !/auto|scroll/.test(getComputedStyle(box).overflowY)) box = box.parentElement;
+  return box ?? document.documentElement;
+}
 function TimeGrid({ startHour, endHour, bookings = [], columns, now, hourLabel = clockHour, onOpen, itemProps, columnProps, ariaLabel, bandHours, onPressAt, over, visibleHours, scrollTo, asideWidth = "narrow", hourHeight = "compact", bandHeading, className }) {
   const hours = Math.max(1, endHour - startHour);
   const frame = useRef27(null);
@@ -5250,9 +5312,7 @@ function TimeGrid({ startHour, endHour, bookings = [], columns, now, hourLabel =
         el.scrollTop = Math.max(0, (scrollTo - startHour) * hourPx);
         return true;
       }
-      let scroller = el.parentElement;
-      while (scroller && !/auto|scroll/.test(getComputedStyle(scroller).overflowY)) scroller = scroller.parentElement;
-      const box = scroller ?? document.documentElement;
+      const box = scrollerAbove(el);
       const body = el.querySelector(".ad-time-grid__body");
       const lane = el.querySelector(".ad-time-grid__allday");
       if (!body) return false;
@@ -5267,6 +5327,30 @@ function TimeGrid({ startHour, endHour, bookings = [], columns, now, hourLabel =
     ro.observe(el);
     return () => ro.disconnect();
   }, [scrollTo, startHour, hours, visibleHours]);
+  const allDayCount = (columns ?? []).some((c) => c.allDay) ? Math.max(1, ...(columns ?? []).map((c) => c.allDay?.length ?? 0)) : 0;
+  useLayoutEffect9(() => {
+    const el = frame.current;
+    if (!el || hourHeight !== "fill") return;
+    const box = scrollerAbove(el);
+    const least = tokenPx("--h-hour-min", 16);
+    const fit = () => {
+      const set = (h2) => el.style.setProperty("--ad-hour", `${h2}px`);
+      set(least);
+      const spare = box.getBoundingClientRect().bottom - el.getBoundingClientRect().bottom + box.scrollTop;
+      const h = least + Math.max(0, spare) / hours;
+      set(h);
+      const over2 = box.scrollHeight - box.clientHeight;
+      if (over2 > 0) set(Math.max(least, h - over2 / hours));
+    };
+    fit();
+    if (typeof ResizeObserver === "undefined") return;
+    const ro = new ResizeObserver(fit);
+    ro.observe(box);
+    return () => {
+      ro.disconnect();
+      el.style.removeProperty("--ad-hour");
+    };
+  }, [hourHeight, hours, allDayCount]);
   const pressAt = (colId) => (e) => {
     if (!onPressAt) return;
     const t = e.target;
@@ -5278,7 +5362,7 @@ function TimeGrid({ startHour, endHour, bookings = [], columns, now, hourLabel =
   const at = (h) => `calc(var(--ad-hour) * ${Math.max(0, Math.min(hours, h - startHour))})`;
   const cols = columns ?? [{ id: "day", label: "", bookings }];
   const hueOf = useHueOf();
-  const allDayRows = cols.some((c) => c.allDay) ? Math.max(1, ...cols.map((c) => c.allDay?.length ?? 0)) : 0;
+  const allDayRows = allDayCount;
   const anyBand = cols.some((c) => c.band);
   const headBand = !!bandHeading && anyBand;
   return /* @__PURE__ */ jsxs41("div", { ref: frame, className: cx("ad-time-grid", !!visibleHours && "ad-time-grid--scrolls", `ad-time-grid--aside-${asideWidth}`, hourHeight === "roomy" && "ad-time-grid--roomy", className), role: "group", "aria-label": ariaLabel, style: { ["--ad-hours"]: hours, ["--ad-allday-rows"]: allDayRows, ...visibleHours ? { ["--ad-visible-hours"]: visibleHours } : {}, ...headH ? { ["--ad-head-h"]: `${headH}px` } : {} }, children: [
@@ -5286,7 +5370,7 @@ function TimeGrid({ startHour, endHour, bookings = [], columns, now, hourLabel =
       anyBand && !headBand && /* @__PURE__ */ jsx44("div", { className: "ad-time-grid__band-space" }),
       allDayRows > 0 && /* @__PURE__ */ jsx44("div", { className: "ad-time-grid__allday-space" }),
       /* @__PURE__ */ jsxs41("div", { className: "ad-time-grid__hours", children: [
-        Array.from({ length: hours }, (_, i) => /* @__PURE__ */ jsx44("span", { className: "ad-time-grid__hour-label", style: { top: at(startHour + i) }, children: hourLabel(startHour + i) }, i)),
+        Array.from({ length: hours }, (_, i) => now && Math.abs(startHour + i - now.at) < (hourHeight === "fill" ? 0.75 : 0.5) ? null : /* @__PURE__ */ jsx44("span", { className: cx("ad-time-grid__hour-label", i === 0 && "ad-time-grid__hour-label--first"), style: { top: at(startHour + i) }, children: hourLabel(startHour + i) }, i)),
         now && /* @__PURE__ */ jsx44(NowMarker, { time: now.time, style: { position: "absolute", top: at(now.at), right: 0, transform: "translateY(-50%)" } })
       ] })
     ] }),
@@ -5302,7 +5386,7 @@ function TimeGrid({ startHour, endHour, bookings = [], columns, now, hourLabel =
         c.figure != null && /* @__PURE__ */ jsx44("span", { className: "ad-time-grid__figure", children: c.figure })
       ] }),
       anyBand && !headBand && (c.band ? /* @__PURE__ */ jsx44(PhaseBand, { ...c.band }) : /* @__PURE__ */ jsx44("div", { className: "ad-time-grid__band-space" })),
-      allDayRows > 0 && /* @__PURE__ */ jsx44("div", { role: "group", ...hooksOf2(columnProps?.(c.id)), className: "ad-time-grid__allday", style: { zIndex: cols.length - colAt }, children: (c.allDay ?? []).map((item) => {
+      allDayRows > 0 && /* @__PURE__ */ jsx44("div", { role: "group", ...hooksOf2(columnProps?.(c.id)), className: "ad-time-grid__allday", style: { ["--ad-lane-over"]: cols.length - colAt }, children: (c.allDay ?? []).map((item) => {
         const hooks = hooksOf2(itemProps?.(item));
         const cls = cx("ad-month__bar", "ad-striped", "ad-time-grid__item", item.unconfirmed && "ad-month__bar--unconfirmed");
         const style = { ...barColour(item.color, hueOf(item.color)), ...item.span && item.span > 1 ? { ["--ad-span"]: item.span } : {} };
@@ -6054,6 +6138,7 @@ export {
   Tooltip,
   TourStep,
   UnreadDot,
+  UnseenDeliverable,
   Verdict,
   ViewButton,
   ViewPopover,

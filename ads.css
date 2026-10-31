@@ -10,7 +10,7 @@
   --bg-base: #09090b;
   --bg-side: rgba(255, 255, 255, 0.025);
   --bg-inset: #050505;
-  --bg-surface: rgba(255, 255, 255, 0.035);
+  --bg-surface: rgba(255, 255, 255, 0.05);
   --bg-raised: rgba(255, 255, 255, 0.08);
   --bg-hover: rgba(255, 255, 255, 0.115);
   --bg-float: #121213;
@@ -104,7 +104,10 @@
   --wash-warm: rgba(225, 109, 72, 0.14);
   --wash-cool: rgba(111, 159, 196, 0.10);
   --shadow-float: 0 20px 50px rgba(0, 0, 0, 0.5);
-  --elev-float: inset 0 1px 0 rgba(255, 255, 255, 0.08), 0 20px 50px rgba(0, 0, 0, 0.5);
+  --elev-float: inset 0 1px 0 rgba(255, 255, 255, 0.18), 0 20px 50px rgba(0, 0, 0, 0.5);
+  --elev-bar: inset 0 1px 0 rgba(255, 255, 255, 0.12);
+  --glass-sheen: linear-gradient(180deg, rgba(255, 255, 255, 0.09), rgba(255, 255, 255, 0) 160px);
+  --glass-sheen-soft: linear-gradient(180deg, rgba(255, 255, 255, 0.09), rgba(255, 255, 255, 0.015));
   --ring-select: inset 0 0 0 2px #aaa6a1;
   --glow-hover: 0 0 8px rgba(225, 109, 72, 0.35);
   --glow-today: 0 0 6px rgba(225, 109, 72, 0.45);
@@ -160,6 +163,7 @@
   --w-col-xs: 48px;
   --w-field-name: 96px;
   --w-aside: 112px;
+  --h-hour-min: var(--space-4);
   --h-hour-roomy: var(--h-touch);
   --w-col-sm: 64px;
   --target-min: 24px;
@@ -845,6 +849,8 @@ button.ad-booking:focus-visible { outline: none; box-shadow: var(--ring-select);
 .ad-time-grid { --ad-hours: 24; }
 .ad-time-grid__gutter { position: relative; width: calc(var(--space-8) + var(--space-3)); }
 .ad-time-grid__hour-label { position: absolute; right: var(--space-2); transform: translateY(-50%); font: var(--type-data); font-size: var(--text-xs); color: var(--text-muted); }
+/* The first hour hangs from its line, so the held headings over it never cut it in half. */
+.ad-time-grid__hour-label--first { transform: none; }
 .ad-time-grid__column { position: relative; border-left: var(--border-w) solid var(--border); }
 .ad-time-grid__day { position: absolute; bottom: 100%; left: var(--space-2); padding-bottom: var(--space-1); font: var(--type-data); font-size: var(--text-xs); text-transform: uppercase; color: var(--text-secondary); white-space: nowrap; }
 .ad-time-grid__body { position: relative; height: calc(var(--ad-hour) * var(--ad-hours)); }
@@ -903,6 +909,9 @@ button.ad-year__day:focus-visible { outline: none; box-shadow: var(--ring-select
 .ad-time-grid { --ad-held-top: var(--ad-day-h); }
 .ad-time-grid:has(.ad-time-grid__head) { --ad-held-top: max(var(--space-6), var(--ad-head-h)); }
 .ad-time-grid:not(.ad-time-grid--scrolls) .ad-time-grid__allday, .ad-time-grid:not(.ad-time-grid--scrolls) .ad-time-grid__allday-space { position: sticky; top: var(--ad-held-top); background: var(--bg-base); }
+/* The held lane sits over every block scrolling under it, and a bar spanning days over the columns after it. */
+.ad-time-grid { --ad-lane-over: 0; }
+.ad-time-grid:not(.ad-time-grid--scrolls) .ad-time-grid__allday { z-index: calc(var(--z-sticky) + var(--ad-lane-over)); }
 .ad-time-grid:not(.ad-time-grid--scrolls) .ad-time-grid__allday-space { z-index: var(--z-sticky); }
 :is(.ad-card, .ad-section:not(.ad-section--rule)) .ad-time-grid__column > .ad-time-grid__day, :is(.ad-card, .ad-section:not(.ad-section--rule)) .ad-time-grid:not(.ad-time-grid--scrolls) .ad-time-grid__allday, :is(.ad-card, .ad-section:not(.ad-section--rule)) .ad-time-grid:not(.ad-time-grid--scrolls) .ad-time-grid__allday-space { background: var(--bg-float); }
 
@@ -1583,7 +1592,7 @@ button:hover > .ad-project-pill:not(.ad-project-pill--current) { color: var(--ac
 .ad-page-header__icon { display: inline-flex; color: var(--text-secondary); }
 .ad-page-header__icon svg { width: calc(1em * var(--icon-page)); height: calc(1em * var(--icon-page)); }
 /* HeaderActions: Athena's raised box round the header's icon buttons, kept as it was. */
-.ad-header-actions { display: inline-flex; flex: none; align-items: center; box-sizing: border-box; gap: var(--space-2); height: var(--h-btn-bar); padding: 0 var(--pad-header-actions); border-radius: var(--radius-page); background: var(--bg-surface); }
+.ad-header-actions { display: inline-flex; flex: none; align-items: center; box-sizing: border-box; gap: var(--space-2); height: var(--h-btn-bar); padding: 0 var(--pad-header-actions); border-radius: var(--radius-page); background: var(--glass-sheen-soft), var(--bg-surface); box-shadow: var(--elev-bar); }
 .ad-page-header__row > .ad-header-actions { margin-left: auto; }
 /* The alerts line at the end of the title row, before the stamp and the icon buttons; it takes no height of its own. */
 .ad-page-header__alerts { display: inline-flex; align-items: center; flex: none; margin-left: auto; }
@@ -1682,6 +1691,8 @@ button:hover > .ad-project-pill:not(.ad-project-pill--current) { color: var(--ac
 .ad-datepicker__day[data-picked] { background: var(--bg-hover); color: var(--text-primary); box-shadow: var(--ring-select); }
 .ad-datefield { display: inline-flex; flex-direction: column; min-width: 0; max-width: 100%; }
 /* Late: the date's words in the late red, as RowDate draws them. */
+/* A date's field is as wide as its date. */
+.ad-datefield .ad-field__input { field-sizing: content; min-width: var(--w-col-sm); }
 .ad-datefield__field--late .ad-field__input { color: var(--status-error-ink); }
 .ad-datefield__drop.ad-popover { width: auto; padding: var(--space-2); }
 /* What is picked shows: one pick carries a check at the right; picking several draws the tick box before each row. Never coral. */
@@ -1722,12 +1733,13 @@ button:hover > .ad-project-pill:not(.ad-project-pill--current) { color: var(--ac
 
 /* src/components/Popover/Popover.css */
 /* Popover and its pieces */
-/* As wide as what it holds, whatever it holds: only the screen stops it, and it never scrolls sideways. `wide` and `menu` are the least it
-   takes (a two-column card, a list that does not jump as it filters); a sentence wraps at reading width so it never pushes the card out. */
-.ad-popover { width: max-content; max-width: calc(100vw - var(--space-4)); padding: var(--space-4) var(--space-4) var(--space-4); max-height: calc(100vh - var(--space-4)); overflow-x: hidden; overflow-y: auto; scrollbar-gutter: stable; }
-.ad-popover--wide { min-width: var(--w-wide); }
-.ad-popover--menu { min-width: var(--w-menu); }
-.ad-popover :is(p, .ad-popover__description, .ad-hint) { max-width: var(--w-card); }
+/* A card starts at its named width, its sentences wrapping there, and grows for anything that cannot wrap: no maximum, never a sideways bar. */
+.ad-popover { min-width: min-content; padding: var(--space-4) var(--space-4) var(--space-4); max-height: calc(100vh - var(--space-4)); overflow-x: hidden; overflow-y: auto; scrollbar-gutter: stable; }
+.ad-popover--card { width: var(--w-card); }
+.ad-popover--wide { width: var(--w-wide); }
+.ad-popover--menu { width: var(--w-menu); }
+/* As wide as what it holds: a calendar's card with nothing empty beside it. */
+.ad-popover--fit { width: fit-content; }
 /* A row in a card: its name, then its control hard at the card's right edge. */
 .ad-popover .ad-field-row:not(.ad-field-row--beside) { display: flex; gap: var(--space-4); }
 .ad-popover .ad-field-row:not(.ad-field-row--beside) .ad-field-row__label { flex: none; }
@@ -1768,7 +1780,7 @@ button:hover > .ad-project-pill:not(.ad-project-pill--current) { color: var(--ac
 .ad-popover__cols > .ad-popover__body { padding: 0 var(--space-4); }
 .ad-popover__cols > .ad-popover__body:first-child { flex: 1; min-width: 0; }
 .ad-popover__rail { flex: none; width: var(--w-pop-rail); border-left: var(--border-w) solid var(--border); }
-.ad-popover--sheet { inset: 0; width: 100%; max-width: none; max-height: none; border-radius: 0; }
+.ad-popover--sheet { inset: 0; width: 100%; max-height: none; border-radius: 0; }
 .ad-popover__title .ad-inline-edit--title { margin-left: calc(var(--space-2) * -1); }
 .ad-popover__title:has(.ad-inline-edit) { flex: 1; min-width: 0; }
 
@@ -1861,8 +1873,9 @@ button.ad-row__name:focus-visible { outline: none; box-shadow: var(--ring-select
 /* Not acknowledged yet: a slow blink until it is: full, down to
  opacity-disabled at the half, back, every dur-ack-pulse. Still under reduce-motion: the filled ring alone says it. */
 @keyframes ad-ack-pulse { 0%, 100% { opacity: 1; } 50% { opacity: var(--opacity-disabled); } }
-.ad-todo-check--asked { animation: ad-ack-pulse var(--dur-ack-pulse) var(--ease-ack-pulse) infinite; }
-@media (prefers-reduced-motion: reduce) { .ad-todo-check--asked { animation: none; opacity: 1; } }
+.ad-todo-check--asked, .ad-unseen-mark { animation: ad-ack-pulse var(--dur-ack-pulse) var(--ease-ack-pulse) infinite; }
+@media (prefers-reduced-motion: reduce) { .ad-todo-check--asked, .ad-unseen-mark { animation: none; opacity: 1; } }
+.ad-unseen-mark { color: var(--text-primary); vertical-align: middle; }
 /* The date line's other facts: repeat, the past-deadline flag, the role, the deliverable. */
 .ad-row__fact { display: inline-flex; align-items: center; gap: var(--space-1); white-space: nowrap; color: var(--text-secondary); }
 /* A detail line too long for the row: the date and department stay whole; the role and the deliverable shrink and end in "…" (their
@@ -1913,7 +1926,7 @@ button.ad-row__name:focus-visible { outline: none; box-shadow: var(--ring-select
    section, a section is never a panel of its own (no card in a card). */
 .ad-section { display: flex; flex-direction: column; min-width: 0; box-sizing: border-box; padding: var(--space-3) var(--space-6) var(--space-6); border: var(--border-w) solid var(--border); border-radius: var(--radius-page); background: var(--bg-surface); box-shadow: var(--elev-float); position: relative; isolation: isolate; }
 /* The glass is a layer behind the panel, never on the panel: glass on the panel would make it the box that anything fixed to the window measures from, and a card opened inside would run off the screen. */
-.ad-section::before, .ad-card::before { content: ""; position: absolute; inset: 0; z-index: -1; border-radius: inherit; pointer-events: none; backdrop-filter: var(--blur-glass); -webkit-backdrop-filter: var(--blur-glass); }
+.ad-section::before, .ad-card::before { content: ""; position: absolute; inset: 0; z-index: -1; border-radius: inherit; pointer-events: none; background: var(--glass-sheen); backdrop-filter: var(--blur-glass); -webkit-backdrop-filter: var(--blur-glass); }
 .ad-section--rule::before, .ad-card .ad-section::before, .ad-section .ad-section::before { display: none; }
 .ad-section > .ad-group-heading--rule-above { border-top: 0; padding-top: 0; }
 .ad-section--rule, .ad-card .ad-section, .ad-section .ad-section { padding: 0; border: 0; border-radius: 0; background: transparent; box-shadow: none; }
@@ -1934,7 +1947,7 @@ button.ad-row__name:focus-visible { outline: none; box-shadow: var(--ring-select
   gap: var(--space-hair);
 }
 /* The tray: the view switch's, the zoom's, and the toolbar's right side. It never runs past its box: its choices give way first. */
-.ad-segmented, .ad-zoom, .ad-toolbar__end { display: inline-flex; align-items: center; width: max-content; min-width: 0; max-width: 100%; box-sizing: border-box; height: var(--h-btn); padding: var(--space-hair); border: var(--border-w) solid var(--border); border-radius: var(--radius-control); background: var(--bg-surface); }
+.ad-segmented, .ad-zoom, .ad-toolbar__end { display: inline-flex; align-items: center; width: max-content; min-width: 0; max-width: 100%; box-sizing: border-box; height: var(--h-btn); padding: var(--space-hair); border: var(--border-w) solid var(--border); border-radius: var(--radius-control); background: var(--glass-sheen-soft), var(--bg-surface); box-shadow: var(--elev-bar); }
 .ad-segmented__option { flex: 0 1 auto; min-width: 0; display: inline-flex; align-items: center; justify-content: center; gap: var(--space-2); height: var(--h-seg); padding: 0 var(--space-3); margin: 0; border: 0; border-radius: var(--radius-control); background: transparent; font: var(--type-heading); text-transform: uppercase; letter-spacing: var(--track-caps); line-height: var(--lh-none); cursor: pointer; }
 .ad-segmented__option:hover { color: var(--accent); }
 .ad-segmented__option:not([aria-checked="true"]) { color: var(--text-secondary); }
@@ -2343,6 +2356,8 @@ button.ad-milestone:focus-visible { outline: none; box-shadow: var(--ring-select
 .ad-toolbar__end .ad-zoom { height: auto; padding: 0; border: 0; background: transparent; }
 .ad-toolbar__end > .ad-zoom, .ad-toolbar__end > .ad-button--view { border-radius: 0; box-shadow: calc(var(--border-w) * -1) 0 0 var(--border); }
 .ad-toolbar__end > :first-child { box-shadow: none; }
+/* Every tool on the bar has the same soft glass at rest; hovered or open, its own fill takes over, one step up. */
+.ad-toolbar :is(.ad-icon-button, .ad-button--view, .ad-segmented__option), .ad-zoom .ad-icon-button { background-image: var(--glass-sheen-soft); }
 /* The View button reads as one of the bar's tools: regular weight, coral under the cursor; on bg-raised and text-primary only while its pop-over is open. */
 .ad-button--view { background: transparent; border: 0; color: var(--text-muted); }
 .ad-button--view:hover { background: var(--tint-hover); color: var(--accent); }
