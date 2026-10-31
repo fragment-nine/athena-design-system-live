@@ -1416,8 +1416,8 @@ button.ad-contents__button:focus-visible { outline: none; box-shadow: var(--ring
 .ad-row__cells { --ad-col: auto; display: inline-flex; align-items: center; flex: none; }
 .ad-row__cell { flex: none; width: var(--ad-col); padding: 0 var(--space-2); box-sizing: border-box; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--text-secondary); }
 
-/* A drop target: lit one tone while a row is dragged over; an empty section keeps a row of height. */
-.ad-list-section--over .ad-list-section__body { background: var(--tint-selected); border-radius: var(--radius-page); }
+/* A drop target: lit one tone while a row or a file is dragged over; an empty section keeps a row of height. */
+.ad-list-section--over .ad-list-section__body, .ad-file-drop--over { background: var(--tint-selected); border-radius: var(--radius-page); }
 .ad-list-section__body--empty { min-height: var(--h-row); }
 .ad-list-section__empty { margin: 0; height: var(--h-row); display: flex; align-items: center; padding: 0 var(--space-2); font: var(--type-body); line-height: var(--lh-tight); color: var(--text-secondary); }
 
@@ -2122,14 +2122,14 @@ button.ad-row__name:focus-visible { outline: none; box-shadow: var(--ring-select
 
 /* src/components/Timeline/Ruler.css */
 /* Ruler and ZoomCluster: a line-strong rule, months in white mono caps along the top, ticks from the rule (weeks taller than
- days), day numbers mono muted centred on their tick. The zoom cluster sits in the toolbar, before View. */
-.ad-ruler { position: relative; height: var(--h-row); border-bottom: var(--border-w) solid var(--line-strong); font: var(--type-data); font-size: var(--text-xs); color: var(--text-secondary); }
+ days), day numbers mono muted in the middle of their day, the ticks on the line where it starts. The zoom cluster sits in the toolbar, before View. */
+.ad-ruler { --ad-day-w: 0px; position: relative; height: var(--h-row); border-bottom: var(--border-w) solid var(--line-strong); font: var(--type-data); font-size: var(--text-xs); color: var(--text-secondary); }
 .ad-ruler__months { position: relative; height: var(--space-6); }
 .ad-ruler__month { position: absolute; top: 0; padding-left: var(--space-1); color: var(--text-primary); white-space: nowrap; }
 .ad-ruler__ticks { position: absolute; left: 0; right: 0; bottom: 0; height: var(--space-4); }
 .ad-ruler__tick { position: absolute; bottom: 0; width: var(--border-w); height: var(--space-1); background: var(--line-strong); }
 .ad-ruler__tick--major { height: var(--space-2); }
-.ad-ruler__day { position: absolute; bottom: var(--space-2); left: 50%; transform: translateX(-50%); color: var(--text-muted); white-space: nowrap; }
+.ad-ruler__day { position: absolute; bottom: var(--space-2); left: calc(var(--ad-day-w) / 2); transform: translateX(-50%); color: var(--text-muted); white-space: nowrap; }
 /* The cluster: toolbar-size icon buttons in a row (ZoomCluster), or the period control's words and sizes (PeriodCluster). */
 .ad-zoom { font: var(--type-data); font-size: var(--text-xs); line-height: var(--lh-none); color: var(--text-muted); }
 .ad-zoom__name { margin-right: var(--space-1); color: var(--text-primary); }
