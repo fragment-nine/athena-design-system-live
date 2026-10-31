@@ -462,7 +462,6 @@
   --opacity-dim: 0.75;
   --grain-opacity: 0.25;
   --opacity-stamp: 0.28;
-  --tint-presence-strip: 40%;
   --tint-over-min: 25%;
   --tint-over-max: 85%;
   --tint-presence-wash: 18%;
@@ -798,7 +797,6 @@ tr[data-ad-drop="after"] > :is(td, th) { box-shadow: inset 0 calc(var(--bw-selec
 .ad-booking__name > .ad-dept { margin-right: var(--space-1); vertical-align: middle; }
 .ad-month__bar > span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .ad-month__bar { gap: var(--space-1); }
-.ad-month__bar > .ad-project-pill { flex-shrink: 0; }
 button.ad-month__bar { cursor: pointer; }
 button.ad-month__bar:hover { box-shadow: var(--glow-hover); }
 button.ad-month__bar:hover > span { color: var(--accent); }
@@ -901,8 +899,8 @@ button.ad-year__day:focus-visible { outline: none; box-shadow: var(--ring-select
 /* Today: the 2px white ring round the day's cell, square as every day grid draws it. */
 .ad-day-cell--today { box-shadow: var(--ring-today); }
 .ad-day-cell--weekend .ad-day-cell__letter, .ad-day-cell--weekend .ad-day-cell__number { color: var(--text-muted); }
-.ad-day-cell__where { align-self: stretch; height: var(--space-2); border-radius: var(--radius-page); background: color-mix(in srgb, var(--ad-where) var(--tint-presence-strip), transparent); }
-.ad-day-cell--away .ad-day-cell__where { background: var(--hatch-away), color-mix(in srgb, var(--ad-where) var(--tint-presence-strip), transparent); }
+.ad-day-cell__where { align-self: stretch; height: var(--space-2); border-radius: var(--radius-page); background: var(--ad-where); }
+.ad-day-cell--away .ad-day-cell__where { background: var(--hatch-away), var(--ad-where); }
 .ad-day-cell--past { background-image: var(--hatch-fine); }
 .ad-day-cell__travel { position: absolute; top: var(--space-1); right: var(--space-1); color: var(--text-secondary); }
 
@@ -1141,7 +1139,7 @@ button.ad-card__name:focus-visible { outline: none; box-shadow: var(--ring-selec
 .ad-field__parsed { margin-top: var(--space-2); font: var(--type-data); font-size: var(--text-xs); text-transform: lowercase; color: var(--text-secondary); }
 .ad-textarea { display: block; width: 100%; height: auto; min-height: calc(var(--h-field) * 3); padding: var(--space-2) var(--space-3); resize: vertical; line-height: var(--lh-normal); }
 .ad-select { position: relative; cursor: pointer; padding-right: var(--space-8); }
-.ad-select__native { display: block; height: var(--h-field); line-height: var(--h-field); cursor: pointer; padding-right: var(--space-6); margin-right: calc(var(--space-6) * -1); }
+.ad-select__native { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; height: var(--h-field); line-height: var(--h-field); cursor: pointer; padding-right: var(--space-6); margin-right: calc(var(--space-6) * -1); }
 .ad-select__native option { background: var(--bg-float); color: var(--text-primary); }
 .ad-select__caret { position: absolute; right: var(--space-3); width: var(--icon-sm); height: var(--icon-sm); color: var(--text-muted); pointer-events: none; }
 .ad-select:hover .ad-select__caret { color: var(--accent); }
@@ -1156,7 +1154,7 @@ button.ad-card__name:focus-visible { outline: none; box-shadow: var(--ring-selec
  words ending in "…"; a button beside it keeps its whole label. Nothing runs past the row. */
 .ad-field-row--beside .ad-field-row__control { flex: 1 1 0; min-width: 0; max-width: 100%; gap: var(--space-2); }
 .ad-field-row--beside .ad-field-row__control > * { min-width: 0; max-width: 100%; }
-.ad-field-row--beside .ad-field-row__control > :is(.ad-button, .ad-icon-button, .ad-segmented) { flex: none; }
+.ad-field-row--beside .ad-field-row__control > :is(.ad-button, .ad-icon-button, .ad-segmented, .ad-select) { flex: none; }
 .ad-field-row--beside .ad-segmented__option:not(.ad-segmented__option--icon) { padding: 0 var(--space-1); }
 /* One straight column: the names sit in a fixed column, so every field starts on one vertical line; a longer
  name wraps inside it. */
@@ -1471,7 +1469,7 @@ button.ad-contents__button:focus-visible { outline: none; box-shadow: var(--ring
 .ad-rail__x { display: inline-block; flex: none; width: var(--icon-md); height: var(--icon-md); background: url('assets/logos/loudbox-x.png') center / contain no-repeat; }
 .ad-rail__project { margin: 0; padding: var(--space-hair); border: 0; border-radius: var(--radius-page); background: transparent; cursor: pointer; }
 .ad-rail__fold svg { width: var(--icon-md); height: var(--icon-md); }
-.ad-project-pill { --ad-pill: var(--line-strong); /* One size everywhere, the menu's: no taller than a name's type, a hair of padding. */
+.ad-project-pill { flex: none; --ad-pill: var(--line-strong); /* One size everywhere, the menu's: no taller than a name's type, a hair of padding. */
   display: inline-flex; align-items: center; justify-content: center; box-sizing: border-box; min-width: 0; height: var(--text-base); padding: 0 var(--space-hair); border-radius: var(--radius-page); box-shadow: inset 0 0 0 var(--border-w) var(--ad-pill); background: transparent; line-height: 1; font: var(--type-data); font-size: var(--text-xs); color: var(--text-secondary); white-space: nowrap; }
 /* Its colour on the outline only, never a fill; no taller than the name beside it. */
 .ad-project-pill[data-coloured] { color: var(--text-primary); }
@@ -1694,6 +1692,8 @@ button:hover > .ad-project-pill:not(.ad-project-pill--current) { color: var(--ac
 .ad-popover--card { width: var(--w-card); }
 .ad-popover--wide { width: var(--w-wide); }
 .ad-popover--menu { width: var(--w-menu); }
+/* As wide as what it holds: a calendar's card with nothing empty beside it. */
+.ad-popover--fit { width: fit-content; }
 .ad-popover__header { margin-right: var(--space-8); margin-bottom: var(--space-4); }
 /* Title, then the heading, then the field labels: a heading is brighter than the labels under it, and they sit on the Detail rung. */
 .ad-popover .ad-popover__eyebrow, .ad-popover .ad-popover__section-label { margin: 0; color: var(--text-primary); }
@@ -1774,8 +1774,8 @@ button.ad-row__name:focus-visible { outline: none; box-shadow: var(--ring-select
 .ad-row__status, .ad-row__dates, .ad-row__tags, .ad-row__people, .ad-row__trail { display: inline-flex; align-items: center; gap: var(--space-2); flex: none; }
 .ad-row__trail { gap: var(--space-1); }
 /* An item's two dates, right after each other. */
-.ad-item-dates { display: inline-flex; align-items: center; gap: var(--space-2); white-space: nowrap; }
-.ad-row-date { display: inline-flex; align-items: center; gap: var(--space-1); font: var(--type-detail); color: var(--text-muted); white-space: nowrap; }
+.ad-item-dates { display: inline-flex; align-items: baseline; gap: var(--space-2); white-space: nowrap; }
+.ad-row-date { display: inline-flex; align-items: baseline; gap: var(--space-1); font: var(--type-detail); color: var(--text-muted); white-space: nowrap; }
 .ad-row-date--late { color: var(--status-error-ink); }
 /* Today green, late red, the glyphs in the date's colour. */
 .ad-row-date--today { color: var(--status-good); }
@@ -1784,7 +1784,7 @@ button.ad-row__name:focus-visible { outline: none; box-shadow: var(--ring-select
 .ad-row-figure--number { font: var(--type-data); }
 /* The countdown: body face, regular, text-secondary; red once passed. */
 .ad-row-date--countdown { font: var(--type-name); }
-.ad-row-date__icon { display: inline-flex; }
+.ad-row-date__icon { display: inline-flex; align-self: center; }
 /* The date's glyphs take the date's colour: green today, red late. */
 .ad-row__meta .ad-row-date--late svg, .ad-row__meta .ad-row-date--today svg, .ad-row-date--late svg, .ad-row-date--today svg { color: currentColor; }
 .ad-row-date__icon svg { width: var(--icon-sm); height: var(--icon-sm); }
@@ -2256,8 +2256,9 @@ button.ad-milestone:focus-visible { outline: none; box-shadow: var(--ring-select
 /* Built 2026-10-27 for My Plate: the name before the bar, the off-window end mark, the presence marks in the key. */
 .ad-bar--label-before .ad-bar__outside { left: auto; right: calc(100% + var(--space-4)); justify-content: flex-end; }
 .ad-offscreen--end { display: inline-block; text-align: right; }
-.ad-chart-key__presence { --ad-where: transparent; display: inline-block; width: var(--space-6); height: var(--space-2); border-radius: var(--radius-control); background: color-mix(in srgb, var(--ad-where) var(--tint-presence-strip), transparent); }
-.ad-chart-key__presence--away { background: var(--hatch-away), color-mix(in srgb, var(--text-muted) var(--tint-presence-strip), transparent); }
+.ad-chart-key__presence { --ad-where: transparent; display: inline-block; width: var(--space-6); height: var(--space-2); border-radius: var(--radius-control); background: var(--ad-where); }
+.ad-chart-key__presence--away { background: var(--hatch-away), var(--ad-where, var(--text-muted)); }
+.ad-chart-key__presence--away:not([style]) { --ad-where: var(--text-muted); }
 
 /* A day cell (`code`): an outlined box filling its day, the code centred inside, never moved outside; a travel day dashed, a dark day
  dimmed. */
@@ -2268,6 +2269,8 @@ button.ad-milestone:focus-visible { outline: none; box-shadow: var(--ring-select
 .ad-bar--code.ad-bar--dim { color: var(--text-muted); border-color: var(--text-muted); }
 /* labelOutside="never": the name whole inside, or, too long for the bar, not written and its words on hover; never a stub. */
 .ad-bar--keep-in .ad-bar__label { overflow: hidden; }
+.ad-bar--keep-in { overflow: hidden; }
+.ad-bar--label-outside .ad-bar__label { overflow: hidden; }
 .ad-bar--name-gone .ad-bar__label > .ad-bar__name { visibility: hidden; }
 
 /* src/components/Toolbar/Toolbar.css */

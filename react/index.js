@@ -517,6 +517,10 @@ var REGULAR = {
   "calendar-blank": [
     "M208,32H184V24a8,8,0,0,0-16,0v8H88V24a8,8,0,0,0-16,0v8H48A16,16,0,0,0,32,48V208a16,16,0,0,0,16,16H208a16,16,0,0,0,16-16V48A16,16,0,0,0,208,32ZM72,48v8a8,8,0,0,0,16,0V48h80v8a8,8,0,0,0,16,0V48h24V80H48V48ZM208,208H48V96H208V208Z"
   ],
+  "calendar-slash": [
+    "M208,32H184V24a8,8,0,0,0-16,0v8H88V24a8,8,0,0,0-16,0v8H48A16,16,0,0,0,32,48V208a16,16,0,0,0,16,16H208a16,16,0,0,0,16-16V48A16,16,0,0,0,208,32ZM72,48v8a8,8,0,0,0,16,0V48h80v8a8,8,0,0,0,16,0V48h24V80H48V48ZM208,208H48V96H208V208Z",
+    "M34.1,37.41L210.1,229.41A8,8,0,0,0,221.9,218.59L45.9,26.59A8,8,0,0,0,34.1,37.41Z"
+  ],
   "caret-down": [
     "M213.66,101.66l-80,80a8,8,0,0,1-11.32,0l-80-80A8,8,0,0,1,53.66,90.34L128,164.69l74.34-74.35a8,8,0,0,1,11.32,11.32Z"
   ],
@@ -1356,6 +1360,7 @@ var JOBS = {
   "unlock": "lock-open",
   "user": "user",
   "snooze": "zzz",
+  "no date": "calendar-slash",
   "x": "x"
 };
 
@@ -3521,7 +3526,10 @@ function DateField({ onParsed, label, text: given, onText, format, icon, disable
       const a = d.activeElement;
       if (!a || a === d.body || drop.current?.contains(a)) input.current?.focus({ preventScroll: true });
       setOpen(false);
-    }, anchor, noClose: true, keepFocus: true, ariaLabel: label, id: dropId, className: "ad-datefield__drop", children: /* @__PURE__ */ jsx28("div", { ref: drop, children: /* @__PURE__ */ jsx28(DatePicker, { ...picker, value, onChange: (d) => {
+    }, anchor, noClose: true, keepFocus: true, ariaLabel: label, id: dropId, className: "ad-datefield__drop", children: /* @__PURE__ */ jsx28("div", { ref: drop, children: /* @__PURE__ */ jsx28(DatePicker, { ...picker, repeat: picker.repeat && { ...picker.repeat, onPress: () => {
+      setOpen(false);
+      picker.repeat.onPress(input.current);
+    } }, value, onChange: (d) => {
       say(d);
       setOpen(false);
       input.current?.focus({ preventScroll: true });
@@ -4686,9 +4694,9 @@ function LaneWash({ left, width, colour, edge, label, unconfirmed }) {
     }
   );
 }
-function PresenceSwatch({ colour }) {
+function PresenceSwatch({ colour, away }) {
   const c = useNamedColour(colour);
-  return /* @__PURE__ */ jsx42("span", { "aria-hidden": "true", className: "ad-chart-key__presence", style: c ? { ["--ad-where"]: c } : void 0 });
+  return /* @__PURE__ */ jsx42("span", { "aria-hidden": "true", className: cx("ad-chart-key__presence", away && "ad-chart-key__presence--away"), style: c ? { ["--ad-where"]: c } : void 0 });
 }
 function OffscreenStart({ date, side = "start" }) {
   return side === "end" ? /* @__PURE__ */ jsxs39("span", { className: "ad-offscreen ad-note-data ad-offscreen--end", children: [
@@ -4704,7 +4712,7 @@ function OffscreenStart({ date, side = "start" }) {
 var KEY_MARKS = /* @__PURE__ */ new Set(["confirmed", "hatched", "deal", "backup", "clash"]);
 function ChartKey({ items, ariaLabel = "Key" }) {
   return /* @__PURE__ */ jsx42("div", { className: "ad-chart-key", role: "group", "aria-label": ariaLabel, children: items.map((it, i) => {
-    const swatch = typeof it.mark === "string" && KEY_MARKS.has(it.mark) ? /* @__PURE__ */ jsx42("span", { "aria-hidden": "true", className: `ad-chart-key__swatch ad-chart-key__swatch--${it.mark}` }) : it.mark === "away" ? /* @__PURE__ */ jsx42("span", { "aria-hidden": "true", className: "ad-chart-key__presence ad-chart-key__presence--away" }) : it.mark && typeof it.mark === "object" && "presence" in it.mark ? /* @__PURE__ */ jsx42(PresenceSwatch, { colour: it.mark.presence }) : /* @__PURE__ */ jsx42("span", { "aria-hidden": "true", className: "ad-chart-key__mark", children: it.mark });
+    const swatch = typeof it.mark === "string" && KEY_MARKS.has(it.mark) ? /* @__PURE__ */ jsx42("span", { "aria-hidden": "true", className: `ad-chart-key__swatch ad-chart-key__swatch--${it.mark}` }) : it.mark === "away" ? /* @__PURE__ */ jsx42("span", { "aria-hidden": "true", className: "ad-chart-key__presence ad-chart-key__presence--away" }) : it.mark && typeof it.mark === "object" && "presence" in it.mark ? /* @__PURE__ */ jsx42(PresenceSwatch, { colour: it.mark.presence, away: it.mark.away }) : /* @__PURE__ */ jsx42("span", { "aria-hidden": "true", className: "ad-chart-key__mark", children: it.mark });
     const { className: _c, style: _s, ...hooks } = it.itemProps ?? {};
     return it.onPress ? /* @__PURE__ */ jsxs39("button", { type: "button", ...hooks, className: "ad-chart-key__item ad-chart-key__item--press", onClick: (e) => {
       hooks.onClick?.(e);
