@@ -1682,7 +1682,7 @@ function FormSection({ number, title, children, error, className }) {
 }
 function FormActions({ main, onCancel, cancelLabel = "Cancel", destroy, extras }) {
   return /* @__PURE__ */ jsxs7("div", { className: "ad-form-actions", children: [
-    destroy && /* @__PURE__ */ jsx9("span", { className: "ad-form-actions__destroy", children: /* @__PURE__ */ jsx9(Button, { danger: true, onClick: destroy.onSelect, children: destroy.label }) }),
+    destroy && /* @__PURE__ */ jsx9("span", { className: "ad-form-actions__destroy", children: /* @__PURE__ */ jsx9(Button, { onClick: destroy.onSelect, children: destroy.label }) }),
     extras != null && /* @__PURE__ */ jsx9("span", { className: "ad-form-actions__extras", children: extras }),
     onCancel && /* @__PURE__ */ jsx9(Button, { onClick: onCancel, children: cancelLabel }),
     main && /* @__PURE__ */ jsx9(Button, { variant: "main", type: main.onSelect ? "button" : "submit", onClick: main.onSelect, children: String(main.label) })
@@ -2170,7 +2170,7 @@ function ItemDates({ review, deadline, today, done, repeat, labels }) {
   if (!review && !deadline) return null;
   return /* @__PURE__ */ jsxs15("span", { className: "ad-item-dates", children: [
     review && /* @__PURE__ */ jsx18(RowDate, { due: review, today, done, icon: "review date", what: labels?.review ?? "Review date", repeat }),
-    deadline && /* @__PURE__ */ jsx18(RowDate, { due: deadline, today, done, icon: "deadline", what: labels?.deadline ?? "Deadline", repeat: review ? void 0 : repeat })
+    deadline && /* @__PURE__ */ jsx18(RowDate, { due: deadline, today, done, icon: "deadline", what: labels?.deadline ?? "Due date", repeat: review ? void 0 : repeat })
   ] });
 }
 function RowDate({ due, today, until, done, milestone, what, icon, countdown: countdown2, repeat }) {
@@ -2240,7 +2240,7 @@ function TodoCheck({ hooks, checked, onChange, priority = 4, ariaLabel, disabled
     }
   );
 }
-function TodoRow({ ringProps, factProps, dragging, name, priority, done, onTick, due, review, deadline, today, dept, who, selected, onOpen, completeLabel = "Complete", unacknowledged, onAcknowledge, acknowledgeLabel = "Acknowledge", repeat, pastDeadline, pastDeadlineLabel = "Deadline passed", role, deliverable, project, picking, onPressDate, onPressWho, onPressDeliverable, pressLabels, onRename, onPressProject, onPressDept, rowProps, cells, ring = true, whoMax }) {
+function TodoRow({ ringProps, factProps, dragging, name, priority, done, onTick, due, review, deadline, today, dept, who, selected, onOpen, completeLabel = "Complete", unacknowledged, onAcknowledge, acknowledgeLabel = "Acknowledge", repeat, pastDeadline, pastDeadlineLabel = "Due date passed", role, deliverable, project, picking, onPressDate, onPressWho, onPressDeliverable, pressLabels, onRename, onPressProject, onPressDept, rowProps, cells, ring = true, whoMax }) {
   const d = (k) => factProps?.[k] ? Object.fromEntries(Object.entries(factProps[k]).filter(([n]) => n.startsWith("data-"))) : {};
   const roleWords = Array.isArray(role) ? role.join(" \xB7 ") : role;
   const dated = !!(review || deadline);
@@ -4547,7 +4547,7 @@ function Bar({ code: code2, travel, dim, label, unconfirmed, deal, backup, color
 }
 function BarMarker({ kind, at, due, today, done, labels: l = {} }) {
   const late = kind === "review" && !done && due instanceof Date && today instanceof Date && daysBetween(today, due) < 0;
-  const word = kind === "review" ? l.review ?? "Review date" : l.deadline ?? "Deadline";
+  const word = kind === "review" ? l.review ?? "Review date" : l.deadline ?? "Due date";
   const label = late ? `${word} ${l.passed ?? "passed"}` : word;
   return /* @__PURE__ */ jsx42("span", { className: cx("ad-bar-marker", late && "ad-bar-marker--late"), style: { left: `clamp(calc(var(--icon-md) / 2), ${Math.max(0, Math.min(1, at)) * 100}%, calc(100% - var(--icon-md) / 2))` }, role: "img", "aria-label": label, title: label, children: /* @__PURE__ */ jsx42(Icon, { name: kind === "review" ? "eye" : "paper-plane-tilt", fill: true }) });
 }
