@@ -971,8 +971,9 @@ button.ad-year__day:focus-visible { outline: none; box-shadow: var(--ring-select
 /* Card: a board tile, or a dashboard widget as the Dashboard card draws it (small caps title, More at the right in 600). */
 .ad-card { --ad-tray: var(--bg-base); }
 /* Studio glass (locked 2026-10-29): a card is frosted glass over the ground, a 1px edge, one bright top pixel and a long soft lift; a tile inside a panel keeps the glass but not the lift. */
-.ad-card { position: relative; box-sizing: border-box; border-radius: var(--radius-page); border: var(--border-w) solid var(--border); background: var(--bg-surface); box-shadow: var(--elev-float); backdrop-filter: var(--blur-glass); -webkit-backdrop-filter: var(--blur-glass); color: var(--text-primary); font: var(--type-name); }
-.ad-card .ad-card, .ad-section .ad-card { border-radius: var(--radius-tile); box-shadow: none; backdrop-filter: none; -webkit-backdrop-filter: none; }
+.ad-card { position: relative; box-sizing: border-box; border-radius: var(--radius-page); border: var(--border-w) solid var(--border); background: var(--bg-surface); box-shadow: var(--elev-float); isolation: isolate; color: var(--text-primary); font: var(--type-name); }
+.ad-card .ad-card, .ad-section .ad-card { border-radius: var(--radius-tile); box-shadow: none; }
+.ad-card .ad-card::before, .ad-section .ad-card::before { display: none; }
 .ad-card--tile { padding: var(--space-2) var(--space-3) var(--space-3); }
 .ad-card--widget { padding: var(--space-3) var(--space-4) var(--space-4); counter-increment: widget; }
 /* The site's small index on each piece of work: 01.01, bottom right of a widget, in the quiet ink. */
@@ -1168,6 +1169,7 @@ button.ad-card__name:focus-visible { outline: none; box-shadow: var(--ring-selec
 .ad-field-row--beside .ad-field-row__label { flex: none; box-sizing: border-box; width: var(--w-field-name); line-height: var(--lh-tight); overflow-wrap: normal; word-break: normal; }
 /* A longer name wraps only at its spaces: a single word never breaks mid-word. */
 .ad-field-row--beside .ad-field-row__label > label { min-width: 0; }
+.ad-field-row--name-fits.ad-field-row--beside .ad-field-row__label { width: auto; white-space: nowrap; }
 .ad-field-row__help { display: inline-flex; align-items: center; justify-content: center; width: var(--target-min); height: var(--target-min); margin: 0; padding: 0; border: 0; border-radius: var(--radius-page); background: transparent; color: var(--text-muted); cursor: help; }
 .ad-field-row__help:hover { color: var(--accent); }
 .ad-field-row__help:focus-visible { outline: none; box-shadow: var(--ring-select); }
@@ -1182,6 +1184,7 @@ button.ad-card__name:focus-visible { outline: none; box-shadow: var(--ring-selec
 /* InlineEdit: the words themselves until the pointer is on them; then the field's fill, never an edge. */
 .ad-inline-edit { all: unset; box-sizing: border-box; display: block; width: 100%; min-width: 0; padding: 0 var(--space-2); margin: 0 calc(var(--space-2) * -1); border-radius: var(--radius-page); color: var(--text-primary); text-overflow: ellipsis; }
 .ad-inline-edit--body { font: var(--type-name); line-height: var(--h-field); }
+.ad-inline-edit--wrap { field-sizing: content; resize: none; overflow: hidden; white-space: pre-wrap; line-height: var(--lh-tight); }
 .ad-inline-edit--title { font: var(--type-title); line-height: var(--lh-tight); padding-block: var(--space-1); }
 .ad-inline-edit:hover { background: var(--bg-raised); }
 .ad-inline-edit:focus { background: var(--bg-hover); }
@@ -1610,6 +1613,10 @@ button:hover > .ad-project-pill:not(.ad-project-pill--current) { color: var(--ac
 /* src/components/Pickers/Pickers.css */
 /* PickList and DatePicker */
 .ad-picklist { width: var(--w-menu); }
+/* Dates at a row's right: the list and its card grow to hold them, so nothing reaches the edge or sticks out. */
+.ad-picklist:has(.ad-picklist__hint .ad-item-dates) { width: max-content; min-width: var(--w-menu); max-width: var(--w-card); }
+.ad-popover--menu:has(.ad-picklist__hint .ad-item-dates) { width: fit-content; }
+.ad-picklist__hint { flex: none; }
 .ad-picklist__search {
   display: flex; align-items: center; gap: var(--space-2); height: var(--h-btn); padding: 0 var(--space-2); margin-bottom: var(--space-2);
   border-radius: var(--radius-page); background: var(--bg-hover); color: var(--text-muted);
@@ -1888,9 +1895,12 @@ button.ad-row__name:focus-visible { outline: none; box-shadow: var(--ring-select
 /* The section: a glass panel (Studio glass, locked 2026-10-29) holding its heading, then its body. `ad-section--rule` is the
    list-only form: no panel, a strong rule over its heading, as the Loudbox site separates blocks. Inside a card or another
    section, a section is never a panel of its own (no card in a card). */
-.ad-section { display: flex; flex-direction: column; min-width: 0; box-sizing: border-box; padding: var(--space-3) var(--space-6) var(--space-6); border: var(--border-w) solid var(--border); border-radius: var(--radius-page); background: var(--bg-surface); box-shadow: var(--elev-float); backdrop-filter: var(--blur-glass); -webkit-backdrop-filter: var(--blur-glass); }
+.ad-section { display: flex; flex-direction: column; min-width: 0; box-sizing: border-box; padding: var(--space-3) var(--space-6) var(--space-6); border: var(--border-w) solid var(--border); border-radius: var(--radius-page); background: var(--bg-surface); box-shadow: var(--elev-float); position: relative; isolation: isolate; }
+/* The glass is a layer behind the panel, never on the panel: glass on the panel would make it the box that anything fixed to the window measures from, and a card opened inside would run off the screen. */
+.ad-section::before, .ad-card::before { content: ""; position: absolute; inset: 0; z-index: -1; border-radius: inherit; pointer-events: none; backdrop-filter: var(--blur-glass); -webkit-backdrop-filter: var(--blur-glass); }
+.ad-section--rule::before, .ad-card .ad-section::before, .ad-section .ad-section::before { display: none; }
 .ad-section > .ad-group-heading--rule-above { border-top: 0; padding-top: 0; }
-.ad-section--rule, .ad-card .ad-section, .ad-section .ad-section { padding: 0; border: 0; border-radius: 0; background: transparent; box-shadow: none; backdrop-filter: none; -webkit-backdrop-filter: none; }
+.ad-section--rule, .ad-card .ad-section, .ad-section .ad-section { padding: 0; border: 0; border-radius: 0; background: transparent; box-shadow: none; }
 .ad-section--rule > .ad-group-heading--rule-above { border-top: var(--border-w) solid var(--line-strong); padding-top: var(--space-2); }
 /* The body: the section's groups, 16 apart. */
 .ad-section__body { display: flex; flex-direction: column; gap: var(--space-4); min-width: 0; }
@@ -2041,6 +2051,7 @@ button.ad-row__name:focus-visible { outline: none; box-shadow: var(--ring-select
 .ad-table__fold:hover { color: var(--accent); }
 .ad-table__fold:focus-visible { outline: none; box-shadow: var(--ring-select); border-radius: var(--radius-page); }
 .ad-table__chevron--shut { transform: rotate(-90deg); }
+.ad-table__fold--row { margin-right: var(--space-2); vertical-align: middle; }
 .ad-table__group th { height: var(--h-btn); padding: var(--space-4) var(--space-2) 0; text-align: left; border-bottom: var(--border-w) solid var(--border); font: var(--type-heading); text-transform: uppercase; color: var(--text-secondary); }
 /* A child row: indented one step per level, an elbow before its name. */
 .ad-table th.ad-table__name { --ad-depth: 0; padding-left: calc(var(--space-2) + var(--ad-depth) * var(--space-6)); }

@@ -1674,7 +1674,7 @@ var TextField = forwardRef2(function TextField2({ icon, end, parsed, error, mono
 var TextArea = forwardRef2(function TextArea2({ className, ...rest }, ref) {
   return /* @__PURE__ */ jsx9("textarea", { ref, ...rest, className: cx("ad-field", "ad-textarea", className) });
 });
-var InlineEdit = forwardRef2(function InlineEdit2({ value, onCommit, ariaLabel, placeholder, size = "body", onType, onLeaveDown, disabled, className }, ref) {
+var InlineEdit = forwardRef2(function InlineEdit2({ value, onCommit, ariaLabel, placeholder, size = "body", onType, onLeaveDown, disabled, wrap, className }, ref) {
   const [draft, setDraft] = useState5(value);
   const editing = useRef5(false);
   const cancelled = useRef5(false);
@@ -1692,38 +1692,35 @@ var InlineEdit = forwardRef2(function InlineEdit2({ value, onCommit, ariaLabel, 
     if (next !== value) onCommit(next);
     setDraft(value);
   };
-  return /* @__PURE__ */ jsx9(
-    "input",
-    {
-      ref,
-      value: draft,
-      "aria-label": ariaLabel,
-      placeholder,
-      disabled,
-      onFocus: () => {
-        editing.current = true;
-      },
-      onChange: (e) => {
-        setDraft(e.target.value);
-        onType?.(e.target.value);
-      },
-      onBlur: commit,
-      onKeyDown: (e) => {
-        if (onLeaveDown && (e.key === "Enter" || e.key === "ArrowDown")) {
-          e.preventDefault();
-          onLeaveDown(e.key);
-          return;
-        }
-        if (e.key === "Enter") e.currentTarget.blur();
-        if (e.key === "Escape") {
-          e.stopPropagation();
-          cancelled.current = true;
-          e.currentTarget.blur();
-        }
-      },
-      className: cx("ad-inline-edit", `ad-inline-edit--${size}`, className)
-    }
-  );
+  const shared = {
+    value: draft,
+    "aria-label": ariaLabel,
+    placeholder,
+    disabled,
+    onFocus: () => {
+      editing.current = true;
+    },
+    onChange: (e) => {
+      setDraft(e.target.value);
+      onType?.(e.target.value);
+    },
+    onBlur: commit,
+    onKeyDown: (e) => {
+      if (onLeaveDown && (e.key === "Enter" || e.key === "ArrowDown")) {
+        e.preventDefault();
+        onLeaveDown(e.key);
+        return;
+      }
+      if (e.key === "Enter") e.currentTarget.blur();
+      if (e.key === "Escape") {
+        e.stopPropagation();
+        cancelled.current = true;
+        e.currentTarget.blur();
+      }
+    },
+    className: cx("ad-inline-edit", `ad-inline-edit--${size}`, className, wrap && "ad-inline-edit--wrap")
+  };
+  return wrap ? /* @__PURE__ */ jsx9("textarea", { ref, rows: 1, ...shared }) : /* @__PURE__ */ jsx9("input", { ref, ...shared });
 });
 var Select = forwardRef2(function Select2({ options, placeholder, quiet, className, value, defaultValue, ...rest }, ref) {
   return /* @__PURE__ */ jsxs7("span", { className: cx("ad-field", "ad-select", rest.disabled && "ad-field--disabled", className), children: [
@@ -1734,8 +1731,8 @@ var Select = forwardRef2(function Select2({ options, placeholder, quiet, classNa
     /* @__PURE__ */ jsx9(Icon, { name: "caret-down", size: "sm", className: "ad-select__caret" })
   ] });
 });
-function FieldRow({ label, children, help, beside, htmlFor, className }) {
-  return /* @__PURE__ */ jsxs7("div", { className: cx("ad-field-row", beside && "ad-field-row--beside", className), children: [
+function FieldRow({ label, children, help, beside, nameFits, htmlFor, className }) {
+  return /* @__PURE__ */ jsxs7("div", { className: cx("ad-field-row", beside && "ad-field-row--beside", nameFits && "ad-field-row--name-fits", className), children: [
     /* @__PURE__ */ jsxs7("span", { className: "ad-field-row__label", children: [
       /* @__PURE__ */ jsx9("label", { htmlFor, children: label }),
       help && /* @__PURE__ */ jsx9(Help, { text: help })
@@ -2431,7 +2428,7 @@ function ListSection({ title, children, collapsible, collapsed, onCollapsedChang
   return /* @__PURE__ */ jsxs16("section", { role: inList ? "listitem" : void 0, className: cx("ad-section ad-list-section", look === "rule" && "ad-section--rule", dropTarget?.over && "ad-list-section--over", className), children: [
     day ? /* @__PURE__ */ jsx19(DayHeading, { day: day.day, today: day.today }) : bar ? /* @__PURE__ */ jsxs16("div", { className: "ad-list-section__bar", children: [
       collapsible && /* @__PURE__ */ jsx19("button", { type: "button", className: "ad-list-section__fold", "aria-expanded": !shut, "aria-controls": bodyId, "aria-label": bar.foldLabel ?? String(title), onClick: toggle, children: /* @__PURE__ */ jsx19(Icon, { job: shut ? "chevron-right" : "chevron-down", size: "sm" }) }),
-      /* @__PURE__ */ jsx19(InList2.Provider, { value: false, children: /* @__PURE__ */ jsx19(Row, { heading: true, name: title, status: bar.status, dates: bar.dates, onOpen: bar.onOpen }) })
+      /* @__PURE__ */ jsx19(InList2.Provider, { value: false, children: /* @__PURE__ */ jsx19(Row, { heading: true, name: title, status: bar.status, dates: bar.dates, onOpen: bar.onOpen, trail: bar.end }) })
     ] }) : !bare && /* @__PURE__ */ jsx19(GroupHeading, { ...heading, collapsible, collapsed: shut, onToggle: toggle, controls: bodyId, children: title }),
     /* @__PURE__ */ jsxs16("div", { id: bodyId, role: "list", hidden: collapsible && !bare ? shut : void 0, className: cx("ad-list-section__body", bar && "ad-list-section__body--nested", (dropTarget?.empty || none) && "ad-list-section__body--empty"), children: [
       /* @__PURE__ */ jsx19(InList2.Provider, { value: true, children }),
@@ -3201,6 +3198,14 @@ function Menu({ open, onClose, anchor: given_anchor, at: point, items: given, ar
         children: body
       }
     )
+  ] });
+}
+function MenuButton({ face, items, label }) {
+  const [open, setOpen] = useState13(false);
+  const anchor = useRef13(null);
+  return /* @__PURE__ */ jsxs22(Fragment11, { children: [
+    face({ ref: anchor, onClick: () => setOpen((o) => !o), "aria-haspopup": "menu", "aria-expanded": open }),
+    /* @__PURE__ */ jsx25(Menu, { open, onClose: () => setOpen(false), anchor, ariaLabel: label, items })
   ] });
 }
 
@@ -4142,7 +4147,7 @@ function ViewPopover({ open, onClose, anchor, builtInViews = [], savedViews, cur
     setName("");
   };
   return /* @__PURE__ */ jsxs32(Popover, { open, onClose, anchor, ariaLabel: L.view, children: [
-    viewsShown && /* @__PURE__ */ jsxs32(PopoverSection, { label: savedViews && !builtInViews.length ? L.savedViews : L.builtInViews, children: [
+    viewsShown && /* @__PURE__ */ jsxs32(PopoverSection, { label: savedViews && builtInViews.length ? void 0 : savedViews ? L.savedViews : L.builtInViews, children: [
       savedViews && savedViews.length === 0 && !builtInViews.length && /* @__PURE__ */ jsx35("p", { className: "ad-view-none", children: L.noSaved }),
       /* @__PURE__ */ jsx35(
         PickList,
@@ -4510,10 +4515,23 @@ function Columns({ main, side, sideWidth = "card", className }) {
 import { useLayoutEffect as useLayoutEffect7, useRef as useRef24, useState as useState23 } from "react";
 import { jsx as jsx41, jsxs as jsxs38 } from "react/jsx-runtime";
 var Arrow = ({ up }) => /* @__PURE__ */ jsx41(Icon, { name: up ? "arrow-up" : "arrow-down", size: "sm", className: "ad-table__arrow" });
-function Table({ columns, rows, rowId, caption, sort, onSort, picked, onPickedChange, onPickAllChange, pickLabel, pickAllLabel = "Pick all", onOpen, rowProps, group, foldGroups, foldedGroups, onFoldGroup, depth, nameColumn, fixed, className }) {
+function Table({ columns, rows, rowId, caption, sort, onSort, picked, onPickedChange, onPickAllChange, pickLabel, pickAllLabel = "Pick all", onOpen, rowProps, group, foldGroups, foldedGroups, onFoldGroup, depth, foldParents, foldedRows, onFoldRow, foldLabel, nameColumn, fixed, className }) {
   const span = columns.length + (onPickedChange ? 1 : 0);
   const [ownFolded, setOwnFolded] = useState23(() => /* @__PURE__ */ new Set());
   const folded = foldedGroups ?? ownFolded;
+  const [ownRows, setOwnRows] = useState23(() => /* @__PURE__ */ new Set());
+  const rowsShut = foldedRows ?? ownRows;
+  const foldRow = (id) => {
+    const shut = !rowsShut.has(id);
+    if (!foldedRows) setOwnRows((was) => {
+      const next = new Set(was);
+      if (shut) next.add(id);
+      else next.delete(id);
+      return next;
+    });
+    onFoldRow?.(id, shut);
+  };
+  let hideBelow = null;
   const foldGroup = (g) => {
     const shut = !folded.has(g);
     if (!foldedGroups) setOwnFolded((was) => {
@@ -4563,8 +4581,13 @@ function Table({ columns, rows, rowId, caption, sort, onSort, picked, onPickedCh
         ] }) : c.label }, c.id);
       })
     ] }) }),
-    /* @__PURE__ */ jsx41("tbody", { children: rows.map((r) => {
+    /* @__PURE__ */ jsx41("tbody", { children: rows.map((r, rowAt) => {
       const id = rowId(r);
+      if (foldParents) {
+        const deep = depth?.(r) ?? 0;
+        if (hideBelow != null && deep > hideBelow) return null;
+        hideBelow = null;
+      }
       const on = picked?.has(id);
       const g = group?.(r);
       const head = g != null && g !== lastGroup ? g : null;
@@ -4576,6 +4599,9 @@ function Table({ columns, rows, rowId, caption, sort, onSort, picked, onPickedCh
       ] }) : head }) }, `group-${id}`);
       if (shut) return heading || null;
       const d = depth?.(r) ?? 0;
+      const parent = !!foldParents && rowAt + 1 < rows.length && (depth?.(rows[rowAt + 1]) ?? 0) > d;
+      const rowShut = parent && rowsShut.has(id);
+      if (rowShut) hideBelow = d;
       const { className: _c, style: _s, ...hooks } = rowProps?.(r) ?? {};
       const tr = /* @__PURE__ */ jsxs38("tr", { ...hooks, "data-picked": on || void 0, "data-depth": d || void 0, className: cx(onOpen && "ad-table__row--opens"), onClick: (e) => {
         hooks.onClick?.(e);
@@ -4589,6 +4615,10 @@ function Table({ columns, rows, rowId, caption, sort, onSort, picked, onPickedCh
           const meta = c.meta?.(r);
           return /* @__PURE__ */ jsxs38("th", { scope: "row", className: cx("ad-table__name", frozen, meta != null && "ad-table__name--two"), style: d || c.frozen === "start" ? { ...d ? { ["--ad-depth"]: d } : {}, ...at(c) } : void 0, children: [
             d > 0 && /* @__PURE__ */ jsx41("span", { className: "ad-table__elbow", "aria-hidden": "true" }),
+            parent && /* @__PURE__ */ jsx41("button", { type: "button", className: "ad-table__fold ad-table__fold--row", "aria-expanded": !rowShut, "aria-label": foldLabel?.(r) ?? "Fold", onClick: (e) => {
+              e.stopPropagation();
+              foldRow(id);
+            }, children: /* @__PURE__ */ jsx41(Icon, { name: "caret-down", size: "sm", className: cx("ad-table__chevron", rowShut && "ad-table__chevron--shut") }) }),
             meta != null ? /* @__PURE__ */ jsxs38("span", { className: "ad-table__words", children: [
               words,
               /* @__PURE__ */ jsx41("span", { className: "ad-table__meta", children: meta })
@@ -5047,7 +5077,7 @@ function MonthCalendar({ month, items, today: todayIn, weekStart = 1, locale = "
             ms && /* @__PURE__ */ jsx44("span", { className: "ad-month__diamond ad-diamond", "aria-hidden": "true" }),
             code(item),
             /* @__PURE__ */ jsx44(DeptGlyph, { hue: item.color }),
-            /* @__PURE__ */ jsx44("span", { children: item.label })
+            /* @__PURE__ */ jsx44("span", { title: typeof item.label === "string" ? item.label : void 0, children: item.label })
           ] });
           return onOpen ? /* @__PURE__ */ jsx44("button", { type: "button", ...hooks, className: cls, style, onClick: (e) => {
             hooks.onClick?.(e);
@@ -5229,7 +5259,7 @@ function TimeGrid({ startHour, endHour, bookings = [], columns, now, hourLabel =
         const inner = /* @__PURE__ */ jsxs41(Fragment19, { children: [
           code(item),
           item.icon ? slotIcon(item.icon, { size: "sm" }) : /* @__PURE__ */ jsx44(DeptGlyph, { hue: item.color }),
-          /* @__PURE__ */ jsx44("span", { children: item.label })
+          /* @__PURE__ */ jsx44("span", { title: typeof item.label === "string" ? item.label : void 0, children: item.label })
         ] });
         return onOpen ? /* @__PURE__ */ jsx44("button", { type: "button", ...hooks, "data-span": item.span && item.span > 1 ? item.span : void 0, className: cls, style, onClick: (e) => {
           hooks.onClick?.(e);
@@ -5894,6 +5924,7 @@ export {
   LoadingRows,
   MapNightDot,
   Menu,
+  MenuButton,
   MenuFoot,
   MenuFrame,
   MenuItem,
