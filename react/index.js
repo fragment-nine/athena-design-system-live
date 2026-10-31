@@ -5209,7 +5209,18 @@ function TimeGrid({ startHour, endHour, bookings = [], columns, now, hourLabel =
       const hour = el.querySelector(".ad-time-grid__hour");
       const hourPx = hour?.offsetHeight || el.scrollHeight / Math.max(1, hours + (el.querySelector(".ad-time-grid__allday") ? 1 : 0));
       if (!hourPx) return false;
-      el.scrollTop = Math.max(0, (scrollTo - startHour) * hourPx);
+      if (visibleHours) {
+        el.scrollTop = Math.max(0, (scrollTo - startHour) * hourPx);
+        return true;
+      }
+      let scroller = el.parentElement;
+      while (scroller && !/auto|scroll/.test(getComputedStyle(scroller).overflowY)) scroller = scroller.parentElement;
+      const box = scroller ?? document.documentElement;
+      const body = el.querySelector(".ad-time-grid__body");
+      const lane = el.querySelector(".ad-time-grid__allday");
+      if (!body) return false;
+      const held = (lane?.offsetHeight ?? 0) + (el.querySelector(".ad-time-grid__head, .ad-time-grid__day")?.offsetHeight ?? 0);
+      box.scrollTop = Math.max(0, box.scrollTop + body.getBoundingClientRect().top - box.getBoundingClientRect().top + (scrollTo - startHour) * hourPx - held);
       return true;
     };
     if (go() || typeof ResizeObserver === "undefined") return;
@@ -5218,7 +5229,7 @@ function TimeGrid({ startHour, endHour, bookings = [], columns, now, hourLabel =
     });
     ro.observe(el);
     return () => ro.disconnect();
-  }, [scrollTo, startHour, hours]);
+  }, [scrollTo, startHour, hours, visibleHours]);
   const pressAt = (colId) => (e) => {
     if (!onPressAt) return;
     const t = e.target;
@@ -5242,7 +5253,7 @@ function TimeGrid({ startHour, endHour, bookings = [], columns, now, hourLabel =
         now && /* @__PURE__ */ jsx44(NowMarker, { time: now.time, style: { position: "absolute", top: at(now.at), right: 0, transform: "translateY(-50%)" } })
       ] })
     ] }),
-    cols.map((c) => /* @__PURE__ */ jsxs41("div", { className: cx("ad-time-grid__column", over === c.id && "ad-time-grid__column--over"), role: "group", "aria-label": c.label || void 0, children: [
+    cols.map((c, colAt) => /* @__PURE__ */ jsxs41("div", { className: cx("ad-time-grid__column", over === c.id && "ad-time-grid__column--over"), role: "group", "aria-label": c.label || void 0, children: [
       c.head != null || headBand ? /* @__PURE__ */ jsxs41("div", { className: "ad-time-grid__head", children: [
         headBand && /* @__PURE__ */ jsx44(BandHeading, { band: c.band }),
         c.head
@@ -5252,7 +5263,7 @@ function TimeGrid({ startHour, endHour, bookings = [], columns, now, hourLabel =
         c.figure != null && /* @__PURE__ */ jsx44("span", { className: "ad-time-grid__figure", children: c.figure })
       ] }),
       anyBand && !headBand && (c.band ? /* @__PURE__ */ jsx44(PhaseBand, { ...c.band }) : /* @__PURE__ */ jsx44("div", { className: "ad-time-grid__band-space" })),
-      allDayRows > 0 && /* @__PURE__ */ jsx44("div", { role: "group", ...hooksOf2(columnProps?.(c.id)), className: "ad-time-grid__allday", children: (c.allDay ?? []).map((item) => {
+      allDayRows > 0 && /* @__PURE__ */ jsx44("div", { role: "group", ...hooksOf2(columnProps?.(c.id)), className: "ad-time-grid__allday", style: { zIndex: cols.length - colAt }, children: (c.allDay ?? []).map((item) => {
         const hooks = hooksOf2(itemProps?.(item));
         const cls = cx("ad-month__bar", "ad-striped", "ad-time-grid__item", item.unconfirmed && "ad-month__bar--unconfirmed");
         const style = { ...barColour(item.color, hueOf(item.color)), ...item.span && item.span > 1 ? { ["--ad-span"]: item.span } : {} };

@@ -886,12 +886,21 @@ button.ad-year__day:focus-visible { outline: none; box-shadow: var(--ring-select
 .ad-time-grid__body { cursor: default; }
 
 /* The time grid's asks of 2026-10-27: day headings held at the top while the hours scroll; an all-day item spanning days; a figure in the heading. */
-.ad-time-grid--scrolls { padding-top: 0; }
-.ad-time-grid--scrolls .ad-time-grid__day { position: sticky; top: 0; bottom: auto; z-index: 2; display: flex; align-items: center; height: var(--h-btn-row); padding: 0 var(--space-2); background: var(--bg-base); }
-.ad-time-grid--scrolls .ad-time-grid__gutter::before { content: ''; display: block; height: var(--h-btn-row); }
+.ad-time-grid:not(:has(.ad-time-grid__head)), .ad-time-grid--scrolls { padding-top: 0; }
+.ad-time-grid { --ad-day-h: var(--h-btn-row); }
+/* A figure takes the second line: a seven-day column has no room for it beside the day and its buttons. */
+.ad-time-grid:has(.ad-time-grid__figure) { --ad-day-h: calc(var(--h-btn-row) * 2); }
+.ad-time-grid__column > .ad-time-grid__day { position: sticky; top: 0; bottom: auto; left: auto; z-index: var(--z-sticky); display: flex; flex-wrap: wrap; align-items: center; align-content: center; gap: 0 var(--space-1); box-sizing: border-box; height: var(--ad-day-h); min-width: 0; overflow: hidden; padding: 0 var(--space-2); background: var(--bg-base); }
+.ad-time-grid:not(:has(.ad-time-grid__head)) .ad-time-grid__gutter::before, .ad-time-grid--scrolls .ad-time-grid__gutter::before { content: ''; display: block; position: sticky; top: 0; z-index: var(--z-sticky); height: var(--ad-day-h); background: var(--bg-base); }
 .ad-time-grid__item { --ad-span: 1; }
 .ad-time-grid__item[data-span] { position: relative; z-index: 1; width: calc(var(--ad-span) * 100% + (var(--ad-span) - 1) * var(--border-w)); }
-.ad-time-grid__figure { margin-left: var(--space-2); font: var(--type-data); text-transform: none; color: var(--text-muted); }
+.ad-time-grid__figure { flex: 0 0 100%; min-width: 0; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; font: var(--type-data); text-transform: none; color: var(--text-muted); }
+/* With no scroller of its own the all-day lane stays in view under the headings; a bar spanning days reads over the columns after it. */
+.ad-time-grid { --ad-held-top: var(--ad-day-h); }
+.ad-time-grid:has(.ad-time-grid__head) { --ad-held-top: max(var(--space-6), var(--ad-head-h)); }
+.ad-time-grid:not(.ad-time-grid--scrolls) .ad-time-grid__allday, .ad-time-grid:not(.ad-time-grid--scrolls) .ad-time-grid__allday-space { position: sticky; top: var(--ad-held-top); background: var(--bg-base); }
+.ad-time-grid:not(.ad-time-grid--scrolls) .ad-time-grid__allday-space { z-index: var(--z-sticky); }
+:is(.ad-card, .ad-section:not(.ad-section--rule)) .ad-time-grid__column > .ad-time-grid__day, :is(.ad-card, .ad-section:not(.ad-section--rule)) .ad-time-grid:not(.ad-time-grid--scrolls) .ad-time-grid__allday, :is(.ad-card, .ad-section:not(.ad-section--rule)) .ad-time-grid:not(.ad-time-grid--scrolls) .ad-time-grid__allday-space { background: var(--bg-float); }
 
 /* DayCell: one day in a week of days. */
 .ad-day-cell { --ad-where: transparent; position: relative; display: flex; flex-direction: column; align-items: center; gap: var(--space-1); padding: var(--space-2) var(--space-1) 0; border-radius: var(--radius-page); }
@@ -924,7 +933,7 @@ button.ad-year__day:focus-visible { outline: none; box-shadow: var(--ring-select
 /* With no visibleHours the grid has no scroller of its own: the page scrolls once. The day headings are in the flow, held at the top by the page's scroll, the all-day lane under them. */
 .ad-time-grid:not(.ad-time-grid--scrolls):has(.ad-time-grid__head) { padding-top: 0; }
 .ad-time-grid:not(.ad-time-grid--scrolls):has(.ad-time-grid__head) .ad-time-grid__gutter { padding-top: max(var(--space-6), var(--ad-head-h)); }
-.ad-time-grid:not(.ad-time-grid--scrolls) .ad-time-grid__head { position: sticky; top: 0; z-index: 2; box-sizing: border-box; min-height: max(var(--space-6), var(--ad-head-h)); background: var(--bg-base); }
+.ad-time-grid:not(.ad-time-grid--scrolls) .ad-time-grid__head { position: sticky; top: 0; z-index: var(--z-sticky); box-sizing: border-box; min-height: max(var(--space-6), var(--ad-head-h)); background: var(--bg-base); }
 :is(.ad-card, .ad-section:not(.ad-section--rule)) .ad-time-grid:not(.ad-time-grid--scrolls) .ad-time-grid__head { background: var(--bg-float); }
 .ad-time-grid--aside-wide { --ad-aside: var(--w-aside); }
 .ad-time-grid--aside-day { --ad-aside: var(--w-side); }
