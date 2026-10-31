@@ -1244,8 +1244,9 @@ button.ad-contents__button:focus-visible { outline: none; box-shadow: var(--ring
 /* The footer: on a short page it stays at the bottom of the screen, never floating up under the work.
  The frame is never shorter than the window (above), so the page column has room and the footer's top margin takes it; an app
  places Footer last in the page and does nothing else. */
-.ad-frame__page > .ad-footer { margin-top: auto; margin-left: calc(var(--space-6) * -1); flex: none; }
-/* The footer starts at the rail's edge: page gutter undone, so rail and footer meet as one L. */
+.ad-frame__page > .ad-footer { margin-top: auto; flex: none; }
+/* The footer starts at the rail's edge, however deep an app nests it: page gutter undone, so rail and footer meet as one L. */
+.ad-frame__page .ad-footer { margin-left: calc(var(--space-6) * -1); }
 /* The footer is flush with the window's bottom: nothing under it. */
 .ad-frame__page:has(.ad-footer) { padding-bottom: 0; }
 /* The corner (Pixx): fixed bottom right, over the footer's right edge; the footer's right cell ends before it. */
