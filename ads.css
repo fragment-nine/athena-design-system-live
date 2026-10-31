@@ -466,6 +466,7 @@
   --tint-over-max: 85%;
   --tint-presence-wash: 18%;
   --tint-lane-wash: 8%;
+  --tint-bar-edge: 50%;
   --tint-lane-edge: 45%;
   --map-op-land: 0.95;
   --map-op-border: 0.5;
@@ -574,8 +575,8 @@
 .ad-hatched { background-image: var(--hatch); }
 .ad-hatched-fine { background-image: var(--hatch-fine); }
 .ad-hatched-ink { background-image: var(--hatch-ink); }
-.ad-outline-deal { outline: var(--border-w) dashed var(--text-muted); outline-offset: calc(var(--border-w) * -1); }
-.ad-outline-backup { outline: var(--border-w) dotted var(--line-strong); outline-offset: calc(var(--border-w) * -1); }
+.ad-outline-deal { outline: var(--border-w) dashed color-mix(in srgb, var(--text-muted) var(--tint-bar-edge), transparent); outline-offset: calc(var(--border-w) * -1); }
+.ad-outline-backup { outline: var(--border-w) dotted color-mix(in srgb, var(--line-strong) var(--tint-bar-edge), transparent); outline-offset: calc(var(--border-w) * -1); }
 /* The ground: Dark Matter with the brand's grain plate at grain-opacity. The one texture: never on a card, a control or glass. */
 .ad-ground { position: relative; isolation: isolate; background: var(--bg-base); }
 /* The ground carries the body type (moved from Athena's body, ruled 2026-10-26): the app's own words inside it read right
@@ -1202,7 +1203,8 @@ button.ad-card__name:focus-visible { outline: none; box-shadow: var(--ring-selec
 .ad-footer__cell { display: flex; align-items: center; padding: 0 var(--space-4); border-right: var(--border-w) solid var(--border); }
 .ad-footer__code { gap: var(--space-2); }
 .ad-footer__number { font: var(--type-data); color: var(--text-secondary); }
-.ad-footer__venue { overflow: hidden; text-overflow: ellipsis; }
+.ad-footer__venue { gap: var(--space-4); overflow: hidden; white-space: nowrap; }
+.ad-footer__description { min-width: 0; overflow: hidden; text-overflow: ellipsis; }
 .ad-footer__run { border-right: 0; }
 /* The undo section, centred on the footer itself. */
 .ad-footer { position: relative; }
@@ -1580,6 +1582,7 @@ button:hover > .ad-project-pill:not(.ad-project-pill--current) { color: var(--ac
 /* The current tab is coral, as THE WORK goes coral on the site when you are in it (ruled 2026-10-29). */
 .ad-tab[aria-selected="true"] { color: var(--accent); border-bottom-color: var(--accent); }
 .ad-tab__numeral { font: var(--type-data); color: var(--text-muted); }
+.ad-tab:hover .ad-tab__numeral { color: var(--accent); }
 .ad-tab[aria-selected="true"] .ad-tab__numeral { color: var(--accent); opacity: var(--opacity-dim); }
 /* The way back from a detail page: a bare chevron directly before the title, on the title row, no words and no line of its own
 . */
@@ -2127,17 +2130,17 @@ button.ad-bar { cursor: pointer; }
 . */
 .ad-bar--unconfirmed .ad-bar__label { background: var(--bg-base); padding: var(--space-hair) var(--space-1); border-radius: var(--radius-page); }
 /* A bar's own edge, inside it. Confirmed is solid, Deal dashed, Backup dotted, the same place and width; no fill on a Backup, the name text-secondary. With Project colours on, the edge is the project's (--ad-edge). */
-.ad-bar--confirmed { outline: var(--border-w) solid var(--ad-edge, var(--text-muted)); outline-offset: calc(var(--border-w) * -1); }
-.ad-bar--deal { outline: var(--border-w) dashed var(--ad-edge, var(--text-muted)); outline-offset: calc(var(--border-w) * -1); }
-.ad-bar--backup { background: transparent; outline: var(--border-w) dotted var(--ad-edge, var(--line-strong)); outline-offset: calc(var(--border-w) * -1); color: var(--text-secondary); }
+.ad-bar--confirmed { outline: var(--border-w) solid color-mix(in srgb, var(--ad-edge, var(--text-muted)) var(--tint-bar-edge), transparent); outline-offset: calc(var(--border-w) * -1); }
+.ad-bar--deal { outline: var(--border-w) dashed color-mix(in srgb, var(--ad-edge, var(--text-muted)) var(--tint-bar-edge), transparent); outline-offset: calc(var(--border-w) * -1); }
+.ad-bar--backup { background: transparent; outline: var(--border-w) dotted color-mix(in srgb, var(--ad-edge, var(--line-strong)) var(--tint-bar-edge), transparent); outline-offset: calc(var(--border-w) * -1); color: var(--text-secondary); }
 .ad-bar:hover { box-shadow: var(--glow-hover); }
 .ad-bar--unconfirmed:hover, .ad-bar--thin:hover { box-shadow: inset 0 0 0 var(--border-w) var(--line-strong), var(--glow-hover); }
 .ad-bar:hover .ad-bar__name { color: var(--accent); }
 .ad-bar--selected, .ad-bar:focus-visible { outline: none; box-shadow: var(--ring-select); }
 /* Selected or focused, a bar keeps its edge: the ring is the selection, the edge is still what it is. */
-.ad-bar--confirmed.ad-bar--selected, .ad-bar--confirmed:focus-visible { outline: var(--border-w) solid var(--ad-edge, var(--text-muted)); }
-.ad-bar--deal.ad-bar--selected, .ad-bar--deal:focus-visible { outline: var(--border-w) dashed var(--ad-edge, var(--text-muted)); }
-.ad-bar--backup.ad-bar--selected, .ad-bar--backup:focus-visible { outline: var(--border-w) dotted var(--ad-edge, var(--line-strong)); }
+.ad-bar--confirmed.ad-bar--selected, .ad-bar--confirmed:focus-visible { outline: var(--border-w) solid color-mix(in srgb, var(--ad-edge, var(--text-muted)) var(--tint-bar-edge), transparent); }
+.ad-bar--deal.ad-bar--selected, .ad-bar--deal:focus-visible { outline: var(--border-w) dashed color-mix(in srgb, var(--ad-edge, var(--text-muted)) var(--tint-bar-edge), transparent); }
+.ad-bar--backup.ad-bar--selected, .ad-bar--backup:focus-visible { outline: var(--border-w) dotted color-mix(in srgb, var(--ad-edge, var(--line-strong)) var(--tint-bar-edge), transparent); }
 .ad-bar__label { position: relative; z-index: 1; display: inline-flex; align-items: center; gap: var(--space-2); min-width: 0; margin-left: var(--ad-label-in); }
 .ad-bar--label-hidden .ad-bar__label, .ad-bar--label-hidden .ad-bar__outside { opacity: 0; }
 .ad-bar--dense { height: var(--h-bar-dense); padding: 0 var(--space-1); }
@@ -2148,8 +2151,9 @@ button.ad-bar { cursor: pointer; }
 .ad-bar--hued .ad-bar__ground { background: color-mix(in srgb, var(--ad-bar) var(--tint-lane-wash), transparent); }
 .ad-bar--unconfirmed .ad-bar__ground { background: transparent; background-image: var(--hatch); }
 .ad-bar--backup .ad-bar__ground, .ad-bar--thin .ad-bar__ground { background: transparent; }
-.ad-bar__envelope { position: absolute; top: 0; bottom: 0; height: 100%; border-radius: inherit; fill: none; stroke: var(--ad-edge, var(--text-secondary)); stroke-width: var(--border-w-strong); pointer-events: none; }
+.ad-bar__envelope { position: absolute; top: 0; bottom: 0; height: 100%; border-radius: inherit; fill: none; stroke: var(--ad-edge, var(--text-secondary)); stroke-width: var(--border-w-ring); pointer-events: none; }
 .ad-bar__envelope-shade { fill: var(--ad-edge, var(--text-secondary)); stroke: none; opacity: var(--tint-lane-wash); }
+.ad-bar--hued .ad-bar__envelope-shade { opacity: var(--opacity-faint); }
 .ad-bar__envelope--start { left: 0; width: var(--ad-fade-start); }
 .ad-bar__envelope--end { right: 0; width: var(--ad-fade-end); transform: scaleX(-1); }
 .ad-bar__name { overflow: hidden; text-overflow: ellipsis; }
@@ -2212,7 +2216,7 @@ button.ad-milestone:focus-visible { outline: none; box-shadow: var(--ring-select
 .ad-past { position: absolute; top: 0; bottom: 0; background-image: var(--hatch-fine); pointer-events: none; }
 .ad-past--away { background-image: var(--hatch-away); }
 /* OverMark: Athena's over-capacity block, kept as it was. The app places it; it sits on the line's bottom. */
-.ad-over-mark { --ad-over: 0.5; position: absolute; bottom: 0; box-sizing: border-box; height: var(--h-bar); border-radius: var(--radius-mark); background: color-mix(in srgb, var(--status-error) calc(var(--tint-over-min) + var(--ad-over) * (var(--tint-over-max) - var(--tint-over-min))), transparent); }
+.ad-over-mark { --ad-over: 0.5; position: absolute; bottom: 0; box-sizing: border-box; height: var(--w-stripe); border-radius: var(--radius-mark); background: color-mix(in srgb, var(--status-error) calc(var(--tint-over-min) + var(--ad-over) * (var(--tint-over-max) - var(--tint-over-min))), transparent); }
 .ad-clash { display: flex; width: 100%; border-radius: var(--radius-page); box-shadow: var(--glow-clash); }
 .ad-clash > * { flex: 1; min-width: 0; }
 .ad-offscreen { color: var(--text-secondary); }

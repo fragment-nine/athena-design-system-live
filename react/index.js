@@ -4591,7 +4591,7 @@ var strip4 = (h) => {
   return rest;
 };
 function Envelope({ side }) {
-  const curve = "M0 100 C 55 100, 45 0, 100 0";
+  const curve = "M0 100 C 80 100, 20 0, 100 0";
   return /* @__PURE__ */ jsxs39("svg", { className: `ad-bar__envelope ad-bar__envelope--${side}`, "data-travel-ramp": side, viewBox: "0 0 100 100", preserveAspectRatio: "none", "aria-hidden": "true", children: [
     /* @__PURE__ */ jsx42("path", { className: "ad-bar__envelope-shade", d: `${curve} L0 0 Z` }),
     /* @__PURE__ */ jsx42("path", { d: curve, vectorEffect: "non-scaling-stroke" })
@@ -5600,14 +5600,17 @@ function PixxFigure({ onPress, open, unread = 0, tip = "Pixx", motion, body, tai
 
 // src/components/Furniture/Furniture.tsx
 import { Fragment as Fragment22, jsx as jsx49, jsxs as jsxs45 } from "react/jsx-runtime";
-function Footer({ code: code2, number, venue, pageNumber, page, undo }) {
+function Footer({ code: code2, number, venue, description, countdown: countdown2, pageNumber, page, undo }) {
   return /* @__PURE__ */ jsxs45("footer", { className: "ad-footer", children: [
     /* @__PURE__ */ jsxs45("span", { className: "ad-footer__cell ad-footer__code", children: [
       code2 ?? "LOUDBOX",
       number && /* @__PURE__ */ jsx49("span", { className: "ad-footer__number", children: number })
     ] }),
-    /* @__PURE__ */ jsx49("span", { className: "ad-footer__cell ad-footer__venue", children: venue }),
-    /* @__PURE__ */ jsx49("span", { className: "ad-footer__cell ad-footer__run", "aria-hidden": "true" }),
+    /* @__PURE__ */ jsxs45("span", { className: "ad-footer__cell ad-footer__venue", children: [
+      venue,
+      description != null && /* @__PURE__ */ jsx49("span", { className: "ad-footer__description", children: description })
+    ] }),
+    /* @__PURE__ */ jsx49("span", { className: "ad-footer__cell ad-footer__run", children: !undo && countdown2 }),
     /* @__PURE__ */ jsx49("span", { className: "ad-footer__undo", role: "status", "aria-live": "polite", children: undo && /* @__PURE__ */ jsxs45(Fragment22, { children: [
       /* @__PURE__ */ jsx49("span", { className: "ad-footer__undo-words", children: undo.message }),
       undo.onUndo && /* @__PURE__ */ jsx49(ButtonSizeScope, { size: "row", children: /* @__PURE__ */ jsx49(Button, { onClick: undo.onUndo, children: undo.label ?? "Undo" }) })
