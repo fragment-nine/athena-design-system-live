@@ -293,7 +293,7 @@
   --w-checkin-input-min: 120px;
   --hair-offset: 1px;
   --w-hint-clamp: var(--w-field-name);
-  --w-tm-rail: 216px;
+  --w-tm-rail: var(--w-menu);
   --w-tm-search: 128px;
   --rm-label-w: 112px;
   --rm-answer-max: 600px;
@@ -1791,6 +1791,8 @@ button.ad-row__name:focus-visible { outline: none; box-shadow: var(--ring-select
 .ad-row__trail { gap: var(--space-1); }
 /* An item's two dates, right after each other. */
 .ad-item-dates { display: inline-flex; align-items: baseline; gap: var(--space-2); white-space: nowrap; }
+/* Beside a neighbour in a cell it keeps its room; in a row's date line the line's own gap does that. */
+:not(.ad-row__meta) > * + .ad-item-dates, :not(.ad-row__meta) > .ad-item-dates + * { margin-left: var(--space-2); }
 .ad-row-date { display: inline-flex; align-items: baseline; gap: var(--space-1); font: var(--type-detail); color: var(--text-muted); white-space: nowrap; }
 .ad-row-date--late { color: var(--status-error-ink); }
 /* Today green, late red, the glyphs in the date's colour. */
