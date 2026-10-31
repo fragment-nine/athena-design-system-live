@@ -374,8 +374,8 @@
   --view-suggest-min: var(--view-suggest-max-quick);
   --view-suggest-min-time: 260px;
   --view-suggest-max: var(--view-suggest-min-time);
-  --view-tl-bar-max-code: 316px;
-  --view-tl-bar-max: 276px;
+  --view-tl-bar-max-code: 334px;
+  --view-tl-bar-max: 294px;
   --place-tl-dot: 11px;
   --place-sel-bar-rise: 44px;
   --place-sel-bar-width: 336px;
@@ -921,6 +921,11 @@ button.ad-year__day:focus-visible { outline: none; box-shadow: var(--ring-select
 /* 2026-10-28: the grid makes room for the tallest head; the moments strip in three widths, the wide ones writing a call's time and words. */
 .ad-time-grid { --ad-head-h: 0px; --ad-aside: var(--space-6); }
 .ad-time-grid:has(.ad-time-grid__head) { padding-top: max(var(--space-6), var(--ad-head-h)); }
+/* With no visibleHours the grid has no scroller of its own: the page scrolls once. The day headings are in the flow, held at the top by the page's scroll, the all-day lane under them. */
+.ad-time-grid:not(.ad-time-grid--scrolls):has(.ad-time-grid__head) { padding-top: 0; }
+.ad-time-grid:not(.ad-time-grid--scrolls):has(.ad-time-grid__head) .ad-time-grid__gutter { padding-top: max(var(--space-6), var(--ad-head-h)); }
+.ad-time-grid:not(.ad-time-grid--scrolls) .ad-time-grid__head { position: sticky; top: 0; z-index: 2; box-sizing: border-box; min-height: max(var(--space-6), var(--ad-head-h)); background: var(--bg-base); }
+:is(.ad-card, .ad-section:not(.ad-section--rule)) .ad-time-grid:not(.ad-time-grid--scrolls) .ad-time-grid__head { background: var(--bg-float); }
 .ad-time-grid--aside-wide { --ad-aside: var(--w-aside); }
 .ad-time-grid--aside-day { --ad-aside: var(--w-side); }
 .ad-time-grid .ad-time-grid__body--aside { padding-right: var(--ad-aside); }
@@ -1007,6 +1012,7 @@ button.ad-card__name:focus-visible { outline: none; box-shadow: var(--ring-selec
    fewer across, down to one. The column's floor is the larger of the smallest card and an even share of the row. */
 .ad-card-grid { --ad-cols: 3; display: grid; grid-template-columns: repeat(auto-fill, minmax(max(var(--card-min-md), calc((100% - (var(--ad-cols) - 1) * var(--space-3)) / var(--ad-cols))), 1fr)); gap: var(--space-3); min-width: 0; }
 .ad-card-grid > * { min-width: 0; }
+.ad-card-grid--start { align-items: start; }
 /* Picture: the Roadmap's picture of finished work, as Athena draws it (.rm-shot), moved here. The frame
  carries the Card's corner and nothing else; the picture fills it from the top left, the card tone behind it while it loads. */
 .ad-picture { display: block; width: 100%; height: 100%; overflow: hidden; border-radius: var(--radius-page); }
@@ -1204,7 +1210,9 @@ button.ad-card__name:focus-visible { outline: none; box-shadow: var(--ring-selec
 .ad-footer__code { gap: var(--space-2); }
 .ad-footer__number { font: var(--type-data); color: var(--text-secondary); }
 .ad-footer__venue { gap: var(--space-4); overflow: hidden; white-space: nowrap; }
-.ad-footer__description { min-width: 0; overflow: hidden; text-overflow: ellipsis; }
+.ad-footer__description { min-width: 0; overflow: hidden; text-overflow: ellipsis; font: var(--type-name); letter-spacing: normal; text-transform: none; }
+/* A project's line takes the free room; the countdown keeps its whole words; the page cell is untouched. */
+.ad-footer:has(.ad-footer__description) { grid-template-columns: max-content minmax(0, max-content) minmax(max-content, 1fr) max-content; }
 .ad-footer__run { border-right: 0; }
 /* The undo section, centred on the footer itself. */
 .ad-footer { position: relative; }
@@ -1235,6 +1243,8 @@ button.ad-contents__button:focus-visible { outline: none; box-shadow: var(--ring
  16 under the toolbar. The rail runs the whole height of the frame, never shorter than the page. */
 .ad-frame__page { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: var(--space-2); padding: var(--space-2) var(--space-8) var(--space-8) var(--space-6); }
 .ad-frame__page > .ad-toolbar { margin-bottom: var(--space-2); }
+/* A ground inside a card (a names column that scrolls sideways needs an opaque cell) is the card's tone, not the page's black. */
+:is(.ad-card, .ad-section:not(.ad-section--rule)) .ad-ground { background-color: var(--bg-float); background-image: none; }
 /* The slots. The toolbar row is on every screen, h-row tall, empty or not, 16 over the work (the page's 8 and its own 8). The work
  fills what is left, the page's whole width. */
 .ad-frame__toolbar { display: flex; align-items: center; flex: none; min-height: var(--h-row); margin-bottom: var(--space-2); }
@@ -1771,7 +1781,7 @@ button.ad-row__name:focus-visible { outline: none; box-shadow: var(--ring-select
 .ad-row__body { flex: 1; min-width: 0; display: flex; flex-direction: column; }
 /* One body face and one body size across the build, the alerts'; the second line is 13. */
 .ad-row__name { line-height: var(--lh-tight); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.ad-row--heading .ad-row__name { font: var(--type-heading); text-transform: uppercase; }
+.ad-row--heading .ad-row__name { font: var(--type-name); }
 /* A heading row (approved Rows card): name, then its status beside it, the review date at the far right. */
 .ad-row--heading .ad-row__body { flex: none; }
 .ad-row--heading .ad-row__dates { margin-left: auto; }
@@ -1911,7 +1921,7 @@ button.ad-row__name:focus-visible { outline: none; box-shadow: var(--ring-select
 /* src/components/Settings/Settings.css */
 /* Settings */
 .ad-settings { display: flex; gap: var(--space-8); align-items: flex-start; }
-.ad-settings__nav { display: flex; flex-direction: column; width: calc(var(--w-side) - var(--w-col-xs)); flex: none; }
+.ad-settings__nav { position: sticky; top: 0; display: flex; flex-direction: column; width: calc(var(--w-side) - var(--w-col-xs)); flex: none; }
 .ad-settings__nav-item { display: flex; align-items: center; gap: var(--space-2); box-sizing: border-box; width: 100%; height: var(--h-btn); margin: 0; padding: 0 var(--space-2); border: 0; border-radius: var(--radius-page); background: transparent; cursor: pointer; text-align: left; font: var(--type-name); color: var(--text-primary); }
 .ad-settings__nav-item:not([aria-current="page"]) { color: var(--text-secondary); }
 .ad-settings__nav-icon { display: inline-flex; color: var(--text-muted); }
@@ -2025,6 +2035,10 @@ button.ad-row__name:focus-visible { outline: none; box-shadow: var(--ring-select
 .ad-table__frozen--end { right: 0; }
 .ad-table th[scope="col"].ad-table__frozen--start, .ad-table th[scope="col"].ad-table__frozen--end { z-index: 2; }
 /* A group heading row: the section-label look, one hairline under. */
+.ad-table__fold { display: inline-flex; align-items: center; gap: var(--space-2); margin: 0; padding: 0; border: 0; background: transparent; font: var(--type-heading); text-transform: uppercase; color: var(--text-secondary); cursor: pointer; }
+.ad-table__fold:hover { color: var(--accent); }
+.ad-table__fold:focus-visible { outline: none; box-shadow: var(--ring-select); border-radius: var(--radius-page); }
+.ad-table__chevron--shut { transform: rotate(-90deg); }
 .ad-table__group th { height: var(--h-btn); padding: var(--space-4) var(--space-2) 0; text-align: left; border-bottom: var(--border-w) solid var(--border); font: var(--type-heading); text-transform: uppercase; color: var(--text-secondary); }
 /* A child row: indented one step per level, an elbow before its name. */
 .ad-table th.ad-table__name { --ad-depth: 0; padding-left: calc(var(--space-2) + var(--ad-depth) * var(--space-6)); }
@@ -2066,6 +2080,8 @@ button.ad-row__name:focus-visible { outline: none; box-shadow: var(--ring-select
 .ad-data-text { font: var(--type-data); color: inherit; }
 .ad-data-text--small { font: var(--type-data); font-size: var(--text-xs); }
 .ad-data-text--dim { color: var(--text-secondary); }
+/* A figure that is only an estimate: dim, a hatched strip under it. A typed price is solid; an empty cell draws nothing. */
+.ad-figure-estimate { display: inline-block; padding-bottom: var(--space-1); color: var(--text-muted); background: var(--hatch) left bottom / 100% var(--space-1) no-repeat; }
 .ad-hint { font: var(--type-detail); line-height: var(--lh-tight); color: var(--text-muted); }
 .ad-figures { display: grid; grid-template-columns: repeat(auto-fit, minmax(0, 1fr)); gap: 0; margin: 0; border-top: var(--border-w) solid var(--border); border-bottom: var(--border-w) solid var(--border); }
 /* The cells split by hairlines, as his Overview picture draws them. */
@@ -2104,6 +2120,7 @@ button.ad-row__name:focus-visible { outline: none; box-shadow: var(--ring-select
 .ad-period__size[aria-checked="true"] { background: var(--bg-raised); color: var(--text-primary); }
 /* Pinned: held at the top of the scroller on its own ground, above the lanes. */
 .ad-ruler--pinned { position: sticky; top: 0; z-index: 2; background: var(--bg-base); }
+:is(.ad-card, .ad-section:not(.ad-section--rule)) .ad-ruler--pinned { background: var(--bg-float); }
 
 /* src/components/Timeline/Timeline.css */
 /* Timeline marks, as the Bars and Page-Schedule cards draw them */
@@ -2239,6 +2256,8 @@ button.ad-milestone:focus-visible { outline: none; box-shadow: var(--ring-select
 .ad-drag-band--lane { top: var(--space-1); bottom: var(--space-1); }
 /* GroupBand: a group's heading row on the inset plane under a hairline. */
 .ad-group-band { background: var(--bg-inset); border-top: var(--border-w) solid var(--border); }
+/* Inside a card nothing paints the page's black: a band is a step off the card. */
+:is(.ad-card, .ad-section:not(.ad-section--rule)) .ad-group-band { background: var(--bg-surface); }
 /* Lanes and Lane: one row each, the name at the left in the side-menu width, every second lane washed
  bg-surface across the whole width; the marks (past hatch, today line) lie over the chart column of every lane. */
 .ad-lanes { position: relative; display: flex; flex-direction: column; }
@@ -2247,6 +2266,7 @@ button.ad-milestone:focus-visible { outline: none; box-shadow: var(--ring-select
 .ad-lanes { --ad-lane-name: var(--w-side); }
 .ad-lane { --ad-lane-ground: var(--bg-base); display: grid; grid-template-columns: var(--ad-lane-name) minmax(0, 1fr); min-height: var(--h-row); }
 .ad-lane:nth-child(even) { --ad-lane-ground: var(--bg-surface); background: var(--bg-surface); }
+:is(.ad-card, .ad-section:not(.ad-section--rule)) .ad-lane:not(:nth-child(even)) { --ad-lane-ground: var(--bg-float); }
 .ad-lane__name { display: flex; align-items: center; align-self: start; height: var(--h-row); padding-right: var(--space-4); font: var(--type-name); color: var(--text-primary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .ad-lane__chart { position: relative; min-height: var(--h-row); }
 .ad-lane--tall .ad-lane__chart { min-height: var(--h-row); }

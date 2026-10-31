@@ -426,9 +426,28 @@ function useTooltip(text, { describes = true } = {}) {
   const tip = useRef3(null);
   const [at, setAt] = useState3(null);
   const [placed, setPlaced] = useState3(null);
+  const disarm = useRef3(() => {
+  });
   const showFor = (el, now) => {
-    if (!text) return;
+    if (!text || el.getAttribute("aria-expanded") === "true") return;
     clearTimeout(timer.current);
+    disarm.current();
+    const d = doc ?? document;
+    const win = d.defaultView ?? window;
+    const check = () => {
+      if (!el.isConnected || el.getAttribute("aria-expanded") === "true") hide();
+    };
+    const seen = typeof MutationObserver === "undefined" ? null : new MutationObserver(check);
+    seen?.observe(d.documentElement, { subtree: true, childList: true, attributes: true, attributeFilter: ["aria-expanded"] });
+    d.addEventListener("pointerdown", hide, true);
+    win.addEventListener("scroll", hide, true);
+    disarm.current = () => {
+      seen?.disconnect();
+      d.removeEventListener("pointerdown", hide, true);
+      win.removeEventListener("scroll", hide, true);
+      disarm.current = () => {
+      };
+    };
     const go = () => {
       const r = el.getBoundingClientRect();
       const gap = tokenPx("--space-2", 8, doc);
@@ -438,10 +457,11 @@ function useTooltip(text, { describes = true } = {}) {
     if (now) go();
     else timer.current = setTimeout(go, tokenMs("--delay-tip", 500));
   };
-  const hide = () => {
+  function hide() {
     clearTimeout(timer.current);
+    disarm.current();
     setAt(null);
-  };
+  }
   useEffect3(() => {
     if (!at || !tip.current) return;
     const w = tip.current.offsetWidth;
@@ -461,7 +481,10 @@ function useTooltip(text, { describes = true } = {}) {
     d.addEventListener("keydown", onKey);
     return () => d.removeEventListener("keydown", onKey);
   }, [at]);
-  useEffect3(() => () => clearTimeout(timer.current), []);
+  useEffect3(() => () => {
+    clearTimeout(timer.current);
+    disarm.current();
+  }, []);
   const triggerProps = {
     "aria-describedby": at && describes ? id : void 0,
     onPointerEnter: (e) => showFor(e.currentTarget, false),
@@ -470,8 +493,10 @@ function useTooltip(text, { describes = true } = {}) {
       if (e.currentTarget.matches(":focus-visible")) showFor(e.currentTarget, true);
     },
     onBlur: hide,
-    /** Touch has no hover: a tap shows it. */
-    onClick: (e) => showFor(e.currentTarget, true)
+    /** Touch has no hover: a tap shows it. A mouse press does not: `force` is for a control whose press is what asks (a help mark, an item that is off). */
+    onClick: (e, force) => {
+      if (force || e.nativeEvent?.pointerType === "touch") showFor(e.currentTarget, true);
+    }
   };
   const node = at && text ? /* @__PURE__ */ jsx2(Portal, { children: /* @__PURE__ */ jsx2("div", { ref: tip, id, role: "tooltip", className: "ad-tooltip", style: { top: placed?.top ?? at.top, left: placed?.left ?? at.left, visibility: placed == null ? "hidden" : void 0 }, children: text }) }) : null;
   return { triggerProps, node };
@@ -579,6 +604,21 @@ var REGULAR = {
   ],
   "cloud-arrow-up": [
     "M178.34,165.66,160,147.31V208a8,8,0,0,1-16,0V147.31l-18.34,18.35a8,8,0,0,1-11.32-11.32l32-32a8,8,0,0,1,11.32,0l32,32a8,8,0,0,1-11.32,11.32ZM160,40A88.08,88.08,0,0,0,81.29,88.68,64,64,0,1,0,72,216h40a8,8,0,0,0,0-16H72a48,48,0,0,1,0-96c1.1,0,2.2,0,3.29.12A88,88,0,0,0,72,128a8,8,0,0,0,16,0,72,72,0,1,1,100.8,66,8,8,0,0,0,3.2,15.34,7.9,7.9,0,0,0,3.2-.68A88,88,0,0,0,160,40Z"
+  ],
+  "cloud-fog": [
+    "M120,208H72a8,8,0,0,1,0-16h48a8,8,0,0,1,0,16Zm64-16H160a8,8,0,0,0,0,16h24a8,8,0,0,0,0-16Zm-24,32H104a8,8,0,0,0,0,16h56a8,8,0,0,0,0-16Zm72-124a76.08,76.08,0,0,1-76,76H76A52,52,0,0,1,76,72a53.26,53.26,0,0,1,8.92.76A76.08,76.08,0,0,1,232,100Zm-16,0A60.06,60.06,0,0,0,96,96.46a8,8,0,0,1-16-.92q.21-3.66.77-7.23A38.11,38.11,0,0,0,76,88a36,36,0,0,0,0,72h80A60.07,60.07,0,0,0,216,100Z"
+  ],
+  "cloud-lightning": [
+    "M156,16A76.2,76.2,0,0,0,84.92,64.76,53.26,53.26,0,0,0,76,64a52,52,0,0,0,0,104h37.87L97.14,195.88A8,8,0,0,0,104,208h25.87l-16.73,27.88a8,8,0,0,0,13.72,8.24l24-40A8,8,0,0,0,144,192H118.13l14.4-24H156a76,76,0,0,0,0-152Zm0,136H76a36,36,0,0,1,0-72,38.11,38.11,0,0,1,4.78.31q-.56,3.57-.77,7.23a8,8,0,0,0,16,.92A60.06,60.06,0,1,1,156,152Z"
+  ],
+  "cloud-rain": [
+    "M158.66,196.44l-32,48a8,8,0,1,1-13.32-8.88l32-48a8,8,0,0,1,13.32,8.88ZM232,92a76.08,76.08,0,0,1-76,76H132.28l-29.62,44.44a8,8,0,1,1-13.32-8.88L113.05,168H76A52,52,0,0,1,76,64a53.26,53.26,0,0,1,8.92.76A76.08,76.08,0,0,1,232,92Zm-16,0A60.06,60.06,0,0,0,96,88.46a8,8,0,0,1-16-.92q.21-3.66.77-7.23A38.11,38.11,0,0,0,76,80a36,36,0,0,0,0,72h80A60.07,60.07,0,0,0,216,92Z"
+  ],
+  "cloud-snow": [
+    "M88,196a12,12,0,1,1-12-12A12,12,0,0,1,88,196Zm28,4a12,12,0,1,0,12,12A12,12,0,0,0,116,200Zm48-16a12,12,0,1,0,12,12A12,12,0,0,0,164,184ZM68,224a12,12,0,1,0,12,12A12,12,0,0,0,68,224Zm88,0a12,12,0,1,0,12,12A12,12,0,0,0,156,224ZM232,92a76.08,76.08,0,0,1-76,76H76A52,52,0,0,1,76,64a53.26,53.26,0,0,1,8.92.76A76.08,76.08,0,0,1,232,92Zm-16,0A60.06,60.06,0,0,0,96,88.46a8,8,0,0,1-16-.92q.21-3.66.77-7.23A38.11,38.11,0,0,0,76,80a36,36,0,0,0,0,72h80A60.07,60.07,0,0,0,216,92Z"
+  ],
+  "cloud": [
+    "M160,40A88.09,88.09,0,0,0,81.29,88.67,64,64,0,1,0,72,216h88a88,88,0,0,0,0-176Zm0,160H72a48,48,0,0,1,0-96c1.1,0,2.2,0,3.29.11A88,88,0,0,0,72,128a8,8,0,0,0,16,0,72,72,0,1,1,72,72Z"
   ],
   "copy-simple": [
     "M184,64H40a8,8,0,0,0-8,8V216a8,8,0,0,0,8,8H184a8,8,0,0,0,8-8V72A8,8,0,0,0,184,64Zm-8,144H48V80H176ZM224,40V184a8,8,0,0,1-16,0V48H72a8,8,0,0,1,0-16H216A8,8,0,0,1,224,40Z"
@@ -738,6 +778,9 @@ var REGULAR = {
   ],
   "sun-horizon": [
     "M240,152H199.55a73.54,73.54,0,0,0,.45-8,72,72,0,0,0-144,0,73.54,73.54,0,0,0,.45,8H16a8,8,0,0,0,0,16H240a8,8,0,0,0,0-16ZM72,144a56,56,0,1,1,111.41,8H72.59A56.13,56.13,0,0,1,72,144Zm144,56a8,8,0,0,1-8,8H48a8,8,0,0,1,0-16H208A8,8,0,0,1,216,200ZM72.84,43.58a8,8,0,0,1,14.32-7.16l8,16a8,8,0,0,1-14.32,7.16Zm-56,48.84a8,8,0,0,1,10.74-3.57l16,8a8,8,0,0,1-7.16,14.31l-16-8A8,8,0,0,1,16.84,92.42Zm192,15.16a8,8,0,0,1,3.58-10.73l16-8a8,8,0,1,1,7.16,14.31l-16,8a8,8,0,0,1-10.74-3.58Zm-48-55.16,8-16a8,8,0,0,1,14.32,7.16l-8,16a8,8,0,1,1-14.32-7.16Z"
+  ],
+  "sun": [
+    "M120,40V16a8,8,0,0,1,16,0V40a8,8,0,0,1-16,0Zm72,88a64,64,0,1,1-64-64A64.07,64.07,0,0,1,192,128Zm-16,0a48,48,0,1,0-48,48A48.05,48.05,0,0,0,176,128ZM58.34,69.66A8,8,0,0,0,69.66,58.34l-16-16A8,8,0,0,0,42.34,53.66Zm0,116.68-16,16a8,8,0,0,0,11.32,11.32l16-16a8,8,0,0,0-11.32-11.32ZM192,72a8,8,0,0,0,5.66-2.34l16-16a8,8,0,0,0-11.32-11.32l-16,16A8,8,0,0,0,192,72Zm5.66,114.34a8,8,0,0,0-11.32,11.32l16,16a8,8,0,0,0,11.32-11.32ZM48,128a8,8,0,0,0-8-8H16a8,8,0,0,0,0,16H40A8,8,0,0,0,48,128Zm80,80a8,8,0,0,0-8,8v24a8,8,0,0,0,16,0V216A8,8,0,0,0,128,208Zm112-88H216a8,8,0,0,0,0,16h24a8,8,0,0,0,0-16Z"
   ],
   "tag": [
     "M243.31,136,144,36.69A15.86,15.86,0,0,0,132.69,32H40a8,8,0,0,0-8,8v92.69A15.86,15.86,0,0,0,36.69,144L136,243.31a16,16,0,0,0,22.63,0l84.68-84.68a16,16,0,0,0,0-22.63Zm-96,96L48,132.69V48h84.69L232,147.31ZM96,84A12,12,0,1,1,84,72,12,12,0,0,1,96,84Z"
@@ -1384,6 +1427,12 @@ var JOBS = {
   "user": "user",
   "snooze": "zzz",
   "no date": "calendar-slash",
+  "weather-clear": "sun",
+  "weather-cloudy": "cloud",
+  "weather-rain": "cloud-rain",
+  "weather-snow": "cloud-snow",
+  "weather-storm": "cloud-lightning",
+  "weather-fog": "cloud-fog",
   "x": "x"
 };
 
@@ -1578,7 +1627,7 @@ import { Fragment as Fragment3, jsx as jsx7, jsxs as jsxs5 } from "react/jsx-run
 function Help({ text }) {
   const { triggerProps, node } = useTooltip(text, { describes: false });
   return /* @__PURE__ */ jsxs5(Fragment3, { children: [
-    /* @__PURE__ */ jsx7("button", { type: "button", className: "ad-field-row__help", "aria-label": text, ...triggerProps, onPointerLeave: triggerProps.onPointerLeave, onBlur: triggerProps.onBlur, children: /* @__PURE__ */ jsx7(Icon, { name: "question", size: "sm" }) }),
+    /* @__PURE__ */ jsx7("button", { type: "button", className: "ad-field-row__help", "aria-label": text, ...triggerProps, onClick: (e) => triggerProps.onClick(e, true), onPointerLeave: triggerProps.onPointerLeave, onBlur: triggerProps.onBlur, children: /* @__PURE__ */ jsx7(Icon, { name: "question", size: "sm" }) }),
     node
   ] });
 }
@@ -2230,9 +2279,9 @@ var bareNumber = (text) => {
   const words = text.trim().split(/\s+/).filter(Boolean);
   return words.some((w) => /\d/.test(w)) && words.every((w) => /\d/.test(w) || /^[A-Z]{2,4}$/.test(w));
 };
-function RowFigure({ children, icon }) {
+function RowFigure({ children, icon, estimate }) {
   const text = String(children);
-  return /* @__PURE__ */ jsxs15("span", { className: cx("ad-row-date", bareNumber(text) && "ad-row-figure--number"), children: [
+  return /* @__PURE__ */ jsxs15("span", { className: cx("ad-row-date", bareNumber(text) && "ad-row-figure--number", estimate && "ad-figure-estimate"), children: [
     icon && /* @__PURE__ */ jsx18("span", { "aria-hidden": "true", className: "ad-row-date__icon", children: slotIcon(icon, { size: "sm" }) }),
     text
   ] });
@@ -3009,7 +3058,7 @@ function MenuRow({ item, i, lit, keepCursor, focusable, onEnter, onChoose }) {
         onBlur: triggerProps.onBlur,
         onMouseEnter: onEnter,
         onClick: (e) => {
-          if (item.disabled && item.tip) triggerProps.onClick(e);
+          if (item.disabled && item.tip) triggerProps.onClick(e, true);
           onChoose();
         },
         className: cx("ad-menu__item", item.danger && "ad-menu__item--danger", item.sub && "ad-menu__item--two"),
@@ -3771,8 +3820,8 @@ function CardName({ children, lead, onRename, renameLabel }) {
 function Dials({ children }) {
   return /* @__PURE__ */ jsx30("div", { className: "ad-card__dials", children });
 }
-function CardGrid({ children, columns = 3, className, style, ...rest }) {
-  return /* @__PURE__ */ jsx30("div", { ...rest, style: { ...style, "--ad-cols": columns }, className: cx("ad-card-grid", className), children });
+function CardGrid({ children, columns = 3, align, className, style, ...rest }) {
+  return /* @__PURE__ */ jsx30("div", { ...rest, style: { ...style, "--ad-cols": columns }, className: cx("ad-card-grid", align === "start" && "ad-card-grid--start", className), children });
 }
 function Picture({ src, alt, ...rest }) {
   const [failed, setFailed] = useState18(null);
@@ -4435,8 +4484,8 @@ function Splitter({ main, side, size, onResize, min = 0, max = Number.POSITIVE_I
 
 // src/components/Text/Text.tsx
 import { jsx as jsx39, jsxs as jsxs36 } from "react/jsx-runtime";
-function DataText({ children, dim, small, className }) {
-  return /* @__PURE__ */ jsx39("span", { className: cx("ad-type-data", "ad-data-text", small && "ad-data-text--small", dim && "ad-data-text--dim", className), children });
+function DataText({ children, dim, small, estimate, className }) {
+  return /* @__PURE__ */ jsx39("span", { className: cx("ad-type-data", "ad-data-text", small && "ad-data-text--small", dim && "ad-data-text--dim", estimate && "ad-figure-estimate", className), children });
 }
 function Hint({ children, className }) {
   return /* @__PURE__ */ jsx39("span", { className: cx("ad-hint", className), children });
@@ -4461,8 +4510,20 @@ function Columns({ main, side, sideWidth = "card", className }) {
 import { useLayoutEffect as useLayoutEffect7, useRef as useRef24, useState as useState23 } from "react";
 import { jsx as jsx41, jsxs as jsxs38 } from "react/jsx-runtime";
 var Arrow = ({ up }) => /* @__PURE__ */ jsx41(Icon, { name: up ? "arrow-up" : "arrow-down", size: "sm", className: "ad-table__arrow" });
-function Table({ columns, rows, rowId, caption, sort, onSort, picked, onPickedChange, onPickAllChange, pickLabel, pickAllLabel = "Pick all", onOpen, rowProps, group, depth, nameColumn, fixed, className }) {
+function Table({ columns, rows, rowId, caption, sort, onSort, picked, onPickedChange, onPickAllChange, pickLabel, pickAllLabel = "Pick all", onOpen, rowProps, group, foldGroups, foldedGroups, onFoldGroup, depth, nameColumn, fixed, className }) {
   const span = columns.length + (onPickedChange ? 1 : 0);
+  const [ownFolded, setOwnFolded] = useState23(() => /* @__PURE__ */ new Set());
+  const folded = foldedGroups ?? ownFolded;
+  const foldGroup = (g) => {
+    const shut = !folded.has(g);
+    if (!foldedGroups) setOwnFolded((was) => {
+      const next = new Set(was);
+      if (shut) next.add(g);
+      else next.delete(g);
+      return next;
+    });
+    onFoldGroup?.(g, shut);
+  };
   let lastGroup;
   const all = rows.length > 0 && rows.every((r) => picked?.has(rowId(r)));
   const nameAt = Math.max(0, nameColumn ? columns.findIndex((c) => c.id === nameColumn) : 0);
@@ -4508,6 +4569,12 @@ function Table({ columns, rows, rowId, caption, sort, onSort, picked, onPickedCh
       const g = group?.(r);
       const head = g != null && g !== lastGroup ? g : null;
       lastGroup = g;
+      const shut = !!foldGroups && g != null && folded.has(g);
+      const heading = head != null && /* @__PURE__ */ jsx41("tr", { className: "ad-table__group", children: /* @__PURE__ */ jsx41("th", { scope: "colgroup", colSpan: span, children: foldGroups ? /* @__PURE__ */ jsxs38("button", { type: "button", className: "ad-table__fold", "aria-expanded": !shut, onClick: () => foldGroup(head), children: [
+        /* @__PURE__ */ jsx41(Icon, { name: "caret-down", size: "sm", className: cx("ad-table__chevron", shut && "ad-table__chevron--shut") }),
+        head
+      ] }) : head }) }, `group-${id}`);
+      if (shut) return heading || null;
       const d = depth?.(r) ?? 0;
       const { className: _c, style: _s, ...hooks } = rowProps?.(r) ?? {};
       const tr = /* @__PURE__ */ jsxs38("tr", { ...hooks, "data-picked": on || void 0, "data-depth": d || void 0, className: cx(onOpen && "ad-table__row--opens"), onClick: (e) => {
@@ -4529,7 +4596,7 @@ function Table({ columns, rows, rowId, caption, sort, onSort, picked, onPickedCh
           ] }, c.id);
         })
       ] }, id);
-      return head != null ? [/* @__PURE__ */ jsx41("tr", { className: "ad-table__group", children: /* @__PURE__ */ jsx41("th", { scope: "colgroup", colSpan: span, children: head }) }, `group-${id}`), tr] : tr;
+      return heading ? [heading, tr] : tr;
     }) })
   ] }) });
 }
@@ -5608,7 +5675,7 @@ function Footer({ code: code2, number, venue, description, countdown: countdown2
     ] }),
     /* @__PURE__ */ jsxs45("span", { className: "ad-footer__cell ad-footer__venue", children: [
       venue,
-      description != null && /* @__PURE__ */ jsx49("span", { className: "ad-footer__description", children: description })
+      description != null && !undo && /* @__PURE__ */ jsx49("span", { className: "ad-footer__description", title: typeof description === "string" ? description : void 0, children: description })
     ] }),
     /* @__PURE__ */ jsx49("span", { className: "ad-footer__cell ad-footer__run", children: !undo && countdown2 }),
     /* @__PURE__ */ jsx49("span", { className: "ad-footer__undo", role: "status", "aria-live": "polite", children: undo && /* @__PURE__ */ jsxs45(Fragment22, { children: [
