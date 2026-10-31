@@ -890,11 +890,15 @@ button.ad-year__day:focus-visible { outline: none; box-shadow: var(--ring-select
 .ad-time-grid { --ad-day-h: var(--h-btn-row); }
 /* A figure takes the second line: a seven-day column has no room for it beside the day and its buttons. */
 .ad-time-grid:has(.ad-time-grid__figure) { --ad-day-h: calc(var(--h-btn-row) * 2); }
-.ad-time-grid__column > .ad-time-grid__day { position: sticky; top: 0; bottom: auto; left: auto; z-index: var(--z-sticky); display: flex; flex-wrap: wrap; align-items: center; align-content: center; gap: 0 var(--space-1); box-sizing: border-box; height: var(--ad-day-h); min-width: 0; overflow: hidden; padding: 0 var(--space-2); background: var(--bg-base); }
+.ad-time-grid__column > .ad-time-grid__day { position: sticky; top: 0; bottom: auto; left: auto; z-index: var(--z-sticky); display: flex; flex-direction: column; box-sizing: border-box; height: var(--ad-day-h); min-width: 0; overflow: hidden; padding: 0 var(--space-2); background: var(--bg-base); }
 .ad-time-grid:not(:has(.ad-time-grid__head)) .ad-time-grid__gutter::before, .ad-time-grid--scrolls .ad-time-grid__gutter::before { content: ''; display: block; position: sticky; top: 0; z-index: var(--z-sticky); height: var(--ad-day-h); background: var(--bg-base); }
 .ad-time-grid__item { --ad-span: 1; }
 .ad-time-grid__item[data-span] { position: relative; z-index: 1; width: calc(var(--ad-span) * 100% + (var(--ad-span) - 1) * var(--border-w)); }
-.ad-time-grid__figure { flex: 0 0 100%; min-width: 0; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; font: var(--type-data); text-transform: none; color: var(--text-muted); }
+.ad-time-grid__day-line { display: flex; flex: none; align-items: center; gap: var(--space-1); height: var(--h-btn-row); min-width: 0; }
+.ad-time-grid__day-label { flex: 0 1 auto; min-width: 0; overflow: hidden; text-overflow: ellipsis; }
+/* Every day's first line sits level, its buttons at the column's right, whether or not a figure follows. */
+.ad-time-grid__day-line > .ad-time-grid__marks { flex: none; gap: var(--space-hair); margin-left: auto; }
+.ad-time-grid__figure { flex: none; height: var(--h-btn-row); line-height: var(--h-btn-row); min-width: 0; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; font: var(--type-data); text-transform: none; color: var(--text-muted); }
 /* With no scroller of its own the all-day lane stays in view under the headings; a bar spanning days reads over the columns after it. */
 .ad-time-grid { --ad-held-top: var(--ad-day-h); }
 .ad-time-grid:has(.ad-time-grid__head) { --ad-held-top: max(var(--space-6), var(--ad-head-h)); }
@@ -1624,7 +1628,6 @@ button:hover > .ad-project-pill:not(.ad-project-pill--current) { color: var(--ac
 .ad-picklist { width: var(--w-menu); }
 /* Dates at a row's right: the list and its card grow to hold them, so nothing reaches the edge or sticks out. */
 .ad-picklist:has(.ad-picklist__hint .ad-item-dates) { width: max-content; min-width: var(--w-menu); max-width: var(--w-card); }
-.ad-popover--menu:has(.ad-picklist__hint .ad-item-dates) { width: fit-content; }
 .ad-picklist__hint { flex: none; }
 .ad-picklist__search {
   display: flex; align-items: center; gap: var(--space-2); height: var(--h-btn); padding: 0 var(--space-2); margin-bottom: var(--space-2);
@@ -1720,12 +1723,17 @@ button:hover > .ad-project-pill:not(.ad-project-pill--current) { color: var(--ac
 
 /* src/components/Popover/Popover.css */
 /* Popover and its pieces */
-.ad-popover { padding: var(--space-4) var(--space-4) var(--space-4); max-height: calc(100vh - var(--space-4)); overflow-y: auto; }
-.ad-popover--card { width: var(--w-card); }
-.ad-popover--wide { width: var(--w-wide); }
-.ad-popover--menu { width: var(--w-menu); }
-/* As wide as what it holds: a calendar's card with nothing empty beside it. */
-.ad-popover--fit { width: fit-content; }
+/* As wide as what it holds, whatever it holds: only the screen stops it, and it never scrolls sideways. `wide` and `menu` are the least it
+   takes (a two-column card, a list that does not jump as it filters); a sentence wraps at reading width so it never pushes the card out. */
+.ad-popover { width: max-content; max-width: calc(100vw - var(--space-4)); padding: var(--space-4) var(--space-4) var(--space-4); max-height: calc(100vh - var(--space-4)); overflow-x: hidden; overflow-y: auto; scrollbar-gutter: stable; }
+.ad-popover--wide { min-width: var(--w-wide); }
+.ad-popover--menu { min-width: var(--w-menu); }
+.ad-popover :is(p, .ad-popover__description, .ad-hint) { max-width: var(--w-card); }
+/* A row in a card: its name, then its control hard at the card's right edge. */
+.ad-popover .ad-field-row:not(.ad-field-row--beside) { display: flex; gap: var(--space-4); }
+.ad-popover .ad-field-row:not(.ad-field-row--beside) .ad-field-row__label { flex: none; }
+.ad-popover .ad-field-row:not(.ad-field-row--beside) .ad-field-row__control { flex: 1 1 auto; min-width: 0; }
+.ad-popover .ad-field-row__control { justify-content: flex-end; }
 .ad-popover__header { margin-right: var(--space-8); margin-bottom: var(--space-4); }
 /* Title, then the heading, then the field labels: a heading is brighter than the labels under it, and they sit on the Detail rung. */
 .ad-popover .ad-popover__eyebrow, .ad-popover .ad-popover__section-label { margin: 0; color: var(--text-primary); }
@@ -1751,7 +1759,7 @@ button:hover > .ad-project-pill:not(.ad-project-pill--current) { color: var(--ac
 .ad-popover__section-end { margin-left: auto; display: inline-flex; align-items: center; }
 /* With a foot: the body scrolls and the foot stays pinned under it, a hairline above. */
 .ad-popover--with-foot { display: flex; flex-direction: column; overflow: hidden; padding-bottom: 0; }
-.ad-popover__body { flex: 1; min-height: 0; overflow-y: auto; }
+.ad-popover__body { flex: 1; min-height: 0; overflow-x: hidden; overflow-y: auto; scrollbar-gutter: stable; }
 .ad-popover__foot { flex: none; display: flex; align-items: center; gap: var(--space-2); margin: var(--space-3) calc(var(--space-4) * -1) 0; padding: var(--space-3) var(--space-4); border-top: var(--border-w) solid var(--border); }
 .ad-popover__action { margin-left: auto; display: inline-flex; }
 /* PopoverCard: a pinned header, then one scrolling body, or two columns (the rail at the right, a hairline between) each
@@ -1761,7 +1769,7 @@ button:hover > .ad-project-pill:not(.ad-project-pill--current) { color: var(--ac
 .ad-popover__cols > .ad-popover__body { padding: 0 var(--space-4); }
 .ad-popover__cols > .ad-popover__body:first-child { flex: 1; min-width: 0; }
 .ad-popover__rail { flex: none; width: var(--w-pop-rail); border-left: var(--border-w) solid var(--border); }
-.ad-popover--sheet { inset: 0; width: 100%; max-height: none; border-radius: 0; }
+.ad-popover--sheet { inset: 0; width: 100%; max-width: none; max-height: none; border-radius: 0; }
 .ad-popover__title .ad-inline-edit--title { margin-left: calc(var(--space-2) * -1); }
 .ad-popover__title:has(.ad-inline-edit) { flex: 1; min-width: 0; }
 
@@ -2126,14 +2134,9 @@ button.ad-row__name:focus-visible { outline: none; box-shadow: var(--ring-select
 .ad-zoom { font: var(--type-data); font-size: var(--text-xs); line-height: var(--lh-none); color: var(--text-muted); }
 .ad-zoom__name { margin-right: var(--space-1); color: var(--text-primary); }
 .ad-zoom__btn { display: inline-flex; align-items: center; justify-content: center; width: var(--h-btn); height: var(--h-seg); margin: 0; padding: 0; border: 0; border-radius: var(--radius-page); background: transparent; color: var(--text-muted); cursor: pointer; }
-.ad-zoom__btn svg { width: var(--icon-md); height: var(--icon-md); }
 .ad-zoom__btn:hover { color: var(--accent); }
 .ad-zoom__btn:focus-visible { outline: none; box-shadow: var(--ring-select); }
 .ad-zoom__btn:disabled { color: var(--text-muted); cursor: default; }
-.ad-zoom__btn--today { color: var(--text-primary); }
-/* One bar: a hairline between each part. */
-.ad-zoom > * + * { border-left: var(--border-w) solid var(--border); }
-.ad-zoom > .ad-zoom__btn { border-radius: 0; }
 .ad-zoom__name { padding: 0 var(--space-2); }
 /* PeriodCluster: the span in words in white, the steps, then the sizes; the current size in white on the view switch's `bg-raised` tile. */
 .ad-period .ad-zoom__name { color: var(--text-primary); }
@@ -2168,29 +2171,32 @@ button.ad-bar { cursor: pointer; }
 /* The name sits on a small ground with the hatch showing round it at both ends, so a short chip still reads as unconfirmed
 . */
 .ad-bar--unconfirmed .ad-bar__label { background: var(--bg-base); padding: var(--space-hair) var(--space-1); border-radius: var(--radius-page); }
+/* The edge's ink, the one definition: every edge and the travel curve read it. */
+.ad-bar { --ad-edge-ink: color-mix(in srgb, var(--ad-edge, var(--text-muted)) var(--tint-bar-edge), transparent); }
+.ad-bar--backup { --ad-edge-ink: color-mix(in srgb, var(--ad-edge, var(--line-strong)) var(--tint-bar-edge), transparent); }
 /* A bar's own edge, inside it. Confirmed is solid, Deal dashed, Backup dotted, the same place and width; no fill on a Backup, the name text-secondary. With Project colours on, the edge is the project's (--ad-edge). */
-.ad-bar--confirmed { outline: var(--border-w) solid color-mix(in srgb, var(--ad-edge, var(--text-muted)) var(--tint-bar-edge), transparent); outline-offset: calc(var(--border-w) * -1); }
-.ad-bar--deal { outline: var(--border-w) dashed color-mix(in srgb, var(--ad-edge, var(--text-muted)) var(--tint-bar-edge), transparent); outline-offset: calc(var(--border-w) * -1); }
-.ad-bar--backup { background: transparent; outline: var(--border-w) dotted color-mix(in srgb, var(--ad-edge, var(--line-strong)) var(--tint-bar-edge), transparent); outline-offset: calc(var(--border-w) * -1); color: var(--text-secondary); }
+.ad-bar--confirmed { outline: var(--border-w) solid var(--ad-edge-ink); outline-offset: calc(var(--border-w) * -1); }
+.ad-bar--deal { outline: var(--border-w) dashed var(--ad-edge-ink); outline-offset: calc(var(--border-w) * -1); }
+.ad-bar--backup { background: transparent; outline: var(--border-w) dotted var(--ad-edge-ink); outline-offset: calc(var(--border-w) * -1); color: var(--text-secondary); }
 .ad-bar:hover { box-shadow: var(--glow-hover); }
 .ad-bar--unconfirmed:hover, .ad-bar--thin:hover { box-shadow: inset 0 0 0 var(--border-w) var(--line-strong), var(--glow-hover); }
 .ad-bar:hover .ad-bar__name { color: var(--accent); }
 .ad-bar--selected, .ad-bar:focus-visible { outline: none; box-shadow: var(--ring-select); }
 /* Selected or focused, a bar keeps its edge: the ring is the selection, the edge is still what it is. */
-.ad-bar--confirmed.ad-bar--selected, .ad-bar--confirmed:focus-visible { outline: var(--border-w) solid color-mix(in srgb, var(--ad-edge, var(--text-muted)) var(--tint-bar-edge), transparent); }
-.ad-bar--deal.ad-bar--selected, .ad-bar--deal:focus-visible { outline: var(--border-w) dashed color-mix(in srgb, var(--ad-edge, var(--text-muted)) var(--tint-bar-edge), transparent); }
-.ad-bar--backup.ad-bar--selected, .ad-bar--backup:focus-visible { outline: var(--border-w) dotted color-mix(in srgb, var(--ad-edge, var(--line-strong)) var(--tint-bar-edge), transparent); }
+.ad-bar--confirmed.ad-bar--selected, .ad-bar--confirmed:focus-visible { outline: var(--border-w) solid var(--ad-edge-ink); }
+.ad-bar--deal.ad-bar--selected, .ad-bar--deal:focus-visible { outline: var(--border-w) dashed var(--ad-edge-ink); }
+.ad-bar--backup.ad-bar--selected, .ad-bar--backup:focus-visible { outline: var(--border-w) dotted var(--ad-edge-ink); }
 .ad-bar__label { position: relative; z-index: 1; display: inline-flex; align-items: center; gap: var(--space-2); min-width: 0; margin-left: var(--ad-label-in); }
 .ad-bar--label-hidden .ad-bar__label, .ad-bar--label-hidden .ad-bar__outside { opacity: 0; }
 .ad-bar--dense { height: var(--h-bar-dense); padding: 0 var(--space-1); }
-/* Travel: an S curve across each ramp's width, inside the bar, in the bar's colour, the corner outside it shaded; the name stays solid. */
+/* Travel: an S curve across each ramp's width, inside the bar, drawn as the bar's edge, the same width and ink, the corner outside it shaded; the name stays solid. */
 .ad-bar--fade-start, .ad-bar--fade-end, .ad-bar--fade-both { --ad-fade-start: var(--h-bar); --ad-fade-end: var(--h-bar); background: transparent; background-image: none; }
 .ad-bar--dense.ad-bar--fade-start, .ad-bar--dense.ad-bar--fade-end, .ad-bar--dense.ad-bar--fade-both { --ad-fade-start: var(--h-bar-dense); --ad-fade-end: var(--h-bar-dense); }
 .ad-bar__ground { position: absolute; inset: 0; border-radius: inherit; background: var(--ad-bar); pointer-events: none; }
 .ad-bar--hued .ad-bar__ground { background: color-mix(in srgb, var(--ad-bar) var(--tint-lane-wash), transparent); }
 .ad-bar--unconfirmed .ad-bar__ground { background: transparent; background-image: var(--hatch); }
 .ad-bar--backup .ad-bar__ground, .ad-bar--thin .ad-bar__ground { background: transparent; }
-.ad-bar__envelope { position: absolute; top: 0; bottom: 0; height: 100%; border-radius: inherit; fill: none; stroke: var(--ad-edge, var(--text-secondary)); stroke-width: var(--border-w-ring); pointer-events: none; }
+.ad-bar__envelope { position: absolute; top: 0; bottom: 0; height: 100%; border-radius: inherit; fill: none; stroke: var(--ad-edge-ink); stroke-width: var(--border-w); pointer-events: none; }
 .ad-bar__envelope-shade { fill: var(--ad-edge, var(--text-secondary)); stroke: none; opacity: var(--tint-lane-wash); }
 .ad-bar--hued .ad-bar__envelope-shade { opacity: var(--opacity-faint); }
 .ad-bar__envelope--start { left: 0; width: var(--ad-fade-start); }
@@ -2372,7 +2378,7 @@ button.ad-milestone:focus-visible { outline: none; box-shadow: var(--ring-select
 .ad-view-order__row { position: relative; display: flex; align-items: center; gap: var(--space-2); height: var(--h-btn-bar); font: var(--type-name); color: var(--text-primary); }
 
 /* The toolbar's icons in the primary ink at rest, as the rail's and the title's; the current view's tile and hover stay as they are. */
-.ad-toolbar .ad-icon-button, .ad-toolbar .ad-button--view, .ad-toolbar .ad-segmented__option--icon { color: var(--text-primary); }
+.ad-toolbar .ad-icon-button, .ad-zoom .ad-icon-button, .ad-toolbar .ad-button--view, .ad-toolbar .ad-segmented__option--icon { color: var(--text-primary); }
 .ad-view-save-row { margin-top: var(--space-4); padding-top: var(--space-2); border-top: var(--border-w) solid var(--border); }
 .ad-view-lock { color: var(--text-muted); }
 

@@ -1420,7 +1420,7 @@ var JOBS = {
   "template": "copy-simple",
   "time-off": "sun-horizon",
   "timeline": "align-left",
-  "today": "dot",
+  "today": "calendar-blank",
   "todos": "todo-dots",
   "trash": "trash",
   "unlock": "lock-open",
@@ -3525,7 +3525,7 @@ function DroppedDatePicker({ open, anchor, onClose, repeatEditor, backLabel, ...
       }),
       anchor,
       placement: "drop",
-      width: "fit",
+      width: "card",
       noClose: true,
       ariaLabel: stay ? picker.labels?.repeat ?? EN.repeat : backLabel ?? "Date",
       foot: stay ? /* @__PURE__ */ jsx28(Button, { onClick: () => setRepeating(false), children: backLabel ?? "Back" }) : void 0,
@@ -4998,25 +4998,25 @@ var NAMES = { days: "Days", weeks: "Weeks", months: "Months", quarters: "Quarter
 function ZoomCluster({ zoom, onZoom, onPrevious, onToday, onNext, labels }) {
   const L = { ...NAMES, ...labels };
   const i = ORDER.indexOf(zoom);
-  const btn = (label, glyph, on, disabled, today) => /* @__PURE__ */ jsx43("button", { type: "button", "aria-label": label, title: label, disabled, onClick: on, className: cx("ad-zoom__btn", today && "ad-zoom__btn--today"), children: /* @__PURE__ */ jsx43(Icon, { job: glyph, size: "md" }) }, glyph);
-  return /* @__PURE__ */ jsxs40("div", { className: "ad-zoom", role: "group", "aria-label": L[zoom], children: [
+  const btn = (label, glyph, on, disabled) => /* @__PURE__ */ jsx43(IconButton, { label, disabled, onClick: on, children: /* @__PURE__ */ jsx43(Icon, { job: glyph, size: "md" }) }, glyph);
+  return /* @__PURE__ */ jsx43(ButtonSizeScope, { size: "bar", children: /* @__PURE__ */ jsxs40("div", { className: "ad-zoom", role: "group", "aria-label": L[zoom], children: [
     btn(`${L.zoomOut} (${L[ORDER[Math.min(i + 1, 3)]]})`, "minus", () => onZoom(ORDER[Math.min(i + 1, 3)]), i === 3),
     btn(L.previous, "chevron-left", onPrevious),
-    btn(L.today, "today", onToday, false, true),
+    btn(L.today, "today", onToday),
     btn(L.next, "chevron-right", onNext),
     btn(`${L.zoomIn} (${L[ORDER[Math.max(i - 1, 0)]]})`, "plus", () => onZoom(ORDER[Math.max(i - 1, 0)]), i === 0)
-  ] });
+  ] }) });
 }
 function PeriodCluster({ shown, periods, period, onPeriod, onPrevious, onNext, onToday, previousOff, nextOff, labels }) {
   const L = { previous: "Earlier", today: "Today", next: "Later", period: "Period", ...labels };
-  const step = (label, glyph, on, off, today) => on && /* @__PURE__ */ jsx43("button", { type: "button", "aria-label": off ? `${label}: ${off}` : label, title: off ?? label, disabled: !!off, onClick: on, className: cx("ad-zoom__btn", today && "ad-zoom__btn--today"), children: /* @__PURE__ */ jsx43(Icon, { job: glyph, size: "md" }) });
-  return /* @__PURE__ */ jsxs40("div", { className: "ad-zoom ad-period", role: "group", "aria-label": shown, children: [
+  const step = (label, glyph, on, off) => on && /* @__PURE__ */ jsx43(IconButton, { label: off ? `${label}: ${off}` : label, disabled: !!off, onClick: on, children: /* @__PURE__ */ jsx43(Icon, { job: glyph, size: "md" }) });
+  return /* @__PURE__ */ jsx43(ButtonSizeScope, { size: "bar", children: /* @__PURE__ */ jsxs40("div", { className: "ad-zoom ad-period", role: "group", "aria-label": shown, children: [
     /* @__PURE__ */ jsx43("span", { className: "ad-zoom__name", children: shown }),
     step(L.previous, "chevron-left", onPrevious, previousOff),
-    step(L.today, "today", onToday, void 0, true),
+    step(L.today, "today", onToday),
     step(L.next, "chevron-right", onNext, nextOff),
     periods && periods.length > 1 && onPeriod && /* @__PURE__ */ jsx43("span", { className: "ad-period__sizes", role: "radiogroup", "aria-label": L.period, children: periods.map((p) => /* @__PURE__ */ jsx43("button", { type: "button", role: "radio", "aria-checked": p.id === period, onClick: () => onPeriod(p.id), className: "ad-zoom__btn ad-period__size", children: p.label }, p.id)) })
-  ] });
+  ] }) });
 }
 
 // src/components/Calendar/Calendar.tsx
@@ -5258,8 +5258,10 @@ function TimeGrid({ startHour, endHour, bookings = [], columns, now, hourLabel =
         headBand && /* @__PURE__ */ jsx44(BandHeading, { band: c.band }),
         c.head
       ] }) : c.label && /* @__PURE__ */ jsxs41("span", { className: "ad-time-grid__day", children: [
-        c.label,
-        c.marks != null && /* @__PURE__ */ jsx44("span", { className: "ad-time-grid__marks", children: c.marks }),
+        /* @__PURE__ */ jsxs41("span", { className: "ad-time-grid__day-line", children: [
+          /* @__PURE__ */ jsx44("span", { className: "ad-time-grid__day-label", children: c.label }),
+          c.marks != null && /* @__PURE__ */ jsx44("span", { className: "ad-time-grid__marks", children: /* @__PURE__ */ jsx44(ButtonSizeScope, { size: "row", children: c.marks }) })
+        ] }),
         c.figure != null && /* @__PURE__ */ jsx44("span", { className: "ad-time-grid__figure", children: c.figure })
       ] }),
       anyBand && !headBand && (c.band ? /* @__PURE__ */ jsx44(PhaseBand, { ...c.band }) : /* @__PURE__ */ jsx44("div", { className: "ad-time-grid__band-space" })),
