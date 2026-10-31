@@ -4464,9 +4464,13 @@ var strip4 = (h) => {
   return rest;
 };
 function Envelope({ side }) {
-  return /* @__PURE__ */ jsx42("svg", { className: `ad-bar__envelope ad-bar__envelope--${side}`, viewBox: "0 0 100 100", preserveAspectRatio: "none", "aria-hidden": "true", children: /* @__PURE__ */ jsx42("path", { d: "M0 100 C 35 100, 45 0, 100 0", vectorEffect: "non-scaling-stroke" }) });
+  const curve = "M0 100 C 55 100, 45 0, 100 0";
+  return /* @__PURE__ */ jsxs39("svg", { className: `ad-bar__envelope ad-bar__envelope--${side}`, "data-travel-ramp": side, viewBox: "0 0 100 100", preserveAspectRatio: "none", "aria-hidden": "true", children: [
+    /* @__PURE__ */ jsx42("path", { className: "ad-bar__envelope-shade", d: `${curve} L0 0 Z` }),
+    /* @__PURE__ */ jsx42("path", { d: curve, vectorEffect: "non-scaling-stroke" })
+  ] });
 }
-function Bar({ code: code2, travel, dim, label, unconfirmed, deal, backup, color, selected, startLabel, endLabel, lead, children, thin, labelOutside, onOpen, ends, barProps, labelInset, labelHidden, late, dense, fade, fadeStart, fadeEnd, onCramped, className, style }) {
+function Bar({ code: code2, travel, dim, label, unconfirmed, deal, backup, color, selected, startLabel, endLabel, lead, children, thin, labelOutside, onOpen, ends, barProps, labelInset, labelHidden, late, dense, fade, fadeStart, fadeEnd, onCramped, detail, className, style }) {
   const asButton = !!onOpen && !ends;
   const Tag2 = asButton ? "button" : "div";
   const hue = useHue(color);
@@ -4497,9 +4501,10 @@ function Bar({ code: code2, travel, dim, label, unconfirmed, deal, backup, color
     if (lab) ro?.observe(lab);
     return () => ro?.disconnect();
   }, [label]);
-  const keepIn = !!code2 || labelOutside === "never";
+  const clip = labelOutside === "clip";
+  const keepIn = !!code2 || labelOutside === "never" || clip;
   const outside = !keepIn && (labelOutside === true || labelOutside === "before" || labelOutside === "after" || cramped);
-  const tip = keepIn && cramped && typeof label === "string" && !hooks.title ? label : void 0;
+  const tip = clip && typeof label === "string" && !hooks.title ? [label, detail].filter((x) => typeof x === "string").join(" \xB7 ") : keepIn && cramped && typeof label === "string" && !hooks.title ? label : void 0;
   const name = /* @__PURE__ */ jsx42("span", { className: "ad-bar__name", children: label });
   const grip = (side, h) => h && /* @__PURE__ */ jsx42("span", { "aria-hidden": h["aria-label"] ? void 0 : true, ...strip4(h), className: `ad-bar__grip ad-bar__grip--${side}` });
   return /* @__PURE__ */ jsxs39(
@@ -4524,7 +4529,7 @@ function Bar({ code: code2, travel, dim, label, unconfirmed, deal, backup, color
       },
       "aria-current": selected || void 0,
       title: tip ?? hooks.title,
-      className: cx("ad-bar", "ad-striped", code2 && "ad-bar--code", code2 && travel && "ad-bar--travel", code2 && dim && "ad-bar--dim", labelOutside === "never" && "ad-bar--keep-in", labelOutside === "never" && cramped && "ad-bar--name-gone", labelOutside === "before" && "ad-bar--label-before", plain && !!paint["--ad-bar"] && "ad-bar--hued", plain && !unconfirmed && !deal && !backup && "ad-bar--confirmed", unconfirmed && "ad-bar--unconfirmed", deal && "ad-bar--deal", backup && "ad-bar--backup", thin && "ad-bar--thin", outside && "ad-bar--label-outside", selected && "ad-bar--selected", late && "ad-bar--late", dense && "ad-bar--dense", fade && `ad-bar--fade-${fade}`, labelHidden && "ad-bar--label-hidden", className),
+      className: cx("ad-bar", "ad-striped", code2 && "ad-bar--code", code2 && travel && "ad-bar--travel", code2 && dim && "ad-bar--dim", labelOutside === "never" && "ad-bar--keep-in", clip && "ad-bar--clip", labelOutside === "never" && cramped && "ad-bar--name-gone", labelOutside === "before" && "ad-bar--label-before", plain && !!paint["--ad-bar"] && "ad-bar--hued", plain && !unconfirmed && !deal && !backup && "ad-bar--confirmed", unconfirmed && "ad-bar--unconfirmed", deal && "ad-bar--deal", backup && "ad-bar--backup", thin && "ad-bar--thin", outside && "ad-bar--label-outside", selected && "ad-bar--selected", late && "ad-bar--late", dense && "ad-bar--dense", fade && `ad-bar--fade-${fade}`, labelHidden && "ad-bar--label-hidden", className),
       style: { ...style, ...paint, ...labelInset ? { ["--ad-label-in"]: `${Math.max(0, labelInset)}px` } : {}, ...fade && fadeStart != null ? { ["--ad-fade-start"]: `${Math.max(0, fadeStart)}px` } : {}, ...fade && fadeEnd != null ? { ["--ad-fade-end"]: `${Math.max(0, fadeEnd)}px` } : {} },
       children: [
         fade && /* @__PURE__ */ jsx42("span", { className: "ad-bar__ground", "aria-hidden": "true" }),
@@ -4535,7 +4540,10 @@ function Bar({ code: code2, travel, dim, label, unconfirmed, deal, backup, color
         /* @__PURE__ */ jsxs39("span", { className: "ad-bar__label", children: [
           /* @__PURE__ */ jsx42(DeptGlyph, { hue: color }),
           lead,
-          name
+          clip ? /* @__PURE__ */ jsxs39("span", { className: "ad-bar__words", children: [
+            name,
+            detail != null && /* @__PURE__ */ jsx42("span", { className: "ad-bar__detail", children: detail })
+          ] }) : name
         ] }),
         children,
         outside && /* @__PURE__ */ jsx42("span", { className: "ad-bar__outside", children: name }),
