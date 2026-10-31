@@ -187,7 +187,23 @@ function tokenPx(name, fallback, doc = typeof document !== "undefined" ? documen
   const v = parseFloat(win.getComputedStyle(doc.documentElement).getPropertyValue(name));
   return Number.isFinite(v) ? v : fallback;
 }
-function usePlacement(open, anchor, floating, placement) {
+function useIsPhone() {
+  const win = typeof window !== "undefined" ? window : void 0;
+  const [phone, setPhone] = useState2(() => !!win && win.innerWidth <= tokenPx("--bp-phone", 640));
+  useIsoLayoutEffect(() => {
+    if (!win) return;
+    const run = () => setPhone(win.innerWidth <= tokenPx("--bp-phone", 640));
+    win.addEventListener("resize", run);
+    return () => win.removeEventListener("resize", run);
+  }, []);
+  return phone;
+}
+function useCoarsePointer() {
+  const win = typeof window !== "undefined" ? window : void 0;
+  const [coarse] = useState2(() => !!win?.matchMedia?.("(pointer: coarse)").matches);
+  return coarse;
+}
+function usePlacement(open, anchor, floating, placement, within) {
   const [pos, setPos] = useState2(null);
   const doc = useFloatingDocument();
   const place = useRef2(() => {
@@ -203,14 +219,21 @@ function usePlacement(open, anchor, floating, placement) {
     const fw = f.offsetWidth;
     const fh = f.offsetHeight;
     const a = anchor?.current?.getBoundingClientRect();
+    const room = within?.current?.getBoundingClientRect();
     let top;
     let left;
-    if (placement === "top-centre" || !a) {
+    if (placement === "foot" && room) {
+      left = room.left;
+      top = Math.min(room.bottom, vh - edge) - fh;
+    } else if (placement === "top-centre" || !a) {
       top = Math.round(vh * 0.12);
       left = (vw - fw) / 2;
     } else if (placement === "side") {
       left = vw - fw - edge;
       top = Math.min(a.top, vh - fh - edge);
+    } else if (placement === "over") {
+      left = Math.min(a.left, vw - fw - edge);
+      top = Math.min(a.top, (room ? Math.min(room.bottom, vh - edge) : vh - edge) - fh);
     } else {
       left = a.left;
       top = a.bottom + gap;
@@ -2734,13 +2757,19 @@ var TitleId = createContext7(void 0);
 function CloseButton({ onClose, label = "Close" }) {
   return /* @__PURE__ */ jsx23("button", { type: "button", className: "ad-close", "aria-label": label, title: label, onClick: onClose });
 }
-function Popover({ open, onClose, anchor, placement = "drop", width = "card", ariaLabel, noClose, closeLabel, keepFocus, id, children, foot, className }) {
+function Popover({ open, onClose, anchor: given, at, within, placement = "drop", width = "card", ariaLabel, noClose, closeLabel, keepFocus, id, children, foot, className }) {
   const box = useRef11(null);
-  const style = usePlacement(open, anchor, box, placement);
+  const mark = useRef11(null);
+  const anchor = at ? mark : given;
+  const coarse = useCoarsePointer();
+  const style = usePlacement(open, anchor, box, within && coarse ? "foot" : placement, within);
   const z = useLayer(open, onClose, [box, anchor]);
   useFocusReturn(open && !keepFocus, box, "box");
   if (!open) return null;
-  return /* @__PURE__ */ jsx23(Portal, { children: /* @__PURE__ */ jsx23(PopoverCard, { cardRef: box, id, onClose, width, ariaLabel, noClose, closeLabel, foot, className: cx("ad-popover--placed", className), style: { ...style, zIndex: z }, children }) });
+  return /* @__PURE__ */ jsxs20(Portal, { children: [
+    at && /* @__PURE__ */ jsx23("span", { ref: mark, "aria-hidden": "true", className: "ad-menu__at", style: { left: at.x, top: at.y } }),
+    /* @__PURE__ */ jsx23(PopoverCard, { cardRef: box, id, onClose, width, ariaLabel, noClose, closeLabel, foot, className: cx("ad-popover--placed", className), style: { ...style, zIndex: z }, children })
+  ] });
 }
 function PopoverCard({ onClose, width = "card", ariaLabel, noClose, closeLabel, id, header, children, rail, foot, sheet, style, cardRef, cardProps, className }) {
   const titleId = useId6();
@@ -2834,6 +2863,54 @@ function PopoverSection({ label, children, end, collapsible, collapsed, onToggle
     /* @__PURE__ */ jsx23("div", { id: bodyId, className: "ad-popover__section-body", hidden: collapsible ? shut : void 0, children })
   ] });
 }
+function PressCard({ label, trigger, width, foot, children }) {
+  const from = useRef11(null);
+  const [open, setOpen] = useState12(false);
+  const close = () => setOpen(false);
+  return /* @__PURE__ */ jsxs20(Fragment9, { children: [
+    /* @__PURE__ */ jsx23(RowPress, { label, onPress: (b) => {
+      from.current = b;
+      setOpen((o) => !o);
+    }, children: trigger }),
+    /* @__PURE__ */ jsx23(Popover, { open, onClose: close, anchor: from, width, ariaLabel: label, foot, children: typeof children === "function" ? children(close) : children })
+  ] });
+}
+function EditorCard({ open, onClose, anchor: given, at, kind, title, lead, chip, sub, action, onRename, renameLabel, read: read2, suggestions, head, rail, foot, noClose, closeLabel, cardProps, children }) {
+  const box = useRef11(null);
+  const mark = useRef11(null);
+  const anchor = at ? mark : given;
+  const phone = useIsPhone();
+  const style = usePlacement(open && !phone, anchor, box, "side");
+  const z = useLayer(open, onClose, [box, anchor]);
+  useFocusReturn(open, box, "box");
+  if (!open) return null;
+  const words = onRename && typeof title === "string" ? { title, onRename, renameLabel, read: read2, suggestions } : { title };
+  return /* @__PURE__ */ jsxs20(Portal, { children: [
+    at && /* @__PURE__ */ jsx23("span", { ref: mark, "aria-hidden": "true", className: "ad-menu__at", style: { left: at.x, top: at.y } }),
+    /* @__PURE__ */ jsxs20(
+      PopoverCard,
+      {
+        cardRef: box,
+        onClose,
+        noClose,
+        closeLabel,
+        ariaLabel: title == null ? kind : void 0,
+        width: rail != null ? "wide" : "card",
+        sheet: phone,
+        style: phone ? { position: "fixed", inset: 0, zIndex: z } : { ...style, zIndex: z },
+        cardProps,
+        foot,
+        rail: phone ? void 0 : rail,
+        header: /* @__PURE__ */ jsx23(PopoverHeader, { eyebrow: kind, chip, lead, description: sub, action, ...words }),
+        children: [
+          head,
+          phone && rail,
+          children
+        ]
+      }
+    )
+  ] });
+}
 
 // src/components/Dialog/Dialog.tsx
 import { useId as useId7, useRef as useRef12 } from "react";
@@ -2899,6 +2976,7 @@ function ConfirmDialog({ open, act, thing, detail, onConfirm, onKeep, labels: l 
 // src/components/Menu/Menu.tsx
 import { useEffect as useEffect9, useId as useId8, useRef as useRef13, useState as useState13 } from "react";
 import { Fragment as Fragment11, jsx as jsx25, jsxs as jsxs22 } from "react/jsx-runtime";
+var TYPE_GAP = 700;
 var isItem = (i) => i.kind !== "separator" && i.kind !== "heading";
 function ordered(items) {
   const danger = items.filter((i) => isItem(i) && i.danger);
@@ -2912,6 +2990,7 @@ function MenuRow({ item, i, lit, keepCursor, focusable, onEnter, onChoose }) {
     /* @__PURE__ */ jsxs22(
       "button",
       {
+        ...Object.fromEntries(Object.entries(item.hooks ?? {}).filter(([k]) => k.startsWith("data-"))),
         type: "button",
         role: item.checked != null ? "menuitemcheckbox" : "menuitem",
         "aria-checked": item.checked,
@@ -2958,6 +3037,7 @@ function Menu({ open, onClose, anchor: given_anchor, at: point, items: given, ar
   const z = useLayer(open, onClose, [box, anchor]);
   const live = items.filter((i) => isItem(i) && !i.disabled);
   const [at, setAt] = useState13(0);
+  const typed = useRef13({ word: "", at: 0 });
   const doc = useFloatingDocument() ?? document;
   useEffect9(() => {
     if (!open || keepCursor) return;
@@ -2977,7 +3057,7 @@ function Menu({ open, onClose, anchor: given_anchor, at: point, items: given, ar
   const choose = (i) => {
     const item = live[i];
     if (!item) return;
-    onClose();
+    if (!item.keepOpen) onClose();
     item.onSelect();
   };
   const onKeyDown2 = (e) => {
@@ -2998,9 +3078,15 @@ function Menu({ open, onClose, anchor: given_anchor, at: point, items: given, ar
     }
     if (e.key.length === 1 && /\S/.test(e.key)) {
       const k = e.key.toLowerCase();
-      for (let s = 1; s <= live.length; s++) {
+      const now = Date.now();
+      const word = now - typed.current.at < TYPE_GAP ? typed.current.word + k : k;
+      typed.current = { word, at: now };
+      const same = [...word].every((c) => c === k);
+      const from = word.length > 1 && !same ? 0 : 1;
+      const seek = same ? k : word;
+      for (let s = from; s <= live.length; s++) {
         const j = (at + s) % live.length;
-        if (live[j].label.toLowerCase().startsWith(k)) {
+        if (live[j].label.toLowerCase().startsWith(seek)) {
           setAt(j);
           break;
         }
@@ -3223,16 +3309,25 @@ function PickList({ options, value, onPick, searchLabel, noMatch = "Nothing matc
 // src/components/Pickers/Pickers.tsx
 import { cloneElement as cloneElement2, isValidElement as isValidElement2, useRef as useRef15, useState as useState15 } from "react";
 import { Fragment as Fragment13, jsx as jsx27, jsxs as jsxs24 } from "react/jsx-runtime";
-function PersonPicker({ people, ...rest }) {
-  return /* @__PURE__ */ jsx27(PickList, { ...rest, options: people.map((p) => ({ id: p.id, label: p.name, keywords: p.email, lead: /* @__PURE__ */ jsx27(Avatar, { name: p.name, initials: p.initials, src: p.src }) })) });
+function PersonPicker({ people, open, anchor, onClose, header, ...rest }) {
+  const list = /* @__PURE__ */ jsx27(PickList, { ...rest, options: people.map((p) => ({ id: p.id, label: p.name, keywords: p.email, lead: /* @__PURE__ */ jsx27(Avatar, { name: p.name, initials: p.initials, src: p.src }) })) });
+  ;
+  if (!anchor) return list;
+  return /* @__PURE__ */ jsxs24(Popover, { open: open ?? true, onClose: onClose ?? (() => {
+  }), anchor, placement: "drop", noClose: true, ariaLabel: rest.searchLabel, children: [
+    header && /* @__PURE__ */ jsx27(PopoverHeader, { title: header.title, description: header.description }),
+    list
+  ] });
 }
 function ProjectPicker({ projects, ...rest }) {
   return /* @__PURE__ */ jsx27(PickList, { ...rest, options: projects.map((p) => ({ id: p.id, label: p.name, keywords: p.code, lead: /* @__PURE__ */ jsx27(ProjectPill, { code: p.code }) })) });
 }
-function StatusPicker({ statuses, noSearch = true, ...rest }) {
+function StatusPicker({ statuses, noSearch = true, open, anchor, onClose, header: _h, ...rest }) {
+  if (anchor) return /* @__PURE__ */ jsx27(Menu, { open: open ?? true, onClose: onClose ?? (() => {
+  }), anchor, ariaLabel: rest.searchLabel, items: statuses.map((s) => ({ id: s.id, label: s.label, dot: s.tone ?? "neutral", checked: s.id === rest.value, onSelect: () => rest.onPick(s.id) })) });
   return /* @__PURE__ */ jsx27(PickList, { ...rest, noSearch, options: statuses.map((s) => ({ id: s.id, label: s.label, lead: /* @__PURE__ */ jsx27(Dot, { tone: s.tone }), hint: s.hint })) });
 }
-function PickField({ options, value, onPick, label, placeholder, icon, search, disabled, className, trigger, marks, footer, typed, onTyped }) {
+function PickField({ options, value, onPick, label, placeholder, header, icon, search, disabled, className, trigger, marks, footer, typed, onTyped }) {
   const [open, setOpen] = useState15(false);
   const [draft, setDraft] = useState15(null);
   const anchor = useRef15(null);
@@ -3250,20 +3345,24 @@ function PickField({ options, value, onPick, label, placeholder, icon, search, d
   const cap = marks === true ? 3 : typeof marks === "number" && marks > 0 ? Math.floor(marks) : 0;
   const asMarks = cap > 0 && picked.length > 1;
   const words = picked.map((o) => o.label).join(", ");
-  const list = open && /* @__PURE__ */ jsx27(Portal, { children: /* @__PURE__ */ jsx27("div", { ref: box, style: { ...style, zIndex: z }, className: "ad-float ad-pick-field__list", children: /* @__PURE__ */ jsx27(
-    PickList,
-    {
-      options,
-      value,
-      searchLabel: label,
-      noSearch: !(search ?? options.length > 8),
-      footer,
-      onPick: (id) => {
-        onPick(id);
-        if (!many) close();
+  const foot = typeof footer === "function" ? footer(close) : footer;
+  const list = open && /* @__PURE__ */ jsx27(Portal, { children: /* @__PURE__ */ jsxs24("div", { ref: box, style: { ...style, zIndex: z }, className: "ad-float ad-pick-field__list", children: [
+    header && /* @__PURE__ */ jsx27("div", { className: "ad-pick-field__head", children: /* @__PURE__ */ jsx27(PopoverHeader, { title: header.title, description: header.description }) }),
+    /* @__PURE__ */ jsx27(
+      PickList,
+      {
+        options,
+        value,
+        searchLabel: label,
+        noSearch: !(search ?? options.length > 8),
+        footer: foot,
+        onPick: (id) => {
+          onPick(id);
+          if (!many) close();
+        }
       }
-    }
-  ) }) });
+    )
+  ] }) });
   if (typed) {
     const words2 = draft ?? words;
     const narrowed = draft ? options.filter((o) => String(o.label).toLowerCase().includes(draft.trim().toLowerCase())) : options;
@@ -3303,7 +3402,7 @@ function PickField({ options, value, onPick, label, placeholder, icon, search, d
         ),
         /* @__PURE__ */ jsx27(Icon, { name: "caret-down", className: "ad-pick-field__caret ad-glyph-quiet" })
       ] }),
-      open && narrowed.length > 0 && /* @__PURE__ */ jsx27(Portal, { children: /* @__PURE__ */ jsx27("div", { ref: box, style: { ...style, zIndex: z }, className: "ad-float ad-pick-field__list", children: /* @__PURE__ */ jsx27(PickList, { options: narrowed, value, searchLabel: label, noSearch: true, footer, onPick: (id) => {
+      open && narrowed.length > 0 && /* @__PURE__ */ jsx27(Portal, { children: /* @__PURE__ */ jsx27("div", { ref: box, style: { ...style, zIndex: z }, className: "ad-float ad-pick-field__list", children: /* @__PURE__ */ jsx27(PickList, { options: narrowed, value, searchLabel: label, noSearch: true, footer: foot, onPick: (id) => {
         onPick(id);
         setDraft(null);
         close();
@@ -3318,6 +3417,9 @@ function PickField({ options, value, onPick, label, placeholder, icon, search, d
         {
           ref: anchor,
           className: "ad-pick-field__trigger",
+          onClickCapture: (e) => {
+            if (!disabled && e.target.closest?.(".ad-row__press")) setOpen((o) => !o);
+          },
           onClick: (e) => {
             if (!disabled && !e.defaultPrevented) setOpen((o) => !o);
           },
@@ -3358,7 +3460,29 @@ function PickField({ options, value, onPick, label, placeholder, icon, search, d
 import { useEffect as useEffect10, useId as useId10, useMemo as useMemo2, useRef as useRef16, useState as useState16 } from "react";
 import { jsx as jsx28, jsxs as jsxs25 } from "react/jsx-runtime";
 var EN = { today: "Today", tomorrow: "Tomorrow", nextWeek: "Next week", inTwoWeeks: "In two weeks", previousMonth: "Previous month", nextMonth: "Next month", noDate: "No date", repeat: "Repeat" };
-function DatePicker({ value, onChange, today: todayIn, weekStart = 1, locale = "en-US", labels: l, quickPicks, shadeWeekends = true, onClear, repeat, openOn, dayMarks, marksKey, className }) {
+function DroppedDatePicker({ open, anchor, onClose, repeatEditor, backLabel, ...picker }) {
+  const [repeating, setRepeating] = useState16(false);
+  const stay = repeating && repeatEditor != null;
+  return /* @__PURE__ */ jsx28(
+    Popover,
+    {
+      open: open ?? true,
+      onClose: onClose ?? (() => {
+      }),
+      anchor,
+      placement: "drop",
+      width: "fit",
+      noClose: true,
+      ariaLabel: stay ? picker.labels?.repeat ?? EN.repeat : backLabel ?? "Date",
+      foot: stay ? /* @__PURE__ */ jsx28(Button, { onClick: () => setRepeating(false), children: backLabel ?? "Back" }) : void 0,
+      children: stay ? repeatEditor : /* @__PURE__ */ jsx28(DatePickerBody, { ...picker, repeat: picker.repeat && (repeatEditor != null ? { ...picker.repeat, onPress: () => setRepeating(true) } : picker.repeat) })
+    }
+  );
+}
+function DatePicker(props) {
+  return props.anchor ? /* @__PURE__ */ jsx28(DroppedDatePicker, { ...props }) : /* @__PURE__ */ jsx28(DatePickerBody, { ...props });
+}
+function DatePickerBody({ value, onChange, today: todayIn, weekStart = 1, locale = "en-US", labels: l, quickPicks, shadeWeekends = true, onClear, repeat, openOn, dayMarks, marksKey, className }) {
   const labels = { ...EN, ...l };
   const today = dayOf(todayIn);
   const [focus, setFocus] = useState16(dayOf(value ?? openOn ?? today));
@@ -5665,6 +5789,7 @@ export {
   DragBand,
   DropLine,
   DualUnit,
+  EditorCard,
   EmptyState,
   Fact,
   Facts,
@@ -5727,6 +5852,7 @@ export {
   PopoverHeader,
   PopoverSection,
   Portal,
+  PressCard,
   ProgressBar,
   ProjectPicker,
   ProjectPill,
