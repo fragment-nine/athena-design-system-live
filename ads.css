@@ -1186,7 +1186,7 @@ button.ad-card__name:focus-visible { outline: none; box-shadow: var(--ring-selec
 .ad-field-row__help { display: inline-flex; align-items: center; justify-content: center; width: var(--target-min); height: var(--target-min); margin: 0; padding: 0; border: 0; border-radius: var(--radius-page); background: transparent; color: var(--text-muted); cursor: help; }
 .ad-field-row__help:hover { color: var(--accent); }
 .ad-field-row__help:focus-visible { outline: none; box-shadow: var(--ring-select); }
-/* A field holding a figure (a time, a date, a number) is mono, as every figure in the system is. */
+/* A field holding a plain number (a rate, a count) is mono; a date or a time in a field is Roboto, as the rest of the card is. */
 .ad-field__input--mono { font: var(--type-data); font-size: var(--text-xs); }
 /* A chosen option that means "nothing" reads grey. */
 .ad-select__native--quiet { color: var(--text-muted); }
@@ -1681,7 +1681,6 @@ button:hover > .ad-project-pill:not(.ad-project-pill--current) { color: var(--ac
 .ad-datepicker__day[aria-current="date"] { color: var(--text-primary); box-shadow: var(--ring-today); }
 .ad-datepicker__day[data-picked] { background: var(--bg-hover); color: var(--text-primary); box-shadow: var(--ring-select); }
 .ad-datefield { display: inline-flex; flex-direction: column; min-width: 0; max-width: 100%; }
-.ad-datefield__field--date .ad-field__input { font: var(--type-data); }
 /* Late: the date's words in the late red, as RowDate draws them. */
 .ad-datefield__field--late .ad-field__input { color: var(--status-error-ink); }
 .ad-datefield__drop.ad-popover { width: auto; padding: var(--space-2); }

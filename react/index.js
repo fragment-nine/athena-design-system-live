@@ -3710,7 +3710,7 @@ function DateField({ onParsed, label, text: given, onText, format, icon, disable
       TextField,
       {
         ref: input,
-        className: value && text === fmt(value) ? cx("ad-datefield__field--date", due && isLate(value, picker.today, { done }) && "ad-datefield__field--late") : void 0,
+        className: value && text === fmt(value) ? cx(due && isLate(value, picker.today, { done }) && "ad-datefield__field--late") : void 0,
         icon,
         "aria-label": label,
         placeholder: label,
@@ -3776,7 +3776,6 @@ function TimeField({ value, onChange, label, step = 30, bareHoursArePm, classNam
     /* @__PURE__ */ jsx29(
       TextField,
       {
-        mono: true,
         icon: "clock",
         "aria-label": label,
         placeholder: label,
