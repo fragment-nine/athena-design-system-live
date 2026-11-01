@@ -1760,7 +1760,7 @@ var InlineEdit = forwardRef2(function InlineEdit2({ value, onCommit, ariaLabel, 
         return;
       }
       if (e.key === "Enter") e.currentTarget.blur();
-      if (e.key === "Escape") {
+      if (e.key === "Escape" && draft !== value) {
         e.stopPropagation();
         cancelled.current = true;
         e.currentTarget.blur();
@@ -2667,7 +2667,7 @@ var Section = forwardRef6(function Section2({ title, day, beside, children, clas
 });
 
 // src/components/Popover/Popover.tsx
-import { createContext as createContext7, useCallback as useCallback3, useContext as useContext8, useId as useId6, useRef as useRef12, useState as useState12 } from "react";
+import { createContext as createContext7, useCallback as useCallback3, useContext as useContext8, useEffect as useEffect9, useId as useId6, useRef as useRef12, useState as useState12 } from "react";
 
 // src/components/Writing/TokenInput.tsx
 import { useEffect as useEffect8, useLayoutEffect as useLayoutEffect4, useRef as useRef11, useState as useState11 } from "react";
@@ -2955,19 +2955,34 @@ function Body({ rail, children }) {
 function PopoverHeader({ eyebrow, title, chip, lead, description, onRename, renameLabel, action, read: read2, suggestions }) {
   const own = useId6();
   const [draft, setDraft] = useState12(null);
+  const abandoned = useRef12(false);
   const id = useContext8(TitleId) ?? own;
   return /* @__PURE__ */ jsxs20("header", { className: "ad-popover__header", children: [
     eyebrow && /* @__PURE__ */ jsx23("div", { id: title == null ? id : void 0, className: "ad-popover__eyebrow ad-type-heading", children: eyebrow }),
     chip != null && /* @__PURE__ */ jsx23("div", { className: "ad-popover__chip", children: chip }),
     (title != null || lead != null || action != null) && /* @__PURE__ */ jsxs20("div", { className: "ad-popover__title-row", children: [
       lead,
-      title != null && /* @__PURE__ */ jsx23("h2", { id, className: "ad-popover__title ad-type-title", children: onRename && read2 ? /* @__PURE__ */ jsx23("span", { className: "ad-popover__title-read", onBlur: () => {
-        if (draft != null && draft !== String(title)) onRename(draft);
-        setDraft(null);
-      }, children: /* @__PURE__ */ jsx23(TokenInput, { value: draft ?? String(title), onChange: setDraft, read: read2, onSubmit: (v) => {
-        if (v !== String(title)) onRename(v);
-        setDraft(null);
-      }, label: renameLabel ?? "Name", suggestions }) }) : onRename ? /* @__PURE__ */ jsx23(InlineEdit, { size: "title", value: String(title), onCommit: onRename, ariaLabel: renameLabel ?? "Name" }) : title }),
+      title != null && /* @__PURE__ */ jsx23("h2", { id, className: "ad-popover__title ad-type-title", children: onRename && read2 ? /* @__PURE__ */ jsx23(
+        "span",
+        {
+          className: "ad-popover__title-read",
+          onKeyDownCapture: (e) => {
+            if (e.key !== "Escape" || draft == null || draft === String(title)) return;
+            e.stopPropagation();
+            abandoned.current = true;
+            e.target.blur();
+          },
+          onBlur: () => {
+            if (!abandoned.current && draft != null && draft !== String(title)) onRename(draft);
+            abandoned.current = false;
+            setDraft(null);
+          },
+          children: /* @__PURE__ */ jsx23(TokenInput, { value: draft ?? String(title), onChange: setDraft, read: read2, onSubmit: (v) => {
+            if (v !== String(title)) onRename(v);
+            setDraft(null);
+          }, label: renameLabel ?? "Name", suggestions })
+        }
+      ) : onRename ? /* @__PURE__ */ jsx23(InlineEdit, { size: "title", value: String(title), onCommit: onRename, ariaLabel: renameLabel ?? "Name" }) : title }),
       action && /* @__PURE__ */ jsx23("span", { className: "ad-popover__action", children: /* @__PURE__ */ jsx23(ButtonSizeScope, { size: "row", children: action }) })
     ] }),
     description && /* @__PURE__ */ jsx23("p", { className: "ad-popover__description", children: description })
@@ -3017,14 +3032,34 @@ function PressCard({ label, trigger, width, foot, children }) {
     /* @__PURE__ */ jsx23(Popover, { open, onClose: close, anchor: from, width, ariaLabel: label, foot, children: typeof children === "function" ? children(close) : children })
   ] });
 }
-function EditorCard({ open, onClose, anchor: given, at, kind, title, lead, chip, sub, action, onRename, renameLabel, read: read2, suggestions, head, rail, foot, noClose, closeLabel, cardProps, children }) {
+function EditorCard({ open, onClose, anchor: given, at, kind, title, lead, chip, sub, action, onRename, renameLabel, read: read2, suggestions, head, rail, foot, noClose, closeLabel, cardProps, flushRef, children }) {
   const box = useRef12(null);
   const mark = useRef12(null);
   const anchor = at ? mark : given;
   const phone = useIsPhone();
   const style = usePlacement(open && !phone, anchor, box, "side");
-  const z = useLayer(open, onClose, [box, anchor]);
+  const flush = () => {
+    const on = box.current?.ownerDocument.activeElement;
+    if (on && box.current?.contains(on)) on.blur();
+  };
+  const close = () => {
+    flush();
+    onClose();
+  };
+  const z = useLayer(open, close, [box, anchor]);
   useFocusReturn(open, box, "box");
+  useEffect9(() => {
+    if (!open) return;
+    if (flushRef) flushRef.current = flush;
+    const win = box.current?.ownerDocument.defaultView ?? window;
+    win.addEventListener("pagehide", flush);
+    win.addEventListener("beforeunload", flush);
+    return () => {
+      if (flushRef) flushRef.current = null;
+      win.removeEventListener("pagehide", flush);
+      win.removeEventListener("beforeunload", flush);
+    };
+  }, [open]);
   if (!open) return null;
   const words = onRename && typeof title === "string" ? { title, onRename, renameLabel, read: read2, suggestions } : { title };
   return /* @__PURE__ */ jsxs20(Portal, { children: [
@@ -3033,7 +3068,7 @@ function EditorCard({ open, onClose, anchor: given, at, kind, title, lead, chip,
       PopoverCard,
       {
         cardRef: box,
-        onClose,
+        onClose: close,
         noClose,
         closeLabel,
         ariaLabel: title == null ? kind : void 0,
@@ -3116,7 +3151,7 @@ function ConfirmDialog({ open, act, thing, detail, onConfirm, onKeep, labels: l 
 }
 
 // src/components/Menu/Menu.tsx
-import { useEffect as useEffect9, useId as useId8, useRef as useRef14, useState as useState13 } from "react";
+import { useEffect as useEffect10, useId as useId8, useRef as useRef14, useState as useState13 } from "react";
 import { Fragment as Fragment11, jsx as jsx25, jsxs as jsxs22 } from "react/jsx-runtime";
 var TYPE_GAP = 700;
 var isItem = (i) => i.kind !== "separator" && i.kind !== "heading";
@@ -3181,7 +3216,7 @@ function Menu({ open, onClose, anchor: given_anchor, at: point, items: given, ar
   const [at, setAt] = useState13(0);
   const typed = useRef14({ word: "", at: 0 });
   const doc = useFloatingDocument() ?? document;
-  useEffect9(() => {
+  useEffect10(() => {
     if (!open || keepCursor) return;
     setAt(0);
     const before = doc.activeElement;
@@ -3189,7 +3224,7 @@ function Menu({ open, onClose, anchor: given_anchor, at: point, items: given, ar
       if (before && doc.contains(before)) before.focus({ preventScroll: true });
     };
   }, [open]);
-  useEffect9(() => {
+  useEffect10(() => {
     if (!open || keepCursor) return;
     const id = requestAnimationFrame(() => box.current?.querySelector(`[data-index="${at}"]`)?.focus({ preventScroll: true }));
     return () => cancelAnimationFrame(id);
@@ -3319,7 +3354,8 @@ function searchOptions(options, query) {
   const order = [...best.keys()];
   return found.sort((a, b) => best.get(a.o.group) - best.get(b.o.group) || order.indexOf(a.o.group) - order.indexOf(b.o.group) || a.rank - b.rank).map((m) => m.o);
 }
-function PickList({ options, value, onPick, searchLabel, noMatch = "Nothing matches", noSearch, query, onQuery, footer, className }) {
+var ADD_ROW = "__ad-add";
+function PickList({ options, value, onPick, searchLabel, noMatch = "Nothing matches", noSearch, query, onQuery, onAdd, addLabel, footer, className }) {
   const [own, setOwn] = useState14("");
   const q = query ?? own;
   const setQ = (v) => {
@@ -3330,8 +3366,15 @@ function PickList({ options, value, onPick, searchLabel, noMatch = "Nothing matc
   const picked = new Set(value == null ? [] : Array.isArray(value) ? value : [value]);
   const many = Array.isArray(value);
   const shown = useMemo(() => {
-    return onQuery ? options : searchOptions(options, q);
-  }, [options, q, onQuery]);
+    const found = onQuery ? options : searchOptions(options, q);
+    const words = q.trim();
+    if (!onAdd || !words || options.some((o) => String(o.label).toLowerCase() === words.toLowerCase())) return found;
+    return [...found, { id: ADD_ROW, label: addLabel ? addLabel(words) : `Add "${words}"`, lead: /* @__PURE__ */ jsx26(Icon, { job: "plus", size: "sm" }) }];
+  }, [options, q, onQuery, onAdd, addLabel]);
+  const pick = (id) => {
+    if (id === ADD_ROW) onAdd?.(q.trim());
+    else onPick(id);
+  };
   const live = shown.filter((o) => !o.disabled);
   const start = Math.max(0, live.findIndex((o) => picked.has(o.id)));
   const [at, setAt] = useState14(start);
@@ -3376,7 +3419,7 @@ function PickList({ options, value, onPick, searchLabel, noMatch = "Nothing matc
     }
     if (e.key === "Enter" && cur) {
       e.preventDefault();
-      onPick(cur.id);
+      pick(cur.id);
     }
   };
   const row = (o, layer) => {
@@ -3436,7 +3479,7 @@ function PickList({ options, value, onPick, searchLabel, noMatch = "Nothing matc
                   const i = live.indexOf(o);
                   if (i >= 0 && i !== at) setAt(i);
                 },
-                onClick: () => !o.disabled && onPick(o.id),
+                onClick: () => !o.disabled && pick(o.id),
                 className: "ad-picklist__option",
                 children: row(o, false)
               }
@@ -3468,9 +3511,8 @@ function PickList({ options, value, onPick, searchLabel, noMatch = "Nothing matc
 // src/components/Pickers/Pickers.tsx
 import { cloneElement as cloneElement2, isValidElement as isValidElement2, useRef as useRef16, useState as useState15 } from "react";
 import { Fragment as Fragment13, jsx as jsx27, jsxs as jsxs24 } from "react/jsx-runtime";
-function PersonPicker({ people, open, anchor, onClose, header, ...rest }) {
-  const list = /* @__PURE__ */ jsx27(PickList, { ...rest, options: people.map((p) => ({ id: p.id, label: p.name, keywords: p.email, lead: /* @__PURE__ */ jsx27(Avatar, { name: p.name, initials: p.initials, src: p.src }) })) });
-  ;
+function PersonPicker({ people, none, open, anchor, onClose, header, ...rest }) {
+  const list = /* @__PURE__ */ jsx27(PickList, { ...rest, options: [...none ? [{ id: none.id, label: none.label, lead: /* @__PURE__ */ jsx27(Icon, { job: "user", size: "sm" }) }] : [], ...people.map((p) => ({ id: p.id, label: p.name, keywords: p.email, hint: p.hint, lead: /* @__PURE__ */ jsx27(Avatar, { name: p.name, initials: p.initials, src: p.src }) }))] });
   if (!anchor) return list;
   return /* @__PURE__ */ jsxs24(Popover, { open: open ?? true, onClose: onClose ?? (() => {
   }), anchor, placement: "drop", noClose: true, ariaLabel: rest.searchLabel, children: [
@@ -3616,7 +3658,7 @@ function PickField({ options, value, onPick, label, placeholder, header, icon, s
 }
 
 // src/components/Pickers/DatePicker.tsx
-import { useEffect as useEffect10, useId as useId10, useMemo as useMemo2, useRef as useRef17, useState as useState16 } from "react";
+import { useEffect as useEffect11, useId as useId10, useMemo as useMemo2, useRef as useRef17, useState as useState16 } from "react";
 import { jsx as jsx28, jsxs as jsxs25 } from "react/jsx-runtime";
 var EN = { today: "Today", tomorrow: "Tomorrow", nextWeek: "Next week", inTwoWeeks: "In two weeks", previousMonth: "Previous month", nextMonth: "Next month", noDate: "No date", repeat: "Repeat" };
 function DroppedDatePicker({ open, anchor, onClose, repeatEditor, backLabel, ...picker }) {
@@ -3666,7 +3708,7 @@ function DatePickerBody({ value, onChange, today: todayIn, weekStart = 1, locale
   const days = useMemo2(() => Array.from({ length: weeks * 7 }, (_, i) => addDays(start, i)), [formatISO(start), weeks]);
   const weekdays = days.slice(0, 7).map((d) => ({ short: d.toLocaleDateString(locale, { weekday: "narrow" }), long: d.toLocaleDateString(locale, { weekday: "long" }) }));
   const monthName = first.toLocaleDateString(locale, { month: "long", year: "numeric" });
-  useEffect10(() => {
+  useEffect11(() => {
     if (!moved.current) return;
     grid.current?.querySelector(`[data-key="${formatISO(focus)}"]`)?.focus({ preventScroll: true });
   }, [focus]);
@@ -3768,7 +3810,7 @@ function DateField({ onParsed, label, text: given, onText, format, icon, disable
     setText(d ? fmt(d) : "");
     onChange(d);
   };
-  useEffect10(() => {
+  useEffect11(() => {
     if (given === void 0) setOwn(value ? fmt(value) : "");
   }, [value?.getTime()]);
   const result = text && (!value || text !== fmt(value)) ? read2(text) : null;
@@ -3832,14 +3874,14 @@ function DateRange({ from, to, onChange, today, weekStart, fromLabel = "From", t
 }
 
 // src/components/Pickers/TimeField.tsx
-import { useEffect as useEffect11, useRef as useRef18, useState as useState17 } from "react";
+import { useEffect as useEffect12, useRef as useRef18, useState as useState17 } from "react";
 import { jsx as jsx29, jsxs as jsxs26 } from "react/jsx-runtime";
 function TimeField({ value, onChange, label, step = 30, bareHoursArePm, className }) {
   const shown = value == null ? "" : formatTimeOfDay(value);
   const [text, setText] = useState17(shown);
   const [open, setOpen] = useState17(false);
   const anchor = useRef18(null);
-  useEffect11(() => setText(shown), [shown]);
+  useEffect12(() => setText(shown), [shown]);
   const read2 = text.trim() && text !== shown ? parseTimeOfDay(text, void 0, { bareHoursArePm }) : null;
   const commit = () => {
     if (read2 != null) onChange(read2);
@@ -4096,14 +4138,14 @@ function Tabs({ tabs, value, onChange, ariaLabel, numbered = true, panelId, clas
 }
 
 // src/components/Toolbar/Toolbar.tsx
-import { forwardRef as forwardRef9, useEffect as useEffect13, useRef as useRef22, useState as useState21 } from "react";
+import { forwardRef as forwardRef9, useEffect as useEffect14, useRef as useRef22, useState as useState21 } from "react";
 
 // src/components/Writing/Writing.tsx
-import { forwardRef as forwardRef8, useEffect as useEffect12, useRef as useRef21 } from "react";
+import { forwardRef as forwardRef8, useEffect as useEffect13, useRef as useRef21 } from "react";
 import { jsx as jsx34, jsxs as jsxs31 } from "react/jsx-runtime";
 function NoteBox({ heading = "Notes", className, value, ...rest }) {
   const ref = useRef21(null);
-  useEffect12(() => {
+  useEffect13(() => {
     const el = ref.current;
     if (el) {
       el.style.height = "auto";
@@ -4385,7 +4427,7 @@ function OrderList({ label, items, onReorder }) {
 function ShowSwitch({ setting: s }) {
   const [said, setSaid] = useState21(false);
   const locked = s.on && !!s.reason;
-  useEffect13(() => {
+  useEffect14(() => {
     if (!locked) setSaid(false);
   }, [locked]);
   return /* @__PURE__ */ jsxs32(Fragment15, { children: [
@@ -5133,7 +5175,7 @@ function PeriodCluster({ shown, periods, period, onPeriod, onPrevious, onNext, o
 }
 
 // src/components/Calendar/Calendar.tsx
-import { useEffect as useEffect14, useLayoutEffect as useLayoutEffect9, useRef as useRef27, useState as useState25 } from "react";
+import { useEffect as useEffect15, useLayoutEffect as useLayoutEffect9, useRef as useRef27, useState as useState25 } from "react";
 import { Fragment as Fragment19, jsx as jsx44, jsxs as jsxs41 } from "react/jsx-runtime";
 var code = (it) => it.code ? /* @__PURE__ */ jsx44(ProjectPill, { code: it.code, color: it.color?.startsWith("project-") ? it.color : void 0 }) : null;
 var hooksOf2 = (h) => {
@@ -5320,7 +5362,7 @@ function TimeGrid({ startHour, endHour, bookings = [], columns, now, hourLabel =
     el.querySelectorAll(".ad-time-grid__head").forEach((n) => ro.observe(n));
     return () => ro.disconnect();
   });
-  useEffect14(() => {
+  useEffect15(() => {
     const el = frame.current;
     if (!el || scrollTo == null) return;
     const go = () => {
@@ -5475,7 +5517,7 @@ function PhaseBand({ label, color, unconfirmed }) {
 }
 
 // src/components/Map/Map.tsx
-import { useEffect as useEffect15, useMemo as useMemo3, useRef as useRef28, useState as useState26 } from "react";
+import { useEffect as useEffect16, useMemo as useMemo3, useRef as useRef28, useState as useState26 } from "react";
 
 // src/components/Map/worldGeo.ts
 var GEO_LAT_MAX = 84;
@@ -5548,7 +5590,7 @@ function WorldMap({ pins, at, ariaLabel, onPin, hoverCard, pinProps }) {
   const night = useMemo3(() => nightPath(at), [at]);
   const wrap = useRef28(null);
   const [w, setW] = useState26(0);
-  useEffect15(() => {
+  useEffect16(() => {
     const el = wrap.current;
     if (!el) return;
     setW(el.getBoundingClientRect().width);
@@ -5728,9 +5770,9 @@ function CommandSearch({ open, onClose, query, onQuery, results, onPick, label =
 }
 
 // src/components/Guidance/Guidance.tsx
-import { useEffect as useEffect16, useLayoutEffect as useLayoutEffect10, useRef as useRef30, useState as useState27 } from "react";
+import { useEffect as useEffect17, useLayoutEffect as useLayoutEffect10, useRef as useRef30, useState as useState27 } from "react";
 import { Fragment as Fragment21, jsx as jsx48, jsxs as jsxs44 } from "react/jsx-runtime";
-var useIsoLayoutEffect3 = typeof window === "undefined" ? useEffect16 : useLayoutEffect10;
+var useIsoLayoutEffect3 = typeof window === "undefined" ? useEffect17 : useLayoutEffect10;
 function TourStep({ open, anchor, step, total, title, children, onBack, onNext, onExit, backLabel = "Back", nextLabel = "Next", progressLabel = (s, t) => `${s} of ${t}`, placement, side: older, onClose, closeLabel }) {
   const card = useRef30(null);
   const [rect, setRect] = useState27(null);
@@ -5861,7 +5903,7 @@ function Footer({ code: code2, number, venue, description, countdown: countdown2
       description != null && !undo && /* @__PURE__ */ jsx49("span", { className: "ad-footer__description", title: typeof description === "string" ? description : void 0, children: description })
     ] }),
     /* @__PURE__ */ jsx49("span", { className: "ad-footer__cell ad-footer__run", children: !undo && countdown2 }),
-    /* @__PURE__ */ jsx49("span", { className: "ad-footer__undo", role: "status", "aria-live": "polite", children: undo && /* @__PURE__ */ jsxs45(Fragment22, { children: [
+    /* @__PURE__ */ jsx49("span", { className: "ad-footer__undo", "data-ad-layer": "", role: "status", "aria-live": "polite", children: undo && /* @__PURE__ */ jsxs45(Fragment22, { children: [
       /* @__PURE__ */ jsx49("span", { className: "ad-footer__undo-words", children: undo.message }),
       undo.onUndo && /* @__PURE__ */ jsx49(ButtonSizeScope, { size: "row", children: /* @__PURE__ */ jsx49(Button, { onClick: undo.onUndo, children: undo.label ?? "Undo" }) })
     ] }) }),
@@ -5932,7 +5974,7 @@ function Ground({ children, className, style }) {
 }
 
 // src/runtime/AdsProvider.tsx
-import { useContext as useContext10, useEffect as useEffect17, useMemo as useMemo4 } from "react";
+import { useContext as useContext10, useEffect as useEffect18, useMemo as useMemo4 } from "react";
 import { jsx as jsx50 } from "react/jsx-runtime";
 var MODE = typeof process !== "undefined" && process.env && process.env.NODE_ENV || "development";
 var pending = [];
@@ -5960,11 +6002,11 @@ ${describeViolations(all)}`);
 }
 function AdsProvider({ strict = false, show, children }) {
   const on = strict && MODE !== "production";
-  useEffect17(() => {
+  useEffect18(() => {
     if (!on) return;
     report(scanIn(document.body), true);
   });
-  useEffect17(() => {
+  useEffect18(() => {
     if (!on) return;
     const look = () => report(scanIn(document.body), false);
     const watch = new MutationObserver(look);
