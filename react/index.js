@@ -151,7 +151,7 @@ function useHueOf() {
   const on = useContext(HueSwitches);
   return (hue) => resolve(on, hue);
 }
-var SHOW_DEFAULTS = { compactRows: false, projectColours: false, itemColours: false, departmentColours: false, weekendShading: true, people: false, archive: false };
+var SHOW_DEFAULTS = { compactRows: false, projectColours: false, itemColours: false, departmentColours: false, lightMode: false, weekendShading: true, people: false, archive: false };
 var Show = createContext(SHOW_DEFAULTS);
 function useShow() {
   return useContext(Show);
@@ -3996,12 +3996,13 @@ function AccessRow({ face, name, className, ...rest }) {
 
 // src/components/ShowOptions/ShowOptions.tsx
 import { Fragment as Fragment14, jsx as jsx32, jsxs as jsxs29 } from "react/jsx-runtime";
-var showOrder = ["compactRows", "projectColours", "itemColours", "departmentColours", "weekendShading", "people", "archive"];
+var showOrder = ["compactRows", "projectColours", "itemColours", "departmentColours", "lightMode", "weekendShading", "people", "archive"];
 var WORDS = {
   compactRows: "Compact rows",
   projectColours: "Project colours",
   itemColours: "Item colours",
   departmentColours: "Department colours",
+  lightMode: "Light mode",
   weekendShading: "Weekend shading",
   people: "People",
   archive: "Show archive"
