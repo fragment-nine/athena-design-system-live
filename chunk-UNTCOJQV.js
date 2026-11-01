@@ -386,8 +386,8 @@ function words(over) {
 // src/language/dateWords.ts
 function monthDay(d, today, w = ENGLISH) {
   const base = `${w.monthsShort[d.getMonth()]} ${d.getDate()}`;
-  const plain = d.getFullYear() === today.getFullYear() && sameDay(parseLooseDate(`${ENGLISH.monthsShort[d.getMonth()]} ${d.getDate()}`, today), d);
-  return plain ? base : `${base} ${d.getFullYear()}`;
+  const plain2 = d.getFullYear() === today.getFullYear() && sameDay(parseLooseDate(`${ENGLISH.monthsShort[d.getMonth()]} ${d.getDate()}`, today), d);
+  return plain2 ? base : `${base} ${d.getFullYear()}`;
 }
 function exactDate(d, w = ENGLISH) {
   return `${w.monthsShort[d.getMonth()]} ${d.getDate()} ${d.getFullYear()}`;
@@ -1655,6 +1655,43 @@ function queryTokens(text, vocab = {}) {
   return out;
 }
 
+// src/language/searchMatch.ts
+var plain = (s) => s.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
+function edits(a, b, most) {
+  if (Math.abs(a.length - b.length) > most) return most + 1;
+  let two = [];
+  let one = [];
+  let row = Array.from({ length: b.length + 1 }, (_, j) => j);
+  for (let i = 1; i <= a.length; i++) {
+    two = one;
+    one = row;
+    row = [i];
+    for (let j = 1; j <= b.length; j++) {
+      const cost = a[i - 1] === b[j - 1] ? 0 : 1;
+      row[j] = Math.min(one[j] + 1, row[j - 1] + 1, one[j - 1] + cost);
+      if (i > 1 && j > 1 && a[i - 1] === b[j - 2] && a[i - 2] === b[j - 1]) row[j] = Math.min(row[j], two[j - 2] + 1);
+    }
+  }
+  return row[b.length];
+}
+var near = (typed, word) => {
+  if (typed.length < 5 || typed[0] !== word[0]) return false;
+  const most = typed.length >= 8 ? 2 : 1;
+  return edits(typed, word, most) <= most || edits(typed, word.slice(0, typed.length), most) <= most;
+};
+function searchRank(query, label, keywords = "") {
+  const q = plain(query).trim();
+  if (!q) return 0;
+  const name = plain(label);
+  if (name.includes(q)) return 0;
+  const all = `${name} ${plain(keywords)}`;
+  if (all.includes(q)) return 1;
+  const typed = q.split(/\s+/);
+  if (typed.every((t) => all.includes(t))) return 2;
+  const words2 = all.split(/[^\p{L}\p{N}]+/u).filter(Boolean);
+  return typed.every((t) => all.includes(t) || words2.some((w) => near(t, w))) ? 3 : null;
+}
+
 // src/language/readDate.ts
 function readDate(text, today, opts = {}) {
   const w = opts.words ?? ENGLISH;
@@ -1874,6 +1911,7 @@ export {
   queryAsksForCompleted,
   querySplitter,
   queryTokens,
+  searchRank,
   readDate,
   parseTimeOfDay,
   formatTimeOfDay,
@@ -1882,4 +1920,4 @@ export {
   parseDurationHours,
   formatDurationHours
 };
-//# sourceMappingURL=chunk-6L6A5VUJ.js.map
+//# sourceMappingURL=chunk-UNTCOJQV.js.map

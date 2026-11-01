@@ -18,8 +18,9 @@ import {
   queryTokens,
   readDate,
   sameDay,
+  searchRank,
   weekStartOf
-} from "../chunk-6L6A5VUJ.js";
+} from "../chunk-UNTCOJQV.js";
 import {
   describeViolations,
   scanIn
@@ -2478,7 +2479,7 @@ function ListSection({ title, children, collapsible, collapsed, onCollapsedChang
   return /* @__PURE__ */ jsxs16("section", { role: inList ? "listitem" : void 0, className: cx("ad-section ad-list-section", look === "rule" && "ad-section--rule", dropTarget?.over && "ad-list-section--over", className), children: [
     day ? /* @__PURE__ */ jsx19(DayHeading, { day: day.day, today: day.today }) : bar ? /* @__PURE__ */ jsxs16("div", { className: "ad-list-section__bar", children: [
       collapsible && /* @__PURE__ */ jsx19("button", { type: "button", className: "ad-list-section__fold", "aria-expanded": !shut, "aria-controls": bodyId, "aria-label": bar.foldLabel ?? String(title), onClick: toggle, children: /* @__PURE__ */ jsx19(Icon, { job: shut ? "chevron-right" : "chevron-down", size: "sm" }) }),
-      /* @__PURE__ */ jsx19(InList2.Provider, { value: false, children: /* @__PURE__ */ jsx19(Row, { heading: true, name: title, status: bar.status, dates: bar.dates, onOpen: bar.onOpen, trail: bar.end }) })
+      /* @__PURE__ */ jsx19(InList2.Provider, { value: false, children: /* @__PURE__ */ jsx19(Row, { heading: true, name: title, meta: bar.meta, status: bar.status, dates: bar.dates, onOpen: bar.onOpen, trail: bar.end }) })
     ] }) : !bare && /* @__PURE__ */ jsx19(GroupHeading, { ...heading, collapsible, collapsed: shut, onToggle: toggle, controls: bodyId, children: title }),
     /* @__PURE__ */ jsxs16("div", { id: bodyId, role: "list", hidden: collapsible && !bare ? shut : void 0, className: cx("ad-list-section__body", bar && "ad-list-section__body--nested", (dropTarget?.empty || none) && "ad-list-section__body--empty"), children: [
       /* @__PURE__ */ jsx19(InList2.Provider, { value: true, children }),
@@ -3307,6 +3308,17 @@ function MenuButton({ face, items, label }) {
 // src/components/Pickers/PickList.tsx
 import { useId as useId9, useLayoutEffect as useLayoutEffect6, useMemo, useRef as useRef15, useState as useState14 } from "react";
 import { Fragment as Fragment12, jsx as jsx26, jsxs as jsxs23 } from "react/jsx-runtime";
+function searchOptions(options, query) {
+  if (!query.trim()) return options;
+  const found = options.flatMap((o) => {
+    const rank = searchRank(query, String(o.label), o.keywords);
+    return rank == null ? [] : [{ o, rank }];
+  });
+  const best = /* @__PURE__ */ new Map();
+  for (const { o, rank } of found) best.set(o.group, Math.min(best.get(o.group) ?? rank, rank));
+  const order = [...best.keys()];
+  return found.sort((a, b) => best.get(a.o.group) - best.get(b.o.group) || order.indexOf(a.o.group) - order.indexOf(b.o.group) || a.rank - b.rank).map((m) => m.o);
+}
 function PickList({ options, value, onPick, searchLabel, noMatch = "Nothing matches", noSearch, query, onQuery, footer, className }) {
   const [own, setOwn] = useState14("");
   const q = query ?? own;
@@ -3318,9 +3330,7 @@ function PickList({ options, value, onPick, searchLabel, noMatch = "Nothing matc
   const picked = new Set(value == null ? [] : Array.isArray(value) ? value : [value]);
   const many = Array.isArray(value);
   const shown = useMemo(() => {
-    const s = q.trim().toLowerCase();
-    if (onQuery) return options;
-    return options.filter((o) => !s || `${o.label} ${o.keywords ?? ""}`.toLowerCase().includes(s));
+    return onQuery ? options : searchOptions(options, q);
   }, [options, q, onQuery]);
   const live = shown.filter((o) => !o.disabled);
   const start = Math.max(0, live.findIndex((o) => picked.has(o.id)));
@@ -3514,7 +3524,7 @@ function PickField({ options, value, onPick, label, placeholder, header, icon, s
   ] }) });
   if (typed) {
     const words2 = draft ?? words;
-    const narrowed = draft ? options.filter((o) => String(o.label).toLowerCase().includes(draft.trim().toLowerCase())) : options;
+    const narrowed = draft ? searchOptions(options, draft) : options;
     return /* @__PURE__ */ jsxs24(Fragment13, { children: [
       /* @__PURE__ */ jsxs24("span", { ref: anchor, className: cx("ad-field", "ad-pick-field", "ad-pick-field--typed", disabled && "ad-field--disabled", className), children: [
         icon && /* @__PURE__ */ jsx27(Icon, { job: icon, size: "md", className: "ad-pick-field__icon" }),
@@ -3810,6 +3820,14 @@ function DateField({ onParsed, label, text: given, onText, format, icon, disable
       setOpen(false);
       input.current?.focus({ preventScroll: true });
     } }) }) })
+  ] });
+}
+function DateRange({ from, to, onChange, today, weekStart, fromLabel = "From", toLabel = "To", disabled }) {
+  const after = (a, b) => daysBetween(b, a) > 0;
+  return /* @__PURE__ */ jsxs25("span", { className: "ad-daterange", children: [
+    /* @__PURE__ */ jsx28(DateField, { label: fromLabel, value: from, today, weekStart, disabled, onChange: (d) => onChange({ from: d, to: d && to && after(d, to) ? d : to }) }),
+    /* @__PURE__ */ jsx28("span", { className: "ad-daterange__to", "aria-hidden": "true", children: /* @__PURE__ */ jsx28(Icon, { job: "chevron-right", size: "sm" }) }),
+    /* @__PURE__ */ jsx28(DateField, { label: toLabel, value: to, today, weekStart, disabled, onChange: (d) => onChange({ from: d && from && after(from, d) ? d : from, to: d }) })
   ] });
 }
 
@@ -6012,6 +6030,7 @@ export {
   DataText,
   DateField,
   DatePicker,
+  DateRange,
   DayCell,
   DayHeading,
   DeliverableBar,

@@ -100,6 +100,7 @@ import {
   roundTo,
   ruleDateWords,
   sameDay,
+  searchRank,
   serializeRecurrence,
   spanCoversDay,
   spanTouchesWindow,
@@ -118,7 +119,7 @@ import {
   zoneAbbr,
   zoneHint,
   zonedWeekdayHour
-} from "../chunk-6L6A5VUJ.js";
+} from "../chunk-UNTCOJQV.js";
 
 // src/language/queryAssist.ts
 function recognizeQuery(text, vocab = {}) {
@@ -290,6 +291,7 @@ export {
   roundTo,
   ruleDateWords,
   sameDay,
+  searchRank,
   serializeRecurrence,
   spanCoversDay,
   spanTouchesWindow,
