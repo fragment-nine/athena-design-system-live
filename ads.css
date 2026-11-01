@@ -10,7 +10,7 @@
   --bg-base: #09090b;
   --bg-side: rgba(255, 255, 255, 0.025);
   --bg-inset: #050505;
-  --bg-surface: rgba(255, 255, 255, 0.05);
+  --bg-surface: rgba(255, 255, 255, 0.035);
   --bg-raised: rgba(255, 255, 255, 0.08);
   --bg-hover: rgba(255, 255, 255, 0.115);
   --bg-float: #121213;
@@ -104,10 +104,7 @@
   --wash-warm: rgba(225, 109, 72, 0.14);
   --wash-cool: rgba(111, 159, 196, 0.10);
   --shadow-float: 0 20px 50px rgba(0, 0, 0, 0.5);
-  --elev-float: inset 0 1px 0 rgba(255, 255, 255, 0.18), 0 20px 50px rgba(0, 0, 0, 0.5);
-  --elev-bar: inset 0 1px 0 rgba(255, 255, 255, 0.12);
-  --glass-sheen: linear-gradient(180deg, rgba(255, 255, 255, 0.09), rgba(255, 255, 255, 0) 160px);
-  --glass-sheen-soft: linear-gradient(180deg, rgba(255, 255, 255, 0.09), rgba(255, 255, 255, 0.015));
+  --elev-float: inset 0 1px 0 rgba(255, 255, 255, 0.08), 0 20px 50px rgba(0, 0, 0, 0.5);
   --ring-select: inset 0 0 0 2px #aaa6a1;
   --glow-hover: 0 0 8px rgba(225, 109, 72, 0.35);
   --glow-today: 0 0 6px rgba(225, 109, 72, 0.45);
@@ -1594,7 +1591,7 @@ button:hover > .ad-project-pill:not(.ad-project-pill--current) { color: var(--ac
 .ad-page-header__icon { display: inline-flex; color: var(--text-secondary); }
 .ad-page-header__icon svg { width: calc(1em * var(--icon-page)); height: calc(1em * var(--icon-page)); }
 /* HeaderActions: Athena's raised box round the header's icon buttons, kept as it was. */
-.ad-header-actions { display: inline-flex; flex: none; align-items: center; box-sizing: border-box; gap: var(--space-2); height: var(--h-btn-bar); padding: 0 var(--pad-header-actions); border-radius: var(--radius-page); background: var(--glass-sheen-soft), var(--bg-surface); box-shadow: var(--elev-bar); }
+.ad-header-actions { display: inline-flex; flex: none; align-items: center; box-sizing: border-box; gap: var(--space-2); height: var(--h-btn-bar); padding: 0 var(--pad-header-actions); border-radius: var(--radius-page); background: var(--bg-surface); }
 .ad-page-header__row > .ad-header-actions { margin-left: auto; }
 /* The alerts line at the end of the title row, before the stamp and the icon buttons; it takes no height of its own. */
 .ad-page-header__alerts { display: inline-flex; align-items: center; flex: none; margin-left: auto; }
@@ -1931,7 +1928,7 @@ button.ad-row__name:focus-visible { outline: none; box-shadow: var(--ring-select
    section, a section is never a panel of its own (no card in a card). */
 .ad-section { display: flex; flex-direction: column; min-width: 0; box-sizing: border-box; padding: var(--space-3) var(--space-6) var(--space-6); border: var(--border-w) solid var(--border); border-radius: var(--radius-page); background: var(--bg-surface); box-shadow: var(--elev-float); position: relative; isolation: isolate; }
 /* The glass is a layer behind the panel, never on the panel: glass on the panel would make it the box that anything fixed to the window measures from, and a card opened inside would run off the screen. */
-.ad-section::before, .ad-card::before { content: ""; position: absolute; inset: 0; z-index: -1; border-radius: inherit; pointer-events: none; background: var(--glass-sheen); backdrop-filter: var(--blur-glass); -webkit-backdrop-filter: var(--blur-glass); }
+.ad-section::before, .ad-card::before { content: ""; position: absolute; inset: 0; z-index: -1; border-radius: inherit; pointer-events: none; backdrop-filter: var(--blur-glass); -webkit-backdrop-filter: var(--blur-glass); }
 .ad-section--rule::before, .ad-card .ad-section::before, .ad-section .ad-section::before { display: none; }
 .ad-section > .ad-group-heading--rule-above { border-top: 0; padding-top: 0; }
 .ad-section--rule, .ad-card .ad-section, .ad-section .ad-section { padding: 0; border: 0; border-radius: 0; background: transparent; box-shadow: none; }
@@ -1952,7 +1949,7 @@ button.ad-row__name:focus-visible { outline: none; box-shadow: var(--ring-select
   gap: var(--space-hair);
 }
 /* The tray: the view switch's, the zoom's, and the toolbar's right side. It never runs past its box: its choices give way first. */
-.ad-segmented, .ad-zoom, .ad-toolbar__end { display: inline-flex; align-items: center; width: max-content; min-width: 0; max-width: 100%; box-sizing: border-box; height: var(--h-btn); padding: var(--space-hair); border: var(--border-w) solid var(--border); border-radius: var(--radius-control); background: var(--glass-sheen-soft), var(--bg-surface); box-shadow: var(--elev-bar); }
+.ad-segmented, .ad-zoom, .ad-toolbar__end { display: inline-flex; align-items: center; width: max-content; min-width: 0; max-width: 100%; box-sizing: border-box; height: var(--h-btn); padding: var(--space-hair); border: var(--border-w) solid var(--border); border-radius: var(--radius-control); background: var(--bg-surface); }
 .ad-segmented__option { flex: 0 1 auto; min-width: 0; display: inline-flex; align-items: center; justify-content: center; gap: var(--space-2); height: var(--h-seg); padding: 0 var(--space-3); margin: 0; border: 0; border-radius: var(--radius-control); background: transparent; font: var(--type-heading); text-transform: uppercase; letter-spacing: var(--track-caps); line-height: var(--lh-none); cursor: pointer; }
 .ad-segmented__option:hover { color: var(--accent); }
 .ad-segmented__option:not([aria-checked="true"]) { color: var(--text-secondary); }
@@ -2361,8 +2358,6 @@ button.ad-milestone:focus-visible { outline: none; box-shadow: var(--ring-select
 .ad-toolbar__end .ad-zoom { height: auto; padding: 0; border: 0; background: transparent; }
 .ad-toolbar__end > .ad-zoom, .ad-toolbar__end > .ad-button--view { border-radius: 0; box-shadow: calc(var(--border-w) * -1) 0 0 var(--border); }
 .ad-toolbar__end > :first-child { box-shadow: none; }
-/* Every tool on the bar has the same soft glass at rest; hovered or open, its own fill takes over, one step up. */
-.ad-toolbar :is(.ad-icon-button, .ad-button--view, .ad-segmented__option), .ad-zoom .ad-icon-button { background-image: var(--glass-sheen-soft); }
 /* The View button reads as one of the bar's tools: regular weight, coral under the cursor; on bg-raised and text-primary only while its pop-over is open. */
 .ad-button--view { background: transparent; border: 0; color: var(--text-muted); }
 .ad-button--view:hover { background: var(--tint-hover); color: var(--accent); }
