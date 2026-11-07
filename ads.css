@@ -1989,11 +1989,11 @@ button.ad-row__name:focus-visible { outline: none; box-shadow: var(--ring-select
 /* The date line's other facts: repeat, the past-deadline flag, the role, the deliverable. */
 .ad-row__fact { display: inline-flex; align-items: center; gap: var(--space-1); white-space: nowrap; color: var(--text-secondary); }
 /* A detail line too long for the row: the date and department stay whole; the role and the deliverable shrink and end in "…" (their
- whole words in the hover), so nothing runs under the faces. Two dates too wide for the row: the due date drops under the review date, never cut. */
+ whole words in the hover), so nothing runs under the faces. Two dates too wide for the row, plain or pressable: the due date drops under the review date, never cut. */
 .ad-row__meta { overflow: hidden; }
 .ad-row__meta > * { flex-shrink: 0; }
 .ad-row__meta > .ad-row__fact--cut, .ad-row__meta > .ad-row__press:has(.ad-row__fact--cut) { flex-shrink: 1; min-width: 0; }
-.ad-row__meta > :is(.ad-item-dates, :has(> .ad-item-dates)) { flex-shrink: 1; min-width: 0; }
+.ad-row__meta > :is(.ad-item-dates, :has(.ad-item-dates)), .ad-row__meta .ad-item-dates { flex-shrink: 1; min-width: 0; }
 .ad-row__meta .ad-item-dates { flex-wrap: wrap; row-gap: var(--space-hair); }
 .ad-row__press:has(.ad-row__fact--cut) { overflow: hidden; }
 .ad-row__fact--cut { min-width: 0; max-width: 100%; }
