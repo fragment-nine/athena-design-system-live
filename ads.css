@@ -3,6 +3,7 @@
 @font-face { font-family: 'Work Sans'; font-style: normal; font-weight: 800; font-display: swap; src: url('fonts/WorkSans-800.woff2') format('woff2'); }
 @font-face { font-family: 'Roboto'; font-style: normal; font-weight: 100 900; font-display: swap; src: url('fonts/Roboto-var.woff2') format('woff2'); }
 @font-face { font-family: 'IBM Plex Mono'; font-style: normal; font-weight: 400; font-display: swap; src: url('fonts/IBMPlexMono-400.woff2') format('woff2'); }
+@font-face { font-family: 'DSEG7 Classic Mini'; font-style: normal; font-weight: 400; font-display: swap; src: url('fonts/DSEG7ClassicMini-Regular.woff2') format('woff2'); }
 
 /* Athena Design System — tokens.css: every token as a CSS custom property, plus the six type rungs (--type-<rung> and .ad-type-<rung>). Plain CSS; no build step needed. Import order, once per app, all four: fonts.css, tokens.css, patterns.css, components.css. */
 :root, [data-theme="dark"] {
@@ -84,6 +85,11 @@
   --dept-admin: #5aa0a0;
   --dept-lasers: #74afb4;
   --dept-pm: #a34ca7;
+  --dept-choreo: #e69758;
+  --dept-costume: #d995b9;
+  --dept-audio: #8bbd70;
+  --dept-automation: #b0bbc9;
+  --dept-moment: #ded3a3;
   --hatch-away-ink: rgba(216, 211, 210, 0.28);
   --hatch-fine-ink: rgba(216, 211, 210, 0.055);
   --cat-1: #1ea711;
@@ -195,6 +201,11 @@
   --dept-admin: #498383;
   --dept-lasers: #498388;
   --dept-pm: #a34ca7;
+  --dept-choreo: #bc631c;
+  --dept-costume: #c2538e;
+  --dept-audio: #57873e;
+  --dept-automation: #677c97;
+  --dept-moment: #8b7a32;
   --hatch-away-ink: rgba(40, 38, 36, 0.24);
   --hatch-fine-ink: rgba(40, 38, 36, 0.06);
   --cat-1: #1a900f;
@@ -373,6 +384,7 @@
   --w-rm-reply: 600px;
   --w-rm-search: 384px;
   --h-dash-row: 54px;
+  --h-dash-summary: var(--h-res-empty);
   --h-pop-md: 240px;
   --st-label-w: 220px;
   --st-field-w: var(--st-label-w);
@@ -645,12 +657,14 @@
   --font-display: "Work Sans", "Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
   --font-body: "Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
   --font-mono: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+  --font-clock: "DSEG7 Classic Mini", monospace;
 }
 /* Work Sans 600: ../fonts/WorkSans-600.woff2 (see fonts/fonts.css) */
 /* Roboto 400: ../fonts/Roboto-var.woff2 (see fonts/fonts.css) */
 /* Roboto 600: ../fonts/Roboto-var.woff2 (see fonts/fonts.css) */
 /* IBM Plex Mono 400: ../fonts/IBMPlexMono-400.woff2 (see fonts/fonts.css) */
 /* Work Sans 800: ../fonts/WorkSans-800.woff2 (see fonts/fonts.css) */
+/* DSEG7 Classic Mini 400: ../fonts/DSEG7ClassicMini-Regular.woff2 (see fonts/fonts.css) */
 :root {
   --type-title: 600 var(--text-20)/var(--lh-tight) var(--font-display);
   --type-heading: 400 var(--text-xs)/var(--lh-tight) var(--font-mono);
@@ -995,7 +1009,7 @@ button.ad-year__day:focus-visible { outline: none; box-shadow: var(--ring-select
 .ad-booking--dragging { backdrop-filter: blur(var(--blur-glass)); box-shadow: var(--shadow-float); opacity: 0.92; }
 .ad-time-grid__column--over .ad-time-grid__body { background: var(--tint-selected); }
 .ad-time-grid { --ad-visible-hours: 10; }
-.ad-time-grid--scrolls { max-height: calc(var(--ad-hour) * var(--ad-visible-hours) + var(--ad-hour) * min(1, var(--ad-allday-rows))); overflow-y: auto; }
+.ad-time-grid--scrolls { max-height: calc(var(--ad-hour) * var(--ad-visible-hours) + var(--ad-hour) * min(1, var(--ad-allday-rows)) + var(--ad-allday-content-h)); overflow-y: auto; }
 .ad-time-grid__body { cursor: default; }
 
 /* The time grid's asks of 2026-10-27: day headings held at the top while the hours scroll; an all-day item spanning days; a figure in the heading. */
@@ -1094,6 +1108,13 @@ button.ad-year__day:focus-visible { outline: none; box-shadow: var(--ring-select
 .ad-time-grid--aside-wide .ad-time-grid__moment--hued, .ad-time-grid--aside-day .ad-time-grid__moment--hued { box-shadow: none; }
 .ad-time-grid--aside-wide .ad-time-grid__moment--hued .ad-time-grid__moment-time, .ad-time-grid--aside-day .ad-time-grid__moment--hued .ad-time-grid__moment-time { box-shadow: inset var(--w-stripe) 0 0 var(--ad-stripe); }
 
+.ad-time-grid { --ad-column-count: 1; --ad-allday-content-h: 0px; }
+/* Existing Resourcing lanes span the exact day-column geometry without CalendarItem chrome. */
+.ad-time-grid__allday-content { position: sticky; top: var(--ad-held-top); z-index: var(--z-sticky); width: calc(100% * var(--ad-column-count) + (var(--ad-column-count) - 1) * var(--border-w)); }
+.ad-time-grid__content-space { height: var(--ad-allday-content-h); }
+
+.ad-time-grid:has(.ad-time-grid__allday-content):not(.ad-time-grid--scrolls) .ad-time-grid__allday, .ad-time-grid:has(.ad-time-grid__allday-content):not(.ad-time-grid--scrolls) .ad-time-grid__allday-space { top: calc(var(--ad-held-top) + var(--ad-allday-content-h)); }
+
 /* src/components/Card/Card.css */
 /* Card: a board tile, or a dashboard widget as the Dashboard card draws it (small caps title, More at the right in 600). */
 .ad-card { --ad-tray: var(--bg-base); }
@@ -1105,6 +1126,8 @@ button.ad-year__day:focus-visible { outline: none; box-shadow: var(--ring-select
 .ad-card--widget { padding: var(--space-3) var(--space-4) var(--space-4); counter-increment: widget; }
 /* The site's small index on each piece of work: 01.01, bottom right of a widget, in the quiet ink. */
 .ad-card--widget::after { content: "0" counter(widget) ".01"; position: absolute; right: var(--space-4); bottom: var(--space-3); font: var(--type-data); font-size: var(--text-xs); color: var(--text-muted); opacity: var(--opacity-dim); pointer-events: none; }
+.ad-card--unindexed { counter-increment: none; }
+.ad-card--unindexed::after { content: none; }
 /* The alert bar is drawn on a widget card but is not a widget: no index, and it does not count. */
 .ad-card--widget:has(> .ad-alert-bar__head) { counter-increment: none; }
 .ad-card--widget:has(> .ad-alert-bar__head)::after { content: none; }
@@ -1120,6 +1143,15 @@ button.ad-card__name:focus-visible { outline: none; box-shadow: var(--ring-selec
 .ad-card__title-open:focus-visible { outline: none; box-shadow: var(--ring-select); border-radius: var(--radius-page); }
 .ad-card--opens:hover .ad-card__title-open { color: var(--accent); }
 .ad-card__title { margin: 0; }
+.ad-card__end { margin-left: auto; display: inline-flex; align-items: center; gap: var(--space-2); flex: none; }
+.ad-card__end + .ad-card__more { margin-left: 0; }
+/* A chart key handed in as `end` sits beside the title where there is room and wraps under it where there is not; More stays on the title row. */
+.ad-card__head:has(.ad-chart-key) { position: relative; flex-wrap: wrap; align-items: flex-start; }
+.ad-card__head:has(.ad-chart-key):has(> .ad-card__more) { padding-right: calc(var(--target-min) + var(--space-2)); }
+.ad-card__head:has(.ad-chart-key) > .ad-card__title { min-height: var(--target-min); display: flex; align-items: center; }
+.ad-card__head:has(.ad-chart-key) > .ad-card__end { flex: 1 1 var(--card-min-sm); min-width: min(100%, var(--card-min-sm)); max-width: 100%; }
+.ad-card__head:has(.ad-chart-key) > .ad-card__more { position: absolute; top: 0; right: 0; margin: 0; }
+.ad-card__end > .ad-chart-key { min-width: 0; }
 /* More is the site's "VIEW ALL": coral tracked caps with a short rule before it. */
 .ad-card__more { display: inline-flex; align-items: center; gap: var(--space-2); margin: 0 0 0 auto; padding: 0; border: 0; background: transparent; font: var(--type-heading); text-transform: uppercase; letter-spacing: var(--track-caps); color: var(--accent); cursor: pointer; }
 .ad-card__more::before { content: ""; display: inline-block; width: var(--space-6); height: var(--border-w); background: currentColor; opacity: var(--opacity-dim); }
@@ -1138,13 +1170,23 @@ button.ad-card__name:focus-visible { outline: none; box-shadow: var(--ring-selec
 .ad-card__lead { display: inline-flex; flex: none; }
 /* CardGrid: `--ad-cols` across (three unless said otherwise) while each card keeps a card's smallest width; as the room narrows,
    fewer across, down to one. The column's floor is the larger of the smallest card and an even share of the row. */
-.ad-card-grid { --ad-cols: 3; display: grid; grid-template-columns: repeat(auto-fill, minmax(max(var(--card-min-md), calc((100% - (var(--ad-cols) - 1) * var(--space-3)) / var(--ad-cols))), 1fr)); gap: var(--space-3); min-width: 0; }
+.ad-card-grid { --ad-cols: 3; --ad-card-min: var(--card-min-md); display: grid; grid-template-columns: repeat(auto-fill, minmax(max(var(--ad-card-min), calc((100% - (var(--ad-cols) - 1) * var(--space-3)) / var(--ad-cols))), 1fr)); gap: var(--space-3); min-width: 0; }
+.ad-card-grid--compact { --ad-card-min: min(100%, var(--card-min-sm)); }
 .ad-card-grid > * { min-width: 0; }
 .ad-card-grid--start { align-items: start; }
 /* Picture: the Roadmap's picture of finished work, as Athena draws it (.rm-shot), moved here. The frame
  carries the Card's corner and nothing else; the picture fills it from the top left, the card tone behind it while it loads. */
 .ad-picture { display: block; width: 100%; height: 100%; overflow: hidden; border-radius: var(--radius-page); }
 .ad-picture__img { display: block; width: 100%; height: 100%; object-fit: cover; object-position: top left; background: var(--bg-surface); }
+
+/* The summary band's inline head: the title is read aloud, More sits in the card's corner, and the heading takes no row. */
+.ad-card--inline-head { padding-right: calc(var(--space-4) + var(--target-min) + var(--space-2)); }
+.ad-card--inline-head > .ad-card__head { position: absolute; top: var(--space-3); right: var(--space-4); margin: 0; }
+
+/* The summary band: 4 above and below, 8 at the sides. */
+.ad-card--compact { padding: var(--space-1) var(--space-2); }
+.ad-card--compact.ad-card--inline-head { padding-right: calc(var(--space-2) + var(--target-min) + var(--space-1)); }
+.ad-card--compact.ad-card--inline-head > .ad-card__head { top: var(--space-1); right: var(--space-2); }
 
 /* src/components/Charts/Charts.css */
 /* AmountBars, BudgetBar, ProgressBar, OverTime, Dial, Verdict, as the Charts and Dashboard cards draw them */
@@ -1196,6 +1238,14 @@ button.ad-card__name:focus-visible { outline: none; box-shadow: var(--ring-selec
 /* A sentence standing alone (no word) is the headline: large, white. */
 .ad-verdict--headline .ad-verdict__sentence { font: var(--type-title); color: var(--text-primary); }
 
+/* Existing dial geometry, scaled to the two-line row for a slim personal-summary rail. */
+.ad-dial--compact { gap: 0; }
+.ad-dial--compact .ad-dial__face { width: var(--h-row-2); height: var(--h-row-2); }
+.ad-dial--compact .ad-dial__value { font: var(--type-data); font-size: var(--text-base); }
+
+.ad-dial--small .ad-dial__face { width: var(--h-btn); height: var(--h-btn); }
+.ad-dial--small .ad-dial__value { font: var(--type-data); }
+
 /* src/components/Checkbox/Checkbox.css */
 /* Checkbox */
 .ad-checkbox { position: relative; display: inline-flex; align-items: center; gap: var(--space-2); cursor: pointer; color: var(--text-primary); }
@@ -1209,6 +1259,18 @@ button.ad-card__name:focus-visible { outline: none; box-shadow: var(--ring-selec
 .ad-checkbox__box[data-state="on"], .ad-checkbox__box[data-state="mixed"] { background: var(--bg-hover); box-shadow: inset 0 0 0 var(--border-w-strong) var(--text-secondary); }
 .ad-checkbox__box svg { width: var(--icon-sm); height: var(--icon-sm); }
 .ad-checkbox__input:focus-visible + .ad-checkbox__box { box-shadow: var(--ring-select); }
+
+/* src/components/ClockFace/ClockFace.css */
+.ad-clock-face { display: flex; flex-direction: column; align-items: stretch; gap: var(--space-1); min-width: 0; margin: 0; padding: 0; border: 0; background: transparent; color: var(--text-primary); text-align: left; cursor: pointer; border-radius: var(--radius-page); }
+.ad-clock-face__label { display: flex; align-items: center; justify-content: space-between; gap: var(--space-1); font: var(--type-detail); color: var(--text-muted); white-space: nowrap; }
+.ad-clock-face__bezel { display: flex; align-items: center; justify-content: center; gap: var(--space-1); box-sizing: border-box; min-height: var(--h-btn); padding: var(--space-1); border: var(--border-w) solid var(--border); border-radius: var(--radius-page); background: transparent; }
+.ad-clock-face__digits { font: var(--type-data); font-family: var(--font-clock); font-size: var(--text-20); line-height: var(--lh-none); color: var(--text-primary); white-space: nowrap; }
+.ad-clock-face__period { display: flex; align-items: center; font: var(--type-detail); line-height: var(--lh-none); color: var(--text-muted); }
+.ad-clock-face__period [data-active] { color: var(--text-primary); }
+.ad-clock-face__segments { display: block; width: auto; height: var(--text-20); }
+.ad-clock-face:hover .ad-clock-face__label { color: var(--accent); }
+.ad-clock-face:focus-visible { outline: none; box-shadow: var(--ring-select); }
+.ad-clock-face:disabled { cursor: default; opacity: var(--opacity-disabled); }
 
 /* src/components/Columns/Columns.css */
 /* Columns: main and a fixed side, the side dropping under the main when there is no room for both. */
@@ -1332,6 +1394,10 @@ button.ad-card__name:focus-visible { outline: none; box-shadow: var(--ring-selec
 .ad-overlay-text__mirror .ad-token { margin: 0; padding: 0; line-height: inherit; }
 
 .ad-form-actions__extras { display: inline-flex; align-items: center; gap: var(--space-2); }
+
+/* A full-form control column: only callers requesting fill stretch their shared field skins. */
+.ad-field-row--fill .ad-field-row__control > * { flex: 1 1 0; width: 100%; }
+.ad-field-row--fill .ad-field-row__control :is(.ad-field-wrap, .ad-datefield, .ad-timefield, .ad-pick-field, .ad-select) { width: 100%; }
 
 /* src/components/Furniture/Furniture.css */
 /* Footer, Contents, Caption, DualUnit, Ground, Frame */
@@ -1520,6 +1586,17 @@ button.ad-contents__button:focus-visible { outline: none; box-shadow: var(--ring
 .ad-list-section__fold:hover { color: var(--accent); }
 .ad-list-section__fold:focus-visible { outline: none; box-shadow: var(--ring-select); }
 .ad-list-section__body--nested { margin-left: calc(var(--h-btn-row) / 2); padding-left: var(--space-4); border-left: var(--border-w) solid var(--border); }
+/* Everything's opt-in tree: each child continues the trunk, the last ends at its elbow. The parent joins at its lead. */
+.ad-list-section--tree { --ad-branch-offset: calc(var(--space-2) + var(--icon-sm) / 2); }
+.ad-list-section--tree:has(> .ad-list-section__bar > .ad-list-section__fold) { --ad-branch-offset: calc(var(--h-btn-row) + var(--space-1) + var(--space-2) + var(--icon-sm) / 2); }
+.ad-list-section--tree > .ad-list-section__bar { position: relative; }
+.ad-list-section--tree > .ad-list-section__bar::after { content: ""; position: absolute; left: var(--ad-branch-offset); top: calc(50% + var(--icon-sm) / 2); bottom: 0; border-left: var(--border-w) solid var(--line-strong); pointer-events: none; }
+.ad-list-branches { margin-left: var(--ad-branch-offset, calc(var(--space-2) + var(--icon-sm) / 2)); padding-left: var(--space-4); border-left: 0; }
+.ad-list-branch { position: relative; min-width: 0; }
+.ad-list-branch::before, .ad-list-branch::after { content: ""; position: absolute; left: calc(var(--space-4) * -1); top: 0; box-sizing: border-box; pointer-events: none; border-left: var(--border-w) solid var(--line-strong); }
+.ad-list-branch::before { bottom: 0; }
+.ad-list-branch::after { width: var(--space-4); height: calc(var(--h-row) / 2); border-bottom: var(--border-w) solid var(--line-strong); border-bottom-left-radius: var(--radius-control); }
+.ad-list-branch:last-child::before { bottom: auto; height: calc(var(--h-row) / 2 - var(--radius-control)); }
 /* A list's columns: headings held at the top in the table-heading look, each row's
  cells lined up under them at the person's own widths, a heading's edge dragged to resize. */
 .ad-list-columns { position: relative; --ad-col: auto; }
@@ -1694,10 +1771,12 @@ button:hover > .ad-project-pill:not(.ad-project-pill--current) { color: var(--ac
 .ad-page-header { position: relative; }
 .ad-page-header__row { display: flex; align-items: center; gap: var(--space-6); }
 /* The page title: the site's headline, Work Sans 800 in caps, solid, in the second ink (never white: the title is decoration, the verdict is the thing). */
-.ad-page-header__title { display: flex; align-items: center; gap: var(--space-3); margin: 0; flex: none; white-space: nowrap; font: var(--type-title); font-size: var(--text-display); font-weight: 800; text-transform: uppercase; line-height: var(--lh-none); color: var(--text-secondary); }
+.ad-page-header__title { --ad-title-icon-height: calc(1em * var(--icon-page)); --ad-title-icon-width: calc(1em * var(--icon-page)); --ad-title-icon-top: 0; display: flex; align-items: center; gap: var(--space-3); margin: 0; flex: none; white-space: nowrap; font: var(--type-title); font-size: var(--text-display); font-weight: 800; text-transform: uppercase; line-height: var(--lh-none); color: var(--text-secondary); }
 /* The chrome's icons are one ink, the primary: the title's glyph as the rail's. */
-.ad-page-header__icon { display: inline-flex; color: var(--text-secondary); }
-.ad-page-header__icon svg { width: calc(1em * var(--icon-page)); height: calc(1em * var(--icon-page)); }
+.ad-page-header__icon { display: inline-flex; flex: none; align-self: flex-start; position: relative; top: var(--ad-title-icon-top); color: var(--text-secondary); }
+.ad-page-header__icon svg { width: var(--ad-title-icon-width); height: var(--ad-title-icon-height); }
+.ad-page-header__words { display: block; }
+.ad-page-header__baseline { display: inline-block; width: 0; height: 0; vertical-align: baseline; }
 /* HeaderActions: Athena's raised box round the header's icon buttons, kept as it was. */
 .ad-header-actions { display: inline-flex; flex: none; align-items: center; box-sizing: border-box; gap: var(--space-2); height: var(--h-btn-bar); padding: 0 var(--pad-header-actions); border-radius: var(--radius-page); background: var(--bg-surface); }
 .ad-page-header__row > .ad-header-actions { margin-left: auto; }
@@ -1928,7 +2007,7 @@ button.ad-row__name:focus-visible { outline: none; box-shadow: var(--ring-select
 .ad-row__name { line-height: var(--lh-tight); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .ad-row--heading .ad-row__name { font: var(--type-name); }
 /* A heading row (approved Rows card): name, then its status beside it, the review date at the far right. */
-.ad-row--heading .ad-row__body { flex: none; }
+.ad-row--heading .ad-row__body { flex: 0 1 auto; min-width: 0; }
 .ad-row--heading .ad-row__dates { margin-left: auto; }
 /* The second line is the body face at 12: the calendar glyph and the date, the department glyph, the department's name. */
 .ad-row__meta { display: flex; align-items: center; gap: var(--space-2); margin-top: var(--space-1); font: var(--type-detail); line-height: var(--lh-tight); color: var(--text-muted); min-width: 0; }
@@ -1936,6 +2015,9 @@ button.ad-row__name:focus-visible { outline: none; box-shadow: var(--ring-select
 .ad-row__trail { gap: var(--space-1); }
 /* An item's two dates, right after each other. */
 .ad-item-dates { display: inline-flex; align-items: baseline; gap: var(--space-2); white-space: nowrap; }
+/* The two fixed slots (`layout="columns"`), each a date's width, so dates line up down a list. */
+.ad-item-dates--columns { display: inline-grid; grid-template-columns: repeat(2, calc(var(--w-col-xs) * 2)); }
+.ad-item-dates--columns > .ad-row-date { justify-self: end; }
 /* Beside a neighbour in a cell it keeps its room; in a row's date line the line's own gap does that. */
 :not(.ad-row__meta) > * + .ad-item-dates, :not(.ad-row__meta) > .ad-item-dates + * { margin-left: var(--space-2); }
 .ad-row-date { display: inline-flex; align-items: baseline; gap: var(--space-1); font: var(--type-detail); color: var(--text-muted); white-space: nowrap; }
@@ -2100,6 +2182,7 @@ button.ad-row__name:focus-visible { outline: none; box-shadow: var(--ring-select
 .ad-splitter { --ad-split: var(--w-side); display: flex; min-height: 0; min-width: 0; flex: 1; }
 .ad-splitter__main { flex: 1; min-width: 0; min-height: 0; overflow: auto; }
 .ad-splitter__side { flex: none; width: var(--ad-split); min-width: 0; min-height: 0; overflow: auto; }
+.ad-splitter--page-scroll > .ad-splitter__main, .ad-splitter--page-scroll > .ad-splitter__side { overflow: visible; }
 .ad-splitter__divider { flex: none; position: relative; width: var(--space-2); cursor: col-resize; touch-action: none; }
 .ad-splitter__divider::after { content: ''; position: absolute; top: 0; bottom: 0; left: 50%; width: var(--border-w); transform: translateX(-50%); background: var(--border); }
 .ad-splitter__divider:hover::after, .ad-splitter__divider:focus-visible::after { background: var(--accent); }
@@ -2233,6 +2316,7 @@ button.ad-row__name:focus-visible { outline: none; box-shadow: var(--ring-select
 /* Text: the small type pieces a screen writes inside its own sentences and cells. */
 .ad-data-text { font: var(--type-data); color: inherit; }
 .ad-data-text--small { font: var(--type-data); font-size: var(--text-xs); }
+.ad-data-text--large { font: var(--type-data); font-size: var(--text-28); line-height: var(--lh-tight); }
 .ad-data-text--dim { color: var(--text-secondary); }
 /* A figure that is only an estimate: dim, a hatched strip under it. A typed price is solid; an empty cell draws nothing. */
 .ad-figure-estimate { display: inline-block; padding-bottom: var(--space-1); color: var(--text-muted); background: var(--hatch) left bottom / 100% var(--space-1) no-repeat; }
@@ -2243,11 +2327,59 @@ button.ad-row__name:focus-visible { outline: none; box-shadow: var(--ring-select
 .ad-figures__item:first-child { padding-left: 0; border-left: 0; }
 .ad-figures__label { margin: 0; }
 .ad-figures__value { margin: 0; font: var(--type-data); font-size: var(--text-20); line-height: var(--lh-none); color: var(--text-primary); }
+.ad-figures__note { margin: 0; font: var(--type-detail); line-height: var(--lh-normal); color: var(--text-muted); }
+.ad-figures--grid { grid-template-columns: repeat(auto-fit, minmax(min(100%, var(--card-min-sm)), 1fr)); gap: var(--space-4); border: 0; }
+.ad-figures--grid .ad-figures__item { padding: 0; border: 0; gap: var(--space-1); }
+.ad-figures--grid .ad-figures__value { font: var(--type-data); font-size: var(--text-28); line-height: var(--lh-tight); }
+
+/* Personal metrics stay two across at real summary-card widths, without nested decorative cards. */
+.ad-figures--compact { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-3) var(--space-4); }
+.ad-figures--compact .ad-figures__value { font: var(--type-data); line-height: var(--lh-tight); font-size: var(--text-20); }
+.ad-figures__graphic { margin: 0; min-width: 0; }
+
+/* The slim summary rail: all chosen readings on one line, graphics carry the reading, details stay available. */
+.ad-figures--rail { grid-template-columns: none; grid-auto-flow: column; grid-auto-columns: minmax(0, 1fr); gap: var(--space-2); }
+.ad-figures--rail .ad-figures__item { align-items: stretch; gap: var(--space-1); }
+.ad-figures--rail .ad-figures__label { overflow: hidden; white-space: nowrap; text-overflow: ellipsis; text-align: center; }
+.ad-figures--rail .ad-figures__graphic, .ad-figures--rail .ad-figures__value:not(.ad-sr) { order: -1; height: var(--h-row-2); display: grid; place-items: center; }
+.ad-figures--rail .ad-figures__value:not(.ad-sr) { font: var(--type-data); font-size: var(--text-28); line-height: var(--lh-tight); }
+
+/* Small inline readings, such as chosen clocks, fit two rows without nested card padding or extra captions. */
+.ad-figures--readings { grid-template-columns: repeat(auto-fit, minmax(min(100%, max(calc((100% - var(--space-2)) / 2), calc(var(--w-number-box) + var(--target-min)))), 1fr)); gap: var(--space-1) var(--space-2); }
+.ad-figures--readings .ad-figures__item { gap: var(--space-1); }
+.ad-figures--readings .ad-figures__label { overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+.ad-figures--readings .ad-figures__value { min-height: var(--h-btn-row); display: flex; align-items: center; gap: var(--space-1); font: var(--type-data); line-height: var(--lh-tight); white-space: nowrap; }
+
+/* Reading/action faces share the slim cell; keep their target while tightening existing internal spacing. */
+.ad-figures--readings .ad-button--row { padding-left: var(--space-1); padding-right: var(--space-1); gap: var(--space-1); }
+
+/* Shallow personal summaries: existing 32px graphics/readings with one complete short metric label. */
+.ad-figures--rail.ad-figures--dense .ad-figures__graphic, .ad-figures--rail.ad-figures--dense .ad-figures__value:not(.ad-sr) { height: var(--h-btn); }
+.ad-figures--rail.ad-figures--dense { grid-auto-columns: minmax(max-content, 1fr); }
+.ad-figures--rail.ad-figures--dense .ad-figures__value:not(.ad-sr) { font: var(--type-data); line-height: var(--lh-tight); }
+.ad-figures--rail.ad-figures--dense .ad-figures__label { overflow: visible; text-overflow: clip; font: var(--type-detail); text-transform: none; letter-spacing: normal; }
+/* City and its small digital reading share one 24px line; four chosen cities take two lines. */
+.ad-figures--readings.ad-figures--dense { grid-template-columns: repeat(auto-fit, minmax(min(100%, max(calc((100% - var(--space-2)) / 2), calc(var(--w-number-box) + var(--h-row-2)))), 1fr)); }
+.ad-figures--readings.ad-figures--dense .ad-figures__item { flex-direction: row; align-items: center; }
+.ad-figures--readings.ad-figures--dense .ad-figures__label { flex: none; overflow: visible; text-overflow: clip; font: var(--type-detail); text-transform: none; letter-spacing: normal; }
+.ad-figures--readings.ad-figures--dense .ad-figures__value { min-width: 0; }
+.ad-figures--readings.ad-figures--dense .ad-button--row { padding: 0; }
+
+/* Every chosen clock occupies one peer cell in the same horizontal row. */
+.ad-figures--clocks { grid-template-columns: none; grid-auto-flow: column; grid-auto-columns: minmax(max-content, 1fr); gap: var(--space-2); }
+.ad-figures--clocks .ad-figures__item { align-items: stretch; }
+
+/* A measurable natural track never inherits an expanded app grid cell's width. */
+.ad-figures--clocks.ad-figures--intrinsic { width: max-content; }
+
+.ad-figures--rail.ad-figures--intrinsic { width: max-content; grid-auto-columns: max-content; }
 
 /* src/components/Timeline/Ruler.css */
 /* Ruler and ZoomCluster: a line-strong rule, months in white mono caps along the top, ticks from the rule (weeks taller than
  days), day numbers mono muted in the middle of their day, the ticks on the line where it starts. The zoom cluster sits in the toolbar, before View. */
 .ad-ruler { --ad-day-w: 0px; position: relative; height: var(--h-row); border-bottom: var(--border-w) solid var(--line-strong); font: var(--type-data); font-size: var(--text-xs); color: var(--text-secondary); }
+/* Day spacing is geometry, never rounded to a different scale or dropped with the ruler's labels. */
+.ad-day-lines { --ad-day-w: var(--space-6); position: absolute; top: 0; bottom: 0; left: 0; pointer-events: none; opacity: var(--opacity-faint); background-image: linear-gradient(to right, var(--border) var(--border-w), transparent var(--border-w)); background-size: var(--ad-day-w) 100%; background-repeat: repeat-x; }
 .ad-ruler__months { position: relative; height: var(--space-6); }
 .ad-ruler__month { position: absolute; top: 0; padding-left: var(--space-1); color: var(--text-primary); white-space: nowrap; }
 .ad-ruler__ticks { position: absolute; left: 0; right: 0; bottom: 0; height: var(--space-4); }
@@ -2255,7 +2387,7 @@ button.ad-row__name:focus-visible { outline: none; box-shadow: var(--ring-select
 .ad-ruler__tick--major { height: var(--space-2); }
 .ad-ruler__day { position: absolute; bottom: var(--space-2); left: calc(var(--ad-day-w) / 2); transform: translateX(-50%); color: var(--text-muted); white-space: nowrap; }
 /* The cluster: toolbar-size icon buttons in a row (ZoomCluster), or the period control's words and sizes (PeriodCluster). */
-.ad-zoom { font: var(--type-data); font-size: var(--text-xs); line-height: var(--lh-none); color: var(--text-muted); }
+.ad-zoom { --ad-zoom-fit: var(--h-btn-bar); font: var(--type-data); font-size: var(--text-xs); line-height: var(--lh-none); color: var(--text-muted); }
 .ad-zoom__name { margin-right: var(--space-1); color: var(--text-primary); }
 .ad-zoom__btn { display: inline-flex; align-items: center; justify-content: center; width: var(--h-btn); height: var(--h-seg); margin: 0; padding: 0; border: 0; border-radius: var(--radius-page); background: transparent; color: var(--text-muted); cursor: pointer; }
 .ad-zoom__btn:hover { color: var(--accent); }
@@ -2267,6 +2399,8 @@ button.ad-row__name:focus-visible { outline: none; box-shadow: var(--ring-select
 .ad-period__sizes { display: inline-flex; gap: var(--space-1); }
 .ad-period__size { width: auto; padding: 0 var(--space-2); white-space: nowrap; font: var(--type-heading); text-transform: uppercase; letter-spacing: var(--track-caps); }
 .ad-period__size[aria-checked="true"] { background: var(--bg-raised); color: var(--text-primary); }
+.ad-zoom[data-fit] { height: var(--ad-zoom-fit); }
+.ad-zoom[data-fit] .ad-icon-button { width: min(var(--h-btn-bar), var(--ad-zoom-fit)); height: min(var(--h-btn-bar), var(--ad-zoom-fit)); }
 /* Pinned: held at the top of the scroller on its own ground, above the lanes. */
 .ad-ruler--pinned { position: sticky; top: 0; z-index: 2; background: var(--ad-under); }
 
@@ -2410,7 +2544,7 @@ button.ad-milestone:focus-visible { outline: none; box-shadow: var(--ring-select
 /* Inside a card nothing paints the page's black: a band is a step off the card. */
 :is(.ad-card, .ad-section:not(.ad-section--rule)) .ad-group-band { background: var(--bg-surface); }
 /* Lanes and Lane: one row each, the name at the left in the side-menu width, every second lane washed
- bg-surface across the whole width; the marks (past hatch, today line) lie over the chart column of every lane. */
+ bg-surface across the whole width; the marks (past hatch, day lines, today line) lie over the chart column of every lane. */
 .ad-lanes { position: relative; display: flex; flex-direction: column; }
 /* The ruler's lane keeps room above it for the TODAY word. */
 .ad-lanes--ruler { padding-top: var(--space-4); }
@@ -2453,6 +2587,9 @@ button.ad-milestone:focus-visible { outline: none; box-shadow: var(--ring-select
 .ad-bar__words { flex: 1 1 0; min-width: 0; display: flex; flex-wrap: wrap; align-content: flex-start; column-gap: var(--space-1); height: 1lh; overflow: hidden; }
 .ad-bar__words > .ad-bar__name { flex: 0 1 auto; min-width: 0; white-space: nowrap; }
 .ad-bar__detail { flex: none; white-space: nowrap; }
+.ad-bar__suffix { flex: none; width: max-content; display: inline-flex; align-items: center; }
+/* Hidden, it keeps its width measured, so zooming wider brings the whole group back and never half an icon. */
+.ad-bar__suffix[aria-hidden="true"] { position: absolute; visibility: hidden; pointer-events: none; }
 .ad-bar--name-gone .ad-bar__label > .ad-bar__name { visibility: hidden; }
 
 /* src/components/Toolbar/Toolbar.css */

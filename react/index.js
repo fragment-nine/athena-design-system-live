@@ -124,7 +124,12 @@ var hueNames = [
   "dept-direction",
   "dept-admin",
   "dept-lasers",
-  "dept-pm"
+  "dept-pm",
+  "dept-choreo",
+  "dept-costume",
+  "dept-audio",
+  "dept-automation",
+  "dept-moment"
 ];
 var KNOWN = new Set(hueNames);
 function projectHue(index) {
@@ -629,6 +634,9 @@ var REGULAR = {
   "caret-up": [
     "M213.66,165.66a8,8,0,0,1-11.32,0L128,91.31,53.66,165.66a8,8,0,0,1-11.32-11.32l80-80a8,8,0,0,1,11.32,0l80,80A8,8,0,0,1,213.66,165.66Z"
   ],
+  "chain-hoist": [
+    "M192.0,116.0L192.0,136.0C192.0,144.83655599655367 184.83655599655367,152.0 176.0,152.0L80.0,152.0C71.16344400344633,152.0 64.0,144.83655599655367 64.0,136.0L64.0,96.0C64.0,87.16344400344636 71.16344400344636,80.0 80.0,80.0L176.0,80.0C184.83655599655367,80.0 192.0,87.16344400344634 192.0,96.0L192.0,116.0ZM208.0,116.0L208.0,96.0C208.0,78.32688800615368 193.6731119938463,64.0 176.0,64.0L80.0,64.0C62.32688800615367,64.0 48.0,78.32688800615367 48.0,96.0L48.0,136.0C48.0,153.67311199384633 62.32688800615367,168.0 80.0,168.0L176.0,168.0C193.6731119938463,168.0 208.0,153.6731119938463 208.0,136.0L208.0,116.0ZM136.0,72.0L136.0,56.0C136.0,51.581722001353654 132.41827799864635,48.0 128.0,48.0C123.58172200135365,48.0 120.0,51.581722001353654 120.0,56.0L120.0,72.0C120.0,76.41827799864635 123.58172200135365,80.0 128.0,80.0C132.41827799864635,80.0 136.0,76.41827799864635 136.0,72.0ZM112.0,16.0C92.37311114249957,16.0 80.0,26.82647224968712 80.0,44.0C80.0,60.418277998646346 91.58172200135365,72.0 108.0,72.0L128.0,72.0C132.41827799864635,72.0 136.0,68.41827799864635 136.0,64.0C136.0,59.581722001353654 132.41827799864635,56.0 128.0,56.0L108.0,56.0C100.41827799864635,56.0 96.0,51.58172200135365 96.0,44.0C96.0,36.17352775031288 100.76974600035757,32.0 112.0,32.0C116.41827799864635,32.0 120.0,28.418277998646346 120.0,24.0C120.0,19.581722001353654 116.41827799864635,16.0 112.0,16.0ZM80.0,96.0L80.0,136.0C80.0,140.41827799864635 83.58172200135365,144.0 88.0,144.0C92.41827799864635,144.0 96.0,140.41827799864635 96.0,136.0L96.0,96.0C96.0,91.58172200135365 92.41827799864635,88.0 88.0,88.0C83.58172200135365,88.0 80.0,91.58172200135365 80.0,96.0ZM160.0,96.0L160.0,136.0C160.0,140.41827799864635 163.58172200135365,144.0 168.0,144.0C172.41827799864635,144.0 176.0,140.41827799864635 176.0,136.0L176.0,96.0C176.0,91.58172200135365 172.41827799864635,88.0 168.0,88.0C163.58172200135365,88.0 160.0,91.58172200135365 160.0,96.0ZM104.0,160.0L104.0,192.0C104.0,196.41827799864635 107.58172200135365,200.0 112.0,200.0C116.41827799864635,200.0 120.0,196.41827799864635 120.0,192.0L120.0,160.0C120.0,155.58172200135365 116.41827799864635,152.0 112.0,152.0C107.58172200135365,152.0 104.0,155.58172200135365 104.0,160.0ZM104.0,192.0L104.0,216.0C104.0,231.46397299464635 116.53602700535366,244.0 132.0,244.0C147.46397299464633,244.0 160.0,231.46397299464633 160.0,216.0C160.0,211.58172200135365 156.41827799864635,208.0 152.0,208.0C147.58172200135365,208.0 144.0,211.58172200135365 144.0,216.0C144.0,222.6274169973537 138.6274169973537,228.0 132.0,228.0C125.37258300264634,228.0 120.0,222.62741699735366 120.0,216.0L120.0,192.0C120.0,187.58172200135365 116.41827799864635,184.0 112.0,184.0C107.58172200135365,184.0 104.0,187.58172200135365 104.0,192.0ZM104.0,184.0L120.0,184.0C124.41827799864635,184.0 128.0,180.41827799864635 128.0,176.0C128.0,171.58172200135365 124.41827799864635,168.0 120.0,168.0L104.0,168.0C99.58172200135365,168.0 96.0,171.58172200135365 96.0,176.0C96.0,180.41827799864635 99.58172200135365,184.0 104.0,184.0Z"
+  ],
   "chart-bar-horizontal": [
     "M224,96H184V56a8,8,0,0,0-8-8H56V40a8,8,0,0,0-16,0V216a8,8,0,0,0,16,0v-8h88a8,8,0,0,0,8-8V160h72a8,8,0,0,0,8-8V104A8,8,0,0,0,224,96ZM168,64V96H56V64ZM136,192H56V160h80Zm80-48H56V112H216Z"
   ],
@@ -709,6 +717,9 @@ var REGULAR = {
   ],
   "funnel": [
     "M230.6,49.53A15.81,15.81,0,0,0,216,40H40A16,16,0,0,0,28.19,66.76l.08.09L96,139.17V216a16,16,0,0,0,24.87,13.32l32-21.34A16,16,0,0,0,160,194.66V139.17l67.74-72.32.08-.09A15.8,15.8,0,0,0,230.6,49.53ZM40,56h0Zm106.18,74.58A8,8,0,0,0,144,136v58.66L112,216V136a8,8,0,0,0-2.16-5.47L40,56H216Z"
+  ],
+  "gear-six": [
+    "M128,80a48,48,0,1,0,48,48A48.05,48.05,0,0,0,128,80Zm0,80a32,32,0,1,1,32-32A32,32,0,0,1,128,160Zm109.94-52.79a8,8,0,0,0-3.89-5.4l-29.83-17-.12-33.62a8,8,0,0,0-2.83-6.08,111.91,111.91,0,0,0-36.72-20.67,8,8,0,0,0-6.46.59L128,41.85,97.88,25a8,8,0,0,0-6.47-.6A112.1,112.1,0,0,0,54.73,45.15a8,8,0,0,0-2.83,6.07l-.15,33.65-29.83,17a8,8,0,0,0-3.89,5.4,106.47,106.47,0,0,0,0,41.56,8,8,0,0,0,3.89,5.4l29.83,17,.12,33.62a8,8,0,0,0,2.83,6.08,111.91,111.91,0,0,0,36.72,20.67,8,8,0,0,0,6.46-.59L128,214.15,158.12,231a7.91,7.91,0,0,0,3.9,1,8.09,8.09,0,0,0,2.57-.42,112.1,112.1,0,0,0,36.68-20.73,8,8,0,0,0,2.83-6.07l.15-33.65,29.83-17a8,8,0,0,0,3.89-5.4A106.47,106.47,0,0,0,237.94,107.21Zm-15,34.91-28.57,16.25a8,8,0,0,0-3,3c-.58,1-1.19,2.06-1.81,3.06a7.94,7.94,0,0,0-1.22,4.21l-.15,32.25a95.89,95.89,0,0,1-25.37,14.3L134,199.13a8,8,0,0,0-3.91-1h-.19c-1.21,0-2.43,0-3.64,0a8.08,8.08,0,0,0-4.1,1l-28.84,16.1A96,96,0,0,1,67.88,201l-.11-32.2a8,8,0,0,0-1.22-4.22c-.62-1-1.23-2-1.8-3.06a8.09,8.09,0,0,0-3-3.06l-28.6-16.29a90.49,90.49,0,0,1,0-28.26L61.67,97.63a8,8,0,0,0,3-3c.58-1,1.19-2.06,1.81-3.06a7.94,7.94,0,0,0,1.22-4.21l.15-32.25a95.89,95.89,0,0,1,25.37-14.3L122,56.87a8,8,0,0,0,4.1,1c1.21,0,2.43,0,3.64,0a8.08,8.08,0,0,0,4.1-1l28.84-16.1A96,96,0,0,1,188.12,55l.11,32.2a8,8,0,0,0,1.22,4.22c.62,1,1.23,2,1.8,3.06a8.09,8.09,0,0,0,3,3.06l28.6,16.29A90.49,90.49,0,0,1,222.9,142.12Z"
   ],
   "gear": [
     "M128,80a48,48,0,1,0,48,48A48.05,48.05,0,0,0,128,80Zm0,80a32,32,0,1,1,32-32A32,32,0,0,1,128,160Zm88-29.84q.06-2.16,0-4.32l14.92-18.64a8,8,0,0,0,1.48-7.06,107.21,107.21,0,0,0-10.88-26.25,8,8,0,0,0-6-3.93l-23.72-2.64q-1.48-1.56-3-3L186,40.54a8,8,0,0,0-3.94-6,107.71,107.71,0,0,0-26.25-10.87,8,8,0,0,0-7.06,1.49L130.16,40Q128,40,125.84,40L107.2,25.11a8,8,0,0,0-7.06-1.48A107.6,107.6,0,0,0,73.89,34.51a8,8,0,0,0-3.93,6L67.32,64.27q-1.56,1.49-3,3L40.54,70a8,8,0,0,0-6,3.94,107.71,107.71,0,0,0-10.87,26.25,8,8,0,0,0,1.49,7.06L40,125.84Q40,128,40,130.16L25.11,148.8a8,8,0,0,0-1.48,7.06,107.21,107.21,0,0,0,10.88,26.25,8,8,0,0,0,6,3.93l23.72,2.64q1.49,1.56,3,3L70,215.46a8,8,0,0,0,3.94,6,107.71,107.71,0,0,0,26.25,10.87,8,8,0,0,0,7.06-1.49L125.84,216q2.16.06,4.32,0l18.64,14.92a8,8,0,0,0,7.06,1.48,107.21,107.21,0,0,0,26.25-10.88,8,8,0,0,0,3.93-6l2.64-23.72q1.56-1.48,3-3L215.46,186a8,8,0,0,0,6-3.94,107.71,107.71,0,0,0,10.87-26.25,8,8,0,0,0-1.49-7.06Zm-16.1-6.5a73.93,73.93,0,0,1,0,8.68,8,8,0,0,0,1.74,5.48l14.19,17.73a91.57,91.57,0,0,1-6.23,15L187,173.11a8,8,0,0,0-5.1,2.64,74.11,74.11,0,0,1-6.14,6.14,8,8,0,0,0-2.64,5.1l-2.51,22.58a91.32,91.32,0,0,1-15,6.23l-17.74-14.19a8,8,0,0,0-5-1.75h-.48a73.93,73.93,0,0,1-8.68,0,8,8,0,0,0-5.48,1.74L100.45,215.8a91.57,91.57,0,0,1-15-6.23L82.89,187a8,8,0,0,0-2.64-5.1,74.11,74.11,0,0,1-6.14-6.14,8,8,0,0,0-5.1-2.64L46.43,170.6a91.32,91.32,0,0,1-6.23-15l14.19-17.74a8,8,0,0,0,1.74-5.48,73.93,73.93,0,0,1,0-8.68,8,8,0,0,0-1.74-5.48L40.2,100.45a91.57,91.57,0,0,1,6.23-15L69,82.89a8,8,0,0,0,5.1-2.64,74.11,74.11,0,0,1,6.14-6.14A8,8,0,0,0,82.89,69L85.4,46.43a91.32,91.32,0,0,1,15-6.23l17.74,14.19a8,8,0,0,0,5.48,1.74,73.93,73.93,0,0,1,8.68,0,8,8,0,0,0,5.48-1.74L155.55,40.2a91.57,91.57,0,0,1,15,6.23L173.11,69a8,8,0,0,0,2.64,5.1,74.11,74.11,0,0,1,6.14,6.14,8,8,0,0,0,5.1,2.64l22.58,2.51a91.32,91.32,0,0,1,6.23,15l-14.19,17.74A8,8,0,0,0,199.87,123.66Z"
@@ -791,6 +802,9 @@ var REGULAR = {
   "pencil-simple": [
     "M227.31,73.37,182.63,28.68a16,16,0,0,0-22.63,0L36.69,152A15.86,15.86,0,0,0,32,163.31V208a16,16,0,0,0,16,16H92.69A15.86,15.86,0,0,0,104,219.31L227.31,96a16,16,0,0,0,0-22.63ZM92.69,208H48V163.31l88-88L180.69,120ZM192,108.68,147.31,64l24-24L216,84.68Z"
   ],
+  "person-simple-run": [
+    "M152,88a32,32,0,1,0-32-32A32,32,0,0,0,152,88Zm0-48a16,16,0,1,1-16,16A16,16,0,0,1,152,40Zm67.31,100.68c-.61.28-7.49,3.28-19.67,3.28-13.85,0-34.55-3.88-60.69-20a169.31,169.31,0,0,1-15.41,32.34,104.29,104.29,0,0,1,31.31,15.81C173.92,186.65,184,207.35,184,232a8,8,0,0,1-16,0c0-41.7-34.69-56.71-54.14-61.85-.55.7-1.12,1.41-1.69,2.1-19.64,23.8-44.25,36.18-71.63,36.18A92.29,92.29,0,0,1,31.2,208,8,8,0,0,1,32.8,192c25.92,2.58,48.47-7.49,67-30,12.49-15.14,21-33.61,25.25-47C86.13,92.35,61.27,111.63,61,111.84A8,8,0,1,1,51,99.36c1.5-1.2,37.22-29,89.51,6.57,45.47,30.91,71.93,20.31,72.18,20.19a8,8,0,1,1,6.63,14.56Z"
+  ],
   "plus": [
     "M224,128a8,8,0,0,1-8,8H136v80a8,8,0,0,1-16,0V136H40a8,8,0,0,1,0-16h80V40a8,8,0,0,1,16,0v80h80A8,8,0,0,1,224,128Z"
   ],
@@ -812,11 +826,17 @@ var REGULAR = {
   "seal-check": [
     "M225.86,102.82c-3.77-3.94-7.67-8-9.14-11.57-1.36-3.27-1.44-8.69-1.52-13.94-.15-9.76-.31-20.82-8-28.51s-18.75-7.85-28.51-8c-5.25-.08-10.67-.16-13.94-1.52-3.56-1.47-7.63-5.37-11.57-9.14C146.28,23.51,138.44,16,128,16s-18.27,7.51-25.18,14.14c-3.94,3.77-8,7.67-11.57,9.14C88,40.64,82.56,40.72,77.31,40.8c-9.76.15-20.82.31-28.51,8S41,67.55,40.8,77.31c-.08,5.25-.16,10.67-1.52,13.94-1.47,3.56-5.37,7.63-9.14,11.57C23.51,109.72,16,117.56,16,128s7.51,18.27,14.14,25.18c3.77,3.94,7.67,8,9.14,11.57,1.36,3.27,1.44,8.69,1.52,13.94.15,9.76.31,20.82,8,28.51s18.75,7.85,28.51,8c5.25.08,10.67.16,13.94,1.52,3.56,1.47,7.63,5.37,11.57,9.14C109.72,232.49,117.56,240,128,240s18.27-7.51,25.18-14.14c3.94-3.77,8-7.67,11.57-9.14,3.27-1.36,8.69-1.44,13.94-1.52,9.76-.15,20.82-.31,28.51-8s7.85-18.75,8-28.51c.08-5.25.16-10.67,1.52-13.94,1.47-3.56,5.37-7.63,9.14-11.57C232.49,146.28,240,138.44,240,128S232.49,109.73,225.86,102.82Zm-11.55,39.29c-4.79,5-9.75,10.17-12.38,16.52-2.52,6.1-2.63,13.07-2.73,19.82-.1,7-.21,14.33-3.32,17.43s-10.39,3.22-17.43,3.32c-6.75.1-13.72.21-19.82,2.73-6.35,2.63-11.52,7.59-16.52,12.38S132,224,128,224s-9.15-4.92-14.11-9.69-10.17-9.75-16.52-12.38c-6.1-2.52-13.07-2.63-19.82-2.73-7-.1-14.33-.21-17.43-3.32s-3.22-10.39-3.32-17.43c-.1-6.75-.21-13.72-2.73-19.82-2.63-6.35-7.59-11.52-12.38-16.52S32,132,32,128s4.92-9.15,9.69-14.11,9.75-10.17,12.38-16.52c2.52-6.1,2.63-13.07,2.73-19.82.1-7,.21-14.33,3.32-17.43S70.51,56.9,77.55,56.8c6.75-.1,13.72-.21,19.82-2.73,6.35-2.63,11.52-7.59,16.52-12.38S124,32,128,32s9.15,4.92,14.11,9.69,10.17,9.75,16.52,12.38c6.1,2.52,13.07,2.63,19.82,2.73,7,.1,14.33.21,17.43,3.32s3.22,10.39,3.32,17.43c.1,6.75.21,13.72,2.73,19.82,2.63,6.35,7.59,11.52,12.38,16.52S224,124,224,128,219.08,137.15,214.31,142.11ZM173.66,98.34a8,8,0,0,1,0,11.32l-56,56a8,8,0,0,1-11.32,0l-24-24a8,8,0,0,1,11.32-11.32L112,148.69l50.34-50.35A8,8,0,0,1,173.66,98.34Z"
   ],
+  "shooting-star": [
+    "M239.35,70.08a13.41,13.41,0,0,0-11.77-9.28l-36.94-2.92L176.43,24.22a13.51,13.51,0,0,0-24.86,0L137.36,57.88,100.42,60.8a13.39,13.39,0,0,0-7.66,23.58l28.06,23.68-8.56,35.39a13.32,13.32,0,0,0,5.1,13.91,13.51,13.51,0,0,0,15,.69L164,139l31.65,19.06a13.54,13.54,0,0,0,15-.69,13.34,13.34,0,0,0,5.09-13.91l-8.56-35.39,28.06-23.68A13.32,13.32,0,0,0,239.35,70.08ZM193.08,99a8,8,0,0,0-2.61,8l8.28,34.21L168.13,122.8a8,8,0,0,0-8.25,0l-30.62,18.43L137.54,107a8,8,0,0,0-2.62-8L108,76.26l35.52-2.81a8,8,0,0,0,6.74-4.87L164,35.91l13.79,32.67a8,8,0,0,0,6.74,4.87l35.53,2.81Zm-105,24.18L29.66,181.66a8,8,0,0,1-11.32-11.32l58.45-58.45a8,8,0,0,1,11.32,11.32Zm10.81,49.87a8,8,0,0,1,0,11.31L45.66,237.66a8,8,0,0,1-11.32-11.32l53.27-53.26A8,8,0,0,1,98.92,173.08Zm73-1a8,8,0,0,1,0,11.32l-54.28,54.28a8,8,0,0,1-11.32-11.32l54.29-54.28A8,8,0,0,1,171.94,172.06Z"
+  ],
   "sidebar-simple": [
     "M216,40H40A16,16,0,0,0,24,56V200a16,16,0,0,0,16,16H216a16,16,0,0,0,16-16V56A16,16,0,0,0,216,40ZM40,56H80V200H40ZM216,200H96V56H216V200Z"
   ],
   "sparkle": [
     "M197.58,129.06,146,110l-19-51.62a15.92,15.92,0,0,0-29.88,0L78,110l-51.62,19a15.92,15.92,0,0,0,0,29.88L78,178l19,51.62a15.92,15.92,0,0,0,29.88,0L146,178l51.62-19a15.92,15.92,0,0,0,0-29.88ZM137,164.22a8,8,0,0,0-4.74,4.74L112,223.85,91.78,169A8,8,0,0,0,87,164.22L32.15,144,87,123.78A8,8,0,0,0,91.78,119L112,64.15,132.22,119a8,8,0,0,0,4.74,4.74L191.85,144ZM144,40a8,8,0,0,1,8-8h16V16a8,8,0,0,1,16,0V32h16a8,8,0,0,1,0,16H184V64a8,8,0,0,1-16,0V48H152A8,8,0,0,1,144,40ZM248,88a8,8,0,0,1-8,8h-8v8a8,8,0,0,1-16,0V96h-8a8,8,0,0,1,0-16h8V72a8,8,0,0,1,16,0v8h8A8,8,0,0,1,248,88Z"
+  ],
+  "speaker-high": [
+    "M155.51,24.81a8,8,0,0,0-8.42.88L77.25,80H32A16,16,0,0,0,16,96v64a16,16,0,0,0,16,16H77.25l69.84,54.31A8,8,0,0,0,160,224V32A8,8,0,0,0,155.51,24.81ZM32,96H72v64H32ZM144,207.64,88,164.09V91.91l56-43.55Zm54-106.08a40,40,0,0,1,0,52.88,8,8,0,0,1-12-10.58,24,24,0,0,0,0-31.72,8,8,0,0,1,12-10.58ZM248,128a79.9,79.9,0,0,1-20.37,53.34,8,8,0,0,1-11.92-10.67,64,64,0,0,0,0-85.33,8,8,0,1,1,11.92-10.67A79.83,79.83,0,0,1,248,128Z"
   ],
   "squares-four": [
     "M104,40H56A16,16,0,0,0,40,56v48a16,16,0,0,0,16,16h48a16,16,0,0,0,16-16V56A16,16,0,0,0,104,40Zm0,64H56V56h48v48Zm96-64H152a16,16,0,0,0-16,16v48a16,16,0,0,0,16,16h48a16,16,0,0,0,16-16V56A16,16,0,0,0,200,40Zm0,64H152V56h48v48Zm-96,32H56a16,16,0,0,0-16,16v48a16,16,0,0,0,16,16h48a16,16,0,0,0,16-16V152A16,16,0,0,0,104,136Zm0,64H56V152h48v48Zm96-64H152a16,16,0,0,0-16,16v48a16,16,0,0,0,16,16h48a16,16,0,0,0,16-16V152A16,16,0,0,0,200,136Zm0,64H152V152h48v48Z"
@@ -829,6 +849,9 @@ var REGULAR = {
   ],
   "sun": [
     "M120,40V16a8,8,0,0,1,16,0V40a8,8,0,0,1-16,0Zm72,88a64,64,0,1,1-64-64A64.07,64.07,0,0,1,192,128Zm-16,0a48,48,0,1,0-48,48A48.05,48.05,0,0,0,176,128ZM58.34,69.66A8,8,0,0,0,69.66,58.34l-16-16A8,8,0,0,0,42.34,53.66Zm0,116.68-16,16a8,8,0,0,0,11.32,11.32l16-16a8,8,0,0,0-11.32-11.32ZM192,72a8,8,0,0,0,5.66-2.34l16-16a8,8,0,0,0-11.32-11.32l-16,16A8,8,0,0,0,192,72Zm5.66,114.34a8,8,0,0,0-11.32,11.32l16,16a8,8,0,0,0,11.32-11.32ZM48,128a8,8,0,0,0-8-8H16a8,8,0,0,0,0,16H40A8,8,0,0,0,48,128Zm80,80a8,8,0,0,0-8,8v24a8,8,0,0,0,16,0V216A8,8,0,0,0,128,208Zm112-88H216a8,8,0,0,0,0,16h24a8,8,0,0,0,0-16Z"
+  ],
+  "t-shirt": [
+    "M247.59,61.22,195.83,33A8,8,0,0,0,192,32H160a8,8,0,0,0-8,8,24,24,0,0,1-48,0,8,8,0,0,0-8-8H64a8,8,0,0,0-3.84,1L8.41,61.22A15.76,15.76,0,0,0,1.82,82.48l19.27,36.81A16.37,16.37,0,0,0,35.67,128H56v80a16,16,0,0,0,16,16H184a16,16,0,0,0,16-16V128h20.34a16.37,16.37,0,0,0,14.58-8.71l19.27-36.81A15.76,15.76,0,0,0,247.59,61.22ZM35.67,112a.62.62,0,0,1-.41-.13L16.09,75.26,56,53.48V112ZM184,208H72V48h16.8a40,40,0,0,0,78.38,0H184Zm36.75-96.14a.55.55,0,0,1-.41.14H200V53.48l39.92,21.78Z"
   ],
   "tag": [
     "M243.31,136,144,36.69A15.86,15.86,0,0,0,132.69,32H40a8,8,0,0,0-8,8v92.69A15.86,15.86,0,0,0,36.69,144L136,243.31a16,16,0,0,0,22.63,0l84.68-84.68a16,16,0,0,0,0-22.63Zm-96,96L48,132.69V48h84.69L232,147.31ZM96,84A12,12,0,1,1,84,72,12,12,0,0,1,96,84Z"
@@ -1408,6 +1431,11 @@ var JOBS = {
   "deadline": "paper-plane-tilt",
   "day-planner": "clock-afternoon",
   "dept-admin": "clipboard-text",
+  "dept-choreo": "person-simple-run",
+  "dept-costume": "t-shirt",
+  "dept-audio": "speaker-high",
+  "dept-automation": "chain-hoist",
+  "dept-moment": "shooting-star",
   "dept-content": "monitor-play",
   "dept-direction": "megaphone",
   "dept-eng": "wrench",
@@ -1779,8 +1807,8 @@ var Select = forwardRef2(function Select2({ options, placeholder, quiet, classNa
     /* @__PURE__ */ jsx9(Icon, { name: "caret-down", size: "sm", className: "ad-select__caret" })
   ] });
 });
-function FieldRow({ label, children, help, beside, nameFits, htmlFor, className }) {
-  return /* @__PURE__ */ jsxs7("div", { className: cx("ad-field-row", beside && "ad-field-row--beside", nameFits && "ad-field-row--name-fits", className), children: [
+function FieldRow({ label, children, help, beside, nameFits, controlWidth, htmlFor, className }) {
+  return /* @__PURE__ */ jsxs7("div", { className: cx("ad-field-row", beside && "ad-field-row--beside", nameFits && "ad-field-row--name-fits", controlWidth === "fill" && "ad-field-row--fill", className), children: [
     /* @__PURE__ */ jsxs7("span", { className: "ad-field-row__label", children: [
       /* @__PURE__ */ jsx9("label", { htmlFor, children: label }),
       help && /* @__PURE__ */ jsx9(Help, { text: help })
@@ -2052,26 +2080,159 @@ function TextScramble({
   ] });
 }
 
+// src/components/Department/definitions.ts
+var departmentDefinitions = [
+  {
+    "id": "lighting",
+    "name": "Lighting",
+    "iconJob": "dept-lighting",
+    "aliases": [
+      "LX"
+    ],
+    "colorToken": "dept-lighting"
+  },
+  {
+    "id": "video",
+    "name": "Video",
+    "iconJob": "dept-video",
+    "aliases": [
+      "VX",
+      "Notch",
+      "IMAG",
+      "Notch/IMAG"
+    ],
+    "colorToken": "dept-video"
+  },
+  {
+    "id": "eng",
+    "name": "Engineering",
+    "iconJob": "dept-eng",
+    "aliases": [
+      "Eng"
+    ],
+    "colorToken": "dept-eng"
+  },
+  {
+    "id": "sfx",
+    "name": "Special FX",
+    "iconJob": "dept-sfx",
+    "aliases": [
+      "SFX",
+      "Pyro"
+    ],
+    "colorToken": "dept-sfx"
+  },
+  {
+    "id": "content",
+    "name": "Content",
+    "iconJob": "dept-content",
+    "aliases": [],
+    "colorToken": "dept-content"
+  },
+  {
+    "id": "scenic",
+    "name": "Scenic",
+    "iconJob": "dept-scenic",
+    "aliases": [],
+    "colorToken": "dept-scenic"
+  },
+  {
+    "id": "direction",
+    "name": "Show direction",
+    "iconJob": "dept-direction",
+    "aliases": [
+      "Direction"
+    ],
+    "colorToken": "dept-direction"
+  },
+  {
+    "id": "admin",
+    "name": "Admin",
+    "iconJob": "dept-admin",
+    "aliases": [],
+    "colorToken": "dept-admin"
+  },
+  {
+    "id": "pm",
+    "name": "Production management",
+    "iconJob": "dept-pm",
+    "aliases": [
+      "PM"
+    ],
+    "colorToken": "dept-pm"
+  },
+  {
+    "id": "lasers",
+    "name": "Lasers",
+    "iconJob": "dept-lasers",
+    "aliases": [
+      "Laser"
+    ],
+    "colorToken": "dept-lasers"
+  },
+  {
+    "id": "choreo",
+    "name": "Choreo",
+    "iconJob": "dept-choreo",
+    "aliases": [
+      "Choreography"
+    ],
+    "colorToken": "dept-choreo"
+  },
+  {
+    "id": "costume",
+    "name": "Costume",
+    "iconJob": "dept-costume",
+    "aliases": [
+      "Wardrobe",
+      "Costume/Wardrobe"
+    ],
+    "colorToken": "dept-costume"
+  },
+  {
+    "id": "audio",
+    "name": "Audio",
+    "iconJob": "dept-audio",
+    "aliases": [],
+    "colorToken": "dept-audio"
+  },
+  {
+    "id": "automation",
+    "name": "Automation",
+    "iconJob": "dept-automation",
+    "aliases": [],
+    "colorToken": "dept-automation"
+  },
+  {
+    "id": "moment",
+    "name": "Moment",
+    "iconJob": "dept-moment",
+    "aliases": [],
+    "colorToken": "dept-moment"
+  }
+];
+
 // src/components/Department/Department.tsx
 import { jsx as jsx14, jsxs as jsxs11 } from "react/jsx-runtime";
-var KNOWN2 = /* @__PURE__ */ new Set(["lighting", "video", "eng", "sfx", "content", "scenic", "direction", "admin", "pm", "lasers"]);
+function departmentDefinition(name) {
+  const key = (s) => s.toLowerCase().replace(/^dept-/, "").replace(/[\s/_-]+/g, "");
+  const wanted = key(name);
+  return departmentDefinitions.find((d) => [d.id, d.name, ...d.aliases].some((n) => key(n) === wanted));
+}
 function DeptGlyph({ hue }) {
   const colour = useHue(hue);
   if (!hue?.startsWith("dept-") || !colour) return null;
   return /* @__PURE__ */ jsx14("span", { className: "ad-dept ad-dept--coloured", "aria-hidden": "true", style: { ["--ad-dept"]: colour }, children: /* @__PURE__ */ jsx14(Icon, { job: hue, size: "sm" }) });
 }
-var FOLDED = { pyro: "sfx" };
 function Department({ dept: given, name, glyphOnly, onPress, pressLabel }) {
-  const dept = FOLDED[given] ?? given;
-  const known = KNOWN2.has(dept);
-  const colour = useHue(`dept-${known ? dept : "lighting"}`);
-  const tint = known ? colour : null;
+  const definition = departmentDefinition(given);
+  const tint = useHue(definition?.colorToken);
   const Tag2 = onPress ? "button" : "span";
   return /* @__PURE__ */ jsxs11(Tag2, { type: onPress ? "button" : void 0, "aria-label": onPress ? pressLabel ?? String(name) : void 0, onClick: onPress ? (e) => {
     e.stopPropagation();
     onPress();
   } : void 0, className: cx("ad-dept", tint && "ad-dept--coloured", onPress && "ad-dept--press"), style: tint ? { ["--ad-dept"]: tint } : void 0, children: [
-    /* @__PURE__ */ jsx14(Icon, { job: known ? `dept-${dept}` : "tag", size: "sm" }),
+    /* @__PURE__ */ jsx14(Icon, { job: definition?.iconJob ?? "tag", size: "sm" }),
     glyphOnly ? /* @__PURE__ */ jsx14("span", { className: "ad-sr", children: String(name) }) : /* @__PURE__ */ jsx14("span", { className: "ad-dept__name", children: String(name) })
   ] });
 }
@@ -2283,11 +2444,12 @@ function RowPress({ label, onPress, children }) {
     onPress(e.currentTarget);
   }, className: "ad-row__press", children });
 }
-function ItemDates({ review, deadline, today, done, repeat, labels }) {
-  if (!review && !deadline) return null;
-  return /* @__PURE__ */ jsxs15("span", { className: "ad-item-dates", children: [
-    review && /* @__PURE__ */ jsx18(RowDate, { due: review, today, done, icon: "review date", what: labels?.review ?? "Review date", repeat }),
-    deadline && /* @__PURE__ */ jsx18(RowDate, { due: deadline, today, done, icon: "deadline", what: labels?.deadline ?? "Due date", repeat: review ? void 0 : repeat })
+function ItemDates({ review, deadline, today, done, repeat, labels, layout = "inline" }) {
+  if (!review && !deadline && layout !== "columns") return null;
+  const empty = /* @__PURE__ */ jsx18("span", { className: "ad-row-date", "aria-hidden": "true" });
+  return /* @__PURE__ */ jsxs15("span", { className: cx("ad-item-dates", layout === "columns" && "ad-item-dates--columns"), children: [
+    review ? /* @__PURE__ */ jsx18(RowDate, { due: review, today, done, icon: "review date", what: labels?.review ?? "Review date", repeat }) : layout === "columns" ? empty : null,
+    deadline ? /* @__PURE__ */ jsx18(RowDate, { due: deadline, today, done, icon: "deadline", what: labels?.deadline ?? "Due date", repeat: review ? void 0 : repeat }) : layout === "columns" ? empty : null
   ] });
 }
 function RowDate({ due, today, until, done, milestone, what, icon, countdown: countdown2, repeat }) {
@@ -2360,16 +2522,17 @@ function TodoCheck({ hooks, checked, onChange, priority = 4, ariaLabel, disabled
 function UnseenDeliverable({ onAcknowledge, acknowledgeLabel }) {
   return /* @__PURE__ */ jsx18(ButtonSizeScope, { size: "row", children: /* @__PURE__ */ jsx18(IconButton, { label: acknowledgeLabel, onClick: onAcknowledge, className: "ad-unseen-mark", children: /* @__PURE__ */ jsx18(Icon, { job: "kind-deliverable", size: "sm", fill: true }) }) });
 }
-function TodoRow({ ringProps, factProps, dragging, name, priority, done, onTick, due, review, deadline, today, dept, who, selected, onOpen, completeLabel = "Complete", unacknowledged, onAcknowledge, acknowledgeLabel = "Acknowledge", repeat, pastDeadline, pastDeadlineLabel = "Due date passed", role, deliverable, project, picking, onPressDate, onPressWho, onPressDeliverable, pressLabels, onRename, onPressProject, onPressDept, rowProps, cells, ring = true, whoMax }) {
+function TodoRow({ ringProps, factProps, dragging, name, priority, done, onTick, due, review, deadline, dateLayout = "inline", today, dept, who, selected, onOpen, completeLabel = "Complete", unacknowledged, onAcknowledge, acknowledgeLabel = "Acknowledge", repeat, pastDeadline, pastDeadlineLabel = "Due date passed", role, deliverable, project, picking, onPressDate, onPressWho, onPressDeliverable, pressLabels, onRename, onPressProject, onPressDept, rowProps, cells, ring = true, whoMax }) {
   const d = (k) => factProps?.[k] ? Object.fromEntries(Object.entries(factProps[k]).filter(([n]) => n.startsWith("data-"))) : {};
   const roleWords = Array.isArray(role) ? role.join(" \xB7 ") : role;
   const dated = !!(review || deadline);
-  const plain = dated ? /* @__PURE__ */ jsx18("span", { ...d("date"), className: "ad-row__fact-hook", children: /* @__PURE__ */ jsx18(ItemDates, { review, deadline, today, done, repeat }) }) : due ? /* @__PURE__ */ jsx18("span", { ...d("date"), className: "ad-row__fact-hook", children: /* @__PURE__ */ jsx18(RowDate, { due, today, done, icon: "calendar", repeat }) }) : null;
+  const plain = dated || dateLayout === "columns" ? /* @__PURE__ */ jsx18("span", { ...d("date"), className: "ad-row__fact-hook", children: /* @__PURE__ */ jsx18(ItemDates, { review: dateLayout === "columns" ? review ?? due : review, deadline, today, done, repeat, layout: dateLayout }) }) : due ? /* @__PURE__ */ jsx18("span", { ...d("date"), className: "ad-row__fact-hook", children: /* @__PURE__ */ jsx18(RowDate, { due, today, done, icon: "calendar", repeat }) }) : null;
   const date = plain && onPressDate ? /* @__PURE__ */ jsx18(RowPress, { label: pressLabels?.date ?? "Change the date", onPress: onPressDate, children: plain }) : plain;
   const loneRepeat = repeat && !due && !dated ? /* @__PURE__ */ jsx18("span", { ...d("repeat"), className: "ad-row__fact", role: "img", "aria-label": String(repeat), title: String(repeat), children: /* @__PURE__ */ jsx18(Icon, { job: "repeat", size: "sm" }) }) : null;
   const extras = loneRepeat || pastDeadline || roleWords || deliverable;
-  const meta = date || dept || extras ? /* @__PURE__ */ jsxs15(Fragment5, { children: [
-    date,
+  const inlineDate = dateLayout === "columns" ? null : date;
+  const meta = inlineDate || dept || extras ? /* @__PURE__ */ jsxs15(Fragment5, { children: [
+    inlineDate,
     dept && /* @__PURE__ */ jsx18(Department, { dept: dept.dept, name: dept.name, onPress: onPressDept, pressLabel: pressLabels?.dept }),
     loneRepeat,
     pastDeadline && /* @__PURE__ */ jsx18("span", { ...d("pastDeadline"), className: "ad-row__fact ad-row__fact--late", role: "img", "aria-label": pastDeadlineLabel, children: /* @__PURE__ */ jsx18(Icon, { job: "flag", size: "sm" }) }),
@@ -2400,6 +2563,7 @@ function TodoRow({ ringProps, factProps, dragging, name, priority, done, onTick,
       ] }),
       name: String(name),
       meta,
+      trail: dateLayout === "columns" ? date : void 0,
       people: who || project ? /* @__PURE__ */ jsxs15("span", { className: "ad-row__who", children: [
         who && (() => {
           const list = Array.isArray(who) ? who : [who];
@@ -2461,7 +2625,14 @@ var tokenPxList = (name, fallback) => {
 function useInList() {
   return useContext6(InList2);
 }
-function ListSection({ title, children, collapsible, collapsed, onCollapsedChange, day, bar, dropTarget, emptySentence, look, className, ...heading }) {
+function ListBranches({ className, children, ...rest }) {
+  return /* @__PURE__ */ jsx19("div", { role: "list", ...rest, className: cx("ad-list-branches", className), children: /* @__PURE__ */ jsx19(InList2.Provider, { value: true, children }) });
+}
+function ListBranch({ className, children, ...rest }) {
+  const inList = useInList();
+  return /* @__PURE__ */ jsx19("div", { role: inList ? "listitem" : void 0, ...rest, className: cx("ad-list-branch", className), children: /* @__PURE__ */ jsx19(InList2.Provider, { value: false, children }) });
+}
+function ListSection({ title, children, collapsible, collapsed, onCollapsedChange, day, bar, dropTarget, emptySentence, look, tree, className, ...heading }) {
   const none = React.Children.count(children) === 0;
   const [own, setOwn] = useState9(!!collapsible && !heading.needsYou);
   useEffect7(() => {
@@ -2476,12 +2647,12 @@ function ListSection({ title, children, collapsible, collapsed, onCollapsedChang
   };
   const inList = useInList();
   const bare = !day && !bar && (title == null || title === "");
-  return /* @__PURE__ */ jsxs16("section", { role: inList ? "listitem" : void 0, className: cx("ad-section ad-list-section", look === "rule" && "ad-section--rule", dropTarget?.over && "ad-list-section--over", className), children: [
+  return /* @__PURE__ */ jsxs16("section", { role: inList ? "listitem" : void 0, className: cx("ad-section ad-list-section", look === "rule" && "ad-section--rule", tree && bar && !shut && !none && "ad-list-section--tree", dropTarget?.over && "ad-list-section--over", className), children: [
     day ? /* @__PURE__ */ jsx19(DayHeading, { day: day.day, today: day.today }) : bar ? /* @__PURE__ */ jsxs16("div", { className: "ad-list-section__bar", children: [
       collapsible && /* @__PURE__ */ jsx19("button", { type: "button", className: "ad-list-section__fold", "aria-expanded": !shut, "aria-controls": bodyId, "aria-label": bar.foldLabel ?? String(title), onClick: toggle, children: /* @__PURE__ */ jsx19(Icon, { job: shut ? "chevron-right" : "chevron-down", size: "sm" }) }),
-      /* @__PURE__ */ jsx19(InList2.Provider, { value: false, children: /* @__PURE__ */ jsx19(Row, { heading: true, name: title, meta: bar.meta, status: bar.status, dates: bar.dates, onOpen: bar.onOpen, trail: bar.end }) })
+      /* @__PURE__ */ jsx19(InList2.Provider, { value: false, children: /* @__PURE__ */ jsx19(Row, { heading: true, name: title, lead: bar.lead, meta: bar.meta, status: bar.status, dates: bar.dates, onOpen: bar.onOpen, trail: bar.end }) })
     ] }) : !bare && /* @__PURE__ */ jsx19(GroupHeading, { ...heading, collapsible, collapsed: shut, onToggle: toggle, controls: bodyId, children: title }),
-    /* @__PURE__ */ jsxs16("div", { id: bodyId, role: "list", hidden: collapsible && !bare ? shut : void 0, className: cx("ad-list-section__body", bar && "ad-list-section__body--nested", (dropTarget?.empty || none) && "ad-list-section__body--empty"), children: [
+    /* @__PURE__ */ jsxs16("div", { id: bodyId, role: "list", hidden: collapsible && !bare ? shut : void 0, className: cx("ad-list-section__body", bar && "ad-list-section__body--nested", tree && bar && "ad-list-branches", (dropTarget?.empty || none) && "ad-list-section__body--empty"), children: [
       /* @__PURE__ */ jsx19(InList2.Provider, { value: true, children }),
       none && emptySentence && /* @__PURE__ */ jsx19("p", { className: "ad-list-section__empty", children: emptySentence })
     ] })
@@ -3934,7 +4105,7 @@ function TimeField({ value, onChange, label, step = 30, bareHoursArePm, classNam
 import { createContext as createContext8, forwardRef as forwardRef7, useContext as useContext9, useState as useState18 } from "react";
 import { jsx as jsx30, jsxs as jsxs27 } from "react/jsx-runtime";
 var OpenCard = createContext8(void 0);
-var Card = forwardRef7(function Card2({ title, onMore, moreLabel = "More", children, onOpen, selected, dragging, picking, size = "tile", className, onClick, ...rest }, ref) {
+var Card = forwardRef7(function Card2({ title, headerLayout = "row", density, end, onMore, moreLabel = "More", children, onOpen, selected, dragging, picking, size = "tile", showIndex = true, className, onClick, ...rest }, ref) {
   return /* @__PURE__ */ jsxs27(
     "div",
     {
@@ -3947,13 +4118,14 @@ var Card = forwardRef7(function Card2({ title, onMore, moreLabel = "More", child
         onClick?.(e);
         if (onOpen && !e.defaultPrevented && !fromControl(e)) onOpen();
       },
-      className: cx("ad-card", `ad-card--${size}`, onOpen && "ad-card--opens", className),
+      className: cx("ad-card", density === "compact" && "ad-card--compact", headerLayout === "inline" && "ad-card--inline-head", `ad-card--${size}`, size === "widget" && !showIndex && "ad-card--unindexed", onOpen && "ad-card--opens", className),
       children: [
-        (title != null || onMore != null) && /* @__PURE__ */ jsxs27("div", { className: "ad-card__head", children: [
-          title != null && /* @__PURE__ */ jsx30("h3", { className: "ad-card__title ad-type-heading", children: onOpen ? /* @__PURE__ */ jsx30("button", { type: "button", className: "ad-card__title-open", onClick: (e) => {
+        (title != null || end != null || onMore != null) && /* @__PURE__ */ jsxs27("div", { className: "ad-card__head", children: [
+          title != null && /* @__PURE__ */ jsx30("h3", { className: cx("ad-card__title ad-type-heading", headerLayout === "inline" && "ad-sr"), children: onOpen ? /* @__PURE__ */ jsx30("button", { type: "button", className: "ad-card__title-open", onClick: (e) => {
             e.stopPropagation();
             onOpen();
           }, children: title }) : title }),
+          end != null && /* @__PURE__ */ jsx30("span", { className: "ad-card__end", children: end }),
           onMore != null && /* @__PURE__ */ jsx30("button", { type: "button", className: "ad-card__more", onClick: (e) => {
             e.stopPropagation();
             onMore();
@@ -3979,8 +4151,8 @@ function CardName({ children, lead, onRename, renameLabel }) {
 function Dials({ children }) {
   return /* @__PURE__ */ jsx30("div", { className: "ad-card__dials", children });
 }
-function CardGrid({ children, columns = 3, align, className, style, ...rest }) {
-  return /* @__PURE__ */ jsx30("div", { ...rest, style: { ...style, "--ad-cols": columns }, className: cx("ad-card-grid", align === "start" && "ad-card-grid--start", className), children });
+function CardGrid({ children, columns = 3, align, compact, className, style, ...rest }) {
+  return /* @__PURE__ */ jsx30("div", { ...rest, style: { ...style, "--ad-cols": columns }, className: cx("ad-card-grid", align === "start" && "ad-card-grid--start", compact && "ad-card-grid--compact", className), children });
 }
 function Picture({ src, alt, ...rest }) {
   const [failed, setFailed] = useState18(null);
@@ -3990,7 +4162,7 @@ function Picture({ src, alt, ...rest }) {
 }
 
 // src/components/PageHeader/PageHeader.tsx
-import { useId as useId12, useRef as useRef20, useState as useState20 } from "react";
+import { useEffect as useEffect13, useId as useId12, useRef as useRef20, useState as useState20 } from "react";
 
 // src/components/ShowOptions/ShowOptions.tsx
 import { useRef as useRef19, useState as useState19 } from "react";
@@ -4074,6 +4246,43 @@ function PageHeader({ title, icon, stamp, tabs, back, description, countdown: gi
   const anyEnd = gear || onSearch || onPopOut || onHelp || menu;
   const [menuOpen, setMenuOpen] = useState20(false);
   const menuAt = useRef20(null);
+  const heading = useRef20(null);
+  const titleWords = useRef20(null);
+  const baseline = useRef20(null);
+  useEffect13(() => {
+    const h = heading.current, words = titleWords.current, mark = baseline.current;
+    const svg = h?.querySelector(".ad-page-header__icon svg");
+    if (!h || !words || !mark || !svg || typeof svg.getBBox !== "function") return;
+    const viewBox = svg.getAttribute("viewBox");
+    const context = document.createElement("canvas").getContext("2d");
+    if (!context) return;
+    let active = true;
+    const measure = () => {
+      if (!active) return;
+      const style = getComputedStyle(h);
+      context.font = `${style.fontWeight} ${style.fontSize} ${style.fontFamily}`;
+      const ink = context.measureText(title.toUpperCase());
+      const height = ink.actualBoundingBoxAscent + ink.actualBoundingBoxDescent;
+      const bounds = svg.getBBox();
+      if (!(height > 0 && bounds.height > 0 && bounds.width > 0)) return;
+      svg.setAttribute("viewBox", `${bounds.x} ${bounds.y} ${bounds.width} ${bounds.height}`);
+      h.style.setProperty("--ad-title-icon-height", `${height}px`);
+      h.style.setProperty("--ad-title-icon-width", `${height * bounds.width / bounds.height}px`);
+      h.style.setProperty("--ad-title-icon-top", `${mark.getBoundingClientRect().top - h.getBoundingClientRect().top - ink.actualBoundingBoxAscent}px`);
+    };
+    measure();
+    document.fonts?.ready.then(measure);
+    document.fonts?.addEventListener("loadingdone", measure);
+    const observer = typeof ResizeObserver === "undefined" ? null : new ResizeObserver(measure);
+    observer?.observe(words);
+    return () => {
+      active = false;
+      observer?.disconnect();
+      document.fonts?.removeEventListener("loadingdone", measure);
+      if (viewBox != null) svg.setAttribute("viewBox", viewBox);
+      for (const property of ["height", "width", "top"]) h.style.removeProperty(`--ad-title-icon-${property}`);
+    };
+  }, [title, icon]);
   const shownStamp = typeof stamp === "string" && STATES.has(stamp);
   const countdown2 = given && typeof given === "object" && given.to instanceof Date ? countdownWords(given) : null;
   return /* @__PURE__ */ jsxs30("header", { className: cx("ad-page-header", className), children: [
@@ -4081,9 +4290,12 @@ function PageHeader({ title, icon, stamp, tabs, back, description, countdown: gi
       /* @__PURE__ */ jsxs30("div", { className: "ad-page-header__lead", children: [
         /* @__PURE__ */ jsxs30("div", { className: "ad-page-header__titled", children: [
           back && /* @__PURE__ */ jsx33("button", { type: "button", className: "ad-page-header__back", "aria-label": back.label, title: back.label, onClick: back.onBack, children: /* @__PURE__ */ jsx33(Icon, { job: "chevron-left", size: "lg" }) }),
-          /* @__PURE__ */ jsxs30("h1", { className: "ad-page-header__title", children: [
+          /* @__PURE__ */ jsxs30("h1", { ref: heading, className: "ad-page-header__title", children: [
             icon && /* @__PURE__ */ jsx33("span", { className: "ad-page-header__icon", "aria-hidden": "true", children: slotIcon(icon, { weight: "light" }) }),
-            scramble ? /* @__PURE__ */ jsx33(TextScramble, { text: title }) : title
+            /* @__PURE__ */ jsxs30("span", { ref: titleWords, className: "ad-page-header__words", children: [
+              scramble ? /* @__PURE__ */ jsx33(TextScramble, { text: title }) : title,
+              /* @__PURE__ */ jsx33("span", { ref: baseline, className: "ad-page-header__baseline", "aria-hidden": "true" })
+            ] })
           ] })
         ] }),
         (description || countdown2) && /* @__PURE__ */ jsxs30("div", { className: "ad-page-header__aside", children: [
@@ -4138,14 +4350,14 @@ function Tabs({ tabs, value, onChange, ariaLabel, numbered = true, panelId, clas
 }
 
 // src/components/Toolbar/Toolbar.tsx
-import { forwardRef as forwardRef9, useEffect as useEffect14, useRef as useRef22, useState as useState21 } from "react";
+import { forwardRef as forwardRef9, useEffect as useEffect15, useRef as useRef22, useState as useState21 } from "react";
 
 // src/components/Writing/Writing.tsx
-import { forwardRef as forwardRef8, useEffect as useEffect13, useRef as useRef21 } from "react";
+import { forwardRef as forwardRef8, useEffect as useEffect14, useRef as useRef21 } from "react";
 import { jsx as jsx34, jsxs as jsxs31 } from "react/jsx-runtime";
 function NoteBox({ heading = "Notes", className, value, ...rest }) {
   const ref = useRef21(null);
-  useEffect13(() => {
+  useEffect14(() => {
     const el = ref.current;
     if (el) {
       el.style.height = "auto";
@@ -4427,7 +4639,7 @@ function OrderList({ label, items, onReorder }) {
 function ShowSwitch({ setting: s }) {
   const [said, setSaid] = useState21(false);
   const locked = s.on && !!s.reason;
-  useEffect14(() => {
+  useEffect15(() => {
     if (!locked) setSaid(false);
   }, [locked]);
   return /* @__PURE__ */ jsxs32(Fragment15, { children: [
@@ -4577,7 +4789,7 @@ function DropLine() {
 // src/components/Splitter/Splitter.tsx
 import { useRef as useRef24 } from "react";
 import { Fragment as Fragment17, jsx as jsx38, jsxs as jsxs35 } from "react/jsx-runtime";
-function Splitter({ main, side, size, onResize, min = 0, max = Number.POSITIVE_INFINITY, at = "end", label, className }) {
+function Splitter({ main, side, size, onResize, min = 0, max = Number.POSITIVE_INFINITY, at = "end", scrollPanes = true, label, className }) {
   const box = useRef24(null);
   const clamp = (n) => Math.max(min, Math.min(max, Math.round(n)));
   const onPointerDown2 = (e) => {
@@ -4629,7 +4841,7 @@ function Splitter({ main, side, size, onResize, min = 0, max = Number.POSITIVE_I
       onKeyDown: onKeyDown2
     }
   );
-  return /* @__PURE__ */ jsxs35("div", { ref: box, className: cx("ad-splitter", `ad-splitter--${at}`, className), style: { ["--ad-split"]: `${size}px` }, children: [
+  return /* @__PURE__ */ jsxs35("div", { ref: box, className: cx("ad-splitter", `ad-splitter--${at}`, !scrollPanes && "ad-splitter--page-scroll", className), style: { ["--ad-split"]: `${size}px` }, children: [
     at === "start" && /* @__PURE__ */ jsxs35(Fragment17, { children: [
       /* @__PURE__ */ jsx38("div", { className: "ad-splitter__side", children: side }),
       divider
@@ -4643,17 +4855,32 @@ function Splitter({ main, side, size, onResize, min = 0, max = Number.POSITIVE_I
 }
 
 // src/components/Text/Text.tsx
+import { useLayoutEffect as useLayoutEffect7, useRef as useRef25 } from "react";
 import { jsx as jsx39, jsxs as jsxs36 } from "react/jsx-runtime";
-function DataText({ children, dim, small, estimate, className }) {
-  return /* @__PURE__ */ jsx39("span", { className: cx("ad-type-data", "ad-data-text", small && "ad-data-text--small", dim && "ad-data-text--dim", estimate && "ad-figure-estimate", className), children });
+function DataText({ children, dim, small, size, estimate, className }) {
+  return /* @__PURE__ */ jsx39("span", { className: cx("ad-type-data", "ad-data-text", small && "ad-data-text--small", size === "large" && !small && "ad-data-text--large", dim && "ad-data-text--dim", estimate && "ad-figure-estimate", className), children });
 }
 function Hint({ children, className }) {
   return /* @__PURE__ */ jsx39("span", { className: cx("ad-hint", className), children });
 }
-function Figures({ items, ariaLabel, className }) {
-  return /* @__PURE__ */ jsx39("dl", { className: cx("ad-figures", className), "aria-label": ariaLabel, children: items.slice(0, 4).map((f) => /* @__PURE__ */ jsxs36("div", { className: "ad-figures__item", children: [
-    /* @__PURE__ */ jsx39("dt", { className: "ad-figures__label ad-type-heading", children: f.label }),
-    /* @__PURE__ */ jsx39("dd", { className: "ad-figures__value", children: f.value })
+function Figures({ items, ariaLabel, layout = "strip", density, onIntrinsicWidth, className }) {
+  const track = useRef25(null);
+  const intrinsic = (layout === "clocks" || layout === "rail") && onIntrinsicWidth != null;
+  useLayoutEffect7(() => {
+    const el = track.current;
+    if (!intrinsic || !el || !onIntrinsicWidth) return;
+    const measure = () => onIntrinsicWidth(Math.ceil(el.getBoundingClientRect().width));
+    measure();
+    if (typeof ResizeObserver === "undefined") return;
+    const observer = new ResizeObserver(measure);
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, [intrinsic, onIntrinsicWidth]);
+  return /* @__PURE__ */ jsx39("dl", { ref: track, className: cx("ad-figures", density === "compact" && "ad-figures--dense", layout !== "strip" && "ad-figures--grid", layout === "compact" && "ad-figures--compact", layout === "rail" && "ad-figures--rail", layout === "readings" && "ad-figures--readings", layout === "clocks" && "ad-figures--clocks", intrinsic && "ad-figures--intrinsic", className), "aria-label": ariaLabel, children: (layout !== "strip" ? items : items.slice(0, 4)).map((f) => /* @__PURE__ */ jsxs36("div", { className: "ad-figures__item", title: (layout === "rail" || layout === "readings") && typeof f.note === "string" ? f.note : void 0, children: [
+    /* @__PURE__ */ jsx39("dt", { className: cx("ad-figures__label ad-type-heading", layout === "clocks" && "ad-sr"), children: f.label }),
+    /* @__PURE__ */ jsx39("dd", { className: cx("ad-figures__value", (layout === "rail" || layout === "clocks") && f.graphic != null && "ad-sr"), children: layout === "readings" ? /* @__PURE__ */ jsx39(ButtonSizeScope, { size: "row", children: f.value }) : f.value }),
+    f.graphic != null && /* @__PURE__ */ jsx39("dd", { className: "ad-figures__graphic", children: f.graphic }),
+    f.note != null && /* @__PURE__ */ jsx39("dd", { className: cx("ad-figures__note", (layout === "rail" || layout === "readings" || layout === "clocks") && "ad-sr"), children: f.note })
   ] }, f.label)) });
 }
 
@@ -4667,7 +4894,7 @@ function Columns({ main, side, sideWidth = "card", className }) {
 }
 
 // src/components/Table/Table.tsx
-import { useLayoutEffect as useLayoutEffect7, useRef as useRef25, useState as useState23 } from "react";
+import { useLayoutEffect as useLayoutEffect8, useRef as useRef26, useState as useState23 } from "react";
 import { jsx as jsx41, jsxs as jsxs38 } from "react/jsx-runtime";
 var Arrow = ({ up }) => /* @__PURE__ */ jsx41(Icon, { name: up ? "arrow-up" : "arrow-down", size: "sm", className: "ad-table__arrow" });
 function Table({ columns, rows, rowId, caption, sort, onSort, picked, onPickedChange, onPickAllChange, pickLabel, pickAllLabel = "Pick all", onOpen, rowProps, group, foldGroups, foldedGroups, onFoldGroup, depth, foldParents, foldedRows, onFoldRow, foldLabel, nameColumn, fixed, className }) {
@@ -4700,10 +4927,10 @@ function Table({ columns, rows, rowId, caption, sort, onSort, picked, onPickedCh
   let lastGroup;
   const all = rows.length > 0 && rows.every((r) => picked?.has(rowId(r)));
   const nameAt = Math.max(0, nameColumn ? columns.findIndex((c) => c.id === nameColumn) : 0);
-  const headRow = useRef25(null);
+  const headRow = useRef26(null);
   const [held, setHeld] = useState23({});
   const heldKey = columns.filter((c) => c.frozen === "start").map((c) => c.id).join(" ");
-  useLayoutEffect7(() => {
+  useLayoutEffect8(() => {
     const tr = headRow.current;
     if (!tr || heldKey.split(" ").length < 2) return;
     const measure = () => {
@@ -4721,7 +4948,7 @@ function Table({ columns, rows, rowId, caption, sort, onSort, picked, onPickedCh
     tr.querySelectorAll("th").forEach((th) => seen.observe(th));
     return () => seen.disconnect();
   }, [heldKey, onPickedChange]);
-  const wrap = useRef25(null);
+  const wrap = useRef26(null);
   useKeyScroll(wrap);
   const at = (c) => c.frozen === "start" && held[c.id] ? { ["--ad-held"]: `${held[c.id]}px` } : {};
   return /* @__PURE__ */ jsx41("div", { ref: wrap, className: cx("ad-table-wrap", className), children: /* @__PURE__ */ jsxs38("table", { className: cx("ad-table", fixed && "ad-table--fixed"), children: [
@@ -4787,7 +5014,7 @@ function Table({ columns, rows, rowId, caption, sort, onSort, picked, onPickedCh
 }
 function SelectionBar({ count, countLabel = (n) => `${n} selected`, actions, lead, onClear, clearLabel = "Clear", showAtZero, emptyLabel = "Nothing selected", onExit, exitLabel = "Exit", className }) {
   const [open, setOpen] = useState23(null);
-  const anchor = useRef25(null);
+  const anchor = useRef26(null);
   const ordered2 = [...actions.filter((a) => !a.danger), ...actions.filter((a) => a.danger)];
   if (count <= 0 && !showAtZero) return null;
   const zero = count <= 0;
@@ -4835,7 +5062,7 @@ function SelectionBarRoom() {
 }
 
 // src/components/Timeline/Timeline.tsx
-import { useLayoutEffect as useLayoutEffect8, useRef as useRef26, useState as useState24 } from "react";
+import { useLayoutEffect as useLayoutEffect9, useRef as useRef27, useState as useState24 } from "react";
 import { Fragment as Fragment18, jsx as jsx42, jsxs as jsxs39 } from "react/jsx-runtime";
 var strip4 = (h) => {
   if (!h) return {};
@@ -4849,18 +5076,20 @@ function Envelope({ side }) {
     /* @__PURE__ */ jsx42("path", { d: curve, vectorEffect: "non-scaling-stroke" })
   ] });
 }
-function Bar({ code: code2, travel, dim, label, unconfirmed, deal, backup, color, selected, startLabel, endLabel, lead, children, thin, labelOutside, onOpen, ends, barProps, labelInset, labelHidden, late, dense, fade, fadeStart, fadeEnd, onCramped, detail, className, style }) {
+function Bar({ code: code2, travel, dim, label, unconfirmed, deal, backup, color, selected, startLabel, endLabel, lead, children, thin, labelOutside, onOpen, ends, barProps, labelInset, labelHidden, late, dense, fade, fadeStart, fadeEnd, onCramped, detail, suffix, className, style }) {
   const asButton = !!onOpen && !ends;
   const Tag2 = asButton ? "button" : "div";
   const hue = useHue(color);
   const hooks = strip4(barProps);
   const paint = barColour(color, hue);
   const plain = !thin && !code2;
-  const root = useRef26(null);
+  const root = useRef27(null);
   const [cramped, setCramped] = useState24(false);
-  const tell = useRef26(onCramped);
+  const [suffixFits, setSuffixFits] = useState24(true);
+  const [suffixText, setSuffixText] = useState24("");
+  const tell = useRef27(onCramped);
   tell.current = onCramped;
-  useLayoutEffect8(() => {
+  useLayoutEffect9(() => {
     const el = root.current;
     if (!el) return;
     const measure = () => {
@@ -4870,6 +5099,15 @@ function Bar({ code: code2, travel, dim, label, unconfirmed, deal, backup, color
         setCramped(c);
         tell.current?.(c);
       }
+      const lab2 = el.querySelector(".ad-bar__label");
+      const tail2 = lab2?.querySelector(".ad-bar__suffix");
+      if (lab2 && tail2) {
+        setSuffixText(tail2.textContent?.trim() ?? "");
+        const fixed = Array.from(lab2.children).filter((child) => !child.classList.contains("ad-bar__words") && !child.classList.contains("ad-bar__name") && child !== tail2);
+        const gap = parseFloat(getComputedStyle(lab2).columnGap) || 0;
+        const reserved = fixed.reduce((width, child) => width + child.getBoundingClientRect().width, 0) + gap * (fixed.length + 1);
+        setSuffixFits(tail2.scrollWidth + reserved <= lab2.clientWidth + 1);
+      }
     };
     measure();
     document.fonts?.ready.then(measure).catch(() => {
@@ -4878,12 +5116,14 @@ function Bar({ code: code2, travel, dim, label, unconfirmed, deal, backup, color
     ro?.observe(el);
     const lab = el.querySelector(".ad-bar__label");
     if (lab) ro?.observe(lab);
+    const tail = el.querySelector(".ad-bar__suffix");
+    if (tail) ro?.observe(tail);
     return () => ro?.disconnect();
-  }, [label]);
+  }, [label, suffix]);
   const clip = labelOutside === "clip";
   const keepIn = !!code2 || labelOutside === "never" || clip;
   const outside = !keepIn && (labelOutside === true || labelOutside === "before" || labelOutside === "after" || cramped);
-  const tip = clip && typeof label === "string" && !hooks.title ? [label, detail].filter((x) => typeof x === "string").join(" \xB7 ") : keepIn && cramped && typeof label === "string" && !hooks.title ? label : void 0;
+  const tip = clip && typeof label === "string" && !hooks.title ? [label, detail, suffixText].filter((x) => typeof x === "string" && x).join(" \xB7 ") : keepIn && cramped && typeof label === "string" && !hooks.title ? label : void 0;
   const name = /* @__PURE__ */ jsx42("span", { className: "ad-bar__name", children: label });
   const grip = (side, h) => h && /* @__PURE__ */ jsx42("span", { "aria-hidden": h["aria-label"] ? void 0 : true, ...strip4(h), className: `ad-bar__grip ad-bar__grip--${side}` });
   return /* @__PURE__ */ jsxs39(
@@ -4922,7 +5162,8 @@ function Bar({ code: code2, travel, dim, label, unconfirmed, deal, backup, color
           clip ? /* @__PURE__ */ jsxs39("span", { className: "ad-bar__words", children: [
             name,
             detail != null && /* @__PURE__ */ jsx42("span", { className: "ad-bar__detail", children: detail })
-          ] }) : name
+          ] }) : name,
+          suffix != null && /* @__PURE__ */ jsx42("span", { className: "ad-bar__suffix", "aria-hidden": suffixFits ? void 0 : true, children: suffix })
         ] }),
         children,
         outside && /* @__PURE__ */ jsx42("span", { className: "ad-bar__outside", children: name }),
@@ -4953,13 +5194,13 @@ function DeliverableBar({ parts, ...props }) {
 }
 function DeliverableRow({ lead, status, showStatus, statusLabel, markers: given, expandable, expanded, onToggle, toggleLabel = "Show parts", className, ...bar }) {
   const done = status === "good";
-  const row = useRef26(null);
+  const row = useRef27(null);
   const [marksOff, setMarksOff] = useState24(null);
   const onCramped = (c) => {
     const width = row.current?.clientWidth ?? 0;
     if (c && marksOff === null && given.length) setMarksOff(width);
   };
-  useLayoutEffect8(() => {
+  useLayoutEffect9(() => {
     const el = row.current;
     if (!el || marksOff === null || typeof ResizeObserver === "undefined") return;
     const ro = new ResizeObserver(() => {
@@ -4987,9 +5228,9 @@ function DeliverableRow({ lead, status, showStatus, statusLabel, markers: given,
 }
 var LEAD_AT = 0.12;
 function Lanes({ children, marks, ariaLabel, nameWidth, className }) {
-  const box = useRef26(null);
+  const box = useRef27(null);
   const [fit, setFit] = useState24(null);
-  useLayoutEffect8(() => {
+  useLayoutEffect9(() => {
     const el = box.current;
     if (!el || nameWidth !== "fit") return;
     const measure = () => {
@@ -5116,6 +5357,10 @@ function ChartKey({ items, ariaLabel = "Key" }) {
 
 // src/components/Timeline/Ruler.tsx
 import { jsx as jsx43, jsxs as jsxs40 } from "react/jsx-runtime";
+function DayLines({ days, dayWidth }) {
+  if (!Number.isFinite(days) || !Number.isFinite(dayWidth) || days <= 0 || dayWidth <= 0) return null;
+  return /* @__PURE__ */ jsx43("div", { "aria-hidden": "true", className: "ad-day-lines", style: { width: days * dayWidth, ["--ad-day-w"]: `${dayWidth}px` } });
+}
 function Ruler({ start, days, dayWidth, locale = "en-US", pinned, className }) {
   const at = (i) => new Date(start.getFullYear(), start.getMonth(), start.getDate() + i);
   const months = [];
@@ -5150,17 +5395,51 @@ function Ruler({ start, days, dayWidth, locale = "en-US", pinned, className }) {
 }
 var ORDER = ["days", "weeks", "months", "quarters"];
 var NAMES = { days: "Days", weeks: "Weeks", months: "Months", quarters: "Quarters", zoomIn: "Zoom in", zoomOut: "Zoom out", previous: "Earlier", today: "Today", next: "Later" };
-function ZoomCluster({ zoom, onZoom, onPrevious, onToday, onNext, labels }) {
+function ZoomCluster({
+  zoom,
+  onZoom,
+  onZoomOut,
+  onZoomIn,
+  zoomOutOff,
+  zoomInOff,
+  onPrevious,
+  onToday,
+  onNext,
+  previousOff,
+  todayOff,
+  nextOff,
+  noPaging,
+  fitHeight,
+  ariaLabel,
+  attrs,
+  labels
+}) {
   const L = { ...NAMES, ...labels };
-  const i = ORDER.indexOf(zoom);
-  const btn = (label, glyph, on, disabled) => /* @__PURE__ */ jsx43(IconButton, { label, disabled, onClick: on, children: /* @__PURE__ */ jsx43(Icon, { job: glyph, size: "md" }) }, glyph);
-  return /* @__PURE__ */ jsx43(ButtonSizeScope, { size: "bar", children: /* @__PURE__ */ jsxs40("div", { className: "ad-zoom", role: "group", "aria-label": L[zoom], children: [
-    btn(`${L.zoomOut} (${L[ORDER[Math.min(i + 1, 3)]]})`, "minus", () => onZoom(ORDER[Math.min(i + 1, 3)]), i === 3),
-    btn(L.previous, "chevron-left", onPrevious),
-    btn(L.today, "today", onToday),
-    btn(L.next, "chevron-right", onNext),
-    btn(`${L.zoomIn} (${L[ORDER[Math.max(i - 1, 0)]]})`, "plus", () => onZoom(ORDER[Math.max(i - 1, 0)]), i === 0)
-  ] }) });
+  const i = zoom ? ORDER.indexOf(zoom) : -1;
+  const builtin = i >= 0 && onZoom;
+  const out = onZoomOut ?? (builtin ? () => onZoom(ORDER[Math.min(i + 1, ORDER.length - 1)]) : void 0);
+  const inside = onZoomIn ?? (builtin ? () => onZoom(ORDER[Math.max(i - 1, 0)]) : void 0);
+  const outLabel = onZoomOut ? L.zoomOut : `${L.zoomOut} (${L[ORDER[Math.min(i + 1, ORDER.length - 1)]]})`;
+  const inLabel = onZoomIn ? L.zoomIn : `${L.zoomIn} (${L[ORDER[Math.max(i - 1, 0)]]})`;
+  const btn = (label, glyph, on, off, endpoint) => on && /* @__PURE__ */ jsx43(IconButton, { label: off ? `${label}: ${off}` : label, disabled: !!off || endpoint, onClick: on, children: /* @__PURE__ */ jsx43(Icon, { job: glyph, size: "md" }) }, glyph);
+  return /* @__PURE__ */ jsx43(ButtonSizeScope, { size: "bar", children: /* @__PURE__ */ jsxs40(
+    "div",
+    {
+      ...attrs,
+      className: "ad-zoom",
+      role: "group",
+      "aria-label": ariaLabel ?? (zoom ? L[zoom] : "Zoom"),
+      "data-fit": fitHeight ? "" : void 0,
+      style: fitHeight ? { ["--ad-zoom-fit"]: `${fitHeight}px` } : void 0,
+      children: [
+        btn(outLabel, "minus", out, zoomOutOff, !onZoomOut && i === ORDER.length - 1),
+        !noPaging && btn(L.previous, "chevron-left", onPrevious, previousOff),
+        !noPaging && btn(L.today, "today", onToday, todayOff),
+        !noPaging && btn(L.next, "chevron-right", onNext, nextOff),
+        btn(inLabel, "plus", inside, zoomInOff, !onZoomIn && i === 0)
+      ]
+    }
+  ) });
 }
 function PeriodCluster({ shown, periods, period, onPeriod, onPrevious, onNext, onToday, previousOff, nextOff, labels }) {
   const L = { previous: "Earlier", today: "Today", next: "Later", period: "Period", ...labels };
@@ -5175,7 +5454,7 @@ function PeriodCluster({ shown, periods, period, onPeriod, onPrevious, onNext, o
 }
 
 // src/components/Calendar/Calendar.tsx
-import { useEffect as useEffect15, useLayoutEffect as useLayoutEffect9, useRef as useRef27, useState as useState25 } from "react";
+import { useEffect as useEffect16, useLayoutEffect as useLayoutEffect10, useRef as useRef28, useState as useState25 } from "react";
 import { Fragment as Fragment19, jsx as jsx44, jsxs as jsxs41 } from "react/jsx-runtime";
 var code = (it) => it.code ? /* @__PURE__ */ jsx44(ProjectPill, { code: it.code, color: it.color?.startsWith("project-") ? it.color : void 0 }) : null;
 var hooksOf2 = (h) => {
@@ -5332,11 +5611,12 @@ function scrollerAbove(el) {
   while (box && !/auto|scroll/.test(getComputedStyle(box).overflowY)) box = box.parentElement;
   return box ?? document.documentElement;
 }
-function TimeGrid({ startHour, endHour, bookings = [], columns, now, hourLabel = clockHour, onOpen, itemProps, columnProps, ariaLabel, bandHours, onPressAt, over, visibleHours, scrollTo, asideWidth = "narrow", hourHeight = "compact", bandHeading, className }) {
+function TimeGrid({ startHour, endHour, bookings = [], columns, now, hourLabel = clockHour, onOpen, itemProps, columnProps, ariaLabel, bandHours, onPressAt, over, visibleHours, scrollTo, asideWidth = "narrow", hourHeight = "compact", bandHeading, allDayContent, className }) {
   const hours = Math.max(1, endHour - startHour);
-  const frame = useRef27(null);
+  const frame = useRef28(null);
   const [headH, setHeadH] = useState25(0);
-  useLayoutEffect9(() => {
+  const [contentH, setContentH] = useState25(0);
+  useLayoutEffect10(() => {
     const el = frame.current;
     if (!el) return;
     const measure = () => {
@@ -5345,6 +5625,9 @@ function TimeGrid({ startHour, endHour, bookings = [], columns, now, hourLabel =
         h = Math.max(h, n.offsetHeight);
       });
       setHeadH((was) => was === h ? was : h);
+      const content = el.querySelector(".ad-time-grid__allday-content");
+      const contentHeight = content?.offsetHeight ?? 0;
+      setContentH((was) => was === contentHeight ? was : contentHeight);
       if (asideWidth === "narrow") return;
       el.querySelectorAll(".ad-time-grid__aside").forEach((a) => {
         let floor = -Infinity;
@@ -5359,10 +5642,10 @@ function TimeGrid({ startHour, endHour, bookings = [], columns, now, hourLabel =
     measure();
     if (typeof ResizeObserver === "undefined") return;
     const ro = new ResizeObserver(measure);
-    el.querySelectorAll(".ad-time-grid__head").forEach((n) => ro.observe(n));
+    el.querySelectorAll(".ad-time-grid__head, .ad-time-grid__allday-content").forEach((n) => ro.observe(n));
     return () => ro.disconnect();
   });
-  useEffect15(() => {
+  useEffect16(() => {
     const el = frame.current;
     if (!el || scrollTo == null) return;
     const go = () => {
@@ -5377,7 +5660,7 @@ function TimeGrid({ startHour, endHour, bookings = [], columns, now, hourLabel =
       const body = el.querySelector(".ad-time-grid__body");
       const lane = el.querySelector(".ad-time-grid__allday");
       if (!body) return false;
-      const held = (lane?.offsetHeight ?? 0) + (el.querySelector(".ad-time-grid__head, .ad-time-grid__day")?.offsetHeight ?? 0);
+      const held = (el.querySelector(".ad-time-grid__allday-content")?.offsetHeight ?? 0) + (lane?.offsetHeight ?? 0) + (el.querySelector(".ad-time-grid__head, .ad-time-grid__day")?.offsetHeight ?? 0);
       box.scrollTop = Math.max(0, box.scrollTop + body.getBoundingClientRect().top - box.getBoundingClientRect().top + (scrollTo - startHour) * hourPx - held);
       return true;
     };
@@ -5389,7 +5672,7 @@ function TimeGrid({ startHour, endHour, bookings = [], columns, now, hourLabel =
     return () => ro.disconnect();
   }, [scrollTo, startHour, hours, visibleHours]);
   const allDayCount = (columns ?? []).some((c) => c.allDay) ? Math.max(1, ...(columns ?? []).map((c) => c.allDay?.length ?? 0)) : 0;
-  useLayoutEffect9(() => {
+  useLayoutEffect10(() => {
     const el = frame.current;
     if (!el || hourHeight !== "fill") return;
     const box = scrollerAbove(el);
@@ -5411,7 +5694,7 @@ function TimeGrid({ startHour, endHour, bookings = [], columns, now, hourLabel =
       ro.disconnect();
       el.style.removeProperty("--ad-hour");
     };
-  }, [hourHeight, hours, allDayCount]);
+  }, [hourHeight, hours, allDayCount, contentH]);
   const pressAt = (colId) => (e) => {
     if (!onPressAt) return;
     const t = e.target;
@@ -5426,9 +5709,10 @@ function TimeGrid({ startHour, endHour, bookings = [], columns, now, hourLabel =
   const allDayRows = allDayCount;
   const anyBand = cols.some((c) => c.band);
   const headBand = !!bandHeading && anyBand;
-  return /* @__PURE__ */ jsxs41("div", { ref: frame, className: cx("ad-time-grid", !!visibleHours && "ad-time-grid--scrolls", `ad-time-grid--aside-${asideWidth}`, hourHeight === "roomy" && "ad-time-grid--roomy", className), role: "group", "aria-label": ariaLabel, style: { ["--ad-hours"]: hours, ["--ad-allday-rows"]: allDayRows, ...visibleHours ? { ["--ad-visible-hours"]: visibleHours } : {}, ...headH ? { ["--ad-head-h"]: `${headH}px` } : {} }, children: [
+  return /* @__PURE__ */ jsxs41("div", { ref: frame, className: cx("ad-time-grid", !!visibleHours && "ad-time-grid--scrolls", `ad-time-grid--aside-${asideWidth}`, hourHeight === "roomy" && "ad-time-grid--roomy", className), role: "group", "aria-label": ariaLabel, style: { ["--ad-hours"]: hours, ["--ad-allday-rows"]: allDayRows, ["--ad-column-count"]: cols.length, ["--ad-allday-content-h"]: `${contentH}px`, ...visibleHours ? { ["--ad-visible-hours"]: visibleHours } : {}, ...headH ? { ["--ad-head-h"]: `${headH}px` } : {} }, children: [
     /* @__PURE__ */ jsxs41("div", { className: "ad-time-grid__gutter", "aria-hidden": "true", children: [
       anyBand && !headBand && /* @__PURE__ */ jsx44("div", { className: "ad-time-grid__band-space" }),
+      allDayContent != null && /* @__PURE__ */ jsx44("div", { className: "ad-time-grid__content-space" }),
       allDayRows > 0 && /* @__PURE__ */ jsx44("div", { className: "ad-time-grid__allday-space" }),
       /* @__PURE__ */ jsxs41("div", { className: "ad-time-grid__hours", children: [
         Array.from({ length: hours }, (_, i) => now && Math.abs(startHour + i - now.at) < (hourHeight === "fill" ? 0.75 : 0.5) ? null : /* @__PURE__ */ jsx44("span", { className: cx("ad-time-grid__hour-label", i === 0 && "ad-time-grid__hour-label--first"), style: { top: at(startHour + i) }, children: hourLabel(startHour + i) }, i)),
@@ -5447,6 +5731,7 @@ function TimeGrid({ startHour, endHour, bookings = [], columns, now, hourLabel =
         c.figure != null && /* @__PURE__ */ jsx44("span", { className: "ad-time-grid__figure", children: c.figure })
       ] }),
       anyBand && !headBand && (c.band ? /* @__PURE__ */ jsx44(PhaseBand, { ...c.band }) : /* @__PURE__ */ jsx44("div", { className: "ad-time-grid__band-space" })),
+      allDayContent != null && (colAt === 0 ? /* @__PURE__ */ jsx44("div", { className: "ad-time-grid__allday-content", children: allDayContent }) : /* @__PURE__ */ jsx44("div", { className: "ad-time-grid__content-space", "aria-hidden": "true" })),
       allDayRows > 0 && /* @__PURE__ */ jsx44("div", { role: "group", ...hooksOf2(columnProps?.(c.id)), className: "ad-time-grid__allday", style: { ["--ad-lane-over"]: cols.length - colAt }, children: (c.allDay ?? []).map((item) => {
         const hooks = hooksOf2(itemProps?.(item));
         const cls = cx("ad-month__bar", "ad-striped", "ad-time-grid__item", item.unconfirmed && "ad-month__bar--unconfirmed");
@@ -5517,7 +5802,7 @@ function PhaseBand({ label, color, unconfirmed }) {
 }
 
 // src/components/Map/Map.tsx
-import { useEffect as useEffect16, useMemo as useMemo3, useRef as useRef28, useState as useState26 } from "react";
+import { useEffect as useEffect17, useMemo as useMemo3, useRef as useRef29, useState as useState26 } from "react";
 
 // src/components/Map/worldGeo.ts
 var GEO_LAT_MAX = 84;
@@ -5588,9 +5873,9 @@ var PICKS = new Set(pickColours);
 function WorldMap({ pins, at, ariaLabel, onPin, hoverCard, pinProps }) {
   const [hover, setHover] = useState26(null);
   const night = useMemo3(() => nightPath(at), [at]);
-  const wrap = useRef28(null);
+  const wrap = useRef29(null);
   const [w, setW] = useState26(0);
-  useEffect16(() => {
+  useEffect17(() => {
     const el = wrap.current;
     if (!el) return;
     setW(el.getBoundingClientRect().width);
@@ -5720,20 +6005,20 @@ function OverTime({ periods, currentId, grid = [], ariaLabel, className }) {
     ] })
   ] });
 }
-function Dial({ fraction, label, className }) {
+function Dial({ fraction, label, size, value, valueText, className }) {
   const r = 26;
   const c = 2 * Math.PI * r;
   const f = Math.max(0, Math.min(1, Number.isFinite(fraction) ? fraction : 0));
-  const display = `${Math.round(f * 100)}%`;
-  return /* @__PURE__ */ jsxs43("figure", { className: cx("ad-dial", className), children: [
-    /* @__PURE__ */ jsxs43("div", { className: "ad-dial__face", role: "meter", "aria-valuemin": 0, "aria-valuemax": 100, "aria-valuenow": Math.round(f * 100), "aria-label": String(label), children: [
+  const display = size != null && value != null ? value : `${Math.round(f * 100)}%`;
+  return /* @__PURE__ */ jsxs43("figure", { className: cx("ad-dial", size != null && "ad-dial--compact", size === "small" && "ad-dial--small", className), children: [
+    /* @__PURE__ */ jsxs43("div", { className: "ad-dial__face", role: "meter", "aria-valuemin": 0, "aria-valuemax": 100, "aria-valuenow": Math.round(f * 100), "aria-label": String(label), "aria-valuetext": size != null ? valueText : void 0, children: [
       /* @__PURE__ */ jsxs43("svg", { viewBox: "0 0 70 70", "aria-hidden": "true", children: [
         /* @__PURE__ */ jsx46("circle", { className: "ad-dial__track", cx: "35", cy: "35", r }),
         /* @__PURE__ */ jsx46("circle", { className: "ad-dial__arc", cx: "35", cy: "35", r, strokeDasharray: `${c * f} ${c}`, transform: "rotate(-90 35 35)" })
       ] }),
       /* @__PURE__ */ jsx46("span", { className: "ad-dial__value", children: display })
     ] }),
-    /* @__PURE__ */ jsx46("figcaption", { className: "ad-dial__label", children: label })
+    /* @__PURE__ */ jsx46("figcaption", { className: cx("ad-dial__label", size != null && "ad-sr"), children: label })
   ] });
 }
 function Verdict({ word, sentence }) {
@@ -5744,10 +6029,10 @@ function Verdict({ word, sentence }) {
 }
 
 // src/components/Search/Search.tsx
-import { useRef as useRef29 } from "react";
+import { useRef as useRef30 } from "react";
 import { jsx as jsx47 } from "react/jsx-runtime";
 function CommandSearch({ open, onClose, query, onQuery, results, onPick, label = "Search everything", noMatch = "Nothing by that name" }) {
-  const box = useRef29(null);
+  const box = useRef30(null);
   const z = useLayer(open, onClose, [box], "dialog");
   usePageInert(open, [box]);
   useFocusReturn(open, box);
@@ -5770,11 +6055,11 @@ function CommandSearch({ open, onClose, query, onQuery, results, onPick, label =
 }
 
 // src/components/Guidance/Guidance.tsx
-import { useEffect as useEffect17, useLayoutEffect as useLayoutEffect10, useRef as useRef30, useState as useState27 } from "react";
+import { useEffect as useEffect18, useLayoutEffect as useLayoutEffect11, useRef as useRef31, useState as useState27 } from "react";
 import { Fragment as Fragment21, jsx as jsx48, jsxs as jsxs44 } from "react/jsx-runtime";
-var useIsoLayoutEffect3 = typeof window === "undefined" ? useEffect17 : useLayoutEffect10;
+var useIsoLayoutEffect3 = typeof window === "undefined" ? useEffect18 : useLayoutEffect11;
 function TourStep({ open, anchor, step, total, title, children, onBack, onNext, onExit, backLabel = "Back", nextLabel = "Next", progressLabel = (s, t) => `${s} of ${t}`, placement, side: older, onClose, closeLabel }) {
-  const card = useRef30(null);
+  const card = useRef31(null);
   const [rect, setRect] = useState27(null);
   const [size, setSize] = useState27(null);
   const asked = placement ?? older ?? "below";
@@ -5974,7 +6259,7 @@ function Ground({ children, className, style }) {
 }
 
 // src/runtime/AdsProvider.tsx
-import { useContext as useContext10, useEffect as useEffect18, useMemo as useMemo4 } from "react";
+import { useContext as useContext10, useEffect as useEffect19, useMemo as useMemo4 } from "react";
 import { jsx as jsx50 } from "react/jsx-runtime";
 var MODE = typeof process !== "undefined" && process.env && process.env.NODE_ENV || "development";
 var pending = [];
@@ -6002,11 +6287,11 @@ ${describeViolations(all)}`);
 }
 function AdsProvider({ strict = false, show, children }) {
   const on = strict && MODE !== "production";
-  useEffect18(() => {
+  useEffect19(() => {
     if (!on) return;
     report(scanIn(document.body), true);
   });
-  useEffect18(() => {
+  useEffect19(() => {
     if (!on) return;
     const look = () => report(scanIn(document.body), false);
     const watch = new MutationObserver(look);
@@ -6032,6 +6317,44 @@ function AdsScope({ project, children }) {
   const outer = useContext10(HueSwitches);
   const value = useMemo4(() => ({ ...outer, inProject: true }), [outer]);
   return /* @__PURE__ */ jsx50(HueSwitches.Provider, { value, children: /* @__PURE__ */ jsx50("div", { "data-ads-project": project, style: { display: "contents" }, children }) });
+}
+
+// src/components/ClockFace/ClockFace.tsx
+import { forwardRef as forwardRef11 } from "react";
+import { Fragment as Fragment23, jsx as jsx51, jsxs as jsxs46 } from "react/jsx-runtime";
+var ClockFace = forwardRef11(function ClockFace2({ label, time, period, daytime, detail, className, ...props }, ref) {
+  return /* @__PURE__ */ jsxs46("button", { type: "button", ...props, ref, title: detail, "aria-label": props["aria-label"] ?? `Options for ${label}, ${time}${period ? ` ${period}` : ""}${detail ? `, ${detail}` : ""}`, className: cx("ad-clock-face", className), children: [
+    /* @__PURE__ */ jsxs46("span", { className: "ad-clock-face__label", children: [
+      label,
+      typeof daytime === "boolean" && /* @__PURE__ */ jsx51(Icon, { job: daytime ? "weather-clear" : "moon", size: "sm", label: daytime ? "Daytime" : "Nighttime" })
+    ] }),
+    /* @__PURE__ */ jsxs46("span", { className: "ad-clock-face__bezel", children: [
+      /* @__PURE__ */ jsx51("span", { className: "ad-clock-face__digits", children: /* @__PURE__ */ jsx51(ClockDigits, { time }) }),
+      period && /* @__PURE__ */ jsx51("span", { className: "ad-clock-face__period", "aria-hidden": "true", children: /* @__PURE__ */ jsx51("span", { "data-active": "", children: period.toUpperCase() }) })
+    ] })
+  ] });
+});
+var segments = { 0: "abcdef", 1: "bc", 2: "abged", 3: "abgcd", 4: "fgbc", 5: "afgcd", 6: "afgecd", 7: "abc", 8: "abcdefg", 9: "abfgcd" };
+var bars = { a: [1.5, 0, 6, 2], g: [1.5, 9, 6, 2], d: [1.5, 18, 6, 2], b: [7, 2, 2, 7], f: [0, 2, 2, 7], c: [7, 11, 2, 7], e: [0, 11, 2, 7] };
+function ClockDigits({ time }) {
+  if (!/^\d{1,2}:\d{2}$/.test(time)) return /* @__PURE__ */ jsx51(Fragment23, { children: time });
+  let x = 0;
+  const marks = time.split("").map((char, i) => {
+    const left = x;
+    x += (char === ":" ? 4 : 9) + 2;
+    return /* @__PURE__ */ jsx51("g", { transform: `translate(${left} 0)`, children: char === ":" ? /* @__PURE__ */ jsxs46(Fragment23, { children: [
+      /* @__PURE__ */ jsx51("circle", { cx: 2, cy: 6, r: 1 }),
+      /* @__PURE__ */ jsx51("circle", { cx: 2, cy: 14, r: 1 })
+    ] }) : segments[char].split("").map((name) => {
+      const [x2, y, width2, height] = bars[name];
+      return /* @__PURE__ */ jsx51("rect", { x: x2, y, width: width2, height, rx: 1 }, name);
+    }) }, i);
+  });
+  const width = x - 2;
+  return /* @__PURE__ */ jsxs46(Fragment23, { children: [
+    /* @__PURE__ */ jsx51("span", { className: "ad-sr", children: time }),
+    /* @__PURE__ */ jsx51("svg", { className: "ad-clock-face__segments", viewBox: `0 0 ${width} 20`, width, height: 20, "aria-hidden": "true", fill: "currentColor", children: marks })
+  ] });
 }
 export {
   AccessRow,
@@ -6064,6 +6387,7 @@ export {
   ChartKey,
   Checkbox,
   Clash,
+  ClockFace,
   CloseButton,
   CloudGlow,
   Columns,
@@ -6076,6 +6400,7 @@ export {
   DateRange,
   DayCell,
   DayHeading,
+  DayLines,
   DeliverableBar,
   Department,
   Dial,
@@ -6116,6 +6441,8 @@ export {
   LaneWash,
   Lanes,
   List,
+  ListBranch,
+  ListBranches,
   ListSection,
   LoadError,
   LoadingRows,
@@ -6209,6 +6536,8 @@ export {
   YearCalendar,
   ZoomCluster,
   cx,
+  departmentDefinition,
+  departmentDefinitions,
   describeViolations,
   dropLineProps,
   hueNames,

@@ -1,0 +1,26 @@
+/* Generated DS department assets; load live from the same origin as departments.json. */
+:root { --dept-lighting: #e6c02a; --dept-video: #9a74b4; --dept-eng: #6f9fc4; --dept-sfx: #b07a8c; --dept-content: #f359be; --dept-scenic: #b8873f; --dept-direction: #a27eff; --dept-admin: #5aa0a0; --dept-pm: #a34ca7; --dept-lasers: #74afb4; --dept-choreo: #e69758; --dept-costume: #d995b9; --dept-audio: #8bbd70; --dept-automation: #b0bbc9; --dept-moment: #ded3a3; --text-muted: #cecece; --accent: #e16d48; --icon-sm: 14px; --icon-md: 20px; --icon-lg: 24px; --space-1: 4px; --radius-page: 8px; --ring-select: inset 0 0 0 2px #aaa6a1; --dur-fast: 0.15s; --ease-out: cubic-bezier(0.2, 0, 0, 1); }
+[data-theme="light"] { --dept-lighting: #947911; --dept-video: #936aaf; --dept-eng: #467fab; --dept-sfx: #a66a7e; --dept-content: #e5119c; --dept-scenic: #9d7336; --dept-direction: #885aff; --dept-admin: #498383; --dept-pm: #a34ca7; --dept-lasers: #498388; --dept-choreo: #bc631c; --dept-costume: #c2538e; --dept-audio: #57873e; --dept-automation: #677c97; --dept-moment: #8b7a32; --text-muted: #585860; --accent: #ac3f1c; --icon-sm: 14px; --icon-md: 20px; --icon-lg: 24px; --space-1: 4px; --radius-page: 8px; --ring-select: inset 0 0 0 2px #6b6b73; --dur-fast: 0.15s; --ease-out: cubic-bezier(0.2, 0, 0, 1); }
+.ad-department { display: inline-flex; align-items: center; gap: var(--space-1); color: inherit; }
+.ad-department-label { min-width: 0; }
+.ad-department--press { margin: 0; padding: 0; border: 0; background: transparent; font: inherit; cursor: pointer; border-radius: var(--radius-page); }
+.ad-department--press:focus-visible { outline: none; box-shadow: var(--ring-select); }
+.ad-department-icon { display: inline-block; flex: none; width: var(--icon-sm); height: var(--icon-sm); fill: currentColor; color: var(--text-muted); vertical-align: middle; }
+.ad-department-icon[data-size="md"] { width: var(--icon-md); height: var(--icon-md); }
+.ad-department-icon[data-size="lg"] { width: var(--icon-lg); height: var(--icon-lg); }
+[data-department-colours="true"] .ad-department-icon[data-department="lighting"] { color: var(--dept-lighting); }
+[data-department-colours="true"] .ad-department-icon[data-department="video"] { color: var(--dept-video); }
+[data-department-colours="true"] .ad-department-icon[data-department="eng"] { color: var(--dept-eng); }
+[data-department-colours="true"] .ad-department-icon[data-department="sfx"] { color: var(--dept-sfx); }
+[data-department-colours="true"] .ad-department-icon[data-department="content"] { color: var(--dept-content); }
+[data-department-colours="true"] .ad-department-icon[data-department="scenic"] { color: var(--dept-scenic); }
+[data-department-colours="true"] .ad-department-icon[data-department="direction"] { color: var(--dept-direction); }
+[data-department-colours="true"] .ad-department-icon[data-department="admin"] { color: var(--dept-admin); }
+[data-department-colours="true"] .ad-department-icon[data-department="pm"] { color: var(--dept-pm); }
+[data-department-colours="true"] .ad-department-icon[data-department="lasers"] { color: var(--dept-lasers); }
+[data-department-colours="true"] .ad-department-icon[data-department="choreo"] { color: var(--dept-choreo); }
+[data-department-colours="true"] .ad-department-icon[data-department="costume"] { color: var(--dept-costume); }
+[data-department-colours="true"] .ad-department-icon[data-department="audio"] { color: var(--dept-audio); }
+[data-department-colours="true"] .ad-department-icon[data-department="automation"] { color: var(--dept-automation); }
+[data-department-colours="true"] .ad-department-icon[data-department="moment"] { color: var(--dept-moment); }
+.ad-department:hover .ad-department-icon, .ad-department--press:hover { color: var(--accent); }
