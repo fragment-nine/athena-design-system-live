@@ -1794,6 +1794,9 @@ button:hover > .ad-project-pill:not(.ad-project-pill--current) { color: var(--ac
 /* The stamp is the site's ghost type: tracked caps, faint. */
 .ad-page-header__stamp { flex: none; margin-left: auto; pointer-events: none; white-space: nowrap; font: var(--type-title); font-size: var(--text-28); text-transform: uppercase; letter-spacing: var(--track-caps); color: var(--text-primary); opacity: var(--opacity-stamp); }
 .ad-page-header__stamp + .ad-header-actions { margin-left: 0; }
+/* A screen's one own picker, just before the icon box, at the box's height (toolbar size). */
+.ad-page-header__picker { display: inline-flex; align-items: center; flex: none; margin-left: auto; --h-field: var(--h-btn-bar); }
+.ad-page-header__alerts ~ .ad-page-header__picker, .ad-page-header__stamp ~ .ad-page-header__picker, .ad-page-header__picker + .ad-header-actions { margin-left: 0; }
 /* A project's tabs, under the title row. */
 .ad-page-header__tabs { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-2) var(--space-6); margin-top: var(--space-4); }
 /* The title and its description: beside it while there is room; when the title and stamp leave none, the description and
@@ -2143,7 +2146,7 @@ button.ad-row__name:focus-visible { outline: none; box-shadow: var(--ring-select
 /* src/components/Segmented/Segmented.css */
 /* Segmented: pick one of 2 to 5. The choices sit loose and the current one sits on a bg-raised tile, as the view switch draws
  it. space-hair between the choices: tight neighbours. */
-/* Studio glass: the tray is a glass box with a hairline edge; the choices are tracked mono caps; the current one a square-ish tile. */
+/* Studio glass: the tray is a glass box with a hairline edge (none in a toolbar, as the header icon box); the choices are tracked mono caps; the current one a square-ish tile. */
 .ad-segmented {
   gap: var(--space-hair);
 }
@@ -2600,6 +2603,8 @@ button.ad-milestone:focus-visible { outline: none; box-shadow: var(--ring-select
 .ad-toolbar__separator { width: var(--border-w); height: var(--icon-lg); margin: 0 var(--space-2); background: var(--border); }
 /* The right side: one bar, the view switch's tray. A hairline between its groups; a zoom inside draws no bar of its own. */
 .ad-toolbar__end { margin-left: auto; gap: var(--space-hair); }
+/* A toolbar's groups are never outlined, as the header's icon box is not: the fill alone (the edge's width becomes padding, so nothing moves). */
+:is(.ad-toolbar, .ad-frame__toolbar) :is(.ad-segmented, .ad-zoom), .ad-toolbar__end { border-width: 0; padding: calc(var(--space-hair) + var(--border-w)); }
 .ad-toolbar__end:empty { display: none; }
 .ad-toolbar__end .ad-zoom { height: auto; padding: 0; border: 0; background: transparent; }
 .ad-toolbar__end > .ad-zoom, .ad-toolbar__end > .ad-button--view { border-radius: 0; box-shadow: calc(var(--border-w) * -1) 0 0 var(--border); }

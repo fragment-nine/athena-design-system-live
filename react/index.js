@@ -4258,7 +4258,7 @@ function countdownWords(c) {
   const days = n === 0 ? "Today" : `${n} ${n === 1 ? "day" : "days"} to`;
   return `${days} ${c.what}`;
 }
-function PageHeader({ title, icon, stamp, tabs, back, description, countdown: given, alerts, gear, onSearch, onPopOut, onHelp, menu, headerLabels, scramble = true, className }) {
+function PageHeader({ title, icon, stamp, tabs, back, description, countdown: given, alerts, picker, gear, onSearch, onPopOut, onHelp, menu, headerLabels, scramble = true, className }) {
   const anyEnd = gear || onSearch || onPopOut || onHelp || menu;
   const [menuOpen, setMenuOpen] = useState20(false);
   const menuAt = useRef20(null);
@@ -4321,6 +4321,7 @@ function PageHeader({ title, icon, stamp, tabs, back, description, countdown: gi
       ] }),
       alerts && /* @__PURE__ */ jsx33("div", { className: "ad-page-header__alerts", children: alerts }),
       shownStamp && /* @__PURE__ */ jsx33("div", { className: "ad-page-header__stamp", children: stamp }),
+      picker != null && picker !== false && /* @__PURE__ */ jsx33("div", { className: "ad-page-header__picker", children: picker }),
       anyEnd && /* @__PURE__ */ jsxs30(HeaderActions, { groupProps: { "aria-label": headerLabels?.group ?? "Screen actions" }, children: [
         gear && /* @__PURE__ */ jsx33(ShowOptionsGear, { ...gear }),
         onSearch && /* @__PURE__ */ jsx33(IconButton, { label: headerLabels?.search ?? "Search", onClick: onSearch, children: /* @__PURE__ */ jsx33(Icon, { job: "search", size: "md" }) }),
