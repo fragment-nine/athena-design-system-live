@@ -677,7 +677,11 @@
      read: the unconfirmed milestone diamond, as the approved Bars and Page-Schedule cards draw it. */
   --hatch-ink: repeating-linear-gradient(calc(var(--hatch-angle) * -1), var(--text-primary) 0 var(--border-w), transparent var(--border-w) var(--hatch-pitch));
   --blur-glass: blur(var(--blur-glass-radius)) saturate(1.1);
+  /* The plane a piece sits on: what a held heading, a held corner or a cut-out behind a mark paints, so it matches what is under it. */
+  --ad-under: var(--bg-base);
 }
+/* On a card or a section it is the card's own surface laid solid, never the page's black. */
+.ad-card, .ad-section:not(.ad-section--rule) { --ad-under: var(--bg-float); }
 /* Hatched: not certain yet. Solid: confirmed. Dashed outline: deal. Dotted outline: backup. Fine hatch: the past. */
 .ad-hatched { background-image: var(--hatch); }
 .ad-hatched-fine { background-image: var(--hatch-fine); }
@@ -891,7 +895,7 @@ tr[data-ad-drop="after"] > :is(td, th) { box-shadow: inset 0 calc(var(--bw-selec
 .ad-month__bar.ad-month__bar--milestone, .ad-month__bar.ad-month__bar--milestone.ad-month__bar--unconfirmed { background: transparent; background-image: none; }
 /* The row glyph's size, as the timeline's. */
 .ad-month__bar--past .ad-month__diamond { background: var(--text-muted); }
-.ad-month__bar--unconfirmed .ad-month__diamond { background-color: var(--bg-base); background-image: var(--hatch-ink); border: var(--border-w) solid var(--text-primary); }
+.ad-month__bar--unconfirmed .ad-month__diamond { background-color: var(--ad-under); background-image: var(--hatch-ink); border: var(--border-w) solid var(--text-primary); }
 /* One bar across its days, one lane high: solid when confirmed, hatched with its name on a solid patch when not. */
 .ad-month__bar { --ad-bar: var(--bg-hover); --ad-lane: 0; grid-row: calc(var(--ad-lane) + 2); z-index: 1; display: flex; align-items: center; min-width: 0; margin: 0 var(--space-1); padding: 0 var(--space-2); border: 0; border-radius: var(--radius-page); background: var(--ad-bar); color: var(--text-primary); font: var(--type-name); text-align: left; overflow: hidden; }
 /* An item or phase colour is never the fill of a calendar item or a booking: it runs as the side stripe down the left side
@@ -910,7 +914,7 @@ button.ad-month__bar:hover { box-shadow: var(--glow-hover); }
 button.ad-month__bar:hover > span { color: var(--accent); }
 button.ad-month__bar:focus-visible { outline: none; box-shadow: var(--ring-select); }
 .ad-month__bar--unconfirmed { background: transparent; background-image: var(--hatch); box-shadow: inset 0 0 0 var(--border-w) var(--line-strong); }
-.ad-month__bar--unconfirmed > span { background: var(--bg-base); padding: 0 var(--space-1); border-radius: var(--radius-page); }
+.ad-month__bar--unconfirmed > span { background: var(--ad-under); padding: 0 var(--space-1); border-radius: var(--radius-page); }
 .ad-month__bar--cut-start { border-top-left-radius: 0; border-bottom-left-radius: 0; margin-left: 0; }
 .ad-month__bar--cut-end { border-top-right-radius: 0; border-bottom-right-radius: 0; margin-right: 0; }
 .ad-booking { --ad-bar: var(--bg-hover); display: flex; flex-direction: column; gap: var(--space-hair); box-sizing: border-box; width: 100%; margin: 0; padding: var(--space-1) var(--space-2); border: 0; border-radius: var(--radius-page); background: var(--ad-bar); color: var(--text-primary); font: var(--type-name); line-height: var(--lh-tight); text-align: left; overflow: hidden; }
@@ -941,7 +945,7 @@ button.ad-booking:hover { box-shadow: var(--glow-hover); }
 button.ad-booking:hover .ad-booking__name { color: var(--accent); }
 button.ad-booking:focus-visible { outline: none; box-shadow: var(--ring-select); }
 .ad-booking--unconfirmed { background: transparent; background-image: var(--hatch); box-shadow: inset 0 0 0 var(--border-w) var(--line-strong); }
-.ad-booking--unconfirmed .ad-booking__name { align-self: flex-start; background: var(--bg-base); padding: 0 var(--space-1); border-radius: var(--radius-page); }
+.ad-booking--unconfirmed .ad-booking__name { align-self: flex-start; background: var(--ad-under); padding: 0 var(--space-1); border-radius: var(--radius-page); }
 .ad-booking__time { font: var(--type-data); font-size: var(--text-xs); color: var(--text-secondary); }
 /* Now: the time in mono, white, and the dot sitting on the grid's left edge. */
 .ad-now { z-index: 1; display: inline-flex; align-items: center; gap: var(--space-1); font: var(--type-data); font-size: var(--text-xs); color: var(--text-primary); }
@@ -999,8 +1003,8 @@ button.ad-year__day:focus-visible { outline: none; box-shadow: var(--ring-select
 .ad-time-grid { --ad-day-h: var(--h-btn-row); }
 /* A figure takes the second line: a seven-day column has no room for it beside the day and its buttons. */
 .ad-time-grid:has(.ad-time-grid__figure) { --ad-day-h: calc(var(--h-btn-row) * 2); }
-.ad-time-grid__column > .ad-time-grid__day { position: sticky; top: 0; bottom: auto; left: auto; z-index: var(--z-sticky); display: flex; flex-direction: column; box-sizing: border-box; height: var(--ad-day-h); min-width: 0; overflow: hidden; padding: 0 var(--space-2); background: var(--bg-base); }
-.ad-time-grid:not(:has(.ad-time-grid__head)) .ad-time-grid__gutter::before, .ad-time-grid--scrolls .ad-time-grid__gutter::before { content: ''; display: block; position: sticky; top: 0; z-index: var(--z-sticky); height: var(--ad-day-h); background: var(--bg-base); }
+.ad-time-grid__column > .ad-time-grid__day { position: sticky; top: 0; bottom: auto; left: auto; z-index: var(--z-sticky); display: flex; flex-direction: column; box-sizing: border-box; height: var(--ad-day-h); min-width: 0; overflow: hidden; padding: 0 var(--space-2); background: var(--ad-under); }
+.ad-time-grid:not(:has(.ad-time-grid__head)) .ad-time-grid__gutter::before, .ad-time-grid--scrolls .ad-time-grid__gutter::before { content: ''; display: block; position: sticky; top: 0; z-index: var(--z-sticky); height: var(--ad-day-h); background: var(--ad-under); }
 .ad-time-grid__item { --ad-span: 1; }
 .ad-time-grid__item[data-span] { position: relative; z-index: 1; width: calc(var(--ad-span) * 100% + (var(--ad-span) - 1) * var(--border-w)); }
 .ad-time-grid__day-line { display: flex; flex: none; align-items: center; gap: var(--space-1); height: var(--h-btn-row); min-width: 0; }
@@ -1011,12 +1015,11 @@ button.ad-year__day:focus-visible { outline: none; box-shadow: var(--ring-select
 /* With no scroller of its own the all-day lane stays in view under the headings; a bar spanning days reads over the columns after it. */
 .ad-time-grid { --ad-held-top: var(--ad-day-h); }
 .ad-time-grid:has(.ad-time-grid__head) { --ad-held-top: max(var(--space-6), var(--ad-head-h)); }
-.ad-time-grid:not(.ad-time-grid--scrolls) .ad-time-grid__allday, .ad-time-grid:not(.ad-time-grid--scrolls) .ad-time-grid__allday-space { position: sticky; top: var(--ad-held-top); background: var(--bg-base); }
+.ad-time-grid:not(.ad-time-grid--scrolls) .ad-time-grid__allday, .ad-time-grid:not(.ad-time-grid--scrolls) .ad-time-grid__allday-space { position: sticky; top: var(--ad-held-top); background: var(--ad-under); }
 /* The held lane sits over every block scrolling under it, and a bar spanning days over the columns after it. */
 .ad-time-grid { --ad-lane-over: 0; }
 .ad-time-grid:not(.ad-time-grid--scrolls) .ad-time-grid__allday { z-index: calc(var(--z-sticky) + var(--ad-lane-over)); }
 .ad-time-grid:not(.ad-time-grid--scrolls) .ad-time-grid__allday-space { z-index: var(--z-sticky); }
-:is(.ad-card, .ad-section:not(.ad-section--rule)) .ad-time-grid__column > .ad-time-grid__day, :is(.ad-card, .ad-section:not(.ad-section--rule)) .ad-time-grid:not(.ad-time-grid--scrolls) .ad-time-grid__allday, :is(.ad-card, .ad-section:not(.ad-section--rule)) .ad-time-grid:not(.ad-time-grid--scrolls) .ad-time-grid__allday-space { background: var(--bg-float); }
 
 /* DayCell: one day in a week of days. */
 .ad-day-cell { --ad-where: transparent; position: relative; display: flex; flex-direction: column; align-items: center; gap: var(--space-1); padding: var(--space-2) var(--space-1) 0; border-radius: var(--radius-page); }
@@ -1049,8 +1052,7 @@ button.ad-year__day:focus-visible { outline: none; box-shadow: var(--ring-select
 /* With no visibleHours the grid has no scroller of its own: the page scrolls once. The day headings are in the flow, held at the top by the page's scroll, the all-day lane under them. */
 .ad-time-grid:not(.ad-time-grid--scrolls):has(.ad-time-grid__head) { padding-top: 0; }
 .ad-time-grid:not(.ad-time-grid--scrolls):has(.ad-time-grid__head) .ad-time-grid__gutter { padding-top: max(var(--space-6), var(--ad-head-h)); }
-.ad-time-grid:not(.ad-time-grid--scrolls) .ad-time-grid__head { position: sticky; top: 0; z-index: var(--z-sticky); box-sizing: border-box; min-height: max(var(--space-6), var(--ad-head-h)); background: var(--bg-base); }
-:is(.ad-card, .ad-section:not(.ad-section--rule)) .ad-time-grid:not(.ad-time-grid--scrolls) .ad-time-grid__head { background: var(--bg-float); }
+.ad-time-grid:not(.ad-time-grid--scrolls) .ad-time-grid__head { position: sticky; top: 0; z-index: var(--z-sticky); box-sizing: border-box; min-height: max(var(--space-6), var(--ad-head-h)); background: var(--ad-under); }
 .ad-time-grid--aside-wide { --ad-aside: var(--w-aside); }
 .ad-time-grid--aside-day { --ad-aside: var(--w-side); }
 .ad-time-grid .ad-time-grid__body--aside { padding-right: var(--ad-aside); }
@@ -1088,7 +1090,7 @@ button.ad-year__day:focus-visible { outline: none; box-shadow: var(--ring-select
 .ad-time-grid--aside-wide .ad-time-grid__moment-time, .ad-time-grid--aside-day .ad-time-grid__moment-time { align-self: stretch; padding: 0 var(--space-1); border-radius: var(--radius-page); background: var(--bg-raised); line-height: var(--lh-normal); }
 .ad-time-grid--aside-wide .ad-time-grid__moment-title, .ad-time-grid--aside-day .ad-time-grid__moment-title { display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; line-height: var(--lh-tight); white-space: normal; text-overflow: clip; }
 .ad-time-grid--aside-wide .ad-time-grid__moment--unconfirmed, .ad-time-grid--aside-day .ad-time-grid__moment--unconfirmed { background-image: none; }
-.ad-time-grid--aside-wide .ad-time-grid__moment--unconfirmed .ad-time-grid__moment-time, .ad-time-grid--aside-day .ad-time-grid__moment--unconfirmed .ad-time-grid__moment-time { background: var(--bg-base); background-image: var(--hatch); }
+.ad-time-grid--aside-wide .ad-time-grid__moment--unconfirmed .ad-time-grid__moment-time, .ad-time-grid--aside-day .ad-time-grid__moment--unconfirmed .ad-time-grid__moment-time { background: var(--ad-under); background-image: var(--hatch); }
 .ad-time-grid--aside-wide .ad-time-grid__moment--hued, .ad-time-grid--aside-day .ad-time-grid__moment--hued { box-shadow: none; }
 .ad-time-grid--aside-wide .ad-time-grid__moment--hued .ad-time-grid__moment-time, .ad-time-grid--aside-day .ad-time-grid__moment--hued .ad-time-grid__moment-time { box-shadow: inset var(--w-stripe) 0 0 var(--ad-stripe); }
 
@@ -1521,7 +1523,7 @@ button.ad-contents__button:focus-visible { outline: none; box-shadow: var(--ring
 /* A list's columns: headings held at the top in the table-heading look, each row's
  cells lined up under them at the person's own widths, a heading's edge dragged to resize. */
 .ad-list-columns { position: relative; --ad-col: auto; }
-.ad-list-columns__head { position: sticky; top: 0; z-index: 1; display: flex; align-items: center; height: var(--h-btn); padding: 0 var(--space-2); background: var(--bg-base); border-bottom: var(--border-w) solid var(--border); }
+.ad-list-columns__head { position: sticky; top: 0; z-index: 1; display: flex; align-items: center; height: var(--h-btn); padding: 0 var(--space-2); background: var(--ad-under); border-bottom: var(--border-w) solid var(--border); }
 .ad-list-columns__spacer { flex: 1; }
 .ad-list-columns__heading { position: relative; display: inline-flex; align-items: center; flex: none; width: var(--ad-col); padding: 0 var(--space-2); box-sizing: border-box; font: var(--type-heading); text-transform: uppercase; color: var(--text-secondary); white-space: nowrap; }
 .ad-list-columns__heading[aria-sort] { color: var(--text-primary); }
@@ -1987,10 +1989,12 @@ button.ad-row__name:focus-visible { outline: none; box-shadow: var(--ring-select
 /* The date line's other facts: repeat, the past-deadline flag, the role, the deliverable. */
 .ad-row__fact { display: inline-flex; align-items: center; gap: var(--space-1); white-space: nowrap; color: var(--text-secondary); }
 /* A detail line too long for the row: the date and department stay whole; the role and the deliverable shrink and end in "…" (their
- whole words in the hover), so nothing runs under the faces. */
+ whole words in the hover), so nothing runs under the faces. Two dates too wide for the row: the due date drops under the review date, never cut. */
 .ad-row__meta { overflow: hidden; }
 .ad-row__meta > * { flex-shrink: 0; }
 .ad-row__meta > .ad-row__fact--cut, .ad-row__meta > .ad-row__press:has(.ad-row__fact--cut) { flex-shrink: 1; min-width: 0; }
+.ad-row__meta > :is(.ad-item-dates, :has(> .ad-item-dates)) { flex-shrink: 1; min-width: 0; }
+.ad-row__meta .ad-item-dates { flex-wrap: wrap; row-gap: var(--space-hair); }
 .ad-row__press:has(.ad-row__fact--cut) { overflow: hidden; }
 .ad-row__fact--cut { min-width: 0; max-width: 100%; }
 .ad-row__fact-word { min-width: 0; overflow: hidden; text-overflow: ellipsis; }
@@ -2156,7 +2160,7 @@ button.ad-row__name:focus-visible { outline: none; box-shadow: var(--ring-select
 .ad-table--fixed td { overflow: hidden; text-overflow: ellipsis; }
 /* The tick column keeps its own width under `fixed`: never cut to "☑…". */
 .ad-table--fixed .ad-table__pick { box-sizing: border-box; width: calc(var(--check-size) + 2 * var(--space-2)); overflow: visible; text-overflow: clip; }
-.ad-table th[scope="col"] { position: sticky; top: 0; z-index: 1; height: var(--h-btn); padding: 0 var(--space-2); text-align: left; white-space: nowrap; background: var(--bg-base); border-bottom: var(--border-w) solid var(--border); font: var(--type-heading); text-transform: uppercase; color: var(--text-secondary); }
+.ad-table th[scope="col"] { position: sticky; top: 0; z-index: 1; height: var(--h-btn); padding: 0 var(--space-2); text-align: left; white-space: nowrap; background: var(--ad-under); border-bottom: var(--border-w) solid var(--border); font: var(--type-heading); text-transform: uppercase; color: var(--text-secondary); }
 .ad-table th[aria-sort="ascending"], .ad-table th[aria-sort="descending"] { color: var(--text-primary); }
 .ad-table__arrow { width: var(--icon-sm); height: var(--icon-sm); }
 .ad-table td, .ad-table th[scope="row"] { height: var(--h-row); padding: 0 var(--space-2); border-bottom: var(--border-w) solid var(--border); text-align: left; white-space: nowrap; }
@@ -2179,7 +2183,7 @@ button.ad-row__name:focus-visible { outline: none; box-shadow: var(--ring-select
 .ad-selection-bar .ad-button--quiet { background: var(--bg-hover); }
 /* Built 2026-10-25 for Athena. Held columns stay put while a wide table scrolls sideways; they keep the page's ground under them. */
 .ad-table-wrap { overflow-x: auto; }
-.ad-table__frozen--start, .ad-table__frozen--end { position: sticky; z-index: 1; background: var(--bg-base); }
+.ad-table__frozen--start, .ad-table__frozen--end { position: sticky; z-index: 1; background: var(--ad-under); }
 .ad-table__frozen--start { --ad-held: 0px; left: var(--ad-held); }
 .ad-table__frozen--end { right: 0; }
 .ad-table th[scope="col"].ad-table__frozen--start, .ad-table th[scope="col"].ad-table__frozen--end { z-index: 2; }
@@ -2264,8 +2268,7 @@ button.ad-row__name:focus-visible { outline: none; box-shadow: var(--ring-select
 .ad-period__size { width: auto; padding: 0 var(--space-2); white-space: nowrap; font: var(--type-heading); text-transform: uppercase; letter-spacing: var(--track-caps); }
 .ad-period__size[aria-checked="true"] { background: var(--bg-raised); color: var(--text-primary); }
 /* Pinned: held at the top of the scroller on its own ground, above the lanes. */
-.ad-ruler--pinned { position: sticky; top: 0; z-index: 2; background: var(--bg-base); }
-:is(.ad-card, .ad-section:not(.ad-section--rule)) .ad-ruler--pinned { background: var(--bg-float); }
+.ad-ruler--pinned { position: sticky; top: 0; z-index: 2; background: var(--ad-under); }
 
 /* src/components/Timeline/Timeline.css */
 /* Timeline marks, as the Bars and Page-Schedule cards draw them */
@@ -2290,7 +2293,7 @@ button.ad-bar { cursor: pointer; }
 .ad-bar--unconfirmed { background: transparent; background-image: var(--hatch); box-shadow: inset 0 0 0 var(--border-w) var(--line-strong); }
 /* The name sits on a small ground with the hatch showing round it at both ends, so a short chip still reads as unconfirmed
 . */
-.ad-bar--unconfirmed .ad-bar__label { background: var(--bg-base); padding: var(--space-hair) var(--space-1); border-radius: var(--radius-page); }
+.ad-bar--unconfirmed .ad-bar__label { background: var(--ad-under); padding: var(--space-hair) var(--space-1); border-radius: var(--radius-page); }
 /* The edge's ink, the one definition: every edge and the travel curve read it. */
 .ad-bar { --ad-edge-ink: color-mix(in srgb, var(--ad-edge, var(--text-muted)) var(--tint-bar-edge), transparent); }
 .ad-bar--backup { --ad-edge-ink: color-mix(in srgb, var(--ad-edge, var(--line-strong)) var(--tint-bar-edge), transparent); }
@@ -2372,7 +2375,7 @@ button.ad-milestone:focus-visible { outline: none; box-shadow: var(--ring-select
 .ad-milestone--past { color: var(--text-secondary); }
 .ad-milestone--past .ad-milestone__diamond { background: var(--text-muted); }
 /* Unconfirmed: white ink hatch inside a white hairline (the cards' recipe, so it reads hatched at this size, not hollow). */
-.ad-milestone--unconfirmed .ad-milestone__diamond { background-color: var(--bg-base); background-image: var(--hatch-ink); border: var(--border-w) solid var(--text-primary); }
+.ad-milestone--unconfirmed .ad-milestone__diamond { background-color: var(--ad-under); background-image: var(--hatch-ink); border: var(--border-w) solid var(--text-primary); }
 .ad-milestone__burst { flex: none; font-size: var(--icon-md); line-height: var(--lh-none); color: var(--text-primary); }
 .ad-today { position: absolute; top: 0; bottom: 0; width: var(--border-w); background: var(--text-primary); box-shadow: var(--glow-today); pointer-events: none; }
 .ad-today__word { position: absolute; top: 0; right: calc(var(--icon-md) / 2 + var(--space-2)); transform: translateY(-100%); font: var(--type-data); font-size: var(--text-xs); color: var(--text-primary); white-space: nowrap; }
@@ -2412,9 +2415,8 @@ button.ad-milestone:focus-visible { outline: none; box-shadow: var(--ring-select
 /* The ruler's lane keeps room above it for the TODAY word. */
 .ad-lanes--ruler { padding-top: var(--space-4); }
 .ad-lanes { --ad-lane-name: var(--w-side); }
-.ad-lane { --ad-lane-ground: var(--bg-base); display: grid; grid-template-columns: var(--ad-lane-name) minmax(0, 1fr); min-height: var(--h-row); }
+.ad-lane { --ad-lane-ground: var(--ad-under); display: grid; grid-template-columns: var(--ad-lane-name) minmax(0, 1fr); min-height: var(--h-row); }
 .ad-lane:nth-child(even) { --ad-lane-ground: var(--bg-surface); background: var(--bg-surface); }
-:is(.ad-card, .ad-section:not(.ad-section--rule)) .ad-lane:not(:nth-child(even)) { --ad-lane-ground: var(--bg-float); }
 .ad-lane__name { display: flex; align-items: center; align-self: start; height: var(--h-row); padding-right: var(--space-4); font: var(--type-name); color: var(--text-primary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .ad-lane__chart { position: relative; min-height: var(--h-row); }
 .ad-lane--tall .ad-lane__chart { min-height: var(--h-row); }
@@ -2602,7 +2604,7 @@ button.ad-notification:focus-visible { outline: none; box-shadow: var(--ring-sel
 .ad-thread { position: relative; margin: 0; padding: 0 0 0 var(--space-6); list-style: none; }
 .ad-thread::before { content: ""; position: absolute; left: var(--space-2); top: var(--space-3); bottom: var(--space-3); width: var(--border-w); background: var(--line-strong); }
 .ad-thread__event { position: relative; display: flex; align-items: baseline; gap: var(--space-3); padding: var(--space-2) 0; font: var(--type-name); line-height: var(--lh-tight); }
-.ad-thread__event::before { content: ""; position: absolute; left: calc(var(--space-6) * -1 + var(--space-2) - var(--space-1)); top: calc(var(--space-2) + var(--space-hair)); width: var(--space-2); height: var(--space-2); box-sizing: border-box; border-radius: var(--radius-round); background: var(--bg-base); box-shadow: inset 0 0 0 var(--border-w-strong) var(--text-muted); }
+.ad-thread__event::before { content: ""; position: absolute; left: calc(var(--space-6) * -1 + var(--space-2) - var(--space-1)); top: calc(var(--space-2) + var(--space-hair)); width: var(--space-2); height: var(--space-2); box-sizing: border-box; border-radius: var(--radius-round); background: var(--ad-under); box-shadow: inset 0 0 0 var(--border-w-strong) var(--text-muted); }
 .ad-thread__date { width: var(--w-col-xs); flex: none; font: var(--type-data); font-size: var(--text-xs); color: var(--text-muted); }
 .ad-thread__sentence { flex: 1; min-width: 0; }
 .ad-thread__time { flex: none; color: var(--text-muted); }
