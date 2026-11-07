@@ -1765,6 +1765,13 @@ button:hover > .ad-project-pill:not(.ad-project-pill--current) { color: var(--ac
 .ad-menu__list.ad-rail__pinned { padding-top: var(--space-1); }
 /* The rail's runs span its full width, so a pinned pill sits exactly 8 from the rail's edge whatever the widest row. */
 .ad-rail > .ad-menu__list { align-self: stretch; }
+/* PageList: a thing's own pages as a second left list, the open menu's rows; its kind, name and state on top, the pages in named groups. */
+.ad-page-list { --ad-page-list-in: calc((var(--w-rail) - var(--icon-lg)) / 2); flex: none; gap: var(--space-4); overflow-y: auto; }
+.ad-page-list__head { display: flex; flex-direction: column; gap: var(--space-1); padding-left: var(--ad-page-list-in); }
+.ad-page-list__eyebrow { font: var(--type-heading); text-transform: uppercase; color: var(--text-muted); }
+.ad-page-list__title { font: var(--type-title); color: var(--text-primary); overflow-wrap: anywhere; }
+.ad-page-list__state { display: flex; align-items: center; min-height: var(--h-btn); }
+.ad-page-list__group > .ad-group-heading { padding-left: var(--ad-page-list-in); }
 
 /* src/components/PageHeader/PageHeader.css */
 /* PageHeader and Tabs */
@@ -2732,6 +2739,12 @@ button.ad-notification:focus-visible { outline: none; box-shadow: var(--ring-sel
 .ad-note-box { display: block; box-sizing: border-box; width: 100%; min-height: calc(var(--h-row) * 1.5); margin: 0; padding: var(--space-3) var(--space-3); border: 0; border-radius: var(--radius-page); background: var(--bg-raised); color: var(--text-secondary); font: var(--type-body); line-height: var(--lh-normal); resize: none; overflow: hidden; }
 .ad-note-box::placeholder { color: var(--text-muted); }
 .ad-note-box:focus { outline: none; background: var(--bg-hover); box-shadow: var(--ring-select); }
+/* Composer: the note box always open for a new entry, three lines at rest, growing with its words; the hint and the button under it. */
+.ad-composer { display: flex; flex-direction: column; gap: var(--space-3); min-width: 0; }
+.ad-composer__box { min-height: calc(var(--h-field) * 3); resize: none; overflow: hidden; }
+.ad-composer__foot { display: flex; align-items: center; gap: var(--space-3); }
+.ad-composer__hint { flex: 1; min-width: 0; font: var(--type-detail); color: var(--text-muted); }
+.ad-composer__foot > .ad-button { margin-left: auto; }
 .ad-thread { position: relative; margin: 0; padding: 0 0 0 var(--space-6); list-style: none; }
 .ad-thread::before { content: ""; position: absolute; left: var(--space-2); top: var(--space-3); bottom: var(--space-3); width: var(--border-w); background: var(--line-strong); }
 .ad-thread__event { position: relative; display: flex; align-items: baseline; gap: var(--space-3); padding: var(--space-2) 0; font: var(--type-name); line-height: var(--lh-tight); }

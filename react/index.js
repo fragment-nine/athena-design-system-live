@@ -2398,6 +2398,22 @@ function SideMenu({ foot = [], screens, projects, views = [], current, onSelect,
     ] })
   ] });
 }
+function PageList({ ariaLabel, head, groups, current, onPick }) {
+  return /* @__PURE__ */ jsxs14("nav", { className: "ad-side ad-page-list", "aria-label": ariaLabel, children: [
+    head && /* @__PURE__ */ jsxs14("div", { className: "ad-page-list__head", children: [
+      head.eyebrow != null && /* @__PURE__ */ jsx17("span", { className: "ad-page-list__eyebrow", children: head.eyebrow }),
+      /* @__PURE__ */ jsx17("span", { className: "ad-page-list__title", children: head.title }),
+      head.state != null && /* @__PURE__ */ jsx17("span", { className: "ad-page-list__state", children: head.state })
+    ] }),
+    groups.map((g) => /* @__PURE__ */ jsxs14("div", { className: "ad-page-list__group", children: [
+      /* @__PURE__ */ jsx17(GroupHeading, { rule: "none", children: g.label }),
+      /* @__PURE__ */ jsx17("ul", { className: "ad-side__list", children: g.pages.map((p) => /* @__PURE__ */ jsx17("li", { children: /* @__PURE__ */ jsxs14("button", { type: "button", className: "ad-side__item", "aria-current": p.id === current ? "page" : void 0, onClick: () => onPick(p.id), children: [
+        p.icon && /* @__PURE__ */ jsx17("span", { className: "ad-side__icon", "aria-hidden": "true", children: slotIcon(p.icon) }),
+        p.label
+      ] }) }, p.id)) })
+    ] }, g.label))
+  ] });
+}
 
 // src/components/Row/Row.tsx
 import { Fragment as Fragment5, jsx as jsx18, jsxs as jsxs15 } from "react/jsx-runtime";
@@ -4369,6 +4385,47 @@ function NoteBox({ heading = "Notes", className, value, ...rest }) {
     /* @__PURE__ */ jsx34("textarea", { ref, rows: 2, ...rest, value, "aria-label": typeof heading === "string" ? heading : rest["aria-label"], className: "ad-note-box" })
   ] });
 }
+function Composer({ label, placeholder, value, onChange, onSubmit, submitLabel, hint, main }) {
+  const ref = useRef21(null);
+  useEffect14(() => {
+    const el = ref.current;
+    if (el) {
+      el.style.height = "auto";
+      el.style.height = `${el.scrollHeight}px`;
+    }
+  }, [value]);
+  const text = value.trim();
+  const send = () => {
+    if (!text) return;
+    onSubmit(text);
+    onChange("");
+    ref.current?.focus();
+  };
+  return /* @__PURE__ */ jsxs31("div", { className: "ad-composer", children: [
+    /* @__PURE__ */ jsx34(
+      "textarea",
+      {
+        ref,
+        rows: 3,
+        "aria-label": label,
+        placeholder,
+        value,
+        className: "ad-note-box ad-composer__box",
+        onChange: (e) => onChange(e.target.value),
+        onKeyDown: (e) => {
+          if (e.key === "Enter" && !e.shiftKey && !e.nativeEvent.isComposing) {
+            e.preventDefault();
+            send();
+          }
+        }
+      }
+    ),
+    /* @__PURE__ */ jsxs31("div", { className: "ad-composer__foot", children: [
+      hint != null && /* @__PURE__ */ jsx34("span", { className: "ad-composer__hint", children: hint }),
+      /* @__PURE__ */ jsx34(Button, { variant: main ? "main" : "quiet", disabled: !text, onClick: send, children: submitLabel })
+    ] })
+  ] });
+}
 function ActivityThread({ events, ariaLabel = "Activity" }) {
   return /* @__PURE__ */ jsx34("ol", { className: "ad-thread", "aria-label": ariaLabel, children: events.map((e) => /* @__PURE__ */ jsxs31("li", { className: "ad-thread__event", children: [
     /* @__PURE__ */ jsx34("span", { className: "ad-thread__date", children: e.date }),
@@ -6246,10 +6303,11 @@ function DualUnit({ primary, secondary }) {
     ] })
   ] });
 }
-function Frame({ rail, corner, header, toolbar, key, footer, children, className }) {
+function Frame({ rail, pages, corner, header, toolbar, key, footer, children, className }) {
   const slots = header !== void 0 || toolbar !== void 0 || footer !== void 0;
   return /* @__PURE__ */ jsxs45("div", { className: cx("ad-frame", corner != null && "ad-frame--corner", className), children: [
     rail,
+    pages,
     /* @__PURE__ */ jsx49("div", { className: "ad-frame__page", children: slots ? /* @__PURE__ */ jsxs45(Fragment22, { children: [
       header,
       /* @__PURE__ */ jsx49(FrameToolbar, { children: toolbar }),
@@ -6410,6 +6468,7 @@ export {
   CloudGlow,
   Columns,
   CommandSearch,
+  Composer,
   ConfirmDialog,
   Contents,
   DataText,
@@ -6481,6 +6540,7 @@ export {
   OverTime,
   OverlayTextArea,
   PageHeader,
+  PageList,
   PastHatch,
   PeriodCluster,
   Person,
