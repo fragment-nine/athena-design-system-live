@@ -4126,10 +4126,10 @@ var Card = forwardRef7(function Card2({ title, headerLayout = "row", density, en
             onOpen();
           }, children: title }) : title }),
           end != null && /* @__PURE__ */ jsx30("span", { className: "ad-card__end", children: end }),
-          onMore != null && /* @__PURE__ */ jsx30("button", { type: "button", className: "ad-card__more", onClick: (e) => {
+          onMore != null && /* @__PURE__ */ jsx30("button", { type: "button", className: "ad-card__more ad-card__more--line", title: moreLabel, onClick: (e) => {
             e.stopPropagation();
             onMore();
-          }, children: moreLabel })
+          }, children: /* @__PURE__ */ jsx30("span", { className: "ad-sr", children: moreLabel }) })
         ] }),
         picking && /* @__PURE__ */ jsx30("span", { className: "ad-card__pick", children: /* @__PURE__ */ jsx30(Checkbox, { "aria-label": picking.label, checked: picking.picked, onChange: picking.onChange }) }),
         /* @__PURE__ */ jsx30(OpenCard.Provider, { value: onOpen, children })
@@ -5421,7 +5421,7 @@ function ZoomCluster({
   const inside = onZoomIn ?? (builtin ? () => onZoom(ORDER[Math.max(i - 1, 0)]) : void 0);
   const outLabel = onZoomOut ? L.zoomOut : `${L.zoomOut} (${L[ORDER[Math.min(i + 1, ORDER.length - 1)]]})`;
   const inLabel = onZoomIn ? L.zoomIn : `${L.zoomIn} (${L[ORDER[Math.max(i - 1, 0)]]})`;
-  const btn = (label, glyph, on, off, endpoint) => on && /* @__PURE__ */ jsx43(IconButton, { label: off ? `${label}: ${off}` : label, disabled: !!off || endpoint, onClick: on, children: /* @__PURE__ */ jsx43(Icon, { job: glyph, size: "md" }) }, glyph);
+  const btn = (label, glyph, on, off, endpoint) => on && /* @__PURE__ */ jsx43(IconButton, { label: off ? `${label}: ${off}` : label, disabled: !!off || endpoint, onClick: on, children: glyph === "today" ? /* @__PURE__ */ jsx43(Dot, { tone: "neutral" }) : /* @__PURE__ */ jsx43(Icon, { job: glyph, size: "md" }) }, glyph);
   return /* @__PURE__ */ jsx43(ButtonSizeScope, { size: "bar", children: /* @__PURE__ */ jsxs40(
     "div",
     {
@@ -5443,14 +5443,32 @@ function ZoomCluster({
 }
 function PeriodCluster({ shown, periods, period, onPeriod, onPrevious, onNext, onToday, previousOff, nextOff, labels }) {
   const L = { previous: "Earlier", today: "Today", next: "Later", period: "Period", ...labels };
-  const step = (label, glyph, on, off) => on && /* @__PURE__ */ jsx43(IconButton, { label: off ? `${label}: ${off}` : label, disabled: !!off, onClick: on, children: /* @__PURE__ */ jsx43(Icon, { job: glyph, size: "md" }) });
-  return /* @__PURE__ */ jsx43(ButtonSizeScope, { size: "bar", children: /* @__PURE__ */ jsxs40("div", { className: "ad-zoom ad-period", role: "group", "aria-label": shown, children: [
-    /* @__PURE__ */ jsx43("span", { className: "ad-zoom__name", children: shown }),
-    step(L.previous, "chevron-left", onPrevious, previousOff),
-    step(L.today, "today", onToday),
-    step(L.next, "chevron-right", onNext, nextOff),
-    periods && periods.length > 1 && onPeriod && /* @__PURE__ */ jsx43("span", { className: "ad-period__sizes", role: "radiogroup", "aria-label": L.period, children: periods.map((p) => /* @__PURE__ */ jsx43("button", { type: "button", role: "radio", "aria-checked": p.id === period, onClick: () => onPeriod(p.id), className: "ad-zoom__btn ad-period__size", children: p.label }, p.id)) })
-  ] }) });
+  const sizes = periods && periods.length > 1 && onPeriod ? periods : void 0;
+  const i = sizes ? Math.max(0, sizes.findIndex((p) => p.id === period)) : -1;
+  const wider = sizes && i < sizes.length - 1 ? sizes[i + 1] : void 0;
+  const narrower = sizes && i > 0 ? sizes[i - 1] : void 0;
+  return /* @__PURE__ */ jsx43(
+    ZoomCluster,
+    {
+      ariaLabel: shown,
+      attrs: { "data-period": "" },
+      noPaging: !onPrevious && !onNext && !onToday,
+      onZoomOut: sizes ? () => {
+        if (wider) onPeriod(wider.id);
+      } : void 0,
+      zoomOutOff: sizes && !wider ? "Widest period" : void 0,
+      onZoomIn: sizes ? () => {
+        if (narrower) onPeriod(narrower.id);
+      } : void 0,
+      zoomInOff: sizes && !narrower ? "Narrowest period" : void 0,
+      onPrevious,
+      onNext,
+      onToday,
+      previousOff,
+      nextOff,
+      labels: { previous: L.previous, today: L.today, next: L.next, zoomOut: wider ? `${L.period}: ${wider.label}` : L.period, zoomIn: narrower ? `${L.period}: ${narrower.label}` : L.period }
+    }
+  );
 }
 
 // src/components/Calendar/Calendar.tsx

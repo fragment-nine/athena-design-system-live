@@ -696,7 +696,7 @@
 }
 /* On a card or a section it is the card's own surface laid solid, never the page's black. */
 .ad-card, .ad-section:not(.ad-section--rule) { --ad-under: var(--bg-float); }
-/* Hatched: not certain yet. Solid: confirmed. Dashed outline: deal. Dotted outline: backup. Fine hatch: the past. */
+/* Hatched: not certain yet. Solid: confirmed. Dashed outline: deal. Dotted outline: backup. Fine hatch: weekends and time off; the past is plain. */
 .ad-hatched { background-image: var(--hatch); }
 .ad-hatched-fine { background-image: var(--hatch-fine); }
 .ad-hatched-ink { background-image: var(--hatch-ink); }
@@ -1044,7 +1044,6 @@ button.ad-year__day:focus-visible { outline: none; box-shadow: var(--ring-select
 .ad-day-cell--weekend .ad-day-cell__letter, .ad-day-cell--weekend .ad-day-cell__number { color: var(--text-muted); }
 .ad-day-cell__where { align-self: stretch; height: var(--space-2); border-radius: var(--radius-page); background: var(--ad-where); }
 .ad-day-cell--away .ad-day-cell__where { background: var(--hatch-away), var(--ad-where); }
-.ad-day-cell--past { background-image: var(--hatch-fine); }
 .ad-day-cell__travel { position: absolute; top: var(--space-1); right: var(--space-1); color: var(--text-secondary); }
 
 /* Built 2026-10-28 for the Rehearsal calendar: a rich head, the phase band, overlapping entries side by side, the moments strip. */
@@ -1152,9 +1151,10 @@ button.ad-card__name:focus-visible { outline: none; box-shadow: var(--ring-selec
 .ad-card__head:has(.ad-chart-key) > .ad-card__end { flex: 1 1 var(--card-min-sm); min-width: min(100%, var(--card-min-sm)); max-width: 100%; }
 .ad-card__head:has(.ad-chart-key) > .ad-card__more { position: absolute; top: 0; right: 0; margin: 0; }
 .ad-card__end > .ad-chart-key { min-width: 0; }
-/* More is the site's "VIEW ALL": coral tracked caps with a short rule before it. */
+/* A section's More: coral tracked caps with a short rule before it. A widget's is the rule alone (2026-11-07), its words read aloud, in a 24px target. */
 .ad-card__more { display: inline-flex; align-items: center; gap: var(--space-2); margin: 0 0 0 auto; padding: 0; border: 0; background: transparent; font: var(--type-heading); text-transform: uppercase; letter-spacing: var(--track-caps); color: var(--accent); cursor: pointer; }
 .ad-card__more::before { content: ""; display: inline-block; width: var(--space-6); height: var(--border-w); background: currentColor; opacity: var(--opacity-dim); }
+.ad-card__more--line { min-width: var(--target-min); min-height: var(--target-min); justify-content: flex-end; }
 .ad-card__more:hover { color: var(--accent-hover); }
 .ad-card__more:focus-visible { outline: none; box-shadow: var(--ring-select); border-radius: var(--radius-page); }
 .ad-card__name { line-height: var(--lh-tight); margin-bottom: var(--space-2); }
@@ -2150,8 +2150,8 @@ button.ad-row__name:focus-visible { outline: none; box-shadow: var(--ring-select
 .ad-segmented__option:disabled { opacity: var(--opacity-disabled); cursor: default; color: var(--text-secondary); }
 .ad-segmented__option svg { width: var(--icon-md); height: var(--icon-md); }
 
-/* The icons form: a square tile holding the glyph, grey at rest. */
-.ad-segmented__option--icon { flex: none; width: var(--h-btn); height: var(--h-btn); padding: 0; color: var(--text-muted); }
+/* The icons form: a square tile holding the glyph, grey at rest. The tile is the switcher's height (h-seg), so it sits inside the tray's edge and padding, never over them. */
+.ad-segmented__option--icon { flex: none; width: var(--h-seg); height: var(--h-seg); padding: 0; color: var(--text-muted); }
 
 /* src/components/Settings/Settings.css */
 /* Settings */
@@ -2386,19 +2386,12 @@ button.ad-row__name:focus-visible { outline: none; box-shadow: var(--ring-select
 .ad-ruler__tick { position: absolute; bottom: 0; width: var(--border-w); height: var(--space-1); background: var(--line-strong); }
 .ad-ruler__tick--major { height: var(--space-2); }
 .ad-ruler__day { position: absolute; bottom: var(--space-2); left: calc(var(--ad-day-w) / 2); transform: translateX(-50%); color: var(--text-muted); white-space: nowrap; }
-/* The cluster: toolbar-size icon buttons in a row (ZoomCluster), or the period control's words and sizes (PeriodCluster). */
+/* The cluster: toolbar-size icon buttons in a row, the today button a plain dot. It is the one period control on every screen. */
 .ad-zoom { --ad-zoom-fit: var(--h-btn-bar); font: var(--type-data); font-size: var(--text-xs); line-height: var(--lh-none); color: var(--text-muted); }
-.ad-zoom__name { margin-right: var(--space-1); color: var(--text-primary); }
 .ad-zoom__btn { display: inline-flex; align-items: center; justify-content: center; width: var(--h-btn); height: var(--h-seg); margin: 0; padding: 0; border: 0; border-radius: var(--radius-page); background: transparent; color: var(--text-muted); cursor: pointer; }
 .ad-zoom__btn:hover { color: var(--accent); }
 .ad-zoom__btn:focus-visible { outline: none; box-shadow: var(--ring-select); }
 .ad-zoom__btn:disabled { color: var(--text-muted); cursor: default; }
-.ad-zoom__name { padding: 0 var(--space-2); }
-/* PeriodCluster: the span in words in white, the steps, then the sizes; the current size in white on the view switch's `bg-raised` tile. */
-.ad-period .ad-zoom__name { color: var(--text-primary); }
-.ad-period__sizes { display: inline-flex; gap: var(--space-1); }
-.ad-period__size { width: auto; padding: 0 var(--space-2); white-space: nowrap; font: var(--type-heading); text-transform: uppercase; letter-spacing: var(--track-caps); }
-.ad-period__size[aria-checked="true"] { background: var(--bg-raised); color: var(--text-primary); }
 .ad-zoom[data-fit] { height: var(--ad-zoom-fit); }
 .ad-zoom[data-fit] .ad-icon-button { width: min(var(--h-btn-bar), var(--ad-zoom-fit)); height: min(var(--h-btn-bar), var(--ad-zoom-fit)); }
 /* Pinned: held at the top of the scroller on its own ground, above the lanes. */
@@ -2515,7 +2508,8 @@ button.ad-milestone:focus-visible { outline: none; box-shadow: var(--ring-select
 .ad-today__word { position: absolute; top: 0; right: calc(var(--icon-md) / 2 + var(--space-2)); transform: translateY(-100%); font: var(--type-data); font-size: var(--text-xs); color: var(--text-primary); white-space: nowrap; }
 /* The ⊕: an open ring, as the card's .reg is — no disc, so the today line runs through it. */
 .ad-regmark { position: absolute; top: 0; left: 50%; width: var(--icon-md); height: var(--icon-md); transform: translate(-50%, -50%); color: var(--crop); }
-.ad-past { position: absolute; top: 0; bottom: 0; background-image: var(--hatch-fine); pointer-events: none; }
+/* The past is plain (2026-11-07): the region draws nothing; away keeps its hatch. */
+.ad-past { position: absolute; top: 0; bottom: 0; background-image: none; pointer-events: none; }
 .ad-past--away { background-image: var(--hatch-away); }
 /* OverMark: Athena's over-capacity block, kept as it was. The app places it; it sits on the line's bottom. */
 .ad-over-mark { --ad-over: 0.5; position: absolute; bottom: 0; box-sizing: border-box; height: var(--w-stripe); border-radius: var(--radius-mark); background: color-mix(in srgb, var(--status-error) calc(var(--tint-over-min) + var(--ad-over) * (var(--tint-over-max) - var(--tint-over-min))), transparent); }
@@ -2544,7 +2538,7 @@ button.ad-milestone:focus-visible { outline: none; box-shadow: var(--ring-select
 /* Inside a card nothing paints the page's black: a band is a step off the card. */
 :is(.ad-card, .ad-section:not(.ad-section--rule)) .ad-group-band { background: var(--bg-surface); }
 /* Lanes and Lane: one row each, the name at the left in the side-menu width, every second lane washed
- bg-surface across the whole width; the marks (past hatch, day lines, today line) lie over the chart column of every lane. */
+ bg-surface across the whole width; the marks (day lines, today line) lie over the chart column of every lane. */
 .ad-lanes { position: relative; display: flex; flex-direction: column; }
 /* The ruler's lane keeps room above it for the TODAY word. */
 .ad-lanes--ruler { padding-top: var(--space-4); }
