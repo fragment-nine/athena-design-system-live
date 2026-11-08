@@ -265,6 +265,9 @@ function usePlacement(open, anchor, floating, placement, within) {
     const fh = f.offsetHeight;
     const a = anchor?.current?.getBoundingClientRect();
     const room = within?.current?.getBoundingClientRect();
+    const card = placement === "side" || placement === "over";
+    const footer = card ? (doc ?? document).querySelector(".ad-footer")?.getBoundingClientRect() : void 0;
+    const floor = footer && footer.height > 0 && footer.top > vh / 2 && footer.top < vh ? footer.top : vh;
     let top;
     let left;
     if (placement === "foot" && room) {
@@ -277,10 +280,10 @@ function usePlacement(open, anchor, floating, placement, within) {
       const shown = a.width > 0 || a.height > 0;
       const right = a.right + gap, before = a.left - gap - fw;
       left = !shown ? vw - fw - edge : right + fw <= vw - edge ? right : before >= edge ? before : vw - fw - edge;
-      top = Math.min(a.top, vh - fh - edge);
+      top = Math.min(a.top, floor - fh - edge);
     } else if (placement === "over") {
       left = Math.min(a.left, vw - fw - edge);
-      top = Math.min(a.top, (room ? Math.min(room.bottom, vh - edge) : vh - edge) - fh);
+      top = Math.min(a.top, (room ? Math.min(room.bottom, floor - edge) : floor - edge) - fh);
     } else {
       left = a.left;
       top = a.bottom + gap;
@@ -288,7 +291,7 @@ function usePlacement(open, anchor, floating, placement, within) {
       if (top + fh > vh - edge && a.top - gap - fh >= edge) top = a.top - gap - fh;
     }
     const placedTop = Math.round(Math.max(edge, top));
-    const next = { top: placedTop, left: Math.round(Math.max(edge, left)), maxHeight: Math.max(0, Math.round(vh - placedTop - edge)) };
+    const next = { top: placedTop, left: Math.round(Math.max(edge, left)), maxHeight: Math.max(0, Math.round(floor - placedTop - edge)) };
     setPos((p) => p && p.top === next.top && p.left === next.left && p.maxHeight === next.maxHeight ? p : next);
   };
   const watched = useRef2(null);
@@ -1731,11 +1734,11 @@ function GroupHeading({ children, number, rule = "above", needsYou, lead, end, c
 
 // src/components/Field/Field.tsx
 import { jsx as jsx9, jsxs as jsxs7 } from "react/jsx-runtime";
-var TextField = forwardRef2(function TextField2({ icon, end, parsed, error, mono, className, style, ...rest }, ref) {
+var TextField = forwardRef2(function TextField2({ icon, end, parsed, error, mono, wide, className, style, ...rest }, ref) {
   const parsedId = useId3();
   const errorId = useId3();
   const describedBy = [parsed != null ? parsedId : null, error != null ? errorId : null, rest["aria-describedby"]].filter(Boolean).join(" ") || void 0;
-  return /* @__PURE__ */ jsxs7("span", { className: cx("ad-field-wrap", className), style, children: [
+  return /* @__PURE__ */ jsxs7("span", { className: cx("ad-field-wrap", wide && "ad-field-wrap--wide", className), style, children: [
     /* @__PURE__ */ jsxs7("span", { className: cx("ad-field", rest.disabled && "ad-field--disabled"), children: [
       icon && /* @__PURE__ */ jsx9("span", { className: "ad-field__icon", "aria-hidden": "true", children: slotIcon(icon) }),
       /* @__PURE__ */ jsx9("input", { ref, ...rest, "aria-invalid": error != null || void 0, "aria-describedby": describedBy, className: cx("ad-field__input", mono && "ad-field__input--mono") }),
@@ -5055,10 +5058,13 @@ function Table({ columns, rows, rowId, caption, sort, onSort, picked, onPickedCh
       onPickedChange && /* @__PURE__ */ jsx42("th", { scope: "col", className: "ad-table__pick", children: /* @__PURE__ */ jsx42(Checkbox, { "aria-label": pickAllLabel, checked: all, onChange: (on) => onPickAllChange?.(on) }) }),
       columns.map((c) => {
         const sorted = sort?.id === c.id ? sort.direction : void 0;
-        return /* @__PURE__ */ jsx42("th", { scope: "col", "data-held": c.frozen === "start" ? c.id : void 0, "aria-sort": sorted ?? (c.sortable ? "none" : void 0), className: cx(c.numeric && "ad-num", c.frozen && `ad-table__frozen--${c.frozen}`), style: { ...c.width ? { width: c.width } : {}, ...at(c) }, children: c.labelHidden ? /* @__PURE__ */ jsx42("span", { className: "ad-sr", children: c.label }) : c.sortable && onSort ? /* @__PURE__ */ jsxs39("button", { type: "button", className: "ad-table__sort ad-sort-button", onClick: () => onSort(c.id), children: [
-          c.label,
-          sorted && /* @__PURE__ */ jsx42(Arrow, { up: sorted === "ascending" })
-        ] }) : c.label }, c.id);
+        return /* @__PURE__ */ jsxs39("th", { scope: "col", "data-held": c.frozen === "start" ? c.id : void 0, "aria-sort": sorted ?? (c.sortable ? "none" : void 0), className: cx(c.numeric && "ad-num", c.frozen && `ad-table__frozen--${c.frozen}`), style: { ...c.width ? { width: c.width } : {}, ...c.minWidth ? { minWidth: c.minWidth } : {}, ...at(c) }, children: [
+          c.minWidth && /* @__PURE__ */ jsx42("span", { className: "ad-table__floor", "aria-hidden": "true", style: { width: c.minWidth } }),
+          c.labelHidden ? /* @__PURE__ */ jsx42("span", { className: "ad-sr", children: c.label }) : c.sortable && onSort ? /* @__PURE__ */ jsxs39("button", { type: "button", className: "ad-table__sort ad-sort-button", onClick: () => onSort(c.id), children: [
+            c.label,
+            sorted && /* @__PURE__ */ jsx42(Arrow, { up: sorted === "ascending" })
+          ] }) : c.label
+        ] }, c.id);
       })
     ] }) }),
     /* @__PURE__ */ jsx42("tbody", { children: rows.map((r, rowAt) => {

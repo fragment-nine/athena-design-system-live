@@ -1410,6 +1410,10 @@ button.ad-card__name:focus-visible { outline: none; box-shadow: var(--ring-selec
 /* A full-form control column: only callers requesting fill stretch their shared field skins. */
 .ad-field-row--fill .ad-field-row__control > * { flex: 1 1 0; width: 100%; }
 .ad-field-row--fill .ad-field-row__control :is(.ad-field-wrap, .ad-datefield, .ad-timefield, .ad-pick-field, .ad-select) { width: 100%; }
+/* A wide text field: as wide as what holds it, so a long name is never cut at the box's own width. */
+.ad-field-wrap--wide { display: flex; flex: 1 1 auto; width: 100%; }
+.ad-field-wrap--wide > .ad-field { width: 100%; }
+.ad-field-row__control:has(> .ad-field-wrap--wide) { justify-self: stretch; }
 
 /* src/components/Furniture/Furniture.css */
 /* Footer, Contents, Caption, DualUnit, Ground, Frame */
@@ -2297,7 +2301,9 @@ button.ad-row__name:focus-visible { outline: none; box-shadow: var(--ring-select
 /* On glass a quiet button sits one tone up again. */
 .ad-selection-bar .ad-button--quiet { background: var(--bg-hover); }
 /* Built 2026-10-25 for Athena. Held columns stay put while a wide table scrolls sideways; they keep the page's ground under them. */
-.ad-table-wrap { overflow-x: auto; }
+.ad-table-wrap { position: relative; overflow-x: auto; }
+/* A column's floor (Column.minWidth): an empty line as wide as the floor, so auto layout never squeezes the column under it. */
+.ad-table__floor { display: block; height: 0; overflow: hidden; }
 .ad-table__frozen--start, .ad-table__frozen--end { position: sticky; z-index: 1; background: var(--ad-under); }
 .ad-table__frozen--start { --ad-held: 0px; left: var(--ad-held); }
 .ad-table__frozen--end { right: 0; }
