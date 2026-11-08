@@ -6351,7 +6351,7 @@ function Frame({ rail, pages, corner, header, toolbar, key, footer, children, cl
     pages,
     /* @__PURE__ */ jsx50("div", { className: "ad-frame__page", children: slots ? /* @__PURE__ */ jsxs46(Fragment22, { children: [
       header,
-      /* @__PURE__ */ jsx50(FrameToolbar, { children: toolbar }),
+      toolbar != null && /* @__PURE__ */ jsx50(FrameToolbar, { children: toolbar }),
       key != null && /* @__PURE__ */ jsx50(FrameKey, { children: key }),
       /* @__PURE__ */ jsx50(FrameWork, { children }),
       footer
