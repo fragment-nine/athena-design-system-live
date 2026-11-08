@@ -274,8 +274,9 @@ function usePlacement(open, anchor, floating, placement, within) {
       top = Math.round(vh * 0.12);
       left = (vw - fw) / 2;
     } else if (placement === "side") {
+      const shown = a.width > 0 || a.height > 0;
       const right = a.right + gap, before = a.left - gap - fw;
-      left = right + fw <= vw - edge ? right : before >= edge ? before : vw - fw - edge;
+      left = !shown ? vw - fw - edge : right + fw <= vw - edge ? right : before >= edge ? before : vw - fw - edge;
       top = Math.min(a.top, vh - fh - edge);
     } else if (placement === "over") {
       left = Math.min(a.left, vw - fw - edge);

@@ -1958,19 +1958,15 @@ button:hover > .ad-project-pill:not(.ad-project-pill--current) { color: var(--ac
 .ad-popover--menu { width: var(--w-menu); }
 /* As wide as what it holds: a calendar's card with nothing empty beside it. */
 .ad-popover--fit { width: fit-content; }
-/* A row in a card, one alignment in every pop-over (2026-11-07): its name in one column on one line, its control starting on one
-   line beside it, a field (a picker, a date, a time, a pair of them) filling to the card's right edge; a button, a switch or a
-   switcher keeps its own width from that line. Nothing wraps: the card grows instead. */
-.ad-popover .ad-field-row { display: flex; align-items: center; gap: var(--space-3); }
-.ad-popover .ad-field-row .ad-field-row__label { flex: none; box-sizing: border-box; width: var(--w-field-name); min-width: max-content; white-space: nowrap; }
-.ad-popover .ad-field-row .ad-field-row__control { flex: 1 1 0; min-width: 0; justify-content: flex-start; flex-wrap: nowrap; }
-.ad-popover .ad-field-row .ad-field-row__control > :is(.ad-field-wrap, .ad-select, .ad-pick-field, .ad-datefield, .ad-timefield, .ad-daterange) { flex: 1 1 auto; }
-.ad-popover .ad-field-row .ad-field-row__control > :is(.ad-field-wrap, .ad-select, .ad-pick-field) { min-width: 0; }
-.ad-popover .ad-daterange > :is(.ad-datefield, .ad-timefield) { flex: 1 0 auto; }
-/* A pair (From and To, Starts and Ends) shares the row's width, each box at least its whole date or time; the card grows for it. */
-.ad-popover .ad-field-row .ad-field-row__control .ad-daterange > :is(.ad-datefield, .ad-timefield) { width: auto; }
-.ad-popover .ad-field-row .ad-field-row__control:has(> .ad-daterange) { min-width: max-content; }
-.ad-popover .ad-field-row .ad-field-row__control :is(.ad-field-wrap, .ad-field, .ad-datefield, .ad-timefield) { width: 100%; }
+/* A row in a card: its name, then its control hard at the card's right edge (2026-10-31, "right justified"); a beside-row's fields
+   share one column after the names. Names stay on one line: the card grows instead. */
+.ad-popover .ad-field-row:not(.ad-field-row--beside) { display: flex; gap: var(--space-4); }
+.ad-popover .ad-field-row:not(.ad-field-row--beside) .ad-field-row__label { flex: none; }
+.ad-popover .ad-field-row:not(.ad-field-row--beside) .ad-field-row__control { flex: 1 1 auto; min-width: 0; }
+.ad-popover .ad-field-row__control { justify-content: flex-end; }
+.ad-popover .ad-field-row__label { white-space: nowrap; }
+/* A pair (From and To, Starts and Ends) is never cut: each box at least its whole date or time, and the card grows for it. */
+.ad-popover .ad-field-row__control:has(> .ad-daterange, > * > .ad-daterange) { min-width: max-content; }
 .ad-popover__header { margin-right: var(--space-8); margin-bottom: var(--space-4); }
 /* Title, then the heading, then the field labels: a heading is brighter than the labels under it, and they sit on the Detail rung. */
 .ad-popover .ad-popover__eyebrow, .ad-popover .ad-popover__section-label { margin: 0; color: var(--text-primary); }
