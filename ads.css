@@ -15,6 +15,7 @@
   --bg-raised: rgba(255, 255, 255, 0.08);
   --bg-hover: rgba(255, 255, 255, 0.115);
   --bg-float: #121213;
+  --bg-held: #19181a;
   --glass-bg: rgba(18, 18, 20, 0.92);
   --scrim: rgba(0, 0, 0, 0.62);
   --text-primary: #ffffff;
@@ -131,6 +132,7 @@
   --bg-raised: rgba(0, 0, 0, 0.045);
   --bg-hover: rgba(0, 0, 0, 0.075);
   --bg-float: #ffffff;
+  --bg-held: #fbfbfa;
   --glass-bg: rgba(255, 255, 255, 0.94);
   --scrim: rgba(17, 17, 19, 0.35);
   --text-primary: #111113;
@@ -693,9 +695,12 @@
   --blur-glass: blur(var(--blur-glass-radius)) saturate(1.1);
   /* The plane a piece sits on: what a held heading, a held corner or a cut-out behind a mark paints, so it matches what is under it. */
   --ad-under: var(--bg-base);
+  /* The inset plane a band sits on (every other hour, a group's heading band) so rows read apart. */
+  --ad-inset: var(--bg-inset);
 }
-/* On a card or a section it is the card's own surface laid solid, never the page's black. */
-.ad-card, .ad-section:not(.ad-section--rule) { --ad-under: var(--bg-float); }
+/* On a card or a section the held plane is the card's own glass laid solid (bg-held), and the inset band a faint lift: never the
+   page's black, nothing inside a card darker than the card (tests/look: no-black-in-cards). */
+.ad-card, .ad-section:not(.ad-section--rule) { --ad-under: var(--bg-held); --ad-inset: var(--bg-surface); }
 /* Hatched: not certain yet. Solid: confirmed. Dashed outline: deal. Dotted outline: backup. Fine hatch: weekends and time off; the past is plain. */
 .ad-hatched { background-image: var(--hatch); }
 .ad-hatched-fine { background-image: var(--hatch-fine); }
@@ -1001,7 +1006,7 @@ button.ad-year__day:focus-visible { outline: none; box-shadow: var(--ring-select
 .ad-booking--outside { overflow: visible; }
 .ad-booking--outside .ad-booking__name { position: absolute; left: 0; bottom: 100%; max-width: 100%; padding-bottom: var(--space-hair); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; pointer-events: none; }
 /* Every other hour on the inset plane. */
-.ad-time-grid__hour--band { background: var(--bg-inset); }
+.ad-time-grid__hour--band { background: var(--ad-inset); }
 
 /* The day planner's asks: a block's second line; short and thin blocks; a dragged block lifts; a lit drop column; a capped height that scrolls. */
 .ad-booking__meta { display: block; font: var(--type-data); font-size: var(--text-xs); color: var(--text-secondary); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
@@ -1113,6 +1118,13 @@ button.ad-year__day:focus-visible { outline: none; box-shadow: var(--ring-select
 .ad-time-grid__content-space { height: var(--ad-allday-content-h); }
 
 .ad-time-grid:has(.ad-time-grid__allday-content):not(.ad-time-grid--scrolls) .ad-time-grid__allday, .ad-time-grid:has(.ad-time-grid__allday-content):not(.ad-time-grid--scrolls) .ad-time-grid__allday-space { top: calc(var(--ad-held-top) + var(--ad-allday-content-h)); }
+/* The today line runs the whole calendar: from under the headings through the all-day band and every hour. First in its column, so
+   the held headings cover it as the page scrolls and it draws over the all-day band. */
+.ad-time-grid__today { top: var(--ad-held-top); z-index: var(--z-sticky); }
+.ad-time-grid--scrolls:has(.ad-time-grid__head) .ad-time-grid__today { top: 0; }
+/* Being made: the span a drag draws out is a coral box with the dark ink on it, as the main button, never a hatch (2026-11-07). */
+.ad-booking--creating { background: var(--accent); background-image: none; box-shadow: none; color: var(--on-accent); }
+.ad-booking--creating :is(.ad-booking__name, .ad-booking__time, .ad-booking__meta) { color: var(--on-accent); }
 
 /* src/components/Card/Card.css */
 /* Card: a board tile, or a dashboard widget as the Dashboard card draws it (small caps title, More at the right in 600). */
@@ -1440,7 +1452,7 @@ button.ad-contents__button:focus-visible { outline: none; box-shadow: var(--ring
 .ad-frame__page { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: var(--space-2); padding: var(--space-2) var(--space-8) var(--space-8) var(--space-6); }
 .ad-frame__page > .ad-toolbar { margin-bottom: var(--space-2); }
 /* A ground inside a card (a names column that scrolls sideways needs an opaque cell) is the card's tone, not the page's black. */
-:is(.ad-card, .ad-section:not(.ad-section--rule)) .ad-ground { background-color: var(--bg-float); background-image: none; }
+:is(.ad-card, .ad-section:not(.ad-section--rule)) .ad-ground { background-color: var(--ad-under); background-image: none; }
 /* The slots. The toolbar row is on every screen, h-row tall, empty or not, 16 over the work (the page's 8 and its own 8). The work
  fills what is left, the page's whole width. */
 .ad-frame__toolbar { display: flex; align-items: center; flex: none; min-height: var(--h-row); margin-bottom: var(--space-2); }
@@ -1772,6 +1784,9 @@ button:hover > .ad-project-pill:not(.ad-project-pill--current) { color: var(--ac
 .ad-page-list__title { font: var(--type-title); color: var(--text-primary); overflow-wrap: anywhere; }
 .ad-page-list__state { display: flex; align-items: center; min-height: var(--h-btn); }
 .ad-page-list__group > .ad-group-heading { padding-left: var(--ad-page-list-in); }
+/* A separator the person placed among the screens: a short hairline with room above and below, grabbed like any row. */
+.ad-menu__sep { list-style: none; display: flex; align-items: center; height: var(--space-3); cursor: grab; }
+.ad-menu__sep::before { content: ''; flex: 1; height: var(--border-w); margin: 0 var(--space-2); background: var(--border); }
 
 /* src/components/PageHeader/PageHeader.css */
 /* PageHeader and Tabs */
@@ -1939,11 +1954,16 @@ button:hover > .ad-project-pill:not(.ad-project-pill--current) { color: var(--ac
 .ad-popover--menu { width: var(--w-menu); }
 /* As wide as what it holds: a calendar's card with nothing empty beside it. */
 .ad-popover--fit { width: fit-content; }
-/* A row in a card: its name, then its control hard at the card's right edge. */
-.ad-popover .ad-field-row:not(.ad-field-row--beside) { display: flex; gap: var(--space-4); }
-.ad-popover .ad-field-row:not(.ad-field-row--beside) .ad-field-row__label { flex: none; }
-.ad-popover .ad-field-row:not(.ad-field-row--beside) .ad-field-row__control { flex: 1 1 auto; min-width: 0; }
-.ad-popover .ad-field-row__control { justify-content: flex-end; }
+/* A row in a card, one alignment in every pop-over (2026-11-07): its name in one column on one line, its control starting on one
+   line beside it, a field (a picker, a date, a time, a pair of them) filling to the card's right edge; a button, a switch or a
+   switcher keeps its own width from that line. Nothing wraps: the card grows instead. */
+.ad-popover .ad-field-row { display: flex; align-items: center; gap: var(--space-3); }
+.ad-popover .ad-field-row .ad-field-row__label { flex: none; box-sizing: border-box; width: var(--w-field-name); min-width: max-content; white-space: nowrap; }
+.ad-popover .ad-field-row .ad-field-row__control { flex: 1 1 0; min-width: 0; justify-content: flex-start; flex-wrap: nowrap; }
+.ad-popover .ad-field-row .ad-field-row__control > :is(.ad-field-wrap, .ad-select, .ad-pick-field, .ad-datefield, .ad-timefield, .ad-daterange) { flex: 1 1 auto; }
+.ad-popover .ad-field-row .ad-field-row__control > :is(.ad-field-wrap, .ad-select, .ad-pick-field) { min-width: 0; }
+.ad-popover .ad-daterange > :is(.ad-datefield, .ad-timefield) { flex: 1 1 auto; }
+.ad-popover .ad-field-row .ad-field-row__control :is(.ad-field-wrap, .ad-field, .ad-datefield, .ad-timefield) { width: 100%; }
 .ad-popover__header { margin-right: var(--space-8); margin-bottom: var(--space-4); }
 /* Title, then the heading, then the field labels: a heading is brighter than the labels under it, and they sit on the Detail rung. */
 .ad-popover .ad-popover__eyebrow, .ad-popover .ad-popover__section-label { margin: 0; color: var(--text-primary); }
@@ -2255,7 +2275,6 @@ button.ad-row__name:focus-visible { outline: none; box-shadow: var(--ring-select
 .ad-table--fixed .ad-table__pick { box-sizing: border-box; width: calc(var(--check-size) + 2 * var(--space-2)); overflow: visible; text-overflow: clip; }
 .ad-table th[scope="col"] { position: sticky; top: 0; z-index: 1; height: var(--h-btn); padding: 0 var(--space-2); text-align: left; white-space: nowrap; background: var(--ad-under); border-bottom: var(--border-w) solid var(--border); font: var(--type-heading); text-transform: uppercase; color: var(--text-secondary); }
 .ad-table th[aria-sort="ascending"], .ad-table th[aria-sort="descending"] { color: var(--text-primary); }
-.ad-table__arrow { width: var(--icon-sm); height: var(--icon-sm); }
 .ad-table td, .ad-table th[scope="row"] { height: var(--h-row); padding: 0 var(--space-2); border-bottom: var(--border-w) solid var(--border); text-align: left; white-space: nowrap; }
 .ad-table .ad-mono { font: var(--type-data); font-size: var(--text-xs); color: var(--text-secondary); }
 .ad-table .ad-num { text-align: right; font: var(--type-data); font-size: var(--text-xs); color: var(--text-secondary); font-variant-numeric: tabular-nums; }
@@ -2541,10 +2560,11 @@ button.ad-milestone:focus-visible { outline: none; box-shadow: var(--ring-select
 .ad-chart-key__swatch--deal { background: transparent; outline: var(--border-w) dashed var(--text-muted); outline-offset: calc(var(--border-w) * -1); }
 .ad-chart-key__swatch--backup { background: transparent; outline: var(--border-w) dotted var(--line-strong); outline-offset: calc(var(--border-w) * -1); }
 /* DragBand: the span a new item will cover while it is dragged out. */
-.ad-drag-band { position: absolute; top: 0; bottom: 0; box-sizing: border-box; background: var(--tint-selected); border-left: var(--border-w) dashed var(--accent); border-right: var(--border-w) dashed var(--accent); pointer-events: none; z-index: 1; }
-.ad-drag-band--lane { top: var(--space-1); bottom: var(--space-1); }
+/* What is being made is coral: a box down the whole timeline, a bar inside one lane (2026-11-07). */
+.ad-drag-band { position: absolute; top: 0; bottom: 0; box-sizing: border-box; border-radius: var(--radius-mark); background: var(--accent); opacity: var(--opacity-dim); pointer-events: none; z-index: 1; }
+.ad-drag-band--lane { top: var(--space-1); bottom: var(--space-1); opacity: 1; }
 /* GroupBand: a group's heading row on the inset plane under a hairline. */
-.ad-group-band { background: var(--bg-inset); border-top: var(--border-w) solid var(--border); }
+.ad-group-band { background: var(--ad-inset); border-top: var(--border-w) solid var(--border); }
 /* Inside a card nothing paints the page's black: a band is a step off the card. */
 :is(.ad-card, .ad-section:not(.ad-section--rule)) .ad-group-band { background: var(--bg-surface); }
 /* Lanes and Lane: one row each, the name at the left in the side-menu width, every second lane washed
@@ -2649,6 +2669,9 @@ button.ad-milestone:focus-visible { outline: none; box-shadow: var(--ring-select
 
 /* A Show switch that cannot go off now: its reason, under it, once pressed. */
 .ad-view__reason { display: block; margin: calc(-1 * var(--space-1)) 0 var(--space-2); }
+/* The one sort glyph, turned over for descending. */
+.ad-sort-glyph { display: inline-flex; }
+.ad-sort-glyph--descending svg { transform: scaleY(-1); }
 
 /* src/components/Tooltip/Tooltip.css */
 /* Tooltip */
