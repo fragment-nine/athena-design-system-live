@@ -1053,7 +1053,7 @@ function parseTask(raw, ctx) {
   const tokens = [];
   const add = (t) => {
     const text = raw.slice(t.start, t.end);
-    const typed = text.replace(/^[#/+@^!$]/, "").trim().replace(/\s+/g, " ");
+    const typed = text.replace(/^[#/+@^!$~]/, "").trim().replace(/\s+/g, " ");
     claimed.push(t);
     tokens.push({ ...t, label: typed, meaning: t.label, text });
   };
@@ -1124,17 +1124,19 @@ function parseTask(raw, ctx) {
     add({ start, end: start + 2, kind: "priority", label: priorityLabel(p, w) });
   }
   const shortName = (p) => p.handle?.trim() || p.name.split(" ")[0];
-  for (const m of raw.matchAll(signRun("[@+]", 3))) {
+  for (const m of raw.matchAll(signRun(ctx.fromSign ? "[@+~]" : "[@+]", 3))) {
     const start = m.index + m[1].length;
+    const from = m[2] === "~";
     const hit = longestMatch(raw, start + 1, wordEnds(m[3], start + 1), (phrase) => {
       const l = fold(phrase);
       if (l === "me") return me;
       return (people.find((p) => fold(p.name) === l) ?? people.find((p) => p.handle != null && fold(p.handle.trim()) === l) ?? people.find((p) => p.aliases?.some((a) => fold(a.trim()) === l)) ?? people.find((p) => fold(p.name.split(" ")[0]) === l))?.id;
     });
     if (hit.value) {
-      if (!out.assigneeIds.includes(hit.value)) out.assigneeIds.push(hit.value);
+      if (from) out.fromId = hit.value;
+      else if (!out.assigneeIds.includes(hit.value)) out.assigneeIds.push(hit.value);
       const person = people.find((p) => p.id === hit.value);
-      add({ start, end: hit.end, kind: "person", label: person ? shortName(person) : w.me, id: hit.value });
+      add({ start, end: hit.end, kind: from ? "from" : "person", label: person ? shortName(person) : w.me, id: hit.value });
     } else claimed.push({ start, end: hit.end });
   }
   const forRecur = mask(raw, claimed);
@@ -1932,4 +1934,4 @@ export {
   parseDurationHours,
   formatDurationHours
 };
-//# sourceMappingURL=chunk-JYHKUE34.js.map
+//# sourceMappingURL=chunk-XPCXYC7A.js.map
