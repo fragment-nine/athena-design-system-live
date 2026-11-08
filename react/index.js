@@ -2357,13 +2357,13 @@ function MenuList({ children, listProps, form }) {
   const cls = rail ? cx(form === "nested" ? "ad-rail__pinned" : "ad-rail__group", form === "projects" && "ad-rail__group--projects") : cx("ad-side__list", form === "nested" && "ad-side__list--nested");
   return /* @__PURE__ */ jsx16("ul", { ...strip(listProps), className: cx(cls, "ad-menu__list"), children: /* @__PURE__ */ jsx16(InList.Provider, { value: true, children }) });
 }
-function MenuItem({ icon, home, pill, label, current, onPress, trail, children, itemProps, ariaLabel, codeSlot }) {
+function MenuItem({ icon, home, pill, label, current, onPress, trail, children, itemProps, ariaLabel, codeSlot, expanded }) {
   const rail = useContext4(Folded);
   const Row3 = useContext4(InList) ? "li" : "div";
   const name = ariaLabel ?? (typeof label === "string" ? label : void 0);
   return /* @__PURE__ */ jsxs13(Row3, { ...strip(itemProps), className: "ad-menu__row", children: [
     /* @__PURE__ */ jsxs13("div", { className: "ad-menu__line", children: [
-      /* @__PURE__ */ jsxs13("button", { type: "button", className: cx(rail ? pill ? "ad-rail__project" : "ad-rail__item" : "ad-side__item", home && (rail ? "ad-rail__home" : "ad-side__home")), "aria-current": current ? "page" : void 0, "aria-label": rail || home ? name : void 0, title: rail || home ? name : void 0, onClick: onPress, children: [
+      /* @__PURE__ */ jsxs13("button", { type: "button", className: cx(rail ? pill ? "ad-rail__project" : "ad-rail__item" : "ad-side__item", home && (rail ? "ad-rail__home" : "ad-side__home")), "aria-current": current ? "page" : void 0, "aria-expanded": expanded, "aria-label": rail || home ? name : void 0, title: rail || home ? name : void 0, onClick: onPress, children: [
         home ? rail ? /* @__PURE__ */ jsx16("span", { className: "ad-rail__x", "aria-hidden": "true" }) : /* @__PURE__ */ jsx16("span", { className: "ad-side__icon", "aria-hidden": "true", children: /* @__PURE__ */ jsx16("span", { className: "ad-rail__x" }) }) : pill ? !rail && codeSlot ? /* @__PURE__ */ jsx16("span", { className: "ad-side__icon ad-menu__code", "aria-hidden": "true", children: /* @__PURE__ */ jsx16(ProjectPill, { code: pill.code, current: pill.current, color: pill.color }) }) : /* @__PURE__ */ jsx16(ProjectPill, { code: pill.code, current: pill.current, color: pill.color }) : icon != null && /* @__PURE__ */ jsx16("span", { className: rail ? void 0 : cx("ad-side__icon", codeSlot && "ad-menu__code"), "aria-hidden": typeof label === "string" ? true : void 0, children: typeof icon === "string" ? slotIcon(icon, { size: "lg", weight: "light" }) : icon }),
         !rail && !home && /* @__PURE__ */ jsx16("span", { className: "ad-menu__label ad-clamp-line", children: label })
       ] }),
@@ -2433,13 +2433,13 @@ function Rail({ foot = [], screens, projects, projectsScreen, current, onSelect,
   const nested = !!projectsScreen && screens.some((x) => x.id === projectsScreen);
   const pills = projects.map((p) => /* @__PURE__ */ jsx17(MenuItem, { pill: { code: p.code, current: current === p.id, color: p.color }, label: p.name, ariaLabel: `${p.code} ${p.name}`, current: current === p.id, onPress: () => onSelect(p.id), itemProps: { ...dataOnly(p.hooks), ...movable("projects", p.id, projectIds) } }, p.id));
   return /* @__PURE__ */ jsxs14(MenuFrame, { rail: true, ariaLabel: L.menu, children: [
-    /* @__PURE__ */ jsx17(MenuItem, { home: true, label: L.home, onPress: onHome }),
+    onToggle ? /* @__PURE__ */ jsx17(MenuItem, { home: true, label: L.expand, expanded: false, onPress: onToggle }) : /* @__PURE__ */ jsx17(MenuItem, { home: true, label: L.home, onPress: onHome ?? (() => {
+    }) }),
     /* @__PURE__ */ jsx17(MenuList, { children: screens.map((s) => isSep(s) ? /* @__PURE__ */ jsx17(MenuSeparator, { itemProps: { ...dataOnly(s.hooks), ...movable("screens", s.id, screens.map((x) => x.id)) } }, s.id) : /* @__PURE__ */ jsx17(MenuItem, { icon: s.icon, label: s.label, current: current === s.id, onPress: () => onSelect(s.id), itemProps: { ...dataOnly(s.hooks), ...movable("screens", s.id, screens.map((x) => x.id)) }, children: nested && projectsScreen === s.id && projects.length > 0 && /* @__PURE__ */ jsx17(MenuList, { form: "nested", children: pills }) }, s.id)) }),
     !nested && projects.length > 0 && /* @__PURE__ */ jsx17(MenuList, { form: "projects", children: pills }),
     /* @__PURE__ */ jsxs14(MenuFoot, { children: [
       foot.map((s) => /* @__PURE__ */ jsx17(MenuItem, { icon: s.icon, label: s.label, current: current === s.id, onPress: () => onSelect(s.id), itemProps: dataOnly(s.hooks) }, s.id)),
-      /* @__PURE__ */ jsx17(MenuItem, { icon: "gear", label: L.settings, current: current === "settings", onPress: onSettings }),
-      /* @__PURE__ */ jsx17("button", { type: "button", className: "ad-rail__item ad-rail__fold", "aria-label": L.expand, title: L.expand, "aria-expanded": "false", onClick: onToggle, children: /* @__PURE__ */ jsx17(Icon, { name: "caret-right" }) })
+      /* @__PURE__ */ jsx17(MenuItem, { icon: "gear", label: L.settings, current: current === "settings", onPress: onSettings })
     ] })
   ] });
 }
@@ -2451,15 +2451,15 @@ function SideMenu({ foot = [], screens, projects, views = [], current, onSelect,
   const projectRows = projects.map((p) => /* @__PURE__ */ jsx17(MenuItem, { pill: { code: p.code, current: current === p.id, color: p.color }, label: p.name, current: current === p.id, onPress: () => onSelect(p.id), itemProps: { ...dataOnly(p.hooks), ...movable("projects", p.id, projectIds) } }, p.id));
   return /* @__PURE__ */ jsxs14(MenuFrame, { ariaLabel: L.menu, children: [
     /* @__PURE__ */ jsxs14(MenuList, { children: [
-      /* @__PURE__ */ jsx17(MenuItem, { home: true, label: L.home, onPress: onHome }),
+      onToggle ? /* @__PURE__ */ jsx17(MenuItem, { home: true, label: L.fold, expanded: true, onPress: onToggle }) : /* @__PURE__ */ jsx17(MenuItem, { home: true, label: L.home, onPress: onHome ?? (() => {
+      }) }),
       screens.map((s) => isSep(s) ? /* @__PURE__ */ jsx17(MenuSeparator, { itemProps: { ...dataOnly(s.hooks), ...movable("screens", s.id, screens.map((x) => x.id)) } }, s.id) : /* @__PURE__ */ jsx17(MenuItem, { icon: s.icon, label: s.label, current: current === s.id, onPress: () => onSelect(s.id), itemProps: { ...dataOnly(s.hooks), ...movable("screens", s.id, screens.map((x) => x.id)) }, children: projectsScreen === s.id && projects.length > 0 && /* @__PURE__ */ jsx17(MenuList, { form: "nested", children: projectRows }) }, s.id))
     ] }),
     !nested && projects.length > 0 && /* @__PURE__ */ jsx17(MenuList, { children: projectRows }),
     views.length > 0 && /* @__PURE__ */ jsx17(MenuList, { children: views.map((v) => /* @__PURE__ */ jsx17(MenuItem, { icon: "star", label: v.label, current: current === v.id, onPress: () => onSelect(v.id), itemProps: dataOnly(v.hooks) }, v.id)) }),
-    (foot.length > 0 || onSettings || onToggle) && /* @__PURE__ */ jsxs14(MenuFoot, { children: [
+    (foot.length > 0 || onSettings) && /* @__PURE__ */ jsxs14(MenuFoot, { children: [
       foot.map((s) => /* @__PURE__ */ jsx17(MenuItem, { icon: s.icon, label: s.label, current: current === s.id, onPress: () => onSelect(s.id), itemProps: dataOnly(s.hooks) }, s.id)),
-      onSettings && /* @__PURE__ */ jsx17(MenuItem, { icon: "gear", label: L.settings, current: current === "settings", onPress: onSettings }),
-      onToggle && /* @__PURE__ */ jsx17("button", { type: "button", className: "ad-side__fold", "aria-label": L.fold, title: L.fold, "aria-expanded": "true", onClick: onToggle, children: /* @__PURE__ */ jsx17(Icon, { name: "caret-left" }) })
+      onSettings && /* @__PURE__ */ jsx17(MenuItem, { icon: "gear", label: L.settings, current: current === "settings", onPress: onSettings })
     ] })
   ] });
 }
@@ -4399,8 +4399,10 @@ function countdownWords(c) {
   const days = n === 0 ? "Today" : `${n} ${n === 1 ? "day" : "days"} to`;
   return `${days} ${c.what}`;
 }
-function PageHeader({ title, icon, stamp, tabs, back, description, countdown: given, alerts, picker, gear, onSearch, onPopOut, onHelp, menu, headerLabels, scramble = true, className }) {
-  const anyEnd = gear || onSearch || onPopOut || onHelp || menu;
+function PageHeader({ title, icon, stamp, tabs, back, description, countdown: given, alerts, picker, gear, onSearch, onPopOut, onHelp, menu, headerLabels, pickerMenu, scramble = true, className }) {
+  const anyEnd = gear || onSearch || onPopOut || onHelp || menu || pickerMenu;
+  const [pickOpen, setPickOpen] = useState21(false);
+  const pickAt = useRef21(null);
   const [menuOpen, setMenuOpen] = useState21(false);
   const menuAt = useRef21(null);
   const heading = useRef21(null);
@@ -4464,6 +4466,14 @@ function PageHeader({ title, icon, stamp, tabs, back, description, countdown: gi
       shownStamp && /* @__PURE__ */ jsx34("div", { className: "ad-page-header__stamp", children: stamp }),
       picker != null && picker !== false && /* @__PURE__ */ jsx34("div", { className: "ad-page-header__picker", children: picker }),
       anyEnd && /* @__PURE__ */ jsxs31(HeaderActions, { groupProps: { "aria-label": headerLabels?.group ?? "Screen actions" }, children: [
+        pickerMenu && /* @__PURE__ */ jsxs31("span", { className: "ad-page-header__menu", children: [
+          /* @__PURE__ */ jsxs31("button", { ref: pickAt, type: "button", className: cx("ad-page-header__pick", pickOpen && "ad-page-header__pick--open"), "aria-label": pickerMenu.ariaLabel ? `${pickerMenu.ariaLabel}: ${pickerMenu.label}` : void 0, "aria-haspopup": "menu", "aria-expanded": pickOpen, onClick: () => setPickOpen((o) => !o), children: [
+            pickerMenu.label,
+            /* @__PURE__ */ jsx34(Icon, { name: "caret-down", size: "sm" })
+          ] }),
+          pickerMenu.marked && /* @__PURE__ */ jsx34("span", { className: "ad-page-header__mark", "aria-hidden": "true" }),
+          /* @__PURE__ */ jsx34(Menu, { open: pickOpen, onClose: () => setPickOpen(false), anchor: pickAt, ariaLabel: pickerMenu.ariaLabel ?? pickerMenu.label, items: pickerMenu.items })
+        ] }),
         gear && /* @__PURE__ */ jsx34(ShowOptionsGear, { ...gear }),
         onSearch && /* @__PURE__ */ jsx34(IconButton, { label: headerLabels?.search ?? "Search", onClick: onSearch, children: /* @__PURE__ */ jsx34(Icon, { job: "search", size: "md" }) }),
         onPopOut && /* @__PURE__ */ jsx34(IconButton, { label: headerLabels?.popOut ?? "Pop out", onClick: onPopOut, children: /* @__PURE__ */ jsx34(Icon, { job: "external", size: "md" }) }),

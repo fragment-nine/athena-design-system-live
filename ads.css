@@ -285,7 +285,7 @@
   --target-min: 24px;
   --w-page-max: 1080px;
   --w-rail: var(--w-col-xs);
-  --h-footer: var(--w-rail);
+  --h-footer: var(--h-row);
   --numeral-contents: 26px;
   --h-seg: 26px;
   --check-size: 18px;
@@ -1711,7 +1711,6 @@ button.ad-contents__button:focus-visible { outline: none; box-shadow: var(--ring
 .ad-rail__item[aria-current="page"] { background: var(--tint-selected); color: var(--text-primary); }
 .ad-rail__x { display: inline-block; flex: none; width: var(--icon-md); height: var(--icon-md); background: url('assets/logos/loudbox-x.png') center / contain no-repeat; }
 .ad-rail__project { margin: 0; padding: var(--space-hair); border: 0; border-radius: var(--radius-page); background: transparent; cursor: pointer; }
-.ad-rail__fold svg { width: var(--icon-md); height: var(--icon-md); }
 .ad-project-pill { flex: none; --ad-pill: var(--line-strong); /* One size everywhere, the menu's: no taller than a name's type, a hair of padding. */
   display: inline-flex; align-items: center; justify-content: center; box-sizing: border-box; min-width: 0; height: var(--text-base); padding: 0 var(--space-hair); border-radius: var(--radius-page); box-shadow: inset 0 0 0 var(--border-w) var(--ad-pill); background: transparent; line-height: 1; font: var(--type-data); font-size: var(--text-xs); color: var(--text-secondary); white-space: nowrap; }
 /* Its colour on the outline only, never a fill; no taller than the name beside it. */
@@ -1746,10 +1745,6 @@ button:hover > .ad-project-pill:not(.ad-project-pill--current) { color: var(--ac
 .ad-side { display: flex; flex-direction: column; }
 .ad-side__foot { margin-top: auto; display: flex; flex-direction: column; align-items: stretch; gap: var(--space-1); }
 .ad-side__foot .ad-side__item { flex: none; }
-.ad-side__foot .ad-side__fold { margin-left: calc((var(--w-rail) - var(--h-btn)) / 2); }
-.ad-side__fold { display: inline-flex; align-items: center; justify-content: center; width: var(--h-btn); height: var(--h-btn); margin: 0; padding: 0; border: 0; border-radius: var(--radius-page); background: transparent; color: var(--text-muted); cursor: pointer; }
-.ad-side__fold:hover { color: var(--accent); }
-.ad-side__fold:focus-visible { outline: none; box-shadow: var(--ring-select); }
 .ad-side__list li[draggable] { cursor: grab; }
 /* A pressable pill (a row's, a board card's) keeps the pill's own type, the menu's size. */
 .ad-project-pill--press { margin: 0; border: 0; font: var(--type-data); font-size: var(--text-xs); line-height: 1; cursor: pointer; }
@@ -1851,6 +1846,12 @@ button:hover > .ad-project-pill:not(.ad-project-pill--current) { color: var(--ac
 
 /* The header's icon buttons (gear, search, pop out, help) in the primary ink at rest, as the toolbar's and the rail's. */
 .ad-header-actions .ad-icon-button { color: var(--text-primary); }
+/* The screen's picker and its menu, one control first in the box: its words and a caret, drawn as the box's icon buttons are. */
+.ad-page-header__pick { display: inline-flex; align-items: center; gap: var(--space-1); height: var(--h-btn-bar); margin: 0; padding: 0 var(--space-2); border: 0; border-radius: var(--radius-control); background: transparent; font: var(--type-name); white-space: nowrap; color: var(--text-primary); cursor: pointer; }
+.ad-page-header__pick:hover { color: var(--accent); background: var(--tint-hover); }
+.ad-page-header__pick--open { background: var(--bg-raised); }
+.ad-page-header__pick:focus-visible { outline: none; box-shadow: var(--ring-select); }
+.ad-page-header__pick svg { width: var(--icon-sm); height: var(--icon-sm); color: var(--text-muted); }
 
 /* src/components/Pickers/Pickers.css */
 /* PickList and DatePicker */
