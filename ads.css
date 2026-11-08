@@ -261,7 +261,6 @@
   --icon-sm: 14px;
   --icon-md: 20px;
   --icon-lg: 24px;
-  --icon-page: 0.72;
   --avatar-sm: 20px;
   --avatar-md: 32px;
   --avatar-overlap: 6px;
@@ -612,7 +611,6 @@
   --text-base: 14px;
   --text-20: 20px;
   --text-28: 28px;
-  --text-display: 48px;
   --size-hero: 88px;
   --text-13: 13px;
   --text-44: 44px;
@@ -1456,7 +1454,8 @@ button.ad-contents__button:focus-visible { outline: none; box-shadow: var(--ring
 .ad-frame { display: flex; align-items: stretch; flex: 1; min-height: 100vh; min-height: 100dvh; }
 /* The page: the header at the top with 8 above it, the toolbar 8 under the header, the work
  16 under the toolbar. The rail runs the whole height of the frame, never shorter than the page. */
-.ad-frame__page { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: var(--space-2); padding: var(--space-2) var(--space-8) var(--space-8) var(--space-6); }
+/* The page column's insets, named so the header's bar can reach past them to the column's edges. */
+.ad-frame__page { --ad-page-top: var(--space-2); --ad-page-end: var(--space-8); --ad-page-start: var(--space-6); flex: 1; min-width: 0; display: flex; flex-direction: column; gap: var(--space-2); padding: var(--ad-page-top) var(--ad-page-end) var(--space-8) var(--ad-page-start); }
 .ad-frame__page > .ad-toolbar { margin-bottom: var(--space-2); }
 /* A ground inside a card (a names column that scrolls sideways needs an opaque cell) is the card's tone, not the page's black. */
 :is(.ad-card, .ad-section:not(.ad-section--rule)) .ad-ground { background-color: var(--ad-under); background-image: none; }
@@ -1474,7 +1473,7 @@ button.ad-contents__button:focus-visible { outline: none; box-shadow: var(--ring
  places Footer last in the page and does nothing else. */
 .ad-frame__page > .ad-footer { margin-top: auto; flex: none; }
 /* The footer starts at the rail's edge, however deep an app nests it: page gutter undone, so rail and footer meet as one L. */
-.ad-frame__page .ad-footer { margin-left: calc(var(--space-6) * -1); }
+.ad-frame__page .ad-footer { margin-left: calc(var(--ad-page-start) * -1); }
 /* The footer is flush with the window's bottom: nothing under it. */
 .ad-frame__page:has(.ad-footer) { padding-bottom: 0; }
 /* The corner (Pixx): fixed bottom right, over the footer's right edge; the footer's right cell ends before it. */
@@ -1796,13 +1795,14 @@ button:hover > .ad-project-pill:not(.ad-project-pill--current) { color: var(--ac
 /* PageHeader and Tabs */
 .ad-page-header { position: relative; }
 .ad-page-header__row { display: flex; align-items: center; gap: var(--space-6); }
-/* The page title: the site's headline, Work Sans 800 in caps, solid, in the second ink (never white: the title is decoration, the verdict is the thing). */
-.ad-page-header__title { --ad-title-icon-height: calc(1em * var(--icon-page)); --ad-title-icon-width: calc(1em * var(--icon-page)); --ad-title-icon-top: 0; display: flex; align-items: center; gap: var(--space-3); margin: 0; flex: none; white-space: nowrap; font: var(--type-title); font-size: var(--text-display); font-weight: 800; text-transform: uppercase; line-height: var(--lh-none); color: var(--text-secondary); }
-/* The chrome's icons are one ink, the primary: the title's glyph as the rail's. */
-.ad-page-header__icon { display: inline-flex; flex: none; align-self: flex-start; position: relative; top: var(--ad-title-icon-top); color: var(--text-secondary); }
-.ad-page-header__icon svg { width: var(--ad-title-icon-width); height: var(--ad-title-icon-height); }
+/* The thin bar: one row tall plus a step, a hairline under it from the page column's edge to edge (in a Frame it reaches past the
+   column's insets; elsewhere it spans the header). */
+.ad-page-header__row { box-sizing: border-box; min-height: calc(var(--h-row) + var(--space-2)); border-bottom: var(--border-w) solid var(--border);
+  margin: calc(-1 * var(--ad-page-top, 0px)) calc(-1 * var(--ad-page-end, 0px)) 0 calc(-1 * var(--ad-page-start, 0px));
+  padding: 0 var(--ad-page-end, 0px) 0 var(--ad-page-start, 0px); }
+/* The screen's name: small, Work Sans 800 in caps, in the second ink, no icon (the work is the loudest thing, not the title). */
+.ad-page-header__title { display: flex; align-items: center; margin: 0; flex: none; white-space: nowrap; font: var(--type-title); font-size: var(--text-base); font-weight: 800; text-transform: uppercase; line-height: var(--lh-none); color: var(--text-secondary); }
 .ad-page-header__words { display: block; }
-.ad-page-header__baseline { display: inline-block; width: 0; height: 0; vertical-align: baseline; }
 /* HeaderActions: Athena's raised box round the header's icon buttons, kept as it was. */
 .ad-header-actions { display: inline-flex; flex: none; align-items: center; box-sizing: border-box; gap: var(--space-2); height: var(--h-btn-bar); padding: 0 var(--pad-header-actions); border-radius: var(--radius-page); background: var(--bg-surface); }
 .ad-page-header__row > .ad-header-actions { margin-left: auto; }

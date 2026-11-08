@@ -4319,7 +4319,7 @@ function Picture({ src, alt, ...rest }) {
 }
 
 // src/components/PageHeader/PageHeader.tsx
-import { useEffect as useEffect13, useId as useId12, useRef as useRef21, useState as useState21 } from "react";
+import { useId as useId12, useRef as useRef21, useState as useState21 } from "react";
 
 // src/components/ShowOptions/ShowOptions.tsx
 import { useRef as useRef20, useState as useState20 } from "react";
@@ -4403,43 +4403,6 @@ function PageHeader({ title, icon, stamp, tabs, back, description, countdown: gi
   const anyEnd = gear || onSearch || onPopOut || onHelp || menu || pickerMenu;
   const [menuOpen, setMenuOpen] = useState21(false);
   const menuAt = useRef21(null);
-  const heading = useRef21(null);
-  const titleWords = useRef21(null);
-  const baseline = useRef21(null);
-  useEffect13(() => {
-    const h = heading.current, words = titleWords.current, mark = baseline.current;
-    const svg = h?.querySelector(".ad-page-header__icon svg");
-    if (!h || !words || !mark || !svg || typeof svg.getBBox !== "function") return;
-    const viewBox = svg.getAttribute("viewBox");
-    const context = document.createElement("canvas").getContext("2d");
-    if (!context) return;
-    let active = true;
-    const measure = () => {
-      if (!active) return;
-      const style = getComputedStyle(h);
-      context.font = `${style.fontWeight} ${style.fontSize} ${style.fontFamily}`;
-      const ink = context.measureText(title.toUpperCase());
-      const height = ink.actualBoundingBoxAscent + ink.actualBoundingBoxDescent;
-      const bounds = svg.getBBox();
-      if (!(height > 0 && bounds.height > 0 && bounds.width > 0)) return;
-      svg.setAttribute("viewBox", `${bounds.x} ${bounds.y} ${bounds.width} ${bounds.height}`);
-      h.style.setProperty("--ad-title-icon-height", `${height}px`);
-      h.style.setProperty("--ad-title-icon-width", `${height * bounds.width / bounds.height}px`);
-      h.style.setProperty("--ad-title-icon-top", `${mark.getBoundingClientRect().top - h.getBoundingClientRect().top - ink.actualBoundingBoxAscent}px`);
-    };
-    measure();
-    document.fonts?.ready.then(measure);
-    document.fonts?.addEventListener("loadingdone", measure);
-    const observer = typeof ResizeObserver === "undefined" ? null : new ResizeObserver(measure);
-    observer?.observe(words);
-    return () => {
-      active = false;
-      observer?.disconnect();
-      document.fonts?.removeEventListener("loadingdone", measure);
-      if (viewBox != null) svg.setAttribute("viewBox", viewBox);
-      for (const property of ["height", "width", "top"]) h.style.removeProperty(`--ad-title-icon-${property}`);
-    };
-  }, [title, icon]);
   const shownStamp = typeof stamp === "string" && STATES.has(stamp);
   const countdown2 = given && typeof given === "object" && given.to instanceof Date ? countdownWords(given) : null;
   return /* @__PURE__ */ jsxs31("header", { className: cx("ad-page-header", className), children: [
@@ -4447,13 +4410,7 @@ function PageHeader({ title, icon, stamp, tabs, back, description, countdown: gi
       /* @__PURE__ */ jsxs31("div", { className: "ad-page-header__lead", children: [
         /* @__PURE__ */ jsxs31("div", { className: "ad-page-header__titled", children: [
           back && /* @__PURE__ */ jsx34("button", { type: "button", className: "ad-page-header__back", "aria-label": back.label, title: back.label, onClick: back.onBack, children: /* @__PURE__ */ jsx34(Icon, { job: "chevron-left", size: "lg" }) }),
-          /* @__PURE__ */ jsxs31("h1", { ref: heading, className: "ad-page-header__title", children: [
-            icon && /* @__PURE__ */ jsx34("span", { className: "ad-page-header__icon", "aria-hidden": "true", children: slotIcon(icon, { weight: "light" }) }),
-            /* @__PURE__ */ jsxs31("span", { ref: titleWords, className: "ad-page-header__words", children: [
-              scramble ? /* @__PURE__ */ jsx34(TextScramble, { text: title }) : title,
-              /* @__PURE__ */ jsx34("span", { ref: baseline, className: "ad-page-header__baseline", "aria-hidden": "true" })
-            ] })
-          ] })
+          /* @__PURE__ */ jsx34("h1", { className: "ad-page-header__title", children: /* @__PURE__ */ jsx34("span", { className: "ad-page-header__words", children: scramble ? /* @__PURE__ */ jsx34(TextScramble, { text: title }) : title }) })
         ] }),
         (description || countdown2) && /* @__PURE__ */ jsxs31("div", { className: "ad-page-header__aside", children: [
           description && /* @__PURE__ */ jsx34("p", { className: "ad-page-header__description", children: String(description) }),
@@ -4523,14 +4480,14 @@ function Tabs({ tabs, value, onChange, ariaLabel, numbered = true, panelId, clas
 }
 
 // src/components/Toolbar/Toolbar.tsx
-import { forwardRef as forwardRef9, useEffect as useEffect15, useRef as useRef23, useState as useState22 } from "react";
+import { forwardRef as forwardRef9, useEffect as useEffect14, useRef as useRef23, useState as useState22 } from "react";
 
 // src/components/Writing/Writing.tsx
-import { forwardRef as forwardRef8, useEffect as useEffect14, useRef as useRef22 } from "react";
+import { forwardRef as forwardRef8, useEffect as useEffect13, useRef as useRef22 } from "react";
 import { jsx as jsx35, jsxs as jsxs32 } from "react/jsx-runtime";
 function NoteBox({ heading = "Notes", className, value, ...rest }) {
   const ref = useRef22(null);
-  useEffect14(() => {
+  useEffect13(() => {
     const el = ref.current;
     if (el) {
       el.style.height = "auto";
@@ -4544,7 +4501,7 @@ function NoteBox({ heading = "Notes", className, value, ...rest }) {
 }
 function Composer({ label, placeholder, value, onChange, onSubmit, submitLabel, hint, main }) {
   const ref = useRef22(null);
-  useEffect14(() => {
+  useEffect13(() => {
     const el = ref.current;
     if (el) {
       el.style.height = "auto";
@@ -4853,7 +4810,7 @@ function OrderList({ label, items, onReorder }) {
 function ShowSwitch({ setting: s }) {
   const [said, setSaid] = useState22(false);
   const locked = s.on && !!s.reason;
-  useEffect15(() => {
+  useEffect14(() => {
     if (!locked) setSaid(false);
   }, [locked]);
   return /* @__PURE__ */ jsxs33(Fragment15, { children: [
@@ -5744,7 +5701,7 @@ function PeriodCluster({ shown, periods, period, onPeriod, onPrevious, onNext, o
 }
 
 // src/components/Calendar/Calendar.tsx
-import { useEffect as useEffect16, useLayoutEffect as useLayoutEffect10, useRef as useRef29, useState as useState26 } from "react";
+import { useEffect as useEffect15, useLayoutEffect as useLayoutEffect10, useRef as useRef29, useState as useState26 } from "react";
 import { Fragment as Fragment19, jsx as jsx45, jsxs as jsxs42 } from "react/jsx-runtime";
 var code = (it) => it.code ? /* @__PURE__ */ jsx45(ProjectPill, { code: it.code, color: it.color?.startsWith("project-") ? it.color : void 0 }) : null;
 var hooksOf2 = (h) => {
@@ -5935,7 +5892,7 @@ function TimeGrid({ startHour, endHour, bookings = [], columns, now, hourLabel =
     el.querySelectorAll(".ad-time-grid__head, .ad-time-grid__allday-content").forEach((n) => ro.observe(n));
     return () => ro.disconnect();
   });
-  useEffect16(() => {
+  useEffect15(() => {
     const el = frame.current;
     if (!el || scrollTo == null) return;
     const go = () => {
@@ -6112,7 +6069,7 @@ function PhaseBand({ label, color, unconfirmed }) {
 }
 
 // src/components/Map/Map.tsx
-import { useEffect as useEffect17, useMemo as useMemo3, useRef as useRef30, useState as useState27 } from "react";
+import { useEffect as useEffect16, useMemo as useMemo3, useRef as useRef30, useState as useState27 } from "react";
 
 // src/components/Map/worldGeo.ts
 var GEO_LAT_MAX = 84;
@@ -6185,7 +6142,7 @@ function WorldMap({ pins, at, ariaLabel, onPin, hoverCard, pinProps }) {
   const night = useMemo3(() => nightPath(at), [at]);
   const wrap = useRef30(null);
   const [w, setW] = useState27(0);
-  useEffect17(() => {
+  useEffect16(() => {
     const el = wrap.current;
     if (!el) return;
     setW(el.getBoundingClientRect().width);
@@ -6365,9 +6322,9 @@ function CommandSearch({ open, onClose, query, onQuery, results, onPick, label =
 }
 
 // src/components/Guidance/Guidance.tsx
-import { useEffect as useEffect18, useLayoutEffect as useLayoutEffect11, useRef as useRef32, useState as useState28 } from "react";
+import { useEffect as useEffect17, useLayoutEffect as useLayoutEffect11, useRef as useRef32, useState as useState28 } from "react";
 import { Fragment as Fragment21, jsx as jsx49, jsxs as jsxs45 } from "react/jsx-runtime";
-var useIsoLayoutEffect3 = typeof window === "undefined" ? useEffect18 : useLayoutEffect11;
+var useIsoLayoutEffect3 = typeof window === "undefined" ? useEffect17 : useLayoutEffect11;
 function TourStep({ open, anchor, step, total, title, children, onBack, onNext, onExit, backLabel = "Back", nextLabel = "Next", progressLabel = (s, t) => `${s} of ${t}`, placement, side: older, onClose, closeLabel }) {
   const card = useRef32(null);
   const [rect, setRect] = useState28(null);
@@ -6567,7 +6524,7 @@ function Ground({ children, className, style }) {
 }
 
 // src/runtime/AdsProvider.tsx
-import { useContext as useContext10, useEffect as useEffect19, useMemo as useMemo4 } from "react";
+import { useContext as useContext10, useEffect as useEffect18, useMemo as useMemo4 } from "react";
 import { jsx as jsx51 } from "react/jsx-runtime";
 var MODE = typeof process !== "undefined" && process.env && process.env.NODE_ENV || "development";
 var pending = [];
@@ -6595,11 +6552,11 @@ ${describeViolations(all)}`);
 }
 function AdsProvider({ strict = false, show, children }) {
   const on = strict && MODE !== "production";
-  useEffect19(() => {
+  useEffect18(() => {
     if (!on) return;
     report(scanIn(document.body), true);
   });
-  useEffect19(() => {
+  useEffect18(() => {
     if (!on) return;
     const look = () => report(scanIn(document.body), false);
     const watch = new MutationObserver(look);
