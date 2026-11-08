@@ -4997,8 +4997,9 @@ function Columns({ main, side, sideWidth = "card", className }) {
 // src/components/Table/Table.tsx
 import { useLayoutEffect as useLayoutEffect8, useRef as useRef27, useState as useState24 } from "react";
 import { jsx as jsx42, jsxs as jsxs39 } from "react/jsx-runtime";
+var NEAR = 8;
 var Arrow = ({ up }) => /* @__PURE__ */ jsx42(SortGlyph, { direction: up ? "ascending" : "descending", size: "sm" });
-function Table({ columns, rows, rowId, caption, sort, onSort, picked, onPickedChange, onPickAllChange, pickLabel, pickAllLabel = "Pick all", onOpen, rowProps, group, foldGroups, foldedGroups, onFoldGroup, depth, foldParents, foldedRows, onFoldRow, foldLabel, nameColumn, fixed, className }) {
+function Table({ columns, rows, rowId, caption, sort, onSort, picked, onPickedChange, onPickAllChange, pickLabel, pickAllLabel = "Pick all", onOpen, rowProps, group, foldGroups, foldedGroups, onFoldGroup, depth, foldParents, foldedRows, onFoldRow, foldLabel, nameColumn, fixed, onInsertRow, onInsertColumn, insertRowLabel = "Insert a row here", insertColumnLabel = "Insert a column here", className }) {
   const span = columns.length + (onPickedChange ? 1 : 0);
   const [ownFolded, setOwnFolded] = useState24(() => /* @__PURE__ */ new Set());
   const folded = foldedGroups ?? ownFolded;
@@ -5052,69 +5053,123 @@ function Table({ columns, rows, rowId, caption, sort, onSort, picked, onPickedCh
   const wrap = useRef27(null);
   useKeyScroll(wrap);
   const at = (c) => c.frozen === "start" && held[c.id] ? { ["--ad-held"]: `${held[c.id]}px` } : {};
-  return /* @__PURE__ */ jsx42("div", { ref: wrap, className: cx("ad-table-wrap", className), children: /* @__PURE__ */ jsxs39("table", { className: cx("ad-table", fixed && "ad-table--fixed"), children: [
-    /* @__PURE__ */ jsx42("caption", { className: "ad-sr", children: caption }),
-    /* @__PURE__ */ jsx42("thead", { children: /* @__PURE__ */ jsxs39("tr", { ref: headRow, children: [
-      onPickedChange && /* @__PURE__ */ jsx42("th", { scope: "col", className: "ad-table__pick", children: /* @__PURE__ */ jsx42(Checkbox, { "aria-label": pickAllLabel, checked: all, onChange: (on) => onPickAllChange?.(on) }) }),
-      columns.map((c) => {
-        const sorted = sort?.id === c.id ? sort.direction : void 0;
-        return /* @__PURE__ */ jsxs39("th", { scope: "col", "data-held": c.frozen === "start" ? c.id : void 0, "aria-sort": sorted ?? (c.sortable ? "none" : void 0), className: cx(c.numeric && "ad-num", c.frozen && `ad-table__frozen--${c.frozen}`), style: { ...c.width ? { width: c.width } : {}, ...c.minWidth ? { minWidth: c.minWidth } : {}, ...at(c) }, children: [
-          c.minWidth && /* @__PURE__ */ jsx42("span", { className: "ad-table__floor", "aria-hidden": "true", style: { width: c.minWidth } }),
-          c.labelHidden ? /* @__PURE__ */ jsx42("span", { className: "ad-sr", children: c.label }) : c.sortable && onSort ? /* @__PURE__ */ jsxs39("button", { type: "button", className: "ad-table__sort ad-sort-button", onClick: () => onSort(c.id), children: [
-            c.label,
-            sorted && /* @__PURE__ */ jsx42(Arrow, { up: sorted === "ascending" })
-          ] }) : c.label
-        ] }, c.id);
-      })
-    ] }) }),
-    /* @__PURE__ */ jsx42("tbody", { children: rows.map((r, rowAt) => {
-      const id = rowId(r);
-      if (foldParents) {
-        const deep = depth?.(r) ?? 0;
-        if (hideBelow != null && deep > hideBelow) return null;
-        hideBelow = null;
+  const [near, setNear] = useState24(null);
+  const inserts = !!(onInsertRow || onInsertColumn);
+  const findNear = (e) => {
+    const el = wrap.current;
+    if (!el) return;
+    const box = el.getBoundingClientRect();
+    const ox = el.scrollLeft - box.left, oy = el.scrollTop - box.top;
+    const px3 = e.clientX + ox, py2 = e.clientY + oy;
+    const table = el.querySelector(":scope > .ad-table");
+    if (!table) return;
+    const t = table.getBoundingClientRect();
+    const width = t.width, half = NEAR;
+    let best = null, dist = NEAR + 1;
+    const head = table.querySelector(":scope > thead")?.getBoundingClientRect();
+    if (onInsertColumn && head && py2 >= head.top + oy && py2 <= head.bottom + oy) {
+      const ths = table.querySelectorAll(":scope > thead > tr > th[data-col-at]");
+      for (const [i, th] of Array.from(ths).entries()) {
+        const r = th.getBoundingClientRect();
+        const edges = [[Number(th.dataset.colAt), r.left + ox]];
+        if (i === ths.length - 1) edges.push([Number(th.dataset.colAt) + 1, r.right + ox]);
+        for (const [where, x] of edges) {
+          const d = Math.abs(px3 - x);
+          if (d < dist) {
+            dist = d;
+            best = { kind: "column", at: where, x: Math.min(Math.max(x, t.left + ox + half), t.right + ox - half), y: head.top + oy, length: head.height };
+          }
+        }
       }
-      const on = picked?.has(id);
-      const g = group?.(r);
-      const head = g != null && g !== lastGroup ? g : null;
-      lastGroup = g;
-      const shut = !!foldGroups && g != null && folded.has(g);
-      const heading = head != null && /* @__PURE__ */ jsx42("tr", { className: "ad-table__group", children: /* @__PURE__ */ jsx42("th", { scope: "colgroup", colSpan: span, children: foldGroups ? /* @__PURE__ */ jsxs39("button", { type: "button", className: "ad-table__fold", "aria-expanded": !shut, onClick: () => foldGroup(head), children: [
-        /* @__PURE__ */ jsx42(Icon, { name: "caret-down", size: "sm", className: cx("ad-table__chevron", shut && "ad-table__chevron--shut") }),
-        head
-      ] }) : head }) }, `group-${id}`);
-      if (shut) return heading || null;
-      const d = depth?.(r) ?? 0;
-      const parent = !!foldParents && rowAt + 1 < rows.length && (depth?.(rows[rowAt + 1]) ?? 0) > d;
-      const rowShut = parent && rowsShut.has(id);
-      if (rowShut) hideBelow = d;
-      const { className: _c, style: _s, ...hooks } = rowProps?.(r) ?? {};
-      const tr = /* @__PURE__ */ jsxs39("tr", { ...hooks, "data-picked": on || void 0, "data-depth": d || void 0, className: cx(onOpen && "ad-table__row--opens"), onClick: (e) => {
-        hooks.onClick?.(e);
-        if (onOpen && !e.target.closest("input,button,a")) onOpen(r);
-      }, children: [
-        onPickedChange && /* @__PURE__ */ jsx42("td", { className: "ad-table__pick", children: /* @__PURE__ */ jsx42(Checkbox, { "aria-label": pickLabel?.(r) ?? id, checked: !!on, onChange: (v) => onPickedChange(id, v) }) }),
-        columns.map((c, i) => {
-          const frozen = c.frozen && `ad-table__frozen--${c.frozen}`;
-          if (i !== nameAt) return /* @__PURE__ */ jsx42("td", { className: cx(c.numeric && "ad-num", c.mono && "ad-mono", frozen), style: c.frozen === "start" ? at(c) : void 0, children: c.cell(r) }, c.id);
-          const words = onOpen ? /* @__PURE__ */ jsx42("button", { type: "button", className: "ad-table__open", onClick: () => onOpen(r), children: c.cell(r) }) : c.cell(r);
-          const meta = c.meta?.(r);
-          return /* @__PURE__ */ jsxs39("th", { scope: "row", className: cx("ad-table__name", frozen, meta != null && "ad-table__name--two"), style: d || c.frozen === "start" ? { ...d ? { ["--ad-depth"]: d } : {}, ...at(c) } : void 0, children: [
-            d > 0 && /* @__PURE__ */ jsx42("span", { className: "ad-table__elbow", "aria-hidden": "true" }),
-            parent && /* @__PURE__ */ jsx42("button", { type: "button", className: "ad-table__fold ad-table__fold--row", "aria-expanded": !rowShut, "aria-label": foldLabel?.(r) ?? "Fold", onClick: (e) => {
-              e.stopPropagation();
-              foldRow(id);
-            }, children: /* @__PURE__ */ jsx42(Icon, { name: "caret-down", size: "sm", className: cx("ad-table__chevron", rowShut && "ad-table__chevron--shut") }) }),
-            meta != null ? /* @__PURE__ */ jsxs39("span", { className: "ad-table__words", children: [
-              words,
-              /* @__PURE__ */ jsx42("span", { className: "ad-table__meta", children: meta })
-            ] }) : words
+    } else if (onInsertRow) {
+      const trs = table.querySelectorAll(":scope > tbody > tr[data-row-at]");
+      for (const [i, tr] of Array.from(trs).entries()) {
+        const r = tr.getBoundingClientRect();
+        const edges = [[Number(tr.dataset.rowAt), r.top + oy]];
+        if (i === trs.length - 1) edges.push([rows.length, r.bottom + oy]);
+        for (const [where, y] of edges) {
+          const d = Math.abs(py2 - y);
+          if (d < dist) {
+            dist = d;
+            best = { kind: "row", at: where, x: t.left + ox, y, length: width };
+          }
+        }
+      }
+    }
+    const found = best;
+    setNear((was) => was && found && was.kind === found.kind && was.at === found.at && was.x === found.x && was.y === found.y ? was : found);
+  };
+  return /* @__PURE__ */ jsxs39("div", { ref: wrap, className: cx("ad-table-wrap", inserts && "ad-table-wrap--inserts", className), onPointerMove: inserts ? findNear : void 0, onPointerLeave: inserts ? () => setNear(null) : void 0, children: [
+    /* @__PURE__ */ jsxs39("table", { className: cx("ad-table", fixed && "ad-table--fixed"), children: [
+      /* @__PURE__ */ jsx42("caption", { className: "ad-sr", children: caption }),
+      /* @__PURE__ */ jsx42("thead", { children: /* @__PURE__ */ jsxs39("tr", { ref: headRow, children: [
+        onPickedChange && /* @__PURE__ */ jsx42("th", { scope: "col", className: "ad-table__pick", children: /* @__PURE__ */ jsx42(Checkbox, { "aria-label": pickAllLabel, checked: all, onChange: (on) => onPickAllChange?.(on) }) }),
+        columns.map((c) => {
+          const sorted = sort?.id === c.id ? sort.direction : void 0;
+          return /* @__PURE__ */ jsxs39("th", { scope: "col", "data-col-at": onInsertColumn ? columns.indexOf(c) : void 0, "data-held": c.frozen === "start" ? c.id : void 0, "aria-sort": sorted ?? (c.sortable ? "none" : void 0), className: cx(c.numeric && "ad-num", c.frozen && `ad-table__frozen--${c.frozen}`), style: { ...c.width ? { width: c.width } : {}, ...c.minWidth ? { minWidth: c.minWidth } : {}, ...at(c) }, children: [
+            c.minWidth && /* @__PURE__ */ jsx42("span", { className: "ad-table__floor", "aria-hidden": "true", style: { width: c.minWidth } }),
+            c.labelHidden ? /* @__PURE__ */ jsx42("span", { className: "ad-sr", children: c.label }) : c.sortable && onSort ? /* @__PURE__ */ jsxs39("button", { type: "button", className: "ad-table__sort ad-sort-button", onClick: () => onSort(c.id), children: [
+              c.label,
+              sorted && /* @__PURE__ */ jsx42(Arrow, { up: sorted === "ascending" })
+            ] }) : c.label
           ] }, c.id);
         })
-      ] }, id);
-      return heading ? [heading, tr] : tr;
-    }) })
-  ] }) });
+      ] }) }),
+      /* @__PURE__ */ jsx42("tbody", { children: rows.map((r, rowAt) => {
+        const id = rowId(r);
+        if (foldParents) {
+          const deep = depth?.(r) ?? 0;
+          if (hideBelow != null && deep > hideBelow) return null;
+          hideBelow = null;
+        }
+        const on = picked?.has(id);
+        const g = group?.(r);
+        const head = g != null && g !== lastGroup ? g : null;
+        lastGroup = g;
+        const shut = !!foldGroups && g != null && folded.has(g);
+        const heading = head != null && /* @__PURE__ */ jsx42("tr", { className: "ad-table__group", children: /* @__PURE__ */ jsx42("th", { scope: "colgroup", colSpan: span, children: foldGroups ? /* @__PURE__ */ jsxs39("button", { type: "button", className: "ad-table__fold", "aria-expanded": !shut, onClick: () => foldGroup(head), children: [
+          /* @__PURE__ */ jsx42(Icon, { name: "caret-down", size: "sm", className: cx("ad-table__chevron", shut && "ad-table__chevron--shut") }),
+          head
+        ] }) : head }) }, `group-${id}`);
+        if (shut) return heading || null;
+        const d = depth?.(r) ?? 0;
+        const parent = !!foldParents && rowAt + 1 < rows.length && (depth?.(rows[rowAt + 1]) ?? 0) > d;
+        const rowShut = parent && rowsShut.has(id);
+        if (rowShut) hideBelow = d;
+        const { className: _c, style: _s, ...hooks } = rowProps?.(r) ?? {};
+        const tr = /* @__PURE__ */ jsxs39("tr", { ...hooks, "data-row-at": onInsertRow ? rowAt : void 0, "data-picked": on || void 0, "data-depth": d || void 0, className: cx(onOpen && "ad-table__row--opens"), onClick: (e) => {
+          hooks.onClick?.(e);
+          if (onOpen && !e.target.closest("input,button,a")) onOpen(r);
+        }, children: [
+          onPickedChange && /* @__PURE__ */ jsx42("td", { className: "ad-table__pick", children: /* @__PURE__ */ jsx42(Checkbox, { "aria-label": pickLabel?.(r) ?? id, checked: !!on, onChange: (v) => onPickedChange(id, v) }) }),
+          columns.map((c, i) => {
+            const frozen = c.frozen && `ad-table__frozen--${c.frozen}`;
+            if (i !== nameAt) return /* @__PURE__ */ jsx42("td", { className: cx(c.numeric && "ad-num", c.mono && "ad-mono", frozen), style: c.frozen === "start" ? at(c) : void 0, children: c.cell(r) }, c.id);
+            const words = onOpen ? /* @__PURE__ */ jsx42("button", { type: "button", className: "ad-table__open", onClick: () => onOpen(r), children: c.cell(r) }) : c.cell(r);
+            const meta = c.meta?.(r);
+            return /* @__PURE__ */ jsxs39("th", { scope: "row", className: cx("ad-table__name", frozen, meta != null && "ad-table__name--two"), style: d || c.frozen === "start" ? { ...d ? { ["--ad-depth"]: d } : {}, ...at(c) } : void 0, children: [
+              d > 0 && /* @__PURE__ */ jsx42("span", { className: "ad-table__elbow", "aria-hidden": "true" }),
+              parent && /* @__PURE__ */ jsx42("button", { type: "button", className: "ad-table__fold ad-table__fold--row", "aria-expanded": !rowShut, "aria-label": foldLabel?.(r) ?? "Fold", onClick: (e) => {
+                e.stopPropagation();
+                foldRow(id);
+              }, children: /* @__PURE__ */ jsx42(Icon, { name: "caret-down", size: "sm", className: cx("ad-table__chevron", rowShut && "ad-table__chevron--shut") }) }),
+              meta != null ? /* @__PURE__ */ jsxs39("span", { className: "ad-table__words", children: [
+                words,
+                /* @__PURE__ */ jsx42("span", { className: "ad-table__meta", children: meta })
+              ] }) : words
+            ] }, c.id);
+          })
+        ] }, id);
+        return heading ? [heading, tr] : tr;
+      }) })
+    ] }),
+    near && /* @__PURE__ */ jsx42("div", { className: cx("ad-insert", `ad-insert--${near.kind}`), style: near.kind === "row" ? { left: near.x, top: near.y, width: near.length } : { left: near.x, top: near.y, height: near.length }, children: /* @__PURE__ */ jsx42("button", { type: "button", className: "ad-insert__mark", "aria-label": near.kind === "row" ? insertRowLabel : insertColumnLabel, onClick: () => {
+      const n = near;
+      setNear(null);
+      if (n.kind === "row") onInsertRow?.(n.at);
+      else onInsertColumn?.(n.at);
+    }, children: /* @__PURE__ */ jsx42(Icon, { name: "plus", size: "sm" }) }) })
+  ] });
 }
 function SelectionBar({ count, countLabel = (n) => `${n} selected`, actions, lead, onClear, clearLabel = "Clear", showAtZero, emptyLabel = "Nothing selected", onExit, exitLabel = "Exit", className }) {
   const [open, setOpen] = useState24(null);
@@ -5803,10 +5858,11 @@ function TimeGrid({ startHour, endHour, bookings = [], columns, now, hourLabel =
       const set = (h2) => el.style.setProperty("--ad-hour", `${h2}px`);
       set(least);
       const spare = box.getBoundingClientRect().bottom - el.getBoundingClientRect().bottom + box.scrollTop;
-      const h = least + Math.max(0, spare) / hours;
+      const shown = Math.min(hours, visibleHours ?? hours);
+      const h = least + Math.max(0, spare) / shown;
       set(h);
       const over2 = box.scrollHeight - box.clientHeight;
-      if (over2 > 0) set(Math.max(least, h - over2 / hours));
+      if (over2 > 0) set(Math.max(least, h - over2 / shown));
     };
     fit();
     if (typeof ResizeObserver === "undefined") return;
@@ -5816,7 +5872,7 @@ function TimeGrid({ startHour, endHour, bookings = [], columns, now, hourLabel =
       ro.disconnect();
       el.style.removeProperty("--ad-hour");
     };
-  }, [hourHeight, hours, allDayCount, contentH]);
+  }, [hourHeight, hours, visibleHours, allDayCount, contentH]);
   const pressAt = (colId) => (e) => {
     if (!onPressAt) return;
     const t = e.target;
