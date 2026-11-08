@@ -2309,7 +2309,7 @@ button.ad-row__name:focus-visible { outline: none; box-shadow: var(--ring-select
 .ad-table__row--tone-p1 { --ad-row-wash: color-mix(in srgb, var(--priority-p1) var(--tint-lane-wash), transparent); }
 .ad-table__row--tone-p2 { --ad-row-wash: color-mix(in srgb, var(--priority-p2) var(--tint-lane-wash), transparent); }
 .ad-table__row--tone-p3 { --ad-row-wash: color-mix(in srgb, var(--priority-p3) var(--tint-lane-wash), transparent); }
-[class*="ad-table__row--tone-"] > * { background-image: linear-gradient(var(--ad-row-wash), var(--ad-row-wash)); }
+.ad-table [class*="ad-table__row--tone-"] > * { background-image: linear-gradient(var(--ad-row-wash), var(--ad-row-wash)); }
 .ad-table__open { margin: 0; padding: 0; border: 0; background: transparent; font: inherit; color: inherit; cursor: pointer; text-align: left; }
 .ad-table__open:focus-visible { outline: none; box-shadow: var(--ring-select); border-radius: var(--radius-page); }
 .ad-table__pick { width: var(--h-btn); }
@@ -2324,7 +2324,7 @@ button.ad-row__name:focus-visible { outline: none; box-shadow: var(--ring-select
 .ad-table-wrap { position: relative; overflow-x: auto; }
 /* A column's floor (Column.minWidth): an empty line as wide as the floor, so auto layout never squeezes the column under it. */
 .ad-table__floor { display: block; height: 0; overflow: hidden; }
-.ad-table__frozen--start, .ad-table__frozen--end { position: sticky; z-index: 1; background: var(--ad-under); }
+.ad-table__frozen--start, .ad-table__frozen--end { position: sticky; z-index: 1; background-color: var(--ad-under); }
 .ad-table__frozen--start { --ad-held: 0px; left: var(--ad-held); }
 .ad-table__frozen--end { right: 0; }
 .ad-table th[scope="col"].ad-table__frozen--start, .ad-table th[scope="col"].ad-table__frozen--end { z-index: 2; }
