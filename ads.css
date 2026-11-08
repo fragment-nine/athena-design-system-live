@@ -1806,6 +1806,14 @@ button:hover > .ad-project-pill:not(.ad-project-pill--current) { color: var(--ac
 /* HeaderActions: Athena's raised box round the header's icon buttons, kept as it was. */
 .ad-header-actions { display: inline-flex; flex: none; align-items: center; box-sizing: border-box; gap: var(--space-2); height: var(--h-btn-bar); padding: 0 var(--pad-header-actions); border-radius: var(--radius-page); background: var(--bg-surface); }
 .ad-page-header__row > .ad-header-actions { margin-left: auto; }
+/* The connection mark, just before the box: a bar-tall slot, the cloud in the primary ink while offline, in amber when saving was refused. */
+.ad-connection { display: inline-flex; flex: none; align-items: center; justify-content: center; width: var(--h-btn-bar); height: var(--h-btn-bar); border-radius: var(--radius-control); color: var(--text-primary); cursor: default; }
+.ad-connection svg { width: var(--icon-md); height: var(--icon-md); }
+.ad-connection--refused { color: var(--status-warn); }
+.ad-connection:focus-visible { outline: none; box-shadow: var(--ring-select); }
+.ad-page-header__row > .ad-connection { margin-left: auto; }
+.ad-page-header__row > .ad-connection + .ad-header-actions { margin-left: calc(var(--space-2) - var(--space-6)); }
+.ad-page-header__alerts ~ .ad-connection, .ad-page-header__stamp ~ .ad-connection, .ad-page-header__picker ~ .ad-connection { margin-left: 0; }
 /* The alerts line at the end of the title row, before the stamp and the icon buttons; it takes no height of its own. */
 .ad-page-header__alerts { display: inline-flex; align-items: center; flex: none; margin-left: auto; }
 .ad-page-header__alerts ~ .ad-page-header__stamp, .ad-page-header__alerts ~ .ad-header-actions { margin-left: 0; }
