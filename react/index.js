@@ -4401,8 +4401,6 @@ function countdownWords(c) {
 }
 function PageHeader({ title, icon, stamp, tabs, back, description, countdown: given, alerts, picker, gear, onSearch, onPopOut, onHelp, menu, headerLabels, pickerMenu, scramble = true, className }) {
   const anyEnd = gear || onSearch || onPopOut || onHelp || menu || pickerMenu;
-  const [pickOpen, setPickOpen] = useState21(false);
-  const pickAt = useRef21(null);
   const [menuOpen, setMenuOpen] = useState21(false);
   const menuAt = useRef21(null);
   const heading = useRef21(null);
@@ -4465,15 +4463,7 @@ function PageHeader({ title, icon, stamp, tabs, back, description, countdown: gi
       alerts && /* @__PURE__ */ jsx34("div", { className: "ad-page-header__alerts", children: alerts }),
       shownStamp && /* @__PURE__ */ jsx34("div", { className: "ad-page-header__stamp", children: stamp }),
       picker != null && picker !== false && /* @__PURE__ */ jsx34("div", { className: "ad-page-header__picker", children: picker }),
-      anyEnd && /* @__PURE__ */ jsxs31(HeaderActions, { groupProps: { "aria-label": headerLabels?.group ?? "Screen actions" }, children: [
-        pickerMenu && /* @__PURE__ */ jsxs31("span", { className: "ad-page-header__menu", children: [
-          /* @__PURE__ */ jsxs31("button", { ref: pickAt, type: "button", className: cx("ad-page-header__pick", pickOpen && "ad-page-header__pick--open"), "aria-label": pickerMenu.ariaLabel ? `${pickerMenu.ariaLabel}: ${pickerMenu.label}` : void 0, "aria-haspopup": "menu", "aria-expanded": pickOpen, onClick: () => setPickOpen((o) => !o), children: [
-            pickerMenu.label,
-            /* @__PURE__ */ jsx34(Icon, { name: "caret-down", size: "sm" })
-          ] }),
-          pickerMenu.marked && /* @__PURE__ */ jsx34("span", { className: "ad-page-header__mark", "aria-hidden": "true" }),
-          /* @__PURE__ */ jsx34(Menu, { open: pickOpen, onClose: () => setPickOpen(false), anchor: pickAt, ariaLabel: pickerMenu.ariaLabel ?? pickerMenu.label, items: pickerMenu.items })
-        ] }),
+      anyEnd && /* @__PURE__ */ jsxs31(HeaderActions, { groupProps: { "aria-label": headerLabels?.group ?? "Screen actions" }, pickerMenu, children: [
         gear && /* @__PURE__ */ jsx34(ShowOptionsGear, { ...gear }),
         onSearch && /* @__PURE__ */ jsx34(IconButton, { label: headerLabels?.search ?? "Search", onClick: onSearch, children: /* @__PURE__ */ jsx34(Icon, { job: "search", size: "md" }) }),
         onPopOut && /* @__PURE__ */ jsx34(IconButton, { label: headerLabels?.popOut ?? "Pop out", onClick: onPopOut, children: /* @__PURE__ */ jsx34(Icon, { job: "external", size: "md" }) }),
@@ -4488,13 +4478,28 @@ function PageHeader({ title, icon, stamp, tabs, back, description, countdown: gi
     tabs && /* @__PURE__ */ jsx34("div", { className: "ad-page-header__tabs", children: tabs })
   ] });
 }
+function HeaderPick({ label, items, marked, ariaLabel }) {
+  const [open, setOpen] = useState21(false);
+  const at = useRef21(null);
+  return /* @__PURE__ */ jsxs31("span", { className: "ad-page-header__menu", children: [
+    /* @__PURE__ */ jsxs31("button", { ref: at, type: "button", className: cx("ad-page-header__pick", open && "ad-page-header__pick--open"), "aria-label": ariaLabel ? `${ariaLabel}: ${label}` : void 0, "aria-haspopup": "menu", "aria-expanded": open, onClick: () => setOpen((o) => !o), children: [
+      label,
+      /* @__PURE__ */ jsx34(Icon, { name: "caret-down", size: "sm" })
+    ] }),
+    marked && /* @__PURE__ */ jsx34("span", { className: "ad-page-header__mark", "aria-hidden": "true" }),
+    /* @__PURE__ */ jsx34(Menu, { open, onClose: () => setOpen(false), anchor: at, ariaLabel: ariaLabel ?? label, items })
+  ] });
+}
 var strip2 = (h) => {
   if (!h) return {};
   const { className: _c, style: _s, ...rest } = h;
   return rest;
 };
-function HeaderActions({ children, groupProps }) {
-  return /* @__PURE__ */ jsx34("div", { role: "group", ...strip2(groupProps), className: "ad-header-actions", children: /* @__PURE__ */ jsx34(ButtonSizeScope, { size: "bar", children }) });
+function HeaderActions({ children, groupProps, pickerMenu }) {
+  return /* @__PURE__ */ jsx34("div", { role: "group", ...strip2(groupProps), className: "ad-header-actions", children: /* @__PURE__ */ jsxs31(ButtonSizeScope, { size: "bar", children: [
+    pickerMenu && /* @__PURE__ */ jsx34(HeaderPick, { ...pickerMenu }),
+    children
+  ] }) });
 }
 function Tabs({ tabs, value, onChange, ariaLabel, numbered = true, panelId, className }) {
   const list = useRef21(null);
