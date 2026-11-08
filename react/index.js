@@ -1755,7 +1755,10 @@ var TextField = forwardRef2(function TextField2({ icon, end, parsed, error, mono
 var TextArea = forwardRef2(function TextArea2({ className, ...rest }, ref) {
   return /* @__PURE__ */ jsx9("textarea", { ref, ...rest, className: cx("ad-field", "ad-textarea", className) });
 });
-var InlineEdit = forwardRef2(function InlineEdit2({ value, onCommit, ariaLabel, placeholder, size = "body", onType, onLeaveDown, disabled, wrap, className }, ref) {
+var InlineEdit = forwardRef2(function InlineEdit2(props, ref) {
+  return props.figure ? /* @__PURE__ */ jsx9(InlineFigure, { ...props, ref }) : /* @__PURE__ */ jsx9(InlineWords, { ...props, ref });
+});
+var InlineWords = forwardRef2(function InlineWords2({ value, onCommit, ariaLabel, placeholder, size = "body", onType, onLeaveDown, disabled, wrap, className }, ref) {
   const [draft, setDraft] = useState5(value);
   const editing = useRef5(false);
   const cancelled = useRef5(false);
@@ -1802,6 +1805,51 @@ var InlineEdit = forwardRef2(function InlineEdit2({ value, onCommit, ariaLabel, 
     className: cx("ad-inline-edit", `ad-inline-edit--${size}`, className, wrap && "ad-inline-edit--wrap")
   };
   return wrap ? /* @__PURE__ */ jsx9("textarea", { ref, rows: 1, ...shared }) : /* @__PURE__ */ jsx9("input", { ref, ...shared });
+});
+var figureWords = (n, unit = "") => n == null ? "" : `${n.toLocaleString("en-US", { maximumFractionDigits: 2 })}${unit}`;
+var InlineFigure = forwardRef2(function InlineFigure2({ value, onCommit, unit, ariaLabel, placeholder, onLeaveDown, disabled, className }, ref) {
+  const [draft, setDraft] = useState5(null);
+  const cancelled = useRef5(false);
+  const commit = () => {
+    const typed = draft;
+    setDraft(null);
+    if (cancelled.current || typed == null) {
+      cancelled.current = false;
+      return;
+    }
+    const bare = typed.replace(/,/g, "").replace(unit ? new RegExp(`${unit.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}$`, "i") : /$^/, "").trim();
+    const next = bare === "" ? null : Number(bare);
+    if (next !== null && !Number.isFinite(next)) return;
+    if (next !== value) onCommit(next);
+  };
+  return /* @__PURE__ */ jsx9(
+    "input",
+    {
+      ref,
+      inputMode: "decimal",
+      "aria-label": ariaLabel,
+      placeholder,
+      disabled,
+      value: draft ?? figureWords(value, unit),
+      onFocus: () => setDraft(value == null ? "" : String(value)),
+      onChange: (e) => setDraft(e.target.value),
+      onBlur: commit,
+      onKeyDown: (e) => {
+        if (onLeaveDown && (e.key === "Enter" || e.key === "ArrowDown")) {
+          e.preventDefault();
+          onLeaveDown(e.key);
+          return;
+        }
+        if (e.key === "Enter") e.currentTarget.blur();
+        if (e.key === "Escape" && draft !== (value == null ? "" : String(value))) {
+          e.stopPropagation();
+          cancelled.current = true;
+          e.currentTarget.blur();
+        }
+      },
+      className: cx("ad-inline-edit", "ad-inline-edit--figure", className)
+    }
+  );
 });
 var Select = forwardRef2(function Select2({ options, placeholder, quiet, className, value, defaultValue, ...rest }, ref) {
   return /* @__PURE__ */ jsxs7("span", { className: cx("ad-field", "ad-select", rest.disabled && "ad-field--disabled", className), children: [
@@ -2413,6 +2461,7 @@ function PageList({ ariaLabel, head, groups, current, onPick }) {
     head && /* @__PURE__ */ jsxs14("div", { className: "ad-page-list__head", children: [
       head.eyebrow != null && /* @__PURE__ */ jsx17("span", { className: "ad-page-list__eyebrow", children: head.eyebrow }),
       /* @__PURE__ */ jsx17("span", { className: "ad-page-list__title", children: head.title }),
+      head.sub != null && /* @__PURE__ */ jsx17("span", { className: "ad-page-list__sub", children: head.sub }),
       head.state != null && /* @__PURE__ */ jsx17("span", { className: "ad-page-list__state", children: head.state })
     ] }),
     groups.map((g) => /* @__PURE__ */ jsxs14("div", { className: "ad-page-list__group", children: [
@@ -3725,7 +3774,7 @@ function StatusPicker({ statuses, noSearch = true, open, anchor, onClose, header
   }), anchor, ariaLabel: rest.searchLabel, items: statuses.map((s) => ({ id: s.id, label: s.label, dot: s.tone ?? "neutral", checked: s.id === rest.value, onSelect: () => rest.onPick(s.id) })) });
   return /* @__PURE__ */ jsx27(PickList, { ...rest, noSearch, options: statuses.map((s) => ({ id: s.id, label: s.label, lead: /* @__PURE__ */ jsx27(Dot, { tone: s.tone }), hint: s.hint })) });
 }
-function PickField({ options, value, onPick, label, placeholder, header, icon, search, disabled, className, trigger, marks, footer, typed, onTyped }) {
+function PickField({ options, value, onPick, label, placeholder, header, icon, search, disabled, className, trigger, marks, footer, typed, onTyped, compact }) {
   const [open, setOpen] = useState15(false);
   const [draft, setDraft] = useState15(null);
   const anchor = useRef16(null);
@@ -3838,11 +3887,15 @@ function PickField({ options, value, onPick, label, placeholder, header, icon, s
         "aria-expanded": open,
         disabled,
         onClick: () => setOpen((o) => !o),
-        className: cx("ad-field", "ad-pick-field", disabled && "ad-field--disabled", className),
+        className: cx("ad-field", "ad-pick-field", compact && "ad-pick-field--compact", disabled && "ad-field--disabled", className),
+        title: compact && words ? words : void 0,
         children: [
           icon && /* @__PURE__ */ jsx27(Icon, { job: icon, size: "md", className: "ad-pick-field__icon" }),
           face?.lead != null && /* @__PURE__ */ jsx27("span", { className: "ad-pick-field__lead", "aria-hidden": "true", children: face.lead }),
-          asMarks ? /* @__PURE__ */ jsx27("span", { className: "ad-pick-field__words ad-clamp-line", title: words, children: /* @__PURE__ */ jsxs24("span", { className: "ad-pick-field__marks", "aria-hidden": "true", children: [
+          compact && picked.length > 0 && (asMarks || picked.every((o) => o.lead != null)) ? picked.length > 1 ? /* @__PURE__ */ jsxs24("span", { className: "ad-pick-field__marks", "aria-hidden": "true", children: [
+            picked.slice(0, cap || 3).map((o) => /* @__PURE__ */ jsx27("span", { className: "ad-pick-field__mark", children: o.lead ?? /* @__PURE__ */ jsx27(Dot, {}) }, o.id)),
+            picked.length > (cap || 3) && /* @__PURE__ */ jsx27("span", { className: "ad-pick-field__more", children: "\u2026" })
+          ] }) : null : asMarks ? /* @__PURE__ */ jsx27("span", { className: "ad-pick-field__words ad-clamp-line", title: words, children: /* @__PURE__ */ jsxs24("span", { className: "ad-pick-field__marks", "aria-hidden": "true", children: [
             picked.slice(0, cap).map((o) => /* @__PURE__ */ jsx27("span", { className: "ad-pick-field__mark", children: o.lead ?? /* @__PURE__ */ jsx27(Dot, {}) }, o.id)),
             picked.length > cap && /* @__PURE__ */ jsx27("span", { className: "ad-pick-field__more", children: "\u2026" })
           ] }) }) : /* @__PURE__ */ jsx27("span", { className: cx("ad-pick-field__words", "ad-clamp-line", picked.length === 0 && "ad-pick-field__words--empty"), children: picked.length ? words : placeholder ?? label }),

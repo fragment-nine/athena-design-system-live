@@ -1386,6 +1386,10 @@ button.ad-card__name:focus-visible { outline: none; box-shadow: var(--ring-selec
 .ad-inline-edit { all: unset; box-sizing: border-box; display: block; width: 100%; min-width: 0; padding: 0 var(--space-2); margin: 0 calc(var(--space-2) * -1); border-radius: var(--radius-page); color: var(--text-primary); text-overflow: ellipsis; }
 .ad-inline-edit--body { font: var(--type-name); line-height: var(--h-field); }
 .ad-inline-edit--wrap { field-sizing: content; resize: none; overflow: hidden; white-space: pre-wrap; line-height: var(--lh-tight); }
+.ad-inline-edit--detail { font: var(--type-detail); color: var(--text-muted); line-height: var(--h-btn-row); }
+.ad-inline-edit--detail.ad-inline-edit--wrap { line-height: var(--lh-tight); padding-block: var(--space-hair); }
+/* A typed figure reads as the table's figures: mono, small, right, its right edge on the column's. */
+.ad-inline-edit--figure { width: calc(100% + var(--space-2) * 2); font: var(--type-data); font-size: var(--text-xs); line-height: var(--h-btn-row); text-align: right; color: var(--text-secondary); font-variant-numeric: tabular-nums; }
 .ad-inline-edit--title { font: var(--type-title); line-height: var(--lh-tight); padding-block: var(--space-1); }
 .ad-inline-edit:hover { background: var(--bg-raised); }
 .ad-inline-edit:focus { background: var(--bg-hover); }
@@ -1787,6 +1791,7 @@ button:hover > .ad-project-pill:not(.ad-project-pill--current) { color: var(--ac
 .ad-page-list__head { display: flex; flex-direction: column; gap: var(--space-1); padding-left: var(--ad-page-list-in); }
 .ad-page-list__eyebrow { font: var(--type-heading); text-transform: uppercase; color: var(--text-muted); }
 .ad-page-list__title { font: var(--type-title); color: var(--text-primary); overflow-wrap: anywhere; }
+.ad-page-list__sub { margin-top: calc(var(--space-1) * -1); font: var(--type-detail); color: var(--text-muted); overflow-wrap: anywhere; }
 .ad-page-list__state { display: flex; align-items: center; min-height: var(--h-btn); }
 .ad-page-list__group > .ad-group-heading { padding-left: var(--ad-page-list-in); }
 /* A separator the person placed among the screens: a short hairline with room above and below, grabbed like any row. */
@@ -1952,6 +1957,12 @@ button:hover > .ad-project-pill:not(.ad-project-pill--current) { color: var(--ac
 .ad-pick-field__mark { display: inline-flex; }
 .ad-pick-field__more { font: var(--type-name); color: var(--text-muted); }
 .ad-pick-field__trigger { display: inline-flex; }
+/* PickField compact (a table cell): the pick alone, no box and no caret until the pointer is on it; its words never cut. */
+.ad-field.ad-pick-field--compact { height: var(--h-btn-row); padding: 0 var(--space-1); gap: var(--space-1); background: transparent; max-width: none; }
+.ad-pick-field--compact .ad-pick-field__words { flex: none; overflow: visible; text-overflow: clip; white-space: nowrap; }
+.ad-pick-field--compact .ad-pick-field__caret { visibility: hidden; }
+.ad-field.ad-pick-field--compact:hover, .ad-field.ad-pick-field--compact:focus-visible, .ad-field.ad-pick-field--compact[aria-expanded="true"] { background: var(--bg-raised); }
+.ad-pick-field--compact:hover .ad-pick-field__caret, .ad-pick-field--compact:focus-visible .ad-pick-field__caret, .ad-pick-field--compact[aria-expanded="true"] .ad-pick-field__caret { visibility: visible; }
 
 /* src/components/Popover/Popover.css */
 /* Popover and its pieces */
