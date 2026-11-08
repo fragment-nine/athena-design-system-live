@@ -1903,8 +1903,11 @@ button:hover > .ad-project-pill:not(.ad-project-pill--current) { color: var(--ac
 .ad-datepicker__day[data-picked] { background: var(--bg-hover); color: var(--text-primary); box-shadow: var(--ring-select); }
 .ad-datefield { display: inline-flex; flex-direction: column; min-width: 0; max-width: 100%; }
 /* Late: the date's words in the late red, as RowDate draws them. */
-/* Two dates on one row, a chevron between them, level with the fields. */
-.ad-daterange { display: inline-flex; align-items: flex-start; gap: var(--space-1); min-width: 0; }
+/* Two dates (or two times) on one row, a chevron between them, level with the fields. Never cut: each box is at least as wide as
+   its whole date or time, the pair never shrinks below them, and whatever holds it grows instead (a pop-over does). */
+.ad-daterange { display: inline-flex; flex-wrap: nowrap; align-items: flex-start; gap: var(--space-1); flex-shrink: 0; min-width: max-content; }
+.ad-daterange > :is(.ad-datefield, .ad-timefield) { flex-shrink: 0; min-width: max-content; }
+.ad-daterange .ad-field__input { min-width: max-content; text-overflow: clip; }
 .ad-daterange__to { display: inline-flex; flex: none; align-items: center; height: var(--h-field); color: var(--text-muted); }
 /* A date's field is as wide as its date. */
 .ad-datefield .ad-field__input { field-sizing: content; min-width: var(--w-col-sm); }
@@ -1963,7 +1966,10 @@ button:hover > .ad-project-pill:not(.ad-project-pill--current) { color: var(--ac
 .ad-popover .ad-field-row .ad-field-row__control { flex: 1 1 0; min-width: 0; justify-content: flex-start; flex-wrap: nowrap; }
 .ad-popover .ad-field-row .ad-field-row__control > :is(.ad-field-wrap, .ad-select, .ad-pick-field, .ad-datefield, .ad-timefield, .ad-daterange) { flex: 1 1 auto; }
 .ad-popover .ad-field-row .ad-field-row__control > :is(.ad-field-wrap, .ad-select, .ad-pick-field) { min-width: 0; }
-.ad-popover .ad-daterange > :is(.ad-datefield, .ad-timefield) { flex: 1 1 auto; }
+.ad-popover .ad-daterange > :is(.ad-datefield, .ad-timefield) { flex: 1 0 auto; }
+/* A pair (From and To, Starts and Ends) shares the row's width, each box at least its whole date or time; the card grows for it. */
+.ad-popover .ad-field-row .ad-field-row__control .ad-daterange > :is(.ad-datefield, .ad-timefield) { width: auto; }
+.ad-popover .ad-field-row .ad-field-row__control:has(> .ad-daterange) { min-width: max-content; }
 .ad-popover .ad-field-row .ad-field-row__control :is(.ad-field-wrap, .ad-field, .ad-datefield, .ad-timefield) { width: 100%; }
 .ad-popover__header { margin-right: var(--space-8); margin-bottom: var(--space-4); }
 /* Title, then the heading, then the field labels: a heading is brighter than the labels under it, and they sit on the Detail rung. */
