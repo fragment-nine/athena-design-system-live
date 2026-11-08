@@ -5090,7 +5090,7 @@ import { useLayoutEffect as useLayoutEffect8, useRef as useRef27, useState as us
 import { jsx as jsx42, jsxs as jsxs39 } from "react/jsx-runtime";
 var NEAR = 8;
 var Arrow = ({ up }) => /* @__PURE__ */ jsx42(SortGlyph, { direction: up ? "ascending" : "descending", size: "sm" });
-function Table({ columns, rows, rowId, caption, sort, onSort, picked, onPickedChange, onPickAllChange, pickLabel, pickAllLabel = "Pick all", onOpen, rowProps, group, foldGroups, foldedGroups, onFoldGroup, depth, foldParents, foldedRows, onFoldRow, foldLabel, nameColumn, fixed, onInsertRow, onInsertColumn, insertRowLabel = "Insert a row here", insertColumnLabel = "Insert a column here", className }) {
+function Table({ columns, rows, rowId, caption, sort, onSort, picked, onPickedChange, onPickAllChange, pickLabel, pickAllLabel = "Pick all", onOpen, rowProps, rowTone, group, foldGroups, foldedGroups, onFoldGroup, depth, foldParents, foldedRows, onFoldRow, foldLabel, nameColumn, fixed, onInsertRow, onInsertColumn, insertRowLabel = "Insert a row here", insertColumnLabel = "Insert a column here", className }) {
   const span = columns.length + (onPickedChange ? 1 : 0);
   const [ownFolded, setOwnFolded] = useState24(() => /* @__PURE__ */ new Set());
   const folded = foldedGroups ?? ownFolded;
@@ -5228,7 +5228,7 @@ function Table({ columns, rows, rowId, caption, sort, onSort, picked, onPickedCh
         const rowShut = parent && rowsShut.has(id);
         if (rowShut) hideBelow = d;
         const { className: _c, style: _s, ...hooks } = rowProps?.(r) ?? {};
-        const tr = /* @__PURE__ */ jsxs39("tr", { ...hooks, "data-row-at": onInsertRow ? rowAt : void 0, "data-picked": on || void 0, "data-depth": d || void 0, className: cx(onOpen && "ad-table__row--opens"), onClick: (e) => {
+        const tr = /* @__PURE__ */ jsxs39("tr", { ...hooks, "data-row-at": onInsertRow ? rowAt : void 0, "data-picked": on || void 0, "data-depth": d || void 0, className: cx(onOpen && "ad-table__row--opens", rowTone?.(r) && `ad-table__row--tone-${rowTone(r)}`), onClick: (e) => {
           hooks.onClick?.(e);
           if (onOpen && !e.target.closest("input,button,a")) onOpen(r);
         }, children: [

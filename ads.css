@@ -2305,6 +2305,11 @@ button.ad-row__name:focus-visible { outline: none; box-shadow: var(--ring-select
 .ad-table__row--opens:hover .ad-table__name { color: var(--accent); }
 .ad-table tr[data-picked] > * { background: var(--tint-selected); }
 .ad-table__row--opens { cursor: pointer; }
+/* A row washed by its priority (rowTone): the priority's colour, faint, over each cell's own ground so frozen cells stay solid. */
+.ad-table__row--tone-p1 { --ad-row-wash: color-mix(in srgb, var(--priority-p1) var(--tint-lane-wash), transparent); }
+.ad-table__row--tone-p2 { --ad-row-wash: color-mix(in srgb, var(--priority-p2) var(--tint-lane-wash), transparent); }
+.ad-table__row--tone-p3 { --ad-row-wash: color-mix(in srgb, var(--priority-p3) var(--tint-lane-wash), transparent); }
+[class*="ad-table__row--tone-"] > * { background-image: linear-gradient(var(--ad-row-wash), var(--ad-row-wash)); }
 .ad-table__open { margin: 0; padding: 0; border: 0; background: transparent; font: inherit; color: inherit; cursor: pointer; text-align: left; }
 .ad-table__open:focus-visible { outline: none; box-shadow: var(--ring-select); border-radius: var(--radius-page); }
 .ad-table__pick { width: var(--h-btn); }
