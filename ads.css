@@ -1963,6 +1963,10 @@ button:hover > .ad-project-pill:not(.ad-project-pill--current) { color: var(--ac
 .ad-pick-field--compact .ad-pick-field__caret { visibility: hidden; }
 .ad-field.ad-pick-field--compact:hover, .ad-field.ad-pick-field--compact:focus-visible, .ad-field.ad-pick-field--compact[aria-expanded="true"] { background: var(--bg-raised); }
 .ad-pick-field--compact:hover .ad-pick-field__caret, .ad-pick-field--compact:focus-visible .ad-pick-field__caret, .ad-pick-field--compact[aria-expanded="true"] .ad-pick-field__caret { visibility: visible; }
+/* compact + typed while typing: the box the cell lends, as wide as the words need. */
+.ad-field.ad-pick-field--compact.ad-pick-field--typed { background: var(--bg-raised); }
+.ad-pick-field--compact.ad-pick-field--typed .ad-pick-field__caret { visibility: visible; }
+.ad-pick-field--compact.ad-pick-field--typed .ad-field__input { min-width: calc(var(--check-size) * 4); }
 
 /* src/components/Popover/Popover.css */
 /* Popover and its pieces */

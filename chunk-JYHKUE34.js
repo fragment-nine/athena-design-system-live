@@ -1053,7 +1053,7 @@ function parseTask(raw, ctx) {
   const tokens = [];
   const add = (t) => {
     const text = raw.slice(t.start, t.end);
-    const typed = text.replace(/^[#/+@^!]/, "").trim().replace(/\s+/g, " ");
+    const typed = text.replace(/^[#/+@^!$]/, "").trim().replace(/\s+/g, " ");
     claimed.push(t);
     tokens.push({ ...t, label: typed, meaning: t.label, text });
   };
@@ -1103,6 +1103,18 @@ function parseTask(raw, ctx) {
       out.sectionId = hit.value.id;
       add({ start, end: hit.end, kind: "section", label: hit.value.name, id: hit.value.id });
     } else claimed.push({ start, end: hit.end });
+  }
+  const tracks = ctx.vocabulary.tracks ?? [];
+  if (tracks.length) {
+    const trackPool = effProject ? tracks.filter((t) => t.projectId === effProject) : tracks;
+    for (const m of raw.matchAll(signRun("\\$", 5))) {
+      const start = m.index + m[1].length;
+      const hit = longestMatch(raw, start + 1, wordEnds(m[3], start + 1), (phrase) => trackPool.find((t) => fold(t.title) === fold(phrase)));
+      if (hit.value) {
+        out.trackId = hit.value.id;
+        add({ start, end: hit.end, kind: "track", label: hit.value.title, id: hit.value.id });
+      } else claimed.push({ start, end: hit.end });
+    }
   }
   for (const m of raw.matchAll(/(^|\s)(p[1-4])(?=\s|$)/gi)) {
     const start = m.index + m[1].length;
@@ -1920,4 +1932,4 @@ export {
   parseDurationHours,
   formatDurationHours
 };
-//# sourceMappingURL=chunk-UNTCOJQV.js.map
+//# sourceMappingURL=chunk-JYHKUE34.js.map

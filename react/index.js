@@ -20,7 +20,7 @@ import {
   sameDay,
   searchRank,
   weekStartOf
-} from "../chunk-UNTCOJQV.js";
+} from "../chunk-JYHKUE34.js";
 import {
   describeViolations,
   scanIn
@@ -2918,12 +2918,12 @@ import { createContext as createContext7, useCallback as useCallback3, useContex
 // src/components/Writing/TokenInput.tsx
 import { useEffect as useEffect8, useLayoutEffect as useLayoutEffect4, useRef as useRef11, useState as useState11 } from "react";
 import { jsx as jsx22, jsxs as jsxs19 } from "react/jsx-runtime";
-var CHIP = { project: "project", date: "calendar", deadline: "calendar", priority: "flag", person: "user", recurrence: "repeat", reminder: "bell" };
+var CHIP = { project: "project", track: "kind-track", date: "calendar", deadline: "calendar", priority: "flag", person: "user", recurrence: "repeat", reminder: "bell" };
 var DEPTS = /* @__PURE__ */ new Set(["lighting", "video", "eng", "sfx", "content", "scenic", "direction", "admin", "pm", "lasers"]);
 function readTokens(value, read2) {
   if (read2.kind === "query") return queryTokens(value, read2.vocabulary);
   const { projects, sections } = read2.vocabulary;
-  return parseTask(value, { today: read2.today, vocabulary: read2.vocabulary }).tokens.map((t) => {
+  return parseTask(value, { today: read2.today, vocabulary: read2.vocabulary, projectId: read2.projectId }).tokens.map((t) => {
     let icon;
     let resolved = t.meaning;
     if (t.kind === "project") resolved = projects.find((p) => p.id === t.id)?.name ?? t.meaning;
@@ -3777,6 +3777,10 @@ function StatusPicker({ statuses, noSearch = true, open, anchor, onClose, header
 function PickField({ options, value, onPick, label, placeholder, header, icon, search, disabled, className, trigger, marks, footer, typed, onTyped, compact }) {
   const [open, setOpen] = useState15(false);
   const [draft, setDraft] = useState15(null);
+  const [editing, setEditing] = useState15(false);
+  const settle = useRef16(false);
+  const holding = useRef16(false);
+  const quiet = !!(compact && typed && !editing);
   const anchor = useRef16(null);
   const box = useRef16(null);
   const style = usePlacement(open, anchor, box, "drop");
@@ -3810,11 +3814,21 @@ function PickField({ options, value, onPick, label, placeholder, header, icon, s
       }
     )
   ] }) });
-  if (typed) {
+  const leave = (refocus) => {
+    setDraft(null);
+    setOpen(false);
+    setEditing(false);
+    holding.current = false;
+    if (refocus) {
+      settle.current = true;
+      requestAnimationFrame(() => anchor.current?.focus({ preventScroll: true }));
+    }
+  };
+  if (typed && !quiet) {
     const words2 = draft ?? words;
     const narrowed = draft ? searchOptions(options, draft) : options;
     return /* @__PURE__ */ jsxs24(Fragment13, { children: [
-      /* @__PURE__ */ jsxs24("span", { ref: anchor, className: cx("ad-field", "ad-pick-field", "ad-pick-field--typed", disabled && "ad-field--disabled", className), children: [
+      /* @__PURE__ */ jsxs24("span", { ref: anchor, className: cx("ad-field", "ad-pick-field", "ad-pick-field--typed", compact && "ad-pick-field--compact", disabled && "ad-field--disabled", className), children: [
         icon && /* @__PURE__ */ jsx27(Icon, { job: icon, size: "md", className: "ad-pick-field__icon" }),
         /* @__PURE__ */ jsx27(
           "input",
@@ -3827,6 +3841,11 @@ function PickField({ options, value, onPick, label, placeholder, header, icon, s
             disabled,
             placeholder: placeholder ?? label,
             value: words2,
+            autoFocus: compact,
+            onFocus: compact ? (e) => e.currentTarget.select() : void 0,
+            onBlur: compact ? (e) => {
+              if (!holding.current && !box.current?.contains(e.relatedTarget)) leave(false);
+            } : void 0,
             onChange: (e) => {
               setDraft(e.target.value);
               setOpen(true);
@@ -3836,8 +3855,15 @@ function PickField({ options, value, onPick, label, placeholder, header, icon, s
               if (e.key === "Enter" && draft?.trim()) {
                 e.preventDefault();
                 onTyped?.(draft.trim());
-                setDraft(null);
-                setOpen(false);
+                if (compact) leave(true);
+                else {
+                  setDraft(null);
+                  setOpen(false);
+                }
+              }
+              if (e.key === "Escape" && compact) {
+                e.preventDefault();
+                leave(true);
               }
               if (e.key === "ArrowDown") {
                 e.preventDefault();
@@ -3849,10 +3875,15 @@ function PickField({ options, value, onPick, label, placeholder, header, icon, s
         ),
         /* @__PURE__ */ jsx27(Icon, { name: "caret-down", className: "ad-pick-field__caret ad-glyph-quiet" })
       ] }),
-      open && narrowed.length > 0 && /* @__PURE__ */ jsx27(Portal, { children: /* @__PURE__ */ jsx27("div", { ref: box, style: { ...style, zIndex: z }, className: "ad-float ad-pick-field__list", children: /* @__PURE__ */ jsx27(PickList, { options: narrowed, value, searchLabel: label, noSearch: true, footer: foot, onPick: (id) => {
+      open && narrowed.length > 0 && /* @__PURE__ */ jsx27(Portal, { children: /* @__PURE__ */ jsx27("div", { ref: box, style: { ...style, zIndex: z }, className: "ad-float ad-pick-field__list", onPointerDownCapture: () => {
+        holding.current = true;
+      }, children: /* @__PURE__ */ jsx27(PickList, { options: narrowed, value, searchLabel: label, noSearch: true, footer: foot, onPick: (id) => {
         onPick(id);
-        setDraft(null);
-        close();
+        if (compact) leave(true);
+        else {
+          setDraft(null);
+          close();
+        }
       } }) }) })
     ] });
   }
@@ -3886,7 +3917,14 @@ function PickField({ options, value, onPick, label, placeholder, header, icon, s
         "aria-haspopup": "listbox",
         "aria-expanded": open,
         disabled,
-        onClick: () => setOpen((o) => !o),
+        onClick: quiet ? () => setEditing(true) : () => setOpen((o) => !o),
+        onFocus: quiet ? () => {
+          if (settle.current) {
+            settle.current = false;
+            return;
+          }
+          setEditing(true);
+        } : void 0,
         className: cx("ad-field", "ad-pick-field", compact && "ad-pick-field--compact", disabled && "ad-field--disabled", className),
         title: compact && words ? words : void 0,
         children: [
