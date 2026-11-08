@@ -1436,7 +1436,6 @@ button.ad-card__name:focus-visible { outline: none; box-shadow: var(--ring-selec
 .ad-footer__undo-words { overflow: hidden; text-overflow: ellipsis; }
 /* One size across the footer, the larger one. */
 .ad-footer__page { justify-content: flex-end; gap: var(--space-2); border-right: 0; }
-.ad-footer__page-number { font: var(--type-data); color: var(--text-secondary); }
 .ad-contents { margin: 0; padding: 0; list-style: none; border-top: var(--border-w) solid var(--border); }
 .ad-contents__entry { border-bottom: var(--border-w) solid var(--border); }
 .ad-contents__button { display: flex; align-items: baseline; gap: var(--space-4); box-sizing: border-box; width: 100%; margin: 0; padding: var(--space-3) var(--space-2); border: 0; background: transparent; font: var(--type-name); color: var(--text-primary); text-align: left; }

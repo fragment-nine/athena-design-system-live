@@ -6472,7 +6472,7 @@ function PixxFigure({ onPress, open, unread = 0, tip = "Pixx", motion, body, tai
 
 // src/components/Furniture/Furniture.tsx
 import { Fragment as Fragment22, jsx as jsx50, jsxs as jsxs46 } from "react/jsx-runtime";
-function Footer({ code: code2, number, venue, description, countdown: countdown2, pageNumber, page, undo }) {
+function Footer({ code: code2, number, venue, description, countdown: countdown2, page, undo }) {
   return /* @__PURE__ */ jsxs46("footer", { className: "ad-footer", children: [
     /* @__PURE__ */ jsxs46("span", { className: "ad-footer__cell ad-footer__code", children: [
       code2 ?? "LOUDBOX",
@@ -6487,10 +6487,7 @@ function Footer({ code: code2, number, venue, description, countdown: countdown2
       /* @__PURE__ */ jsx50("span", { className: "ad-footer__undo-words", children: undo.message }),
       undo.onUndo && /* @__PURE__ */ jsx50(ButtonSizeScope, { size: "row", children: /* @__PURE__ */ jsx50(Button, { onClick: undo.onUndo, children: undo.label ?? "Undo" }) })
     ] }) }),
-    /* @__PURE__ */ jsxs46("span", { className: "ad-footer__cell ad-footer__page", children: [
-      /* @__PURE__ */ jsx50("span", { className: "ad-footer__page-number", children: pageNumber }),
-      page
-    ] })
+    /* @__PURE__ */ jsx50("span", { className: "ad-footer__cell ad-footer__page", children: page })
   ] });
 }
 function Contents({ entries, ariaLabel = "Contents" }) {
