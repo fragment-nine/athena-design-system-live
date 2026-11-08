@@ -5879,8 +5879,8 @@ function TimeGrid({ startHour, endHour, bookings = [], columns, now, hourLabel =
     const el = frame.current;
     if (!el || scrollTo == null) return;
     const go = () => {
-      const hour = el.querySelector(".ad-time-grid__hour");
-      const hourPx = hour?.offsetHeight || el.scrollHeight / Math.max(1, hours + (el.querySelector(".ad-time-grid__allday") ? 1 : 0));
+      const hour2 = el.querySelector(".ad-time-grid__hour");
+      const hourPx = hour2?.offsetHeight || el.scrollHeight / Math.max(1, hours + (el.querySelector(".ad-time-grid__allday") ? 1 : 0));
       if (!hourPx) return false;
       if (visibleHours) {
         el.scrollTop = Math.max(0, (scrollTo - startHour) * hourPx);
@@ -5894,12 +5894,23 @@ function TimeGrid({ startHour, endHour, bookings = [], columns, now, hourLabel =
       box.scrollTop = Math.max(0, box.scrollTop + body.getBoundingClientRect().top - box.getBoundingClientRect().top + (scrollTo - startHour) * hourPx - held);
       return true;
     };
-    if (go() || typeof ResizeObserver === "undefined") return;
+    go();
+    if (typeof ResizeObserver === "undefined") return;
+    const scroller = visibleHours ? el : scrollerAbove(el);
+    const target = scroller === document.documentElement ? window : scroller;
+    const kinds = ["wheel", "touchstart", "pointerdown", "keydown"];
     const ro = new ResizeObserver(() => {
-      if (go()) ro.disconnect();
+      go();
     });
+    const leave = () => {
+      ro.disconnect();
+      kinds.forEach((k) => target.removeEventListener(k, leave));
+    };
+    kinds.forEach((k) => target.addEventListener(k, leave, { passive: true }));
     ro.observe(el);
-    return () => ro.disconnect();
+    const hour = el.querySelector(".ad-time-grid__hour");
+    if (hour) ro.observe(hour);
+    return leave;
   }, [scrollTo, startHour, hours, visibleHours]);
   const allDayCount = (columns ?? []).some((c) => c.allDay) ? Math.max(1, ...(columns ?? []).map((c) => c.allDay?.length ?? 0)) : 0;
   useLayoutEffect10(() => {
@@ -5908,7 +5919,13 @@ function TimeGrid({ startHour, endHour, bookings = [], columns, now, hourLabel =
     const box = scrollerAbove(el);
     const least = tokenPx("--h-hour-min", 16);
     const fit = () => {
-      const set = (h2) => el.style.setProperty("--ad-hour", `${h2}px`);
+      const was = el.querySelector(".ad-time-grid__hour")?.offsetHeight ?? 0;
+      const topHour = visibleHours && was ? el.scrollTop / was : null;
+      let last = least;
+      const set = (h2) => {
+        last = h2;
+        el.style.setProperty("--ad-hour", `${h2}px`);
+      };
       set(least);
       const spare = box.getBoundingClientRect().bottom - el.getBoundingClientRect().bottom + box.scrollTop;
       const shown = Math.min(hours, visibleHours ?? hours);
@@ -5916,6 +5933,7 @@ function TimeGrid({ startHour, endHour, bookings = [], columns, now, hourLabel =
       set(h);
       const over2 = box.scrollHeight - box.clientHeight;
       if (over2 > 0) set(Math.max(least, h - over2 / shown));
+      if (topHour != null) el.scrollTop = topHour * last;
     };
     fit();
     if (typeof ResizeObserver === "undefined") return;
