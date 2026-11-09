@@ -1139,9 +1139,13 @@ button.ad-year__day:focus-visible { outline: none; box-shadow: var(--ring-select
 /* Being made: the span a drag draws out is a coral box with the dark ink on it, as the main button, never a hatch (2026-11-07). */
 .ad-booking--creating { background: var(--accent); background-image: none; box-shadow: none; color: var(--on-accent); }
 .ad-booking--creating :is(.ad-booking__name, .ad-booking__time, .ad-booking__meta) { color: var(--on-accent); }
-/* The time grid's corner (headerEnd): at the right end of the day heads' row, on its own ground over the last head. */
+/* The time grid's corner (headerEnd): at the right end of the last day's head, inside it, so it sticks with the heads at any scroll;
+   with no head to ride in, at the grid's top right. */
+.ad-time-grid__corner { display: flex; flex: none; align-items: center; margin-left: auto; }
+.ad-time-grid__marks + .ad-time-grid__corner { margin-left: var(--space-1); }
+.ad-time-grid__head { position: relative; }
 .ad-time-grid:has(> .ad-time-grid__corner) { position: relative; }
-.ad-time-grid__corner { position: absolute; top: 0; right: 0; z-index: 2; display: flex; align-items: center; }
+:is(.ad-time-grid__head, .ad-time-grid) > .ad-time-grid__corner { position: absolute; top: 0; right: 0; z-index: 2; }
 
 /* src/components/Card/Card.css */
 /* Card: a board tile, or a dashboard widget as the Dashboard card draws it (small caps title, More at the right in 600). */

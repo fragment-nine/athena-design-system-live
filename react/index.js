@@ -6124,9 +6124,9 @@ function TimeGrid({ headerEnd, startHour, endHour, bookings = [], columns, now, 
     const fit = () => {
       const was = el.querySelector(".ad-time-grid__hour")?.offsetHeight ?? 0;
       const topHour = visibleHours && was ? el.scrollTop / was : null;
-      let last = least;
+      let last2 = least;
       const set = (h2) => {
-        last = h2;
+        last2 = h2;
         el.style.setProperty("--ad-hour", `${h2}px`);
       };
       set(least);
@@ -6136,7 +6136,7 @@ function TimeGrid({ headerEnd, startHour, endHour, bookings = [], columns, now, 
       set(h);
       const over2 = box.scrollHeight - box.clientHeight;
       if (over2 > 0) set(Math.max(least, h - over2 / shown));
-      if (topHour != null) el.scrollTop = topHour * last;
+      if (topHour != null) el.scrollTop = topHour * last2;
     };
     fit();
     if (typeof ResizeObserver === "undefined") return;
@@ -6161,8 +6161,11 @@ function TimeGrid({ headerEnd, startHour, endHour, bookings = [], columns, now, 
   const allDayRows = allDayCount;
   const anyBand = cols.some((c) => c.band);
   const headBand = !!bandHeading && anyBand;
+  const last = cols[cols.length - 1];
+  const lastHeaded = !!last && (last.head != null || headBand || !!last.label);
+  const corner = headerEnd != null && lastHeaded ? /* @__PURE__ */ jsx45("span", { className: "ad-time-grid__corner", children: headerEnd }) : null;
   return /* @__PURE__ */ jsxs42("div", { ref: frame, className: cx("ad-time-grid", !!visibleHours && "ad-time-grid--scrolls", `ad-time-grid--aside-${asideWidth}`, hourHeight === "roomy" && "ad-time-grid--roomy", className), role: "group", "aria-label": ariaLabel, tabIndex: visibleHours ? 0 : void 0, style: { ["--ad-hours"]: hours, ["--ad-allday-rows"]: allDayRows, ["--ad-column-count"]: cols.length, ["--ad-allday-content-h"]: `${contentH}px`, ...visibleHours ? { ["--ad-visible-hours"]: visibleHours } : {}, ...headH ? { ["--ad-head-h"]: `${headH}px` } : {} }, children: [
-    headerEnd != null && /* @__PURE__ */ jsx45("div", { className: "ad-time-grid__corner", children: headerEnd }),
+    headerEnd != null && !lastHeaded && /* @__PURE__ */ jsx45("div", { className: "ad-time-grid__corner", children: headerEnd }),
     /* @__PURE__ */ jsxs42("div", { className: "ad-time-grid__gutter", "aria-hidden": "true", children: [
       anyBand && !headBand && /* @__PURE__ */ jsx45("div", { className: "ad-time-grid__band-space" }),
       allDayContent != null && /* @__PURE__ */ jsx45("div", { className: "ad-time-grid__content-space" }),
@@ -6176,11 +6179,13 @@ function TimeGrid({ headerEnd, startHour, endHour, bookings = [], columns, now, 
       todayLine?.column === c.id && /* @__PURE__ */ jsx45("span", { className: "ad-today ad-time-grid__today", "aria-hidden": "true", style: { left: `${Math.max(0, Math.min(1, todayLine.at ?? 0)) * 100}%` } }),
       c.head != null || headBand ? /* @__PURE__ */ jsxs42("div", { className: "ad-time-grid__head", children: [
         headBand && /* @__PURE__ */ jsx45(BandHeading, { band: c.band }),
-        c.head
+        c.head,
+        colAt === cols.length - 1 && corner
       ] }) : c.label && /* @__PURE__ */ jsxs42("span", { className: "ad-time-grid__day", children: [
         /* @__PURE__ */ jsxs42("span", { className: "ad-time-grid__day-line", children: [
           /* @__PURE__ */ jsx45("span", { className: "ad-time-grid__day-label", children: c.label }),
-          c.marks != null && /* @__PURE__ */ jsx45("span", { className: "ad-time-grid__marks", children: /* @__PURE__ */ jsx45(ButtonSizeScope, { size: "row", children: c.marks }) })
+          c.marks != null && /* @__PURE__ */ jsx45("span", { className: "ad-time-grid__marks", children: /* @__PURE__ */ jsx45(ButtonSizeScope, { size: "row", children: c.marks }) }),
+          colAt === cols.length - 1 && corner
         ] }),
         c.figure != null && /* @__PURE__ */ jsx45("span", { className: "ad-time-grid__figure", children: c.figure })
       ] }),
