@@ -5802,12 +5802,51 @@ function ChartKey({ items, ariaLabel = "Key" }) {
 }
 
 // src/components/Timeline/Ruler.tsx
+import { useEffect as useEffect16, useRef as useRef29, useState as useState27 } from "react";
 import { jsx as jsx44, jsxs as jsxs41 } from "react/jsx-runtime";
 function DayLines({ days, dayWidth }) {
   if (!Number.isFinite(days) || !Number.isFinite(dayWidth) || days <= 0 || dayWidth <= 0) return null;
   return /* @__PURE__ */ jsx44("div", { "aria-hidden": "true", className: "ad-day-lines", style: { width: days * dayWidth, ["--ad-day-w"]: `${dayWidth}px` } });
 }
 function Ruler({ start, days, dayWidth, locale = "en-US", pinned, end, marks, className }) {
+  const root = useRef29(null);
+  const corner = useRef29(null);
+  const [under, setUnder] = useState27(null);
+  const hasEnd = end != null;
+  useEffect16(() => {
+    const el = root.current, c = corner.current;
+    if (!hasEnd || !el || !c) {
+      setUnder(null);
+      return;
+    }
+    const read2 = () => {
+      const r = el.getBoundingClientRect(), b = c.getBoundingClientRect();
+      const lo = Math.round(b.left - r.left), hi = Math.round(b.right - r.left);
+      setUnder((was) => was && was[0] === lo && was[1] === hi ? was : [lo, hi]);
+    };
+    let frame = 0;
+    const soon = () => {
+      cancelAnimationFrame(frame);
+      frame = requestAnimationFrame(read2);
+    };
+    read2();
+    const scrollers = [window];
+    for (let p = el.parentElement; p; p = p.parentElement) {
+      const o = getComputedStyle(p).overflowX;
+      if (o === "auto" || o === "scroll") scrollers.push(p);
+    }
+    for (const s of scrollers) s.addEventListener("scroll", soon, { passive: true });
+    window.addEventListener("resize", soon);
+    const ro = typeof ResizeObserver !== "undefined" ? new ResizeObserver(soon) : null;
+    ro?.observe(el);
+    ro?.observe(c);
+    return () => {
+      cancelAnimationFrame(frame);
+      for (const s of scrollers) s.removeEventListener("scroll", soon);
+      window.removeEventListener("resize", soon);
+      ro?.disconnect();
+    };
+  }, [hasEnd, days, dayWidth]);
   const at = (i) => new Date(start.getFullYear(), start.getMonth(), start.getDate() + i);
   const months = [];
   const ticks = [];
@@ -5821,6 +5860,8 @@ function Ruler({ start, days, dayWidth, locale = "en-US", pinned, end, marks, cl
   const dayKey = (d) => `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
   const marked = new Map((marks ?? []).map((m) => [m.date, m.label]));
   const dots = [];
+  const halfNumber = tokenPx("--space-3", 12);
+  const covered = (x) => !!under && x + dayWidth / 2 + halfNumber >= under[0] && x + dayWidth / 2 - halfNumber <= under[1];
   for (let i = 0; i < days; i++) {
     const d = at(i);
     if (d.getDate() === 1 || i === 0) {
@@ -5832,17 +5873,19 @@ function Ruler({ start, days, dayWidth, locale = "en-US", pinned, end, marks, cl
         months.push({ x: i * dayWidth, partial: i === 0 && d.getDate() !== 1, label: d.toLocaleDateString(locale, { month: "short", year: d.getMonth() === 0 || first ? "numeric" : void 0 }).toUpperCase() });
       }
     }
-    const mark = showDay && dayEvery ? marked.get(dayKey(d)) : void 0;
+    const mark = showDay && dayEvery && !covered(i * dayWidth) ? marked.get(dayKey(d)) : void 0;
     if (mark) dots.push({ x: i * dayWidth, label: mark, words: `${mark}, ${d.toLocaleDateString(locale, { weekday: "long", month: "long", day: "numeric" })}` });
     const monday = d.getDay() === 1;
     const monthStart = d.getDate() === 1;
-    if (showDay) ticks.push({ x: i * dayWidth, major: monday || monthStart, label: dayEvery && i % dayEvery === 0 ? String(d.getDate()) : void 0 });
-    else if (monday) ticks.push({ x: i * dayWidth, major: true, label: weekEvery && weeks++ % weekEvery === 0 ? String(d.getDate()) : void 0 });
-    else if (monthStart) ticks.push({ x: i * dayWidth, major: true });
+    if (showDay) ticks.push({ x: i * dayWidth, major: monday || monthStart, label: dayEvery && i % dayEvery === 0 && !covered(i * dayWidth) ? String(d.getDate()) : void 0 });
+    else if (monday) {
+      const shown = weekEvery && weeks++ % weekEvery === 0;
+      ticks.push({ x: i * dayWidth, major: true, label: shown && !covered(i * dayWidth) ? String(d.getDate()) : void 0 });
+    } else if (monthStart) ticks.push({ x: i * dayWidth, major: true });
   }
-  return /* @__PURE__ */ jsxs41("div", { className: cx("ad-ruler", pinned && "ad-ruler--pinned", className), style: { width: days * dayWidth, ["--ad-day-w"]: `${dayWidth}px` }, children: [
+  return /* @__PURE__ */ jsxs41("div", { ref: root, className: cx("ad-ruler", pinned && "ad-ruler--pinned", className), style: { width: days * dayWidth, ["--ad-day-w"]: `${dayWidth}px` }, children: [
     /* @__PURE__ */ jsx44("div", { className: "ad-ruler__months", "aria-hidden": "true", children: months.map((m) => /* @__PURE__ */ jsx44("span", { className: "ad-ruler__month", style: { left: m.x }, children: m.label }, m.x)) }),
-    end != null && /* @__PURE__ */ jsx44("div", { className: "ad-ruler__end", children: end }),
+    end != null && /* @__PURE__ */ jsx44("div", { ref: corner, className: "ad-ruler__end", children: end }),
     /* @__PURE__ */ jsx44("div", { className: "ad-ruler__ticks", "aria-hidden": "true", children: ticks.map((t) => /* @__PURE__ */ jsx44("span", { className: cx("ad-ruler__tick", t.major && "ad-ruler__tick--major"), style: { left: t.x }, children: t.label && /* @__PURE__ */ jsx44("span", { className: "ad-ruler__day", children: t.label }) }, t.x)) }),
     dots.length > 0 && /* @__PURE__ */ jsx44("div", { className: "ad-ruler__marks", children: dots.map((m) => /* @__PURE__ */ jsx44(Tooltip, { text: m.label, children: /* @__PURE__ */ jsx44("span", { className: "ad-ruler__mark", role: "img", "aria-label": m.words, style: { left: m.x } }) }, m.x)) })
   ] });
@@ -5927,7 +5970,7 @@ function PeriodCluster({ shown, periods, period, onPeriod, onPrevious, onNext, o
 }
 
 // src/components/Calendar/Calendar.tsx
-import { useEffect as useEffect16, useLayoutEffect as useLayoutEffect10, useRef as useRef29, useState as useState27 } from "react";
+import { useEffect as useEffect17, useLayoutEffect as useLayoutEffect10, useRef as useRef30, useState as useState28 } from "react";
 import { Fragment as Fragment20, jsx as jsx45, jsxs as jsxs42 } from "react/jsx-runtime";
 var code = (it) => it.code ? /* @__PURE__ */ jsx45(ProjectPill, { code: it.code, color: it.color?.startsWith("project-") ? it.color : void 0 }) : null;
 var hooksOf2 = (h) => {
@@ -6086,9 +6129,9 @@ function scrollerAbove(el) {
 }
 function TimeGrid({ headerEnd, startHour, endHour, bookings = [], columns, now, hourLabel = clockHour, onOpen, itemProps, columnProps, ariaLabel, bandHours, onPressAt, over, visibleHours, scrollTo, asideWidth = "narrow", hourHeight = "compact", bandHeading, allDayContent, todayLine, className }) {
   const hours = Math.max(1, endHour - startHour);
-  const frame = useRef29(null);
-  const [barW, setBarW] = useState27(0);
-  useEffect16(() => {
+  const frame = useRef30(null);
+  const [barW, setBarW] = useState28(0);
+  useEffect17(() => {
     const el = frame.current;
     if (!el || !headerEnd || !visibleHours) return;
     const read2 = () => {
@@ -6101,8 +6144,8 @@ function TimeGrid({ headerEnd, startHour, endHour, bookings = [], columns, now, 
     ro?.observe(el);
     return () => ro?.disconnect();
   }, [headerEnd, visibleHours]);
-  const [headH, setHeadH] = useState27(0);
-  const [contentH, setContentH] = useState27(0);
+  const [headH, setHeadH] = useState28(0);
+  const [contentH, setContentH] = useState28(0);
   useLayoutEffect10(() => {
     const el = frame.current;
     if (!el) return;
@@ -6132,7 +6175,7 @@ function TimeGrid({ headerEnd, startHour, endHour, bookings = [], columns, now, 
     el.querySelectorAll(".ad-time-grid__head, .ad-time-grid__allday-content").forEach((n) => ro.observe(n));
     return () => ro.disconnect();
   });
-  useEffect16(() => {
+  useEffect17(() => {
     const el = frame.current;
     if (!el || scrollTo == null) return;
     const go = () => {
@@ -6321,7 +6364,7 @@ function PhaseBand({ label, color, unconfirmed }) {
 }
 
 // src/components/Map/Map.tsx
-import { useEffect as useEffect17, useMemo as useMemo3, useRef as useRef30, useState as useState28 } from "react";
+import { useEffect as useEffect18, useMemo as useMemo3, useRef as useRef31, useState as useState29 } from "react";
 
 // src/components/Map/worldGeo.ts
 var GEO_LAT_MAX = 84;
@@ -6390,11 +6433,11 @@ var LABEL_ALL_FROM = 760;
 var LABEL_SOME_FROM = 380;
 var PICKS = new Set(pickColours);
 function WorldMap({ pins, at, ariaLabel, onPin, hoverCard, pinProps }) {
-  const [hover, setHover] = useState28(null);
+  const [hover, setHover] = useState29(null);
   const night = useMemo3(() => nightPath(at), [at]);
-  const wrap = useRef30(null);
-  const [w, setW] = useState28(0);
-  useEffect17(() => {
+  const wrap = useRef31(null);
+  const [w, setW] = useState29(0);
+  useEffect18(() => {
     const el = wrap.current;
     if (!el) return;
     setW(el.getBoundingClientRect().width);
@@ -6745,10 +6788,10 @@ function Breadcrumbs({ trail, onPress, ariaLabel = "Where you are", className })
 }
 
 // src/components/Slider/Slider.tsx
-import { useRef as useRef31 } from "react";
+import { useRef as useRef32 } from "react";
 import { jsx as jsx50, jsxs as jsxs47 } from "react/jsx-runtime";
 function Slider({ value, onChange, min = 0, max = 100, step = 1, ariaLabel, display, disabled, className }) {
-  const track = useRef31(null);
+  const track = useRef32(null);
   const range = Array.isArray(value);
   const vals = range ? [...value] : [value];
   const span = Math.max(1e-9, max - min);
@@ -6820,7 +6863,7 @@ function Slider({ value, onChange, min = 0, max = 100, step = 1, ariaLabel, disp
 }
 
 // src/components/Toast/Toast.tsx
-import { useEffect as useEffect18, useRef as useRef32, useState as useState29 } from "react";
+import { useEffect as useEffect19, useRef as useRef33, useState as useState30 } from "react";
 import { jsx as jsx51, jsxs as jsxs48 } from "react/jsx-runtime";
 function undoMs() {
   if (typeof window === "undefined") return 4e3;
@@ -6829,10 +6872,10 @@ function undoMs() {
   return Number.isFinite(n) ? v.endsWith("ms") ? n : n * 1e3 : 4e3;
 }
 function Toast({ open, message, action, onClose, closeLabel = "Close", sticky, className }) {
-  const [held, setHeld] = useState29(false);
-  const close = useRef32(onClose);
+  const [held, setHeld] = useState30(false);
+  const close = useRef33(onClose);
   close.current = onClose;
-  useEffect18(() => {
+  useEffect19(() => {
     if (!open || sticky || held) return;
     const t = window.setTimeout(() => close.current(), undoMs());
     return () => window.clearTimeout(t);
@@ -6861,10 +6904,10 @@ function Toast({ open, message, action, onClose, closeLabel = "Close", sticky, c
 }
 
 // src/components/Search/Search.tsx
-import { useRef as useRef33 } from "react";
+import { useRef as useRef34 } from "react";
 import { jsx as jsx52 } from "react/jsx-runtime";
 function CommandSearch({ open, onClose, query, onQuery, results, onPick, label = "Search everything", noMatch = "Nothing by that name" }) {
-  const box = useRef33(null);
+  const box = useRef34(null);
   const z = useLayer(open, onClose, [box], "dialog");
   usePageInert(open, [box]);
   useFocusReturn(open, box);
@@ -6887,13 +6930,13 @@ function CommandSearch({ open, onClose, query, onQuery, results, onPick, label =
 }
 
 // src/components/Guidance/Guidance.tsx
-import { useEffect as useEffect19, useLayoutEffect as useLayoutEffect11, useRef as useRef34, useState as useState30 } from "react";
+import { useEffect as useEffect20, useLayoutEffect as useLayoutEffect11, useRef as useRef35, useState as useState31 } from "react";
 import { Fragment as Fragment23, jsx as jsx53, jsxs as jsxs49 } from "react/jsx-runtime";
-var useIsoLayoutEffect3 = typeof window === "undefined" ? useEffect19 : useLayoutEffect11;
+var useIsoLayoutEffect3 = typeof window === "undefined" ? useEffect20 : useLayoutEffect11;
 function TourStep({ open, anchor, step, total, title, children, onBack, onNext, onExit, backLabel = "Back", nextLabel = "Next", progressLabel = (s, t) => `${s} of ${t}`, placement, side: older, onClose, closeLabel }) {
-  const card = useRef34(null);
-  const [rect, setRect] = useState30(null);
-  const [size, setSize] = useState30(null);
+  const card = useRef35(null);
+  const [rect, setRect] = useState31(null);
+  const [size, setSize] = useState31(null);
   const asked = placement ?? older ?? "below";
   const doc = useFloatingDocument() ?? document;
   useFocusReturn(open, card);
@@ -7089,7 +7132,7 @@ function Ground({ children, className, style }) {
 }
 
 // src/runtime/AdsProvider.tsx
-import { useContext as useContext11, useEffect as useEffect20, useMemo as useMemo4 } from "react";
+import { useContext as useContext11, useEffect as useEffect21, useMemo as useMemo4 } from "react";
 import { jsx as jsx55 } from "react/jsx-runtime";
 var MODE = typeof process !== "undefined" && process.env && process.env.NODE_ENV || "development";
 var pending = [];
@@ -7117,11 +7160,11 @@ ${describeViolations(all)}`);
 }
 function AdsProvider({ strict = false, show, children }) {
   const on = strict && MODE !== "production";
-  useEffect20(() => {
+  useEffect21(() => {
     if (!on) return;
     report(scanIn(document.body), true);
   });
-  useEffect20(() => {
+  useEffect21(() => {
     if (!on) return;
     const look = () => report(scanIn(document.body), false);
     const watch = new MutationObserver(look);
