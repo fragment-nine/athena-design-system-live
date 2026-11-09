@@ -1904,9 +1904,15 @@ function FieldRow({ label, children, help, beside, nameFits, controlWidth, htmlF
     /* @__PURE__ */ jsx9("div", { className: "ad-field-row__control", children: /* @__PURE__ */ jsx9(RowLabel.Provider, { value: htmlFor ? void 0 : labelId, children }) })
   ] });
 }
-function FormSection({ number, title, children, error, className }) {
+function FormSection({ number, title, children, error, className, done, summary, onChange, changeLabel = "Change", doneLabel = "done" }) {
   const errorId = useId3();
   const num = String(number).padStart(2, "0");
+  if (done) return /* @__PURE__ */ jsx9("section", { role: "group", "aria-label": `${num} ${title}, ${doneLabel}`, className: cx("ad-section ad-form-section ad-form-section--done", className), children: /* @__PURE__ */ jsxs7("div", { className: "ad-form-section__done", children: [
+    /* @__PURE__ */ jsx9("span", { className: "ad-form-section__tick", "aria-hidden": "true", children: /* @__PURE__ */ jsx9(Icon, { job: "check", size: "sm" }) }),
+    /* @__PURE__ */ jsx9("span", { className: "ad-form-section__name", children: title }),
+    summary != null && /* @__PURE__ */ jsx9("span", { className: "ad-form-section__summary", children: summary }),
+    onChange && /* @__PURE__ */ jsx9(Button, { onClick: onChange, children: changeLabel })
+  ] }) });
   return /* @__PURE__ */ jsxs7("section", { role: "group", "aria-label": `${num} ${title}`, "aria-describedby": error != null ? errorId : void 0, className: cx("ad-section ad-form-section", className), children: [
     /* @__PURE__ */ jsx9(GroupHeading, { number, children: title }),
     /* @__PURE__ */ jsx9("div", { className: "ad-form-section__body", children }),
@@ -4444,7 +4450,7 @@ function countdownWords(c) {
   const days = n === 0 ? "Today" : `${n} ${n === 1 ? "day" : "days"} to`;
   return `${days} ${c.what}`;
 }
-function PageHeader({ title, icon, stamp, tabs, back, description, countdown: given, alerts, picker, gear, onSearch, onPopOut, onHelp, menu, headerLabels, pickerMenu, connection, connectionLabels, scramble = true, className }) {
+function PageHeader({ title, icon, stamp, tabs, back, description, countdown: given, alerts, picker, gear, onSearch, onPopOut, onHelp, menu, headerLabels, pickerMenu, note, connection, connectionLabels, scramble = true, className }) {
   const anyEnd = gear || onSearch || onPopOut || onHelp || menu || pickerMenu || connection;
   const [menuOpen, setMenuOpen] = useState22(false);
   const menuAt = useRef21(null);
@@ -4457,6 +4463,7 @@ function PageHeader({ title, icon, stamp, tabs, back, description, countdown: gi
           back && /* @__PURE__ */ jsx34("button", { type: "button", className: "ad-page-header__back", "aria-label": back.label, title: back.label, onClick: back.onBack, children: /* @__PURE__ */ jsx34(Icon, { job: "chevron-left", size: "lg" }) }),
           /* @__PURE__ */ jsx34("h1", { className: "ad-page-header__title", children: /* @__PURE__ */ jsx34("span", { className: "ad-page-header__words", children: scramble ? /* @__PURE__ */ jsx34(TextScramble, { text: title }) : title }) })
         ] }),
+        note != null && note !== false && /* @__PURE__ */ jsx34("div", { className: "ad-page-header__note", children: note }),
         (description || countdown2) && /* @__PURE__ */ jsxs31("div", { className: "ad-page-header__aside", children: [
           description && /* @__PURE__ */ jsx34("p", { className: "ad-page-header__description", children: String(description) }),
           countdown2 && /* @__PURE__ */ jsx34("p", { className: "ad-page-header__countdown", children: countdown2 })
