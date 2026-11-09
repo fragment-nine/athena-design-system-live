@@ -1753,16 +1753,27 @@ function GroupHeading({ children, number, rule = "above", needsYou, lead, end, c
   ] });
 }
 
+// src/components/Field/rowLabel.ts
+import { createContext as createContext4, useContext as useContext4 } from "react";
+var RowLabel = createContext4(void 0);
+function useRowLabel(own, namesItself = false) {
+  const row = useContext4(RowLabel);
+  if (own["aria-labelledby"] != null) return own["aria-labelledby"];
+  if (own["aria-label"] != null || namesItself) return void 0;
+  return row;
+}
+
 // src/components/Field/Field.tsx
 import { jsx as jsx9, jsxs as jsxs7 } from "react/jsx-runtime";
 var TextField = forwardRef2(function TextField2({ icon, end, parsed, error, mono, wide, className, style, ...rest }, ref) {
   const parsedId = useId3();
   const errorId = useId3();
   const describedBy = [parsed != null ? parsedId : null, error != null ? errorId : null, rest["aria-describedby"]].filter(Boolean).join(" ") || void 0;
+  const labelledBy = useRowLabel(rest);
   return /* @__PURE__ */ jsxs7("span", { className: cx("ad-field-wrap", wide && "ad-field-wrap--wide", className), style, children: [
     /* @__PURE__ */ jsxs7("span", { className: cx("ad-field", rest.disabled && "ad-field--disabled"), children: [
       icon && /* @__PURE__ */ jsx9("span", { className: "ad-field__icon", "aria-hidden": "true", children: slotIcon(icon) }),
-      /* @__PURE__ */ jsx9("input", { ref, ...rest, "aria-invalid": error != null || void 0, "aria-describedby": describedBy, className: cx("ad-field__input", mono && "ad-field__input--mono") }),
+      /* @__PURE__ */ jsx9("input", { ref, ...rest, "aria-labelledby": labelledBy, "aria-invalid": error != null || void 0, "aria-describedby": describedBy, className: cx("ad-field__input", mono && "ad-field__input--mono") }),
       end && /* @__PURE__ */ jsx9("span", { className: "ad-field__end", children: end })
     ] }),
     parsed != null && /* @__PURE__ */ jsxs7("span", { id: parsedId, className: "ad-field__parsed", "aria-live": "polite", children: [
@@ -1774,7 +1785,8 @@ var TextField = forwardRef2(function TextField2({ icon, end, parsed, error, mono
   ] });
 });
 var TextArea = forwardRef2(function TextArea2({ className, ...rest }, ref) {
-  return /* @__PURE__ */ jsx9("textarea", { ref, ...rest, className: cx("ad-field", "ad-textarea", className) });
+  const labelledBy = useRowLabel(rest);
+  return /* @__PURE__ */ jsx9("textarea", { ref, ...rest, "aria-labelledby": labelledBy, className: cx("ad-field", "ad-textarea", className) });
 });
 var InlineEdit = forwardRef2(function InlineEdit2(props, ref) {
   return props.figure ? /* @__PURE__ */ jsx9(InlineFigure, { ...props, ref }) : /* @__PURE__ */ jsx9(InlineWords, { ...props, ref });
@@ -1873,8 +1885,9 @@ var InlineFigure = forwardRef2(function InlineFigure2({ value, onCommit, unit, a
   );
 });
 var Select = forwardRef2(function Select2({ options, placeholder, quiet, className, value, defaultValue, ...rest }, ref) {
+  const labelledBy = useRowLabel(rest);
   return /* @__PURE__ */ jsxs7("span", { className: cx("ad-field", "ad-select", rest.disabled && "ad-field--disabled", className), children: [
-    /* @__PURE__ */ jsxs7("select", { ref, ...rest, value, defaultValue: value === void 0 ? defaultValue ?? (placeholder ? "" : void 0) : void 0, className: cx("ad-select__native", quiet && "ad-select__native--quiet"), children: [
+    /* @__PURE__ */ jsxs7("select", { ref, ...rest, "aria-labelledby": labelledBy, value, defaultValue: value === void 0 ? defaultValue ?? (placeholder ? "" : void 0) : void 0, className: cx("ad-select__native", quiet && "ad-select__native--quiet"), children: [
       placeholder != null && /* @__PURE__ */ jsx9("option", { value: "", disabled: true, children: placeholder }),
       options.map((o) => /* @__PURE__ */ jsx9("option", { value: o.value, disabled: o.disabled, children: o.label }, o.value))
     ] }),
@@ -1882,12 +1895,13 @@ var Select = forwardRef2(function Select2({ options, placeholder, quiet, classNa
   ] });
 });
 function FieldRow({ label, children, help, beside, nameFits, controlWidth, htmlFor, className }) {
+  const labelId = useId3();
   return /* @__PURE__ */ jsxs7("div", { className: cx("ad-field-row", beside && "ad-field-row--beside", nameFits && "ad-field-row--name-fits", controlWidth === "fill" && "ad-field-row--fill", className), children: [
     /* @__PURE__ */ jsxs7("span", { className: "ad-field-row__label", children: [
-      /* @__PURE__ */ jsx9("label", { htmlFor, children: label }),
+      /* @__PURE__ */ jsx9("label", { id: labelId, htmlFor, children: label }),
       help && /* @__PURE__ */ jsx9(Help, { text: help })
     ] }),
-    /* @__PURE__ */ jsx9("div", { className: "ad-field-row__control", children })
+    /* @__PURE__ */ jsx9("div", { className: "ad-field-row__control", children: /* @__PURE__ */ jsx9(RowLabel.Provider, { value: htmlFor ? void 0 : labelId, children }) })
   ] });
 }
 function FormSection({ number, title, children, error, className }) {
@@ -1953,6 +1967,7 @@ var Checkbox = forwardRef3(function Checkbox2({ checked, onChange, label, partly
 import { forwardRef as forwardRef4 } from "react";
 import { jsx as jsx11, jsxs as jsxs9 } from "react/jsx-runtime";
 var Switch = forwardRef4(function Switch2({ checked, onChange, label, className, disabled, onClick, ...rest }, ref) {
+  const labelledBy = useRowLabel(rest, label != null);
   const button = /* @__PURE__ */ jsx11(
     "button",
     {
@@ -1960,6 +1975,7 @@ var Switch = forwardRef4(function Switch2({ checked, onChange, label, className,
       type: "button",
       role: "switch",
       ...rest,
+      "aria-labelledby": labelledBy,
       "aria-checked": checked,
       disabled,
       onClick: (e) => {
@@ -2339,10 +2355,10 @@ function UnreadDot({ label = "unread", className }) {
 }
 
 // src/components/List/List.tsx
-import React, { createContext as createContext5, useContext as useContext6, useEffect as useEffect7, useId as useId4, useRef as useRef9, useState as useState9 } from "react";
+import React, { createContext as createContext6, useContext as useContext7, useEffect as useEffect7, useId as useId4, useRef as useRef9, useState as useState9 } from "react";
 
 // src/components/Row/Row.tsx
-import { forwardRef as forwardRef5, useContext as useContext5, useState as useState8 } from "react";
+import { forwardRef as forwardRef5, useContext as useContext6, useState as useState8 } from "react";
 
 // src/components/Navigation/Navigation.tsx
 import { useState as useState7 } from "react";
@@ -2354,26 +2370,26 @@ function dropLineProps(at, axis = "y") {
 }
 
 // src/components/Navigation/MenuPieces.tsx
-import { createContext as createContext4, useContext as useContext4 } from "react";
+import { createContext as createContext5, useContext as useContext5 } from "react";
 import { jsx as jsx16, jsxs as jsxs13 } from "react/jsx-runtime";
 var strip = (h) => {
   if (!h) return {};
   const { className: _c, style: _s, ...rest } = h;
   return rest;
 };
-var Folded = createContext4(false);
-var InList = createContext4(false);
+var Folded = createContext5(false);
+var InList = createContext5(false);
 function MenuFrame({ rail = false, ariaLabel, children, frameProps }) {
   return /* @__PURE__ */ jsx16(Folded.Provider, { value: rail, children: /* @__PURE__ */ jsx16("nav", { ...strip(frameProps), "aria-label": ariaLabel, className: cx(rail ? "ad-rail" : "ad-side", "ad-menu-frame"), children }) });
 }
 function MenuList({ children, listProps, form }) {
-  const rail = useContext4(Folded);
+  const rail = useContext5(Folded);
   const cls = rail ? cx(form === "nested" ? "ad-rail__pinned" : "ad-rail__group", form === "projects" && "ad-rail__group--projects") : cx("ad-side__list", form === "nested" && "ad-side__list--nested");
   return /* @__PURE__ */ jsx16("ul", { ...strip(listProps), className: cx(cls, "ad-menu__list"), children: /* @__PURE__ */ jsx16(InList.Provider, { value: true, children }) });
 }
 function MenuItem({ icon, home, pill, label, current, onPress, trail, children, itemProps, ariaLabel, codeSlot, expanded }) {
-  const rail = useContext4(Folded);
-  const Row3 = useContext4(InList) ? "li" : "div";
+  const rail = useContext5(Folded);
+  const Row3 = useContext5(InList) ? "li" : "div";
   const name = ariaLabel ?? (typeof label === "string" ? label : void 0);
   return /* @__PURE__ */ jsxs13(Row3, { ...strip(itemProps), className: "ad-menu__row", children: [
     /* @__PURE__ */ jsxs13("div", { className: "ad-menu__line", children: [
@@ -2387,11 +2403,12 @@ function MenuItem({ icon, home, pill, label, current, onPress, trail, children, 
   ] });
 }
 function MenuFoot({ children }) {
-  const rail = useContext4(Folded);
+  const rail = useContext5(Folded);
   return /* @__PURE__ */ jsx16("div", { className: cx(rail ? "ad-rail__foot" : "ad-side__foot", "ad-menu__foot"), children });
 }
 function MenuSeparator({ itemProps }) {
-  const Row3 = useContext4(InList) ? "li" : "div";
+  if (useContext5(InList)) return /* @__PURE__ */ jsx16("li", { ...strip(itemProps), className: "ad-menu__sep", children: /* @__PURE__ */ jsx16("span", { role: "separator" }) });
+  const Row3 = "div";
   return /* @__PURE__ */ jsx16(Row3, { ...strip(itemProps), role: "separator", className: "ad-menu__sep" });
 }
 
@@ -2500,7 +2517,7 @@ import { Fragment as Fragment5, jsx as jsx18, jsxs as jsxs15 } from "react/jsx-r
 var Row = forwardRef5(function Row2({ name, meta, lead, status, dates, tags, people, trail, selected, picked, dragging, heading, onOpen, onRename, renameLabel, cells, className, onClick, ...rest }, ref) {
   const inList = useInList();
   const { compactRows } = useShow();
-  const columns = useContext5(ListColumns);
+  const columns = useContext6(ListColumns);
   return /* @__PURE__ */ jsxs15(
     "div",
     {
@@ -2677,8 +2694,8 @@ function TodoRow({ ringProps, factProps, dragging, name, priority, done, onTick,
 
 // src/components/List/List.tsx
 import { Fragment as Fragment6, jsx as jsx19, jsxs as jsxs16 } from "react/jsx-runtime";
-var InList2 = createContext5(false);
-var ListColumns = createContext5(null);
+var InList2 = createContext6(false);
+var ListColumns = createContext6(null);
 function List({ children, ariaLabel, columns, className }) {
   const body = /* @__PURE__ */ jsx19("div", { className: cx("ad-list", className), role: "list", "aria-label": ariaLabel, children: /* @__PURE__ */ jsx19(InList2.Provider, { value: true, children }) });
   if (!columns || columns.columns.length === 0) return body;
@@ -2719,7 +2736,7 @@ var tokenPxList = (name, fallback) => {
   return Number.isFinite(v) ? v : fallback;
 };
 function useInList() {
-  return useContext6(InList2);
+  return useContext7(InList2);
 }
 function ListBranches({ className, children, ...rest }) {
   return /* @__PURE__ */ jsx19("div", { role: "list", ...rest, className: cx("ad-list-branches", className), children: /* @__PURE__ */ jsx19(InList2.Provider, { value: true, children }) });
@@ -2748,7 +2765,7 @@ function ListSection({ title, children, collapsible, collapsed, onCollapsedChang
       collapsible && /* @__PURE__ */ jsx19("button", { type: "button", className: "ad-list-section__fold", "aria-expanded": !shut, "aria-controls": bodyId, "aria-label": bar.foldLabel ?? String(title), onClick: toggle, children: /* @__PURE__ */ jsx19(Icon, { job: shut ? "chevron-right" : "chevron-down", size: "sm" }) }),
       /* @__PURE__ */ jsx19(InList2.Provider, { value: false, children: /* @__PURE__ */ jsx19(Row, { heading: true, name: title, lead: bar.lead, meta: bar.meta, status: bar.status, dates: bar.dates, onOpen: bar.onOpen, trail: bar.end }) })
     ] }) : !bare && /* @__PURE__ */ jsx19(GroupHeading, { ...heading, collapsible, collapsed: shut, onToggle: toggle, controls: bodyId, children: title }),
-    /* @__PURE__ */ jsxs16("div", { id: bodyId, role: "list", hidden: collapsible && !bare ? shut : void 0, className: cx("ad-list-section__body", bar && "ad-list-section__body--nested", tree && bar && "ad-list-branches", (dropTarget?.empty || none) && "ad-list-section__body--empty"), children: [
+    /* @__PURE__ */ jsxs16("div", { id: bodyId, role: none ? void 0 : "list", hidden: collapsible && !bare ? shut : void 0, className: cx("ad-list-section__body", bar && "ad-list-section__body--nested", tree && bar && "ad-list-branches", (dropTarget?.empty || none) && "ad-list-section__body--empty"), children: [
       /* @__PURE__ */ jsx19(InList2.Provider, { value: true, children }),
       none && emptySentence && /* @__PURE__ */ jsx19("p", { className: "ad-list-section__empty", children: emptySentence })
     ] })
@@ -2866,15 +2883,15 @@ function EmptyState({ sentence, add, clear, also, className }) {
 }
 
 // src/components/Section/Section.tsx
-import { createContext as createContext6, forwardRef as forwardRef6, useContext as useContext7, useId as useId5, useLayoutEffect as useLayoutEffect3, useRef as useRef10, useState as useState10 } from "react";
+import { createContext as createContext7, forwardRef as forwardRef6, useContext as useContext8, useId as useId5, useLayoutEffect as useLayoutEffect3, useRef as useRef10, useState as useState10 } from "react";
 import { Fragment as Fragment8, jsx as jsx21, jsxs as jsxs18 } from "react/jsx-runtime";
-var Ctx = createContext6(null);
+var Ctx = createContext7(null);
 function useSectionFrame() {
-  const f = useContext7(Ctx);
+  const f = useContext8(Ctx);
   return f ? { level: f.level, numbering: f.numbering } : null;
 }
 function SectionFrame({ children, level, numbering, className, ...rest }) {
-  const parent = useContext7(Ctx);
+  const parent = useContext8(Ctx);
   const frameId = useId5();
   const value = {
     level: level ?? (parent ? Math.min(6, parent.level + 1) : 3),
@@ -2884,7 +2901,7 @@ function SectionFrame({ children, level, numbering, className, ...rest }) {
   return /* @__PURE__ */ jsx21(Ctx.Provider, { value, children: /* @__PURE__ */ jsx21("div", { ...rest, "data-section-frame": frameId, className: cx("ad-section-frame", className), children }) });
 }
 var Section = forwardRef6(function Section2({ title, day, beside, children, className, bodyId, rule, needsYou, lead, end, help, collapsible, collapsed, onToggle, look, onMore, moreLabel = "More", ...rest }, ref) {
-  const frame = useContext7(Ctx);
+  const frame = useContext8(Ctx);
   if (!frame) throw new Error("Section: a section sits inside a SectionFrame; a heading on its own is a GroupHeading used as a label.");
   const own = useRef10(null);
   const [index, setIndex] = useState10(0);
@@ -2934,7 +2951,7 @@ var Section = forwardRef6(function Section2({ title, day, beside, children, clas
 });
 
 // src/components/Popover/Popover.tsx
-import { createContext as createContext7, useCallback as useCallback3, useContext as useContext8, useEffect as useEffect9, useId as useId6, useRef as useRef12, useState as useState12 } from "react";
+import { createContext as createContext8, useCallback as useCallback3, useContext as useContext9, useEffect as useEffect9, useId as useId6, useRef as useRef12, useState as useState12 } from "react";
 
 // src/components/Writing/TokenInput.tsx
 import { useEffect as useEffect8, useLayoutEffect as useLayoutEffect4, useRef as useRef11, useState as useState11 } from "react";
@@ -3155,7 +3172,7 @@ function useKeyScroll(ref) {
 
 // src/components/Popover/Popover.tsx
 import { Fragment as Fragment9, jsx as jsx23, jsxs as jsxs20 } from "react/jsx-runtime";
-var TitleId = createContext7(void 0);
+var TitleId = createContext8(void 0);
 function CloseButton({ onClose, label = "Close" }) {
   return /* @__PURE__ */ jsx23("button", { type: "button", className: "ad-close", "aria-label": label, title: label, onClick: onClose });
 }
@@ -3223,7 +3240,7 @@ function PopoverHeader({ eyebrow, title, chip, lead, description, onRename, rena
   const own = useId6();
   const [draft, setDraft] = useState12(null);
   const abandoned = useRef12(false);
-  const id = useContext8(TitleId) ?? own;
+  const id = useContext9(TitleId) ?? own;
   return /* @__PURE__ */ jsxs20("header", { className: "ad-popover__header", children: [
     eyebrow && /* @__PURE__ */ jsx23("div", { id: title == null ? id : void 0, className: "ad-popover__eyebrow ad-type-heading", children: eyebrow }),
     chip != null && /* @__PURE__ */ jsx23("div", { className: "ad-popover__chip", children: chip }),
@@ -4273,9 +4290,9 @@ function TimeRange({ start, end, onChange, startLabel = "Starts", endLabel = "En
 }
 
 // src/components/Card/Card.tsx
-import { createContext as createContext8, forwardRef as forwardRef7, useContext as useContext9, useState as useState19 } from "react";
+import { createContext as createContext9, forwardRef as forwardRef7, useContext as useContext10, useState as useState19 } from "react";
 import { jsx as jsx31, jsxs as jsxs28 } from "react/jsx-runtime";
-var OpenCard = createContext8(void 0);
+var OpenCard = createContext9(void 0);
 var Card = forwardRef7(function Card2({ title, headerLayout = "row", density, end, onMore, moreLabel = "More", children, onOpen, selected, dragging, picking, size = "tile", showIndex = true, className, onClick, ...rest }, ref) {
   return /* @__PURE__ */ jsxs28(
     "div",
@@ -4309,7 +4326,7 @@ var Card = forwardRef7(function Card2({ title, headerLayout = "row", density, en
   );
 });
 function CardName({ children, lead, onRename, renameLabel }) {
-  const open = useContext9(OpenCard);
+  const open = useContext10(OpenCard);
   const name = onRename ? /* @__PURE__ */ jsx31(InlineEdit, { value: String(children), onCommit: onRename, ariaLabel: renameLabel ?? "Name", className: "ad-card__name" }) : open ? /* @__PURE__ */ jsx31("button", { type: "button", className: "ad-card__name ad-open", onClick: (e) => {
     e.stopPropagation();
     open();
@@ -6027,7 +6044,7 @@ function TimeGrid({ startHour, endHour, bookings = [], columns, now, hourLabel =
   const allDayRows = allDayCount;
   const anyBand = cols.some((c) => c.band);
   const headBand = !!bandHeading && anyBand;
-  return /* @__PURE__ */ jsxs42("div", { ref: frame, className: cx("ad-time-grid", !!visibleHours && "ad-time-grid--scrolls", `ad-time-grid--aside-${asideWidth}`, hourHeight === "roomy" && "ad-time-grid--roomy", className), role: "group", "aria-label": ariaLabel, style: { ["--ad-hours"]: hours, ["--ad-allday-rows"]: allDayRows, ["--ad-column-count"]: cols.length, ["--ad-allday-content-h"]: `${contentH}px`, ...visibleHours ? { ["--ad-visible-hours"]: visibleHours } : {}, ...headH ? { ["--ad-head-h"]: `${headH}px` } : {} }, children: [
+  return /* @__PURE__ */ jsxs42("div", { ref: frame, className: cx("ad-time-grid", !!visibleHours && "ad-time-grid--scrolls", `ad-time-grid--aside-${asideWidth}`, hourHeight === "roomy" && "ad-time-grid--roomy", className), role: "group", "aria-label": ariaLabel, tabIndex: visibleHours ? 0 : void 0, style: { ["--ad-hours"]: hours, ["--ad-allday-rows"]: allDayRows, ["--ad-column-count"]: cols.length, ["--ad-allday-content-h"]: `${contentH}px`, ...visibleHours ? { ["--ad-visible-hours"]: visibleHours } : {}, ...headH ? { ["--ad-head-h"]: `${headH}px` } : {} }, children: [
     /* @__PURE__ */ jsxs42("div", { className: "ad-time-grid__gutter", "aria-hidden": "true", children: [
       anyBand && !headBand && /* @__PURE__ */ jsx45("div", { className: "ad-time-grid__band-space" }),
       allDayContent != null && /* @__PURE__ */ jsx45("div", { className: "ad-time-grid__content-space" }),
@@ -6889,7 +6906,7 @@ function Ground({ children, className, style }) {
 }
 
 // src/runtime/AdsProvider.tsx
-import { useContext as useContext10, useEffect as useEffect19, useMemo as useMemo4 } from "react";
+import { useContext as useContext11, useEffect as useEffect19, useMemo as useMemo4 } from "react";
 import { jsx as jsx55 } from "react/jsx-runtime";
 var MODE = typeof process !== "undefined" && process.env && process.env.NODE_ENV || "development";
 var pending = [];
@@ -6933,7 +6950,7 @@ function AdsProvider({ strict = false, show, children }) {
       document.removeEventListener("focusin", look, true);
     };
   }, [on]);
-  const outer = useContext10(HueSwitches);
+  const outer = useContext11(HueSwitches);
   const o = { ...SHOW_DEFAULTS, ...show ?? {} };
   const project = o.projectColours === true;
   const item = o.itemColours === true;
@@ -6944,7 +6961,7 @@ function AdsProvider({ strict = false, show, children }) {
   return /* @__PURE__ */ jsx55(HueSwitches.Provider, { value, children: /* @__PURE__ */ jsx55(Show.Provider, { value: options, children }) });
 }
 function AdsScope({ project, children }) {
-  const outer = useContext10(HueSwitches);
+  const outer = useContext11(HueSwitches);
   const value = useMemo4(() => ({ ...outer, inProject: true }), [outer]);
   return /* @__PURE__ */ jsx55(HueSwitches.Provider, { value, children: /* @__PURE__ */ jsx55("div", { "data-ads-project": project, style: { display: "contents" }, children }) });
 }
