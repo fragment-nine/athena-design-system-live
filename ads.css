@@ -1513,9 +1513,10 @@ button.ad-card__name:focus-visible { outline: none; box-shadow: var(--ring-selec
 .ad-footer { box-sizing: border-box; display: grid; grid-template-columns: max-content minmax(0, 1fr) minmax(0, 2fr) max-content; height: var(--h-footer); border-top: var(--border-w) solid var(--border); background: var(--bg-side); font: var(--type-heading); text-transform: uppercase; letter-spacing: var(--track-caps); color: var(--text-secondary); white-space: nowrap; }
 .ad-footer__cell { display: flex; align-items: center; padding: 0 var(--space-4); border-right: var(--border-w) solid var(--border); }
 .ad-footer__code { gap: var(--space-2); }
-.ad-footer__number { font: var(--type-data); color: var(--text-secondary); }
+.ad-footer__number { color: var(--text-secondary); }
 .ad-footer__venue { gap: var(--space-4); overflow: hidden; white-space: nowrap; }
-.ad-footer__description { min-width: 0; overflow: hidden; text-overflow: ellipsis; font: var(--type-name); letter-spacing: normal; text-transform: none; }
+/* The description is the footer's words like the rest: its mono caps, tracked, one size; cut at its cell, its words on hover. */
+.ad-footer__description { min-width: 0; overflow: hidden; text-overflow: ellipsis; }
 /* A project's line takes the free room; the countdown keeps its whole words; the page cell is untouched. */
 .ad-footer:has(.ad-footer__description) { grid-template-columns: max-content minmax(0, max-content) minmax(max-content, 1fr) max-content; }
 .ad-footer__run { border-right: 0; }
