@@ -655,6 +655,12 @@ var REGULAR = {
     "M208,32H184V24a8,8,0,0,0-16,0v8H88V24a8,8,0,0,0-16,0v8H48A16,16,0,0,0,32,48V208a16,16,0,0,0,16,16H208a16,16,0,0,0,16-16V48A16,16,0,0,0,208,32ZM72,48v8a8,8,0,0,0,16,0V48h80v8a8,8,0,0,0,16,0V48h24V80H48V48ZM208,208H48V96H208V208Z",
     "M34.1,37.41L210.1,229.41A8,8,0,0,0,221.9,218.59L45.9,26.59A8,8,0,0,0,34.1,37.41Z"
   ],
+  "caret-double-left": [
+    "M205.66,202.34a8,8,0,0,1-11.32,11.32l-80-80a8,8,0,0,1,0-11.32l80-80a8,8,0,0,1,11.32,11.32L131.31,128ZM51.31,128l74.35-74.34a8,8,0,0,0-11.32-11.32l-80,80a8,8,0,0,0,0,11.32l80,80a8,8,0,0,0,11.32-11.32Z"
+  ],
+  "caret-double-right": [
+    "M141.66,133.66l-80,80a8,8,0,0,1-11.32-11.32L124.69,128,50.34,53.66A8,8,0,0,1,61.66,42.34l80,80A8,8,0,0,1,141.66,133.66Zm80-11.32-80-80a8,8,0,0,0-11.32,11.32L204.69,128l-74.35,74.34a8,8,0,0,0,11.32,11.32l80-80A8,8,0,0,0,221.66,122.34Z"
+  ],
   "caret-down": [
     "M213.66,101.66l-80,80a8,8,0,0,1-11.32,0l-80-80A8,8,0,0,1,53.66,90.34L128,164.69l74.34-74.35a8,8,0,0,1,11.32,11.32Z"
   ],
@@ -1238,6 +1244,12 @@ var LIGHT = {
   "calendar-blank": [
     "M208,34H182V24a6,6,0,0,0-12,0V34H86V24a6,6,0,0,0-12,0V34H48A14,14,0,0,0,34,48V208a14,14,0,0,0,14,14H208a14,14,0,0,0,14-14V48A14,14,0,0,0,208,34ZM48,46H74V56a6,6,0,0,0,12,0V46h84V56a6,6,0,0,0,12,0V46h26a2,2,0,0,1,2,2V82H46V48A2,2,0,0,1,48,46ZM208,210H48a2,2,0,0,1-2-2V94H210V208A2,2,0,0,1,208,210Z"
   ],
+  "caret-double-left": [
+    "M204.24,203.76a6,6,0,1,1-8.48,8.48l-80-80a6,6,0,0,1,0-8.48l80-80a6,6,0,0,1,8.48,8.48L128.49,128ZM48.49,128l75.75-75.76a6,6,0,0,0-8.48-8.48l-80,80a6,6,0,0,0,0,8.48l80,80a6,6,0,1,0,8.48-8.48Z"
+  ],
+  "caret-double-right": [
+    "M140.24,132.24l-80,80a6,6,0,0,1-8.48-8.48L127.51,128,51.76,52.24a6,6,0,0,1,8.48-8.48l80,80A6,6,0,0,1,140.24,132.24Zm80-8.48-80-80a6,6,0,0,0-8.48,8.48L207.51,128l-75.75,75.76a6,6,0,1,0,8.48,8.48l80-80A6,6,0,0,0,220.24,123.76Z"
+  ],
   "caret-down": [
     "M212.24,100.24l-80,80a6,6,0,0,1-8.48,0l-80-80a6,6,0,0,1,8.48-8.48L128,167.51l75.76-75.75a6,6,0,0,1,8.48,8.48Z"
   ],
@@ -1473,6 +1485,8 @@ var JOBS = {
   "chevron-down": "caret-down",
   "chevron-left": "caret-left",
   "chevron-right": "caret-right",
+  "year-back": "caret-double-left",
+  "year-forward": "caret-double-right",
   "chevron-up": "caret-up",
   "clients": "handshake",
   "clock": "clock",
@@ -1600,9 +1614,9 @@ function useNamedColour(name) {
   const shown = useHue(isPick ? void 0 : name);
   return isPick ? `var(--pick-${name})` : shown;
 }
-function Dot({ tone = "neutral", hue, priority, colour: picked, className, ...rest }) {
+function Dot({ tone = "neutral", hue, priority, colour: picked, swatch, className, ...rest }) {
   const colour = useNamedColour(picked && PICKABLE.has(picked) ? picked : hue);
-  return /* @__PURE__ */ jsx4("span", { "aria-hidden": "true", ...rest, "data-coloured": colour ? true : void 0, style: colour ? { ["--ad-dot"]: colour } : void 0, className: cx("ad-dot", `ad-dot--${tone}`, priority && `ad-dot--p${priority}`, className) });
+  return /* @__PURE__ */ jsx4("span", { "aria-hidden": "true", ...rest, "data-coloured": colour ? true : void 0, style: colour ? { ["--ad-dot"]: colour } : void 0, className: cx("ad-dot", `ad-dot--${tone}`, priority && `ad-dot--p${priority}`, swatch && "ad-dot--swatch", className) });
 }
 function Status({ label, tone = "neutral", colour, className, ...rest }) {
   return /* @__PURE__ */ jsxs2("span", { ...rest, className: cx("ad-status", className), children: [
@@ -3250,6 +3264,7 @@ function PopoverCard({ onClose, width = "card", ariaLabel, noClose, closeLabel, 
     else if (cardRef) cardRef.current = el;
   }, [cardRef]);
   useStaysInWindow(own);
+  useScrollFade(own);
   const pos = {};
   if (style) {
     for (const k of ["position", "top", "left", "right", "bottom", "inset", "maxHeight", "zIndex", "visibility"]) if (style[k] !== void 0) pos[k] = style[k];
@@ -4073,7 +4088,7 @@ function FieldPopover({ label, words, placeholder, icon, title, children, width 
 // src/components/Pickers/DatePicker.tsx
 import { useEffect as useEffect11, useId as useId10, useMemo as useMemo2, useRef as useRef17, useState as useState16 } from "react";
 import { jsx as jsx28, jsxs as jsxs25 } from "react/jsx-runtime";
-var EN = { today: "Today", tomorrow: "Tomorrow", nextWeek: "Next week", inTwoWeeks: "In two weeks", previousMonth: "Previous month", nextMonth: "Next month", noDate: "No date", repeat: "Repeat" };
+var EN = { today: "Today", tomorrow: "Tomorrow", nextWeek: "Next week", inTwoWeeks: "In two weeks", previousMonth: "Previous month", nextMonth: "Next month", previousYear: "Previous year", nextYear: "Next year", noDate: "No date", repeat: "Repeat" };
 function DroppedDatePicker({ open, anchor, onClose, repeatEditor, backLabel, ...picker }) {
   const [repeating, setRepeating] = useState16(false);
   const stay = repeating && repeatEditor != null;
@@ -4096,7 +4111,7 @@ function DroppedDatePicker({ open, anchor, onClose, repeatEditor, backLabel, ...
 function DatePicker(props) {
   return props.anchor ? /* @__PURE__ */ jsx28(DroppedDatePicker, { ...props }) : /* @__PURE__ */ jsx28(DatePickerBody, { ...props });
 }
-function DatePickerBody({ value, onChange, today: todayIn, weekStart = 1, locale = "en-US", labels: l, quickPicks, shadeWeekends = true, onClear, repeat, openOn, dayMarks, marksKey, className }) {
+function DatePickerBody({ value, onChange, today: todayIn, weekStart = 1, locale = "en-US", labels: l, quickPicks, yearly, shadeWeekends = true, onClear, repeat, openOn, dayMarks, marksKey, className }) {
   const labels = { ...EN, ...l };
   const today = dayOf(todayIn);
   const [focus, setFocus] = useState16(dayOf(value ?? openOn ?? today));
@@ -4104,7 +4119,7 @@ function DatePickerBody({ value, onChange, today: todayIn, weekStart = 1, locale
   const moved = useRef17(false);
   const said = (words, fallback) => readDate(words, today, { weekStart })?.date ?? fallback;
   const nextWeekStart = said("next week", nextWeekday(today, weekStart, { forceNext: true }));
-  const picks = quickPicks ?? [
+  const picks = yearly ? [] : quickPicks ?? [
     { id: "today", label: labels.today, date: today },
     { id: "tomorrow", label: labels.tomorrow, date: addDays(today, 1) },
     { id: "next-week", label: labels.nextWeek, date: nextWeekStart },
@@ -4149,7 +4164,7 @@ function DatePickerBody({ value, onChange, today: todayIn, weekStart = 1, locale
     }
   };
   return /* @__PURE__ */ jsxs25("div", { className: cx("ad-datepicker", className), children: [
-    /* @__PURE__ */ jsxs25("div", { className: "ad-datepicker__quick", children: [
+    (picks.length > 0 || onClear) && /* @__PURE__ */ jsxs25("div", { className: "ad-datepicker__quick", children: [
       picks.map((p) => /* @__PURE__ */ jsxs25("button", { type: "button", className: "ad-datepicker__pick", "aria-pressed": sameDay(value, p.date), onClick: () => onChange(dayOf(p.date)), children: [
         /* @__PURE__ */ jsx28("span", { children: p.label }),
         /* @__PURE__ */ jsx28("span", { className: "ad-datepicker__pick-date", children: pickDate(p.date) })
@@ -4159,8 +4174,10 @@ function DatePickerBody({ value, onChange, today: todayIn, weekStart = 1, locale
     /* @__PURE__ */ jsxs25("div", { className: "ad-datepicker__month", children: [
       /* @__PURE__ */ jsx28("span", { className: "ad-datepicker__month-name", "aria-live": "polite", children: monthName }),
       /* @__PURE__ */ jsxs25("span", { className: "ad-datepicker__navs", children: [
+        yearly && /* @__PURE__ */ jsx28("button", { type: "button", className: "ad-datepicker__nav ad-glyph-button", "aria-label": labels.previousYear, onClick: () => go(addMonthsClamped(focus, -12)), children: /* @__PURE__ */ jsx28(Icon, { job: "year-back" }) }),
         /* @__PURE__ */ jsx28("button", { type: "button", className: "ad-datepicker__nav ad-glyph-button", "aria-label": labels.previousMonth, onClick: () => go(addMonthsClamped(focus, -1)), children: /* @__PURE__ */ jsx28(Icon, { name: "caret-left" }) }),
-        /* @__PURE__ */ jsx28("button", { type: "button", className: "ad-datepicker__nav ad-glyph-button", "aria-label": labels.nextMonth, onClick: () => go(addMonthsClamped(focus, 1)), children: /* @__PURE__ */ jsx28(Icon, { name: "caret-right" }) })
+        /* @__PURE__ */ jsx28("button", { type: "button", className: "ad-datepicker__nav ad-glyph-button", "aria-label": labels.nextMonth, onClick: () => go(addMonthsClamped(focus, 1)), children: /* @__PURE__ */ jsx28(Icon, { name: "caret-right" }) }),
+        yearly && /* @__PURE__ */ jsx28("button", { type: "button", className: "ad-datepicker__nav ad-glyph-button", "aria-label": labels.nextYear, onClick: () => go(addMonthsClamped(focus, 12)), children: /* @__PURE__ */ jsx28(Icon, { job: "year-forward" }) })
       ] })
     ] }),
     /* @__PURE__ */ jsxs25("div", { ref: grid, role: "grid", "aria-label": monthName, className: "ad-datepicker__grid", onKeyDown: onGridKey, children: [
@@ -4828,7 +4845,7 @@ function ViewPopover({ open, onClose, anchor, builtInViews = [], savedViews, cur
   return /* @__PURE__ */ jsxs33(Popover, { open, onClose, anchor, ariaLabel: L.view, children: [
     viewsShown && /* @__PURE__ */ jsxs33(PopoverSection, { label: savedViews && builtInViews.length ? void 0 : savedViews ? L.savedViews : L.builtInViews, children: [
       savedViews && savedViews.length === 0 && !builtInViews.length && /* @__PURE__ */ jsx36("p", { className: "ad-view-none", children: L.noSaved }),
-      /* @__PURE__ */ jsx36(
+      views.length > 0 && /* @__PURE__ */ jsx36(
         PickList,
         {
           noSearch: true,
@@ -4870,7 +4887,7 @@ function ViewPopover({ open, onClose, anchor, builtInViews = [], savedViews, cur
       })()
     ] }),
     query && /* @__PURE__ */ jsxs33(PopoverSection, { label: L.filter, children: [
-      query.vocabulary ? /* @__PURE__ */ jsx36(TokenInput, { read: { kind: "query", vocabulary: query.vocabulary }, label: L.filter, value: query.value, onChange: query.onChange, showResolved: false, suggestions: query.suggestions }) : /* @__PURE__ */ jsx36(TextField, { "aria-label": L.filter, placeholder: L.filter, value: query.value, onChange: (e) => query.onChange(e.target.value) }),
+      query.vocabulary ? /* @__PURE__ */ jsx36(TokenInput, { read: { kind: "query", vocabulary: query.vocabulary }, label: L.filter, value: query.value, onChange: query.onChange, showResolved: false, suggestions: query.suggestions }) : /* @__PURE__ */ jsx36(TextField, { mono: true, "aria-label": L.filter, placeholder: L.filter, value: query.value, onChange: (e) => query.onChange(e.target.value) }),
       rules && /* @__PURE__ */ jsx36("div", { className: "ad-view-or", "aria-hidden": "true", children: /* @__PURE__ */ jsx36("span", { children: L.or }) }),
       rules && /* @__PURE__ */ jsx36(RuleBuilder, { ...rules })
     ] }),
@@ -5026,9 +5043,9 @@ function AlertRow({ priority, priorityLabel = `Priority ${priority}`, sentence, 
     ] }),
     /* @__PURE__ */ jsx37("span", { className: "ad-alert__actions", children: /* @__PURE__ */ jsxs34(ButtonSizeScope, { size: "row", children: [
       actions,
-      go && /* @__PURE__ */ jsxs34(Button, { onClick: go.onSelect, children: [
+      go && /* @__PURE__ */ jsxs34(Button, { ...strip3(go.hooks), title: go.tip, onClick: go.onSelect, children: [
         go.label,
-        /* @__PURE__ */ jsx37(Icon, { job: "chevron-right", size: "sm" })
+        !go.fixes && /* @__PURE__ */ jsx37(Icon, { job: "chevron-right", size: "sm" })
       ] })
     ] }) }),
     /* @__PURE__ */ jsx37("span", { className: "ad-alert__snooze", children: onSnooze && /* @__PURE__ */ jsx37(ButtonSizeScope, { size: "row", children: /* @__PURE__ */ jsx37(IconButton, { label: snoozeLabel, onClick: onSnooze, children: /* @__PURE__ */ jsx37(Icon, { job: "snooze" }) }) }) }),
