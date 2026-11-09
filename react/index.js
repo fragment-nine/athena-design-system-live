@@ -265,9 +265,9 @@ function usePlacement(open, anchor, floating, placement, within) {
     const fh = f.offsetHeight;
     const a = anchor?.current?.getBoundingClientRect();
     const room = within?.current?.getBoundingClientRect();
-    const card = placement === "side" || placement === "over";
-    const footer = card ? (doc ?? document).querySelector(".ad-footer")?.getBoundingClientRect() : void 0;
-    const floor = footer && footer.height > 0 && footer.top > vh / 2 && footer.top < vh ? footer.top : vh;
+    const footer = placement === "side" || placement === "over" || placement === "drop" ? (doc ?? document).querySelector(".ad-footer")?.getBoundingClientRect() : void 0;
+    const footerTop = footer && footer.height > 0 && footer.top > vh / 2 && footer.top < vh ? footer.top : vh;
+    const floor = placement === "drop" && a && a.bottom > footerTop ? vh : footerTop;
     let top;
     let left;
     if (placement === "foot" && room) {
@@ -288,7 +288,7 @@ function usePlacement(open, anchor, floating, placement, within) {
       left = a.left;
       top = a.bottom + gap;
       if (left + fw > vw - edge) left = a.right - fw;
-      if (top + fh > vh - edge && a.top - gap - fh >= edge) top = a.top - gap - fh;
+      if (top + fh > floor - edge && a.top - gap - fh >= edge) top = a.top - gap - fh;
     }
     const placedTop = Math.round(Math.max(edge, top));
     const next = { top: placedTop, left: Math.round(Math.max(edge, left)), maxHeight: Math.max(0, Math.round(floor - placedTop - edge)) };
@@ -1918,7 +1918,7 @@ function FormActions({ main, onCancel, cancelLabel = "Cancel", destroy, extras }
     destroy && /* @__PURE__ */ jsx9("span", { className: "ad-form-actions__destroy", children: /* @__PURE__ */ jsx9(Button, { onClick: destroy.onSelect, children: destroy.label }) }),
     extras != null && /* @__PURE__ */ jsx9("span", { className: "ad-form-actions__extras", children: extras }),
     onCancel && /* @__PURE__ */ jsx9(Button, { onClick: onCancel, children: cancelLabel }),
-    main && /* @__PURE__ */ jsx9(Button, { variant: "main", type: main.onSelect ? "button" : "submit", onClick: main.onSelect, children: String(main.label) })
+    main && /* @__PURE__ */ jsx9(Button, { ...main.attrs, variant: "main", type: main.onSelect ? "button" : "submit", onClick: main.onSelect, unavailable: main.unavailable, children: String(main.label) })
   ] });
 }
 var OverlayTextArea = forwardRef2(function OverlayTextArea2({ value, onChange, mirror, placeholder, ...rest }, ref) {

@@ -2155,8 +2155,14 @@ button.ad-steps__press:focus-visible { outline: none; box-shadow: var(--ring-sel
 .ad-popover__section-fold:hover { color: var(--accent); }
 .ad-popover__section-fold:focus-visible { outline: none; box-shadow: var(--ring-select); border-radius: var(--radius-page); }
 
-/* A title renamed through the writing box grows to as many lines as it needs. */
+/* A title renamed through the writing box is the title itself, as InlineEdit's is: Work Sans 600 at 20, no edge, the raised fill under
+   the cursor and the hover fill while typing; it wraps to as many lines as it needs, never cut. */
 .ad-popover__title-read { display: block; white-space: normal; }
+.ad-popover__title:has(.ad-popover__title-read) { flex: 1; min-width: 0; }
+.ad-popover__title-read .ad-token-input__field { min-height: 0; padding: 0 var(--space-2); margin: 0 calc(var(--space-2) * -1); background: transparent; box-shadow: none; }
+.ad-popover__title-read .ad-token-input__field:hover { background: var(--bg-raised); }
+.ad-popover__title-read .ad-token-input__field:focus-within { background: var(--bg-hover); box-shadow: none; }
+.ad-popover__title-read .ad-token-input__box { padding: var(--space-1) 0; font: var(--type-title); line-height: var(--lh-tight); overflow-wrap: anywhere; }
 
 /* A list inside a card grows to its rows: the card's body is the one scroll area. */
 .ad-popover .ad-picklist__list { max-height: none; overflow: visible; }
