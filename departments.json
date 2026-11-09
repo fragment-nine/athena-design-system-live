@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "version": "0.19.1",
-  "sourceHash": "53108651c8a712f552e145b4f66d35134c5a274c2ace8a985ee058c70b9579cf",
+  "sourceHash": "eafe5b7aa0924d6ba89863eb7bede7cf5ba941b52018e35e45181af06b0fea9e",
   "departments": [
     {
       "id": "lighting",
@@ -178,7 +178,7 @@
     "light": {
       "dept-lighting": "#947911",
       "dept-video": "#936aaf",
-      "dept-eng": "#467fab",
+      "dept-eng": "#3f739b",
       "dept-sfx": "#a66a7e",
       "dept-content": "#e5119c",
       "dept-scenic": "#9d7336",

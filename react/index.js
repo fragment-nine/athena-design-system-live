@@ -6324,32 +6324,80 @@ function OverTime({ periods, currentId, grid = [], ariaLabel, className }) {
     ] })
   ] });
 }
-function Dial({ fraction, label, size, value, valueText, half, target, targetLabel, className }) {
+var clamp01 = (n) => Math.max(0, Math.min(1, Number.isFinite(n) ? n : 0));
+function Dial({ fraction, label, size, value, valueText, half, target, targetLabel, segments: segments2, needle, band, bandLabel, scale, className }) {
   const r = 26;
-  const c = half ? Math.PI * r : 2 * Math.PI * r;
-  const f = Math.max(0, Math.min(1, Number.isFinite(fraction) ? fraction : 0));
-  const display = size != null && value != null ? value : `${Math.round(f * 100)}%`;
-  const t = target == null ? null : Math.max(0, Math.min(1, target));
-  const angle = t == null ? 0 : half ? Math.PI * (1 - t) : Math.PI / 2 - 2 * Math.PI * t;
-  const tick = (d) => [35 + (r + d) * Math.cos(angle), 35 - (r + d) * Math.sin(angle)];
-  const [x1, y1] = tick(-5);
-  const [x2, y2] = tick(5);
-  const said = [size != null ? valueText : null, t != null ? targetLabel ?? `Target ${Math.round(t * 100)}%` : null].filter(Boolean).join(", ");
-  return /* @__PURE__ */ jsxs44("figure", { className: cx("ad-dial", size != null && "ad-dial--compact", size === "small" && "ad-dial--small", half && "ad-dial--half", className), children: [
+  const span = half ? Math.PI : 2 * Math.PI;
+  const c = span * r;
+  const f = clamp01(fraction);
+  const pieces = segments2 == null ? 0 : Math.max(2, Math.min(24, Math.round(segments2)));
+  const filled = Math.round(f * pieces);
+  const gauge = !!half;
+  const pointer = gauge && !!needle;
+  const display = value != null && (size != null || pieces || pointer) ? value : pieces ? `${filled}/${pieces}` : `${Math.round(f * 100)}%`;
+  const at = (s, rr) => {
+    const a = (gauge ? Math.PI : -Math.PI / 2) + span * s;
+    return [35 + rr * Math.cos(a), 35 + rr * Math.sin(a)];
+  };
+  const arc = (a, b2, rr = r) => {
+    const [x1, y1] = at(a, rr);
+    const [x2, y2] = at(b2, rr);
+    return `M${x1} ${y1} A${rr} ${rr} 0 ${(b2 - a) * span > Math.PI ? 1 : 0} 1 ${x2} ${y2}`;
+  };
+  const line = (s, from, to) => {
+    const [x1, y1] = at(s, from);
+    const [x2, y2] = at(s, to);
+    return { x1, y1, x2, y2 };
+  };
+  const t = target == null ? null : clamp01(target);
+  const b = band == null ? null : [clamp01(Math.min(band[0], band[1])), clamp01(Math.max(band[0], band[1]))];
+  const gap = pieces ? 1.2 / c : 0;
+  const said = [
+    size != null || pieces || pointer ? valueText ?? (pieces ? `${filled} of ${pieces}` : null) : null,
+    b != null ? bandLabel ?? `Fair ${Math.round(b[0] * 100)} to ${Math.round(b[1] * 100)}%` : null,
+    t != null ? targetLabel ?? `Target ${Math.round(t * 100)}%` : null
+  ].filter(Boolean).join(", ");
+  const track = gauge ? arc(0, 1) : null;
+  return /* @__PURE__ */ jsxs44("figure", { className: cx("ad-dial", size != null && "ad-dial--compact", size === "small" && "ad-dial--small", gauge && "ad-dial--half", pointer && "ad-dial--needle", gauge && scale && "ad-dial--scaled", className), children: [
     /* @__PURE__ */ jsxs44("div", { className: "ad-dial__face", role: "meter", "aria-valuemin": 0, "aria-valuemax": 100, "aria-valuenow": Math.round(f * 100), "aria-label": String(label), "aria-valuetext": said || void 0, children: [
-      /* @__PURE__ */ jsxs44("svg", { viewBox: half ? "0 0 70 40" : "0 0 70 70", "aria-hidden": "true", children: [
-        half ? /* @__PURE__ */ jsxs44(Fragment21, { children: [
-          /* @__PURE__ */ jsx47("path", { className: "ad-dial__track", d: `M${35 - r} 35 A${r} ${r} 0 0 1 ${35 + r} 35` }),
-          /* @__PURE__ */ jsx47("path", { className: "ad-dial__arc", d: `M${35 - r} 35 A${r} ${r} 0 0 1 ${35 + r} 35`, strokeDasharray: `${c * f} ${c}` })
-        ] }) : /* @__PURE__ */ jsxs44(Fragment21, { children: [
-          /* @__PURE__ */ jsx47("circle", { className: "ad-dial__track", cx: "35", cy: "35", r }),
-          /* @__PURE__ */ jsx47("circle", { className: "ad-dial__arc", cx: "35", cy: "35", r, strokeDasharray: `${c * f} ${c}`, transform: "rotate(-90 35 35)" })
-        ] }),
-        t != null && /* @__PURE__ */ jsx47("line", { className: "ad-dial__target", x1, y1, x2, y2 })
+      /* @__PURE__ */ jsxs44("svg", { viewBox: gauge ? "0 0 70 40" : "0 0 70 70", "aria-hidden": "true", children: [
+        pieces ? Array.from({ length: pieces }, (_, i) => /* @__PURE__ */ jsx47("path", { className: i < filled ? "ad-dial__arc ad-dial__piece" : "ad-dial__track ad-dial__piece", d: arc(i / pieces + gap, (i + 1) / pieces - gap) }, i)) : gauge ? /* @__PURE__ */ jsx47("path", { className: "ad-dial__track", d: track }) : /* @__PURE__ */ jsx47("circle", { className: "ad-dial__track", cx: "35", cy: "35", r }),
+        b != null && !pieces && b[1] > b[0] && /* @__PURE__ */ jsx47("path", { className: "ad-dial__band", d: arc(b[0], b[1], r - 5.5) }),
+        !pieces && !pointer && (gauge ? /* @__PURE__ */ jsx47("path", { className: "ad-dial__arc", d: track, strokeDasharray: `${c * f} ${c}` }) : /* @__PURE__ */ jsx47("circle", { className: "ad-dial__arc", cx: "35", cy: "35", r, strokeDasharray: `${c * f} ${c}`, transform: "rotate(-90 35 35)" })),
+        gauge && scale && Array.from({ length: 11 }, (_, i) => /* @__PURE__ */ jsx47("line", { className: "ad-dial__tick", ...line(i / 10, r + 4.5, i % 5 === 0 ? r + 8 : r + 6.5) }, i)),
+        t != null && /* @__PURE__ */ jsx47("line", { className: "ad-dial__target", ...line(t, r - 5, r + 5) }),
+        pointer && /* @__PURE__ */ jsxs44(Fragment21, { children: [
+          /* @__PURE__ */ jsx47("line", { className: "ad-dial__needle", ...line(f, 0, r - 1) }),
+          /* @__PURE__ */ jsx47("circle", { className: "ad-dial__hub", cx: "35", cy: "35", r: "2.5" })
+        ] })
       ] }),
-      /* @__PURE__ */ jsx47("span", { className: "ad-dial__value", children: display })
+      !pointer && /* @__PURE__ */ jsx47("span", { className: "ad-dial__value", children: display })
+    ] }),
+    gauge && (scale || pointer) && /* @__PURE__ */ jsxs44("span", { className: "ad-dial__under", children: [
+      /* @__PURE__ */ jsx47("span", { className: "ad-dial__end", "aria-hidden": "true", children: scale?.from }),
+      pointer && /* @__PURE__ */ jsx47("span", { className: "ad-dial__reading", children: display }),
+      /* @__PURE__ */ jsx47("span", { className: "ad-dial__end", "aria-hidden": "true", children: scale?.to })
     ] }),
     /* @__PURE__ */ jsx47("figcaption", { className: cx("ad-dial__label", size != null && "ad-sr"), children: label })
+  ] });
+}
+function Rings({ rings, ariaLabel, className }) {
+  const shown = rings.slice(0, 3);
+  const radii = [29, 21.5, 14];
+  const steps = [4, 3, 2];
+  return /* @__PURE__ */ jsxs44("figure", { className: cx("ad-rings", className), role: "group", "aria-label": ariaLabel, children: [
+    /* @__PURE__ */ jsx47("svg", { className: "ad-rings__face", viewBox: "0 0 70 70", "aria-hidden": "true", children: shown.map((g, i) => {
+      const c = 2 * Math.PI * radii[i];
+      return /* @__PURE__ */ jsxs44("g", { children: [
+        /* @__PURE__ */ jsx47("circle", { className: "ad-dial__track", cx: "35", cy: "35", r: radii[i] }),
+        /* @__PURE__ */ jsx47("circle", { className: cx("ad-rings__arc", `ad-rings__arc--${steps[i]}`), cx: "35", cy: "35", r: radii[i], strokeDasharray: `${c * clamp01(g.fraction)} ${c}`, transform: "rotate(-90 35 35)" })
+      ] }, g.id);
+    }) }),
+    /* @__PURE__ */ jsx47("div", { className: "ad-rings__key", children: shown.map((g, i) => /* @__PURE__ */ jsxs44("div", { className: "ad-rings__item", role: "meter", "aria-label": g.label, "aria-valuemin": 0, "aria-valuemax": 100, "aria-valuenow": Math.round(clamp01(g.fraction) * 100), "aria-valuetext": g.display, children: [
+      /* @__PURE__ */ jsx47("span", { className: cx("ad-chart-key__swatch", `ad-graph-step--${steps[i]}`), "aria-hidden": "true" }),
+      /* @__PURE__ */ jsx47("span", { className: "ad-rings__name", children: g.label }),
+      /* @__PURE__ */ jsx47("span", { className: "ad-rings__value", children: g.display })
+    ] }, g.id)) })
   ] });
 }
 function Verdict({ word, sentence }) {
@@ -6361,11 +6409,11 @@ function Verdict({ word, sentence }) {
 
 // src/components/Charts/Graphs.tsx
 import { jsx as jsx48, jsxs as jsxs45 } from "react/jsx-runtime";
-var clamp01 = (n) => Math.max(0, Math.min(1, Number.isFinite(n) ? n : 0));
+var clamp012 = (n) => Math.max(0, Math.min(1, Number.isFinite(n) ? n : 0));
 function points(values, top, floor = 0) {
   const span = Math.max(1e-9, top - floor);
   const n = values.length;
-  return values.map((v, i) => [n === 1 ? 50 : i / (n - 1) * 100, 100 - clamp01((v - floor) / span) * 100]);
+  return values.map((v, i) => [n === 1 ? 50 : i / (n - 1) * 100, 100 - clamp012((v - floor) / span) * 100]);
 }
 var linePath = (p) => p.map(([x, y], i) => `${i ? "L" : "M"}${x.toFixed(2)} ${y.toFixed(2)}`).join(" ");
 var areaPath = (p) => p.length ? `${linePath(p)} L${p[p.length - 1][0].toFixed(2)} 100 L${p[0][0].toFixed(2)} 100 Z` : "";
@@ -6466,7 +6514,7 @@ function Tracker({ periods, ariaLabel, className }) {
 }
 function CellBar({ fraction, display, className }) {
   return /* @__PURE__ */ jsxs45("span", { className: cx("ad-amounts__track", "ad-cellbar", className), children: [
-    /* @__PURE__ */ jsx48("span", { className: "ad-cellbar__room", "aria-hidden": "true", children: /* @__PURE__ */ jsx48("span", { className: "ad-amounts__bar", style: { width: `${clamp01(fraction) * 100}%` } }) }),
+    /* @__PURE__ */ jsx48("span", { className: "ad-cellbar__room", "aria-hidden": "true", children: /* @__PURE__ */ jsx48("span", { className: "ad-amounts__bar", style: { width: `${clamp012(fraction) * 100}%` } }) }),
     /* @__PURE__ */ jsx48("span", { className: "ad-amounts__value", children: display })
   ] });
 }
@@ -7074,6 +7122,7 @@ export {
   ProjectPill,
   Rail,
   RegMark,
+  Rings,
   Row,
   RowDate,
   RowFigure,
