@@ -290,7 +290,8 @@ function usePlacement(open, anchor, floating, placement, within) {
       left = a.left;
       top = a.bottom + gap;
       if (left + fw > vw - edge) left = a.right - fw;
-      if (top + fh > floor - edge && a.top - gap - fh >= edge) top = a.top - gap - fh;
+      const below = floor - edge - top, above = a.top - gap - edge;
+      if (fh > below && below < tokenPx("--h-row", 40) * 4 && above > below) top = Math.max(edge, a.top - gap - Math.min(fh, above));
     }
     const placedTop = Math.round(Math.max(ceiling, top));
     const next = { top: placedTop, left: Math.round(Math.max(edge, left)), maxHeight: Math.max(0, Math.round(floor - placedTop - edge)) };
@@ -3980,7 +3981,7 @@ function PickField({ options, value, onPick, label, placeholder, header, icon, s
             }
           }
         ),
-        /* @__PURE__ */ jsx27(Icon, { name: "caret-down", className: "ad-pick-field__caret ad-glyph-quiet" })
+        /* @__PURE__ */ jsx27(Icon, { name: "caret-down", size: "sm", className: "ad-pick-field__caret ad-glyph-quiet" })
       ] }),
       open && narrowed.length > 0 && /* @__PURE__ */ jsx27(Portal, { children: /* @__PURE__ */ jsx27("div", { ref: box, style: { ...style, zIndex: z }, className: "ad-float ad-pick-field__list", onPointerDownCapture: () => {
         holding.current = true;
@@ -4044,7 +4045,7 @@ function PickField({ options, value, onPick, label, placeholder, header, icon, s
             picked.slice(0, cap).map((o) => /* @__PURE__ */ jsx27("span", { className: "ad-pick-field__mark", children: o.lead ?? /* @__PURE__ */ jsx27(Dot, {}) }, o.id)),
             picked.length > cap && /* @__PURE__ */ jsx27("span", { className: "ad-pick-field__more", children: "\u2026" })
           ] }) }) : /* @__PURE__ */ jsx27("span", { className: cx("ad-pick-field__words", "ad-clamp-line", picked.length === 0 && "ad-pick-field__words--empty"), children: picked.length ? words : placeholder ?? label }),
-          /* @__PURE__ */ jsx27(Icon, { name: "caret-down", className: "ad-pick-field__caret ad-glyph-quiet" })
+          /* @__PURE__ */ jsx27(Icon, { name: "caret-down", size: "sm", className: "ad-pick-field__caret ad-glyph-quiet" })
         ]
       }
     ),
@@ -4074,11 +4075,11 @@ function FieldPopover({ label, words, placeholder, icon, title, children, width 
         children: [
           icon && /* @__PURE__ */ jsx27(Icon, { job: icon, size: "md", className: "ad-pick-field__icon" }),
           /* @__PURE__ */ jsx27("span", { className: cx("ad-pick-field__words", "ad-clamp-line", empty && "ad-pick-field__words--empty"), children: empty ? placeholder ?? label : words }),
-          /* @__PURE__ */ jsx27(Icon, { name: "caret-down", className: "ad-pick-field__caret ad-glyph-quiet" })
+          /* @__PURE__ */ jsx27(Icon, { name: "caret-down", size: "sm", className: "ad-pick-field__caret ad-glyph-quiet" })
         ]
       }
     ),
-    /* @__PURE__ */ jsxs24(Popover, { open, onClose: close, anchor, placement: "drop", width, ariaLabel: title == null ? label : void 0, children: [
+    /* @__PURE__ */ jsxs24(Popover, { open, onClose: close, anchor, placement: "drop", width, noClose: true, ariaLabel: title == null ? label : void 0, children: [
       title != null && /* @__PURE__ */ jsx27(PopoverHeader, { title }),
       typeof children === "function" ? children(close) : children
     ] })
