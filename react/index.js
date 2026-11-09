@@ -2470,8 +2470,11 @@ function MenuFoot({ children }) {
   const rail = useContext5(Folded);
   return /* @__PURE__ */ jsx16("div", { className: cx(rail ? "ad-rail__foot" : "ad-side__foot", "ad-menu__foot"), children });
 }
-function MenuSeparator({ itemProps }) {
-  if (useContext5(InList)) return /* @__PURE__ */ jsx16("li", { ...strip(itemProps), className: "ad-menu__sep", children: /* @__PURE__ */ jsx16("span", { role: "separator" }) });
+function MenuSeparator({ itemProps, onRemove, removeLabel = "Remove separator" }) {
+  if (useContext5(InList)) return /* @__PURE__ */ jsxs13("li", { ...strip(itemProps), className: cx("ad-menu__sep", onRemove && "ad-menu__sep--removable"), children: [
+    /* @__PURE__ */ jsx16("span", { role: "separator" }),
+    onRemove && /* @__PURE__ */ jsx16("button", { type: "button", className: "ad-menu__sep-remove", "aria-label": removeLabel, title: removeLabel, onClick: onRemove, children: /* @__PURE__ */ jsx16(Icon, { job: "x", size: "sm" }) })
+  ] });
   const Row3 = "div";
   return /* @__PURE__ */ jsx16(Row3, { ...strip(itemProps), role: "separator", className: "ad-menu__sep" });
 }
@@ -2538,18 +2541,43 @@ function Rail({ foot = [], screens, projects, projectsScreen, current, onSelect,
     ] })
   ] });
 }
-function SideMenu({ foot = [], screens, projects, views = [], current, onSelect, onHome, onSettings, onToggle, onReorder, projectsScreen, labels: l = {} }) {
-  const L = { home: "Home", menu: "Main", settings: "Settings", fold: "Fold the menu", ...l };
+function SideMenu({ foot = [], screens, projects, views = [], current, onSelect, onHome, onSettings, onToggle, onReorder, onAddSeparator, onRemoveSeparator, projectsScreen, labels: l = {} }) {
+  const L = { home: "Home", menu: "Main", settings: "Settings", fold: "Fold the menu", addSeparator: "Add a separator here", removeSeparator: "Remove separator", ...l };
+  const [gap, setGap] = useState7(null);
+  const findGap = (e) => {
+    const list = e.currentTarget, nav = list.closest(".ad-menu-frame");
+    if (!nav) return;
+    const nb = nav.getBoundingClientRect(), lb = list.getBoundingClientRect();
+    const items = Array.from(list.children).slice(1);
+    let best = null, dist = tokenPx("--space-2", 8) + 1;
+    for (let i = 0; i + 1 < items.length && i + 1 < screens.length; i++) {
+      if (isSep(screens[i]) || isSep(screens[i + 1])) continue;
+      const y = (items[i].getBoundingClientRect().bottom + items[i + 1].getBoundingClientRect().top) / 2;
+      const d = Math.abs(e.clientY - y);
+      if (d < dist) {
+        dist = d;
+        best = { after: screens[i].id, y: y - nb.top + nav.scrollTop, x: lb.left - nb.left, w: lb.width };
+      }
+    }
+    setGap((was) => was && best && was.after === best.after && was.y === best.y ? was : best);
+  };
   const movable = useMenuDrag(onReorder);
   const nested = !!projectsScreen && screens.some((x) => x.id === projectsScreen);
   const projectIds = projects.map((x) => x.id);
   const projectRows = projects.map((p) => /* @__PURE__ */ jsx17(MenuItem, { pill: { code: p.code, current: current === p.id, color: p.color }, label: p.name, current: current === p.id, onPress: () => onSelect(p.id), itemProps: { ...dataOnly(p.hooks), ...movable("projects", p.id, projectIds) } }, p.id));
   return /* @__PURE__ */ jsxs14(MenuFrame, { ariaLabel: L.menu, children: [
-    /* @__PURE__ */ jsxs14(MenuList, { children: [
+    /* @__PURE__ */ jsxs14(MenuList, { listProps: onAddSeparator ? { onPointerMove: findGap, onPointerLeave: (e) => {
+      if (!e.relatedTarget?.closest?.(".ad-insert")) setGap(null);
+    } } : void 0, children: [
       onToggle ? /* @__PURE__ */ jsx17(MenuItem, { home: true, label: L.fold, expanded: true, onPress: onToggle }) : /* @__PURE__ */ jsx17(MenuItem, { home: true, label: L.home, onPress: onHome ?? (() => {
       }) }),
-      screens.map((s) => isSep(s) ? /* @__PURE__ */ jsx17(MenuSeparator, { itemProps: { ...dataOnly(s.hooks), ...movable("screens", s.id, screens.map((x) => x.id)) } }, s.id) : /* @__PURE__ */ jsx17(MenuItem, { icon: s.icon, label: s.label, current: current === s.id, onPress: () => onSelect(s.id), itemProps: { ...dataOnly(s.hooks), ...movable("screens", s.id, screens.map((x) => x.id)) }, children: projectsScreen === s.id && projects.length > 0 && /* @__PURE__ */ jsx17(MenuList, { form: "nested", children: projectRows }) }, s.id))
+      screens.map((s) => isSep(s) ? /* @__PURE__ */ jsx17(MenuSeparator, { onRemove: onRemoveSeparator ? () => onRemoveSeparator(s.id) : void 0, removeLabel: L.removeSeparator, itemProps: { ...dataOnly(s.hooks), ...movable("screens", s.id, screens.map((x) => x.id)) } }, s.id) : /* @__PURE__ */ jsx17(MenuItem, { icon: s.icon, label: s.label, current: current === s.id, onPress: () => onSelect(s.id), itemProps: { ...dataOnly(s.hooks), ...movable("screens", s.id, screens.map((x) => x.id)) }, children: projectsScreen === s.id && projects.length > 0 && /* @__PURE__ */ jsx17(MenuList, { form: "nested", children: projectRows }) }, s.id))
     ] }),
+    gap && onAddSeparator && /* @__PURE__ */ jsx17("div", { className: "ad-insert ad-insert--row ad-menu__insert", style: { left: gap.x, top: gap.y, width: gap.w }, onPointerLeave: () => setGap(null), children: /* @__PURE__ */ jsx17("button", { type: "button", className: "ad-insert__mark", "aria-label": L.addSeparator, title: L.addSeparator, onClick: () => {
+      const g = gap;
+      setGap(null);
+      onAddSeparator(g.after);
+    }, children: /* @__PURE__ */ jsx17(Icon, { name: "plus", size: "sm" }) }) }),
     !nested && projects.length > 0 && /* @__PURE__ */ jsx17(MenuList, { children: projectRows }),
     views.length > 0 && /* @__PURE__ */ jsx17(MenuList, { children: views.map((v) => /* @__PURE__ */ jsx17(MenuItem, { icon: "star", label: v.label, current: current === v.id, onPress: () => onSelect(v.id), itemProps: dataOnly(v.hooks) }, v.id)) }),
     (foot.length > 0 || onSettings) && /* @__PURE__ */ jsxs14(MenuFoot, { children: [

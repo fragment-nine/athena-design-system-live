@@ -1921,6 +1921,16 @@ button:hover > .ad-project-pill:not(.ad-project-pill--current) { color: var(--ac
 /* A project's name in the menu is written in caps, whatever was typed (design-rules: Caps). */
 .ad-menu__label--project { text-transform: uppercase; }
 
+/* Adding a separator: the table's insert, coral line and +, on the gap between two screens (SideMenu onAddSeparator). */
+.ad-side.ad-menu-frame { position: relative; }
+.ad-menu__insert { pointer-events: auto; }
+/* Taking one out: an x at the separator's right while you point at it or reach it by keyboard. */
+.ad-menu__sep--removable { position: relative; }
+.ad-menu__sep-remove { position: absolute; right: 0; top: 50%; transform: translateY(-50%); display: inline-flex; align-items: center; justify-content: center; width: var(--h-btn-row); height: var(--h-btn-row); margin: 0; padding: 0; border: 0; border-radius: var(--radius-page); background: var(--bg-raised); color: var(--text-secondary); cursor: pointer; opacity: 0; }
+.ad-menu__sep--removable:hover .ad-menu__sep-remove, .ad-menu__sep-remove:focus-visible { opacity: 1; }
+.ad-menu__sep-remove:hover { color: var(--accent); }
+.ad-menu__sep-remove:focus-visible { outline: none; box-shadow: var(--ring-select); }
+
 /* src/components/PageHeader/PageHeader.css */
 /* PageHeader and Tabs */
 .ad-page-header { position: relative; }
