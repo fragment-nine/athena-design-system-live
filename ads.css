@@ -1139,13 +1139,15 @@ button.ad-year__day:focus-visible { outline: none; box-shadow: var(--ring-select
 /* Being made: the span a drag draws out is a coral box with the dark ink on it, as the main button, never a hatch (2026-11-07). */
 .ad-booking--creating { background: var(--accent); background-image: none; box-shadow: none; color: var(--on-accent); }
 .ad-booking--creating :is(.ad-booking__name, .ad-booking__time, .ad-booking__meta) { color: var(--on-accent); }
-/* The time grid's corner (headerEnd): at the right end of the last day's head, inside it, so it sticks with the heads at any scroll;
-   with no head to ride in, at the grid's top right. */
-.ad-time-grid__corner { display: flex; flex: none; align-items: center; margin-left: auto; }
-.ad-time-grid__marks + .ad-time-grid__corner { margin-left: var(--space-1); }
+/* The time grid's corner (headerEnd), on its own ground. A grid that scrolls inside: pinned in a frame round it, at the top right inside
+   the scroll bar. A grid that does not: anchored at the right of the last day's head (which sticks), over its words if the day is
+   narrow; with no head, at the grid's top right. */
+.ad-time-grid__corner { display: flex; align-items: center; position: absolute; top: 0; right: 0; z-index: 2; }
+.ad-time-grid__day-line > .ad-time-grid__corner { right: var(--space-2); }
 .ad-time-grid__head { position: relative; }
 .ad-time-grid:has(> .ad-time-grid__corner) { position: relative; }
-:is(.ad-time-grid__head, .ad-time-grid) > .ad-time-grid__corner { position: absolute; top: 0; right: 0; z-index: 2; }
+.ad-time-grid-frame { --ad-bar-w: 0px; position: relative; min-width: 0; }
+.ad-time-grid__corner--pinned { right: calc(var(--ad-bar-w) + var(--space-2)); z-index: calc(var(--z-sticky) + 1); }
 
 /* src/components/Card/Card.css */
 /* Card: a board tile, or a dashboard widget as the Dashboard card draws it (small caps title, More at the right in 600). */

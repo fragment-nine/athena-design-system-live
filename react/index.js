@@ -6047,6 +6047,20 @@ function scrollerAbove(el) {
 function TimeGrid({ headerEnd, startHour, endHour, bookings = [], columns, now, hourLabel = clockHour, onOpen, itemProps, columnProps, ariaLabel, bandHours, onPressAt, over, visibleHours, scrollTo, asideWidth = "narrow", hourHeight = "compact", bandHeading, allDayContent, todayLine, className }) {
   const hours = Math.max(1, endHour - startHour);
   const frame = useRef29(null);
+  const [barW, setBarW] = useState27(0);
+  useEffect15(() => {
+    const el = frame.current;
+    if (!el || !headerEnd || !visibleHours) return;
+    const read2 = () => {
+      const cs = getComputedStyle(el);
+      const w = el.offsetWidth - el.clientWidth - parseFloat(cs.borderLeftWidth) - parseFloat(cs.borderRightWidth);
+      setBarW((was) => was === w ? was : Math.max(0, w));
+    };
+    read2();
+    const ro = typeof ResizeObserver !== "undefined" ? new ResizeObserver(read2) : null;
+    ro?.observe(el);
+    return () => ro?.disconnect();
+  }, [headerEnd, visibleHours]);
   const [headH, setHeadH] = useState27(0);
   const [contentH, setContentH] = useState27(0);
   useLayoutEffect10(() => {
@@ -6161,11 +6175,12 @@ function TimeGrid({ headerEnd, startHour, endHour, bookings = [], columns, now, 
   const allDayRows = allDayCount;
   const anyBand = cols.some((c) => c.band);
   const headBand = !!bandHeading && anyBand;
+  const scrolls = !!visibleHours;
   const last = cols[cols.length - 1];
   const lastHeaded = !!last && (last.head != null || headBand || !!last.label);
-  const corner = headerEnd != null && lastHeaded ? /* @__PURE__ */ jsx45("span", { className: "ad-time-grid__corner", children: headerEnd }) : null;
-  return /* @__PURE__ */ jsxs42("div", { ref: frame, className: cx("ad-time-grid", !!visibleHours && "ad-time-grid--scrolls", `ad-time-grid--aside-${asideWidth}`, hourHeight === "roomy" && "ad-time-grid--roomy", className), role: "group", "aria-label": ariaLabel, tabIndex: visibleHours ? 0 : void 0, style: { ["--ad-hours"]: hours, ["--ad-allday-rows"]: allDayRows, ["--ad-column-count"]: cols.length, ["--ad-allday-content-h"]: `${contentH}px`, ...visibleHours ? { ["--ad-visible-hours"]: visibleHours } : {}, ...headH ? { ["--ad-head-h"]: `${headH}px` } : {} }, children: [
-    headerEnd != null && !lastHeaded && /* @__PURE__ */ jsx45("div", { className: "ad-time-grid__corner", children: headerEnd }),
+  const corner = headerEnd != null && !scrolls && lastHeaded ? /* @__PURE__ */ jsx45("span", { className: "ad-time-grid__corner", children: headerEnd }) : null;
+  const grid = /* @__PURE__ */ jsxs42("div", { ref: frame, className: cx("ad-time-grid", !!visibleHours && "ad-time-grid--scrolls", `ad-time-grid--aside-${asideWidth}`, hourHeight === "roomy" && "ad-time-grid--roomy", className), role: "group", "aria-label": ariaLabel, tabIndex: visibleHours ? 0 : void 0, style: { ["--ad-hours"]: hours, ["--ad-allday-rows"]: allDayRows, ["--ad-column-count"]: cols.length, ["--ad-allday-content-h"]: `${contentH}px`, ...visibleHours ? { ["--ad-visible-hours"]: visibleHours } : {}, ...headH ? { ["--ad-head-h"]: `${headH}px` } : {} }, children: [
+    headerEnd != null && !scrolls && !lastHeaded && /* @__PURE__ */ jsx45("div", { className: "ad-time-grid__corner", children: headerEnd }),
     /* @__PURE__ */ jsxs42("div", { className: "ad-time-grid__gutter", "aria-hidden": "true", children: [
       anyBand && !headBand && /* @__PURE__ */ jsx45("div", { className: "ad-time-grid__band-space" }),
       allDayContent != null && /* @__PURE__ */ jsx45("div", { className: "ad-time-grid__content-space" }),
@@ -6228,6 +6243,11 @@ function TimeGrid({ headerEnd, startHour, endHour, bookings = [], columns, now, 
         c.bookings.map(({ id, start, end, ...b }) => /* @__PURE__ */ jsx45("div", { className: "ad-time-grid__slot", style: { top: at(start), height: `calc(${at(end)} - ${at(start)})` }, children: /* @__PURE__ */ jsx45(Booking, { ...b, style: { height: "100%" } }) }, id))
       ] })
     ] }, c.id))
+  ] });
+  if (headerEnd == null || !scrolls) return grid;
+  return /* @__PURE__ */ jsxs42("div", { className: "ad-time-grid-frame", style: { ["--ad-bar-w"]: `${barW}px` }, children: [
+    grid,
+    /* @__PURE__ */ jsx45("div", { className: "ad-time-grid__corner ad-time-grid__corner--pinned", children: headerEnd })
   ] });
 }
 function DayCell({ day, today, where, whereLabel, away, travel, letter, dayProps }) {
