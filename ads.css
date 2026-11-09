@@ -1874,13 +1874,15 @@ button:hover > .ad-project-pill:not(.ad-project-pill--current) { color: var(--ac
 .ad-page-list { --ad-page-list-in: calc((var(--w-rail) - var(--icon-lg)) / 2); flex: none; gap: var(--space-4); overflow-y: auto; }
 .ad-page-list__head { display: flex; flex-direction: column; gap: var(--space-1); padding-left: var(--ad-page-list-in); }
 .ad-page-list__eyebrow { font: var(--type-heading); text-transform: uppercase; color: var(--text-muted); }
-.ad-page-list__title { font: var(--type-title); color: var(--text-primary); overflow-wrap: anywhere; }
+.ad-page-list__title { font: var(--type-title); text-transform: uppercase; color: var(--text-primary); overflow-wrap: anywhere; }
 .ad-page-list__sub { margin-top: calc(var(--space-1) * -1); font: var(--type-detail); color: var(--text-muted); overflow-wrap: anywhere; }
 .ad-page-list__state { display: flex; align-items: center; min-height: var(--h-btn); }
 .ad-page-list__group > .ad-group-heading { padding-left: var(--ad-page-list-in); }
 /* A separator the person placed among the screens: a short hairline with room above and below, grabbed like any row. */
 .ad-menu__sep { list-style: none; display: flex; align-items: center; height: var(--space-3); cursor: grab; }
 .ad-menu__sep::before { content: ''; flex: 1; height: var(--border-w); margin: 0 var(--space-2); background: var(--border); }
+/* A project's name in the menu is written in caps, whatever was typed (design-rules: Caps). */
+.ad-menu__label--project { text-transform: uppercase; }
 
 /* src/components/PageHeader/PageHeader.css */
 /* PageHeader and Tabs */
