@@ -3990,6 +3990,39 @@ function PickField({ options, value, onPick, label, placeholder, header, icon, s
     list
   ] });
 }
+function FieldPopover({ label, words, placeholder, icon, title, children, width = "card", disabled, className }) {
+  const [open, setOpen] = useState15(false);
+  const anchor = useRef16(null);
+  const close = () => {
+    setOpen(false);
+    anchor.current?.focus({ preventScroll: true });
+  };
+  const empty = words == null || words === "" || words === false;
+  return /* @__PURE__ */ jsxs24(Fragment13, { children: [
+    /* @__PURE__ */ jsxs24(
+      "button",
+      {
+        ref: anchor,
+        type: "button",
+        "aria-label": label,
+        "aria-haspopup": "dialog",
+        "aria-expanded": open,
+        disabled,
+        onClick: () => setOpen((o) => !o),
+        className: cx("ad-field", "ad-pick-field", "ad-field-popover", disabled && "ad-field--disabled", className),
+        children: [
+          icon && /* @__PURE__ */ jsx27(Icon, { job: icon, size: "md", className: "ad-pick-field__icon" }),
+          /* @__PURE__ */ jsx27("span", { className: cx("ad-pick-field__words", "ad-clamp-line", empty && "ad-pick-field__words--empty"), children: empty ? placeholder ?? label : words }),
+          /* @__PURE__ */ jsx27(Icon, { name: "caret-down", className: "ad-pick-field__caret ad-glyph-quiet" })
+        ]
+      }
+    ),
+    /* @__PURE__ */ jsxs24(Popover, { open, onClose: close, anchor, placement: "drop", width, ariaLabel: title == null ? label : void 0, children: [
+      title != null && /* @__PURE__ */ jsx27(PopoverHeader, { title }),
+      typeof children === "function" ? children(close) : children
+    ] })
+  ] });
+}
 
 // src/components/Pickers/DatePicker.tsx
 import { useEffect as useEffect11, useId as useId10, useMemo as useMemo2, useRef as useRef17, useState as useState16 } from "react";
@@ -7077,6 +7110,7 @@ export {
   EmptyState,
   Fact,
   Facts,
+  FieldPopover,
   FieldRow,
   Figures,
   FileButton,
