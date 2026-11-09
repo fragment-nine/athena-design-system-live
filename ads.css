@@ -1051,7 +1051,7 @@ button.ad-year__day:focus-visible { outline: none; box-shadow: var(--ring-select
 .ad-day-cell__letter { font: var(--type-heading); text-transform: uppercase; color: var(--text-secondary); }
 .ad-day-cell__number { display: inline-flex; align-items: center; justify-content: center; width: var(--h-btn); height: var(--h-btn); border-radius: var(--radius-page); font: var(--type-data); font-size: var(--text-base); color: var(--text-primary); }
 /* Today: the 2px white ring round the day's cell, square as every day grid draws it. */
-.ad-day-cell--today { box-shadow: var(--ring-today); }
+.ad-day-cell--today { background: var(--bg-raised); }
 .ad-day-cell--weekend .ad-day-cell__letter, .ad-day-cell--weekend .ad-day-cell__number { color: var(--text-muted); }
 .ad-day-cell__where { align-self: stretch; height: var(--space-2); border-radius: var(--radius-page); background: var(--ad-where); }
 .ad-day-cell--away .ad-day-cell__where { background: var(--hatch-away), var(--ad-where); }
