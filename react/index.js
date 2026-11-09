@@ -1719,7 +1719,7 @@ var IconButton = forwardRef(function IconButton2({ label, active, danger, classN
 });
 
 // src/components/Field/Field.tsx
-import { forwardRef as forwardRef2, useEffect as useEffect4, useId as useId3, useRef as useRef5, useState as useState5 } from "react";
+import { forwardRef as forwardRef2, isValidElement as isValidElement2, useEffect as useEffect4, useId as useId3, useRef as useRef5, useState as useState5 } from "react";
 
 // src/components/GroupHeading/GroupHeading.tsx
 import { useId as useId2 } from "react";
@@ -1919,10 +1919,12 @@ function FormSection({ number, title, children, error, className, done, summary,
     error != null && /* @__PURE__ */ jsx9("p", { id: errorId, className: "ad-field__error ad-form-section__error", children: error })
   ] });
 }
+var isTools = (x) => Array.isArray(x) && x.length > 0 && x.every((t) => t != null && typeof t === "object" && !isValidElement2(t) && "onSelect" in t);
+var destroyIcon = (d) => d.icon ?? (/delete|remove|forever|bin|trash/i.test(d.label) ? "trash" : "archive");
 function FormActions({ main, onCancel, cancelLabel = "Cancel", destroy, extras }) {
   return /* @__PURE__ */ jsxs7("div", { className: "ad-form-actions", children: [
-    destroy && /* @__PURE__ */ jsx9("span", { className: "ad-form-actions__destroy", children: /* @__PURE__ */ jsx9(Button, { onClick: destroy.onSelect, children: destroy.label }) }),
-    extras != null && /* @__PURE__ */ jsx9("span", { className: "ad-form-actions__extras", children: extras }),
+    destroy && /* @__PURE__ */ jsx9("span", { className: "ad-form-actions__destroy", children: /* @__PURE__ */ jsx9(IconButton, { label: destroy.label, onClick: destroy.onSelect, children: slotIcon(destroyIcon(destroy), { size: "md" }) }) }),
+    isTools(extras) ? /* @__PURE__ */ jsx9("span", { className: "ad-form-actions__extras", children: extras.map((t) => /* @__PURE__ */ jsx9(IconButton, { label: t.label, onClick: t.onSelect, children: slotIcon(t.icon, { size: "md" }) }, t.label)) }) : extras != null && extras !== false && /* @__PURE__ */ jsx9("span", { className: "ad-form-actions__extras", children: extras }),
     onCancel && /* @__PURE__ */ jsx9(Button, { onClick: onCancel, children: cancelLabel }),
     main && /* @__PURE__ */ jsx9(Button, { ...main.attrs, variant: "main", type: main.onSelect ? "button" : "submit", onClick: main.onSelect, unavailable: main.unavailable, children: String(main.label) })
   ] });
@@ -3799,7 +3801,7 @@ function PickList({ options, value, onPick, searchLabel, noMatch = "Nothing matc
 }
 
 // src/components/Pickers/Pickers.tsx
-import { cloneElement as cloneElement2, isValidElement as isValidElement2, useRef as useRef16, useState as useState15 } from "react";
+import { cloneElement as cloneElement2, isValidElement as isValidElement3, useRef as useRef16, useState as useState15 } from "react";
 import { Fragment as Fragment13, jsx as jsx27, jsxs as jsxs24 } from "react/jsx-runtime";
 function PersonPicker({ people, none, open, anchor, onClose, header, ...rest }) {
   const list = /* @__PURE__ */ jsx27(PickList, { ...rest, options: [...none ? [{ id: none.id, label: none.label, lead: /* @__PURE__ */ jsx27(Icon, { job: "user", size: "sm" }) }] : [], ...people.map((p) => ({ id: p.id, label: p.name, keywords: p.email, hint: p.hint, lead: /* @__PURE__ */ jsx27(Avatar, { name: p.name, initials: p.initials, src: p.src }) }))] });
@@ -3931,7 +3933,7 @@ function PickField({ options, value, onPick, label, placeholder, header, icon, s
       } }) }) })
     ] });
   }
-  if (trigger && isValidElement2(trigger)) {
+  if (trigger && isValidElement3(trigger)) {
     const own = trigger;
     return /* @__PURE__ */ jsxs24(Fragment13, { children: [
       /* @__PURE__ */ jsx27(
