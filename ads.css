@@ -2718,8 +2718,7 @@ button.ad-bar { cursor: pointer; }
 .ad-milestone { display: inline-flex; align-items: center; gap: var(--space-2); margin: 0; padding: 0; border: 0; background: transparent; font: var(--type-name); color: var(--text-primary); white-space: nowrap; }
 button.ad-milestone { cursor: pointer; }
 button.ad-milestone:hover .ad-milestone__label { color: var(--accent); }
-/* Milestones share one lane: where two names would touch, the later one is drawn over the earlier on its
- lane's ground, and the covered name reads on hover (the hovered milestone rises). */
+/* A milestone sits on its lane's ground (each has its own row, as a phase does); the hovered one rises over anything beside it. */
 .ad-milestone { background: var(--ad-lane-ground, transparent); padding-right: var(--space-1); }
 .ad-milestone:hover { position: relative; z-index: 2; }
 button.ad-milestone:focus-visible { outline: none; box-shadow: var(--ring-select); border-radius: var(--radius-page); }
