@@ -4935,11 +4935,12 @@ function AlertBarHead({ open, onToggle, label = "Alerts", counts, pillLabel = (p
 function AlertList({ children, id, hidden, ariaLabel, listProps }) {
   return /* @__PURE__ */ jsx37("div", { ...strip3(listProps), id, hidden, role: "list", "aria-label": ariaLabel, children });
 }
-function AlertRow({ priority, priorityLabel = `Priority ${priority}`, sentence, number, actions, onSnooze, snoozeLabel = "Snooze", onDismiss, dismissLabel = "Dismiss", end, children, rowProps, muted }) {
+function AlertRow({ priority, priorityLabel = `Priority ${priority}`, sentence, number, actions, onSnooze, snoozeLabel = "Snooze", onDismiss, dismissLabel = "Dismiss", end, details, children, rowProps, muted }) {
   const line = /* @__PURE__ */ jsxs34(Fragment17, { children: [
     /* @__PURE__ */ jsx37(CountPill, { priority, label: priorityLabel }),
     /* @__PURE__ */ jsx37("span", { className: "ad-alert__sentence", children: sentence }),
     number != null && number !== "" && /* @__PURE__ */ jsx37("span", { className: "ad-alert__number ad-note-data", children: number }),
+    details && /* @__PURE__ */ jsx37("span", { className: "ad-alert__number", children: /* @__PURE__ */ jsx37(ButtonSizeScope, { size: "row", children: /* @__PURE__ */ jsx37(IconButton, { ...strip3(details.hooks), label: details.open ? details.hideLabel ?? "Hide details" : details.showLabel ?? "Show details", "aria-expanded": details.open, "aria-controls": details.controls, onClick: details.onToggle, children: /* @__PURE__ */ jsx37(Icon, { job: "info", fill: details.open }) }) }) }),
     /* @__PURE__ */ jsx37("span", { className: "ad-alert__actions", children: /* @__PURE__ */ jsxs34(ButtonSizeScope, { size: "row", children: [
       actions,
       onSnooze && /* @__PURE__ */ jsx37(IconButton, { label: snoozeLabel, onClick: onSnooze, children: /* @__PURE__ */ jsx37(Icon, { job: "snooze" }) }),
@@ -6902,8 +6903,8 @@ function FrameToolbar({ children }) {
 function FrameKey({ children }) {
   return /* @__PURE__ */ jsx54("div", { className: "ad-frame__key", children });
 }
-function FrameWork({ children }) {
-  return /* @__PURE__ */ jsx54("div", { className: "ad-frame__work", children });
+function FrameWork({ scroll, children }) {
+  return /* @__PURE__ */ jsx54("div", { className: scroll ? "ad-frame__work ad-frame__work--scroll" : "ad-frame__work", children });
 }
 function CloudGlow() {
   return /* @__PURE__ */ jsx54("div", { className: "ad-cloud-glow", "aria-hidden": "true", children: /* @__PURE__ */ jsx54("div", { className: "ad-cloud-glow__drift" }) });
