@@ -2153,8 +2153,10 @@ button.ad-steps__press:focus-visible { outline: none; box-shadow: var(--ring-sel
 .ad-popover__section-body[hidden] { display: none; }
 .ad-popover__section-head { display: flex; align-items: center; gap: var(--space-1); margin-bottom: var(--space-2); }
 .ad-popover__section-end { margin-left: auto; display: inline-flex; align-items: center; }
-/* With a foot: the body scrolls and the foot stays pinned under it, a hairline above. */
-.ad-popover--with-foot { display: flex; flex-direction: column; overflow: hidden; padding-bottom: 0; }
+/* Framed (a header, a rail or a foot): the body scrolls between them. With a foot, the foot stays pinned under it, a hairline above,
+   and carries the card's bottom padding itself; with none, the body keeps the card's 16 under its last row. */
+.ad-popover--framed { display: flex; flex-direction: column; overflow: hidden; }
+.ad-popover--with-foot { padding-bottom: 0; }
 .ad-popover__body { flex: 1; min-height: 0; overflow-x: hidden; overflow-y: auto; scrollbar-gutter: stable; }
 .ad-popover__foot { flex: none; display: flex; align-items: center; gap: var(--space-2); margin: var(--space-3) calc(var(--space-4) * -1) 0; padding: var(--space-3) var(--space-4); border-top: var(--border-w) solid var(--border); }
 .ad-popover__action { margin-left: auto; display: inline-flex; }

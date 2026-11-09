@@ -3224,7 +3224,7 @@ function PopoverCard({ onClose, width = "card", ariaLabel, noClose, closeLabel, 
       "aria-labelledby": ariaLabel ? void 0 : titleId,
       tabIndex: -1,
       style: pos,
-      className: cx("ad-float", "ad-popover", `ad-popover--${width}`, framed && "ad-popover--with-foot", rail != null && "ad-popover--rail", sheet && "ad-popover--sheet", className),
+      className: cx("ad-float", "ad-popover", `ad-popover--${width}`, framed && "ad-popover--framed", foot != null && "ad-popover--with-foot", rail != null && "ad-popover--rail", sheet && "ad-popover--sheet", className),
       children: [
         !noClose && /* @__PURE__ */ jsx23(CloseButton, { onClose, label: closeLabel }),
         /* @__PURE__ */ jsx23(TitleId.Provider, { value: titleId, children: !framed ? children : /* @__PURE__ */ jsxs20(Fragment9, { children: [
