@@ -268,6 +268,8 @@ function usePlacement(open, anchor, floating, placement, within) {
     const footer = placement === "side" || placement === "over" || placement === "drop" ? (doc ?? document).querySelector(".ad-footer")?.getBoundingClientRect() : void 0;
     const footerTop = footer && footer.height > 0 && footer.top > vh / 2 && footer.top < vh ? footer.top : vh;
     const floor = placement === "drop" && a && a.bottom > footerTop ? vh : footerTop;
+    const header = (placement === "side" || placement === "over") && a ? (doc ?? document).querySelector(".ad-page-header")?.getBoundingClientRect() : void 0;
+    const ceiling = header && header.height > 0 && header.bottom < vh / 2 && a && a.top >= header.bottom ? header.bottom + edge : edge;
     let top;
     let left;
     if (placement === "foot" && room) {
@@ -290,7 +292,7 @@ function usePlacement(open, anchor, floating, placement, within) {
       if (left + fw > vw - edge) left = a.right - fw;
       if (top + fh > floor - edge && a.top - gap - fh >= edge) top = a.top - gap - fh;
     }
-    const placedTop = Math.round(Math.max(edge, top));
+    const placedTop = Math.round(Math.max(ceiling, top));
     const next = { top: placedTop, left: Math.round(Math.max(edge, left)), maxHeight: Math.max(0, Math.round(floor - placedTop - edge)) };
     setPos((p) => p && p.top === next.top && p.left === next.left && p.maxHeight === next.maxHeight ? p : next);
   };
@@ -473,6 +475,32 @@ function tokenMs(name, fallback) {
   const n = parseFloat(raw);
   if (!Number.isFinite(n)) return fallback;
   return raw.endsWith("ms") ? n : n * 1e3;
+}
+function useScrollFade(ref) {
+  useEffect2(() => {
+    const el = ref.current;
+    if (!el) return;
+    const mark = () => {
+      const below = el.scrollHeight - el.clientHeight - el.scrollTop > 1;
+      const above = el.scrollTop > 1;
+      if (below) el.setAttribute("data-more-below", "");
+      else el.removeAttribute("data-more-below");
+      if (above) el.setAttribute("data-more-above", "");
+      else el.removeAttribute("data-more-above");
+    };
+    mark();
+    el.addEventListener("scroll", mark, { passive: true });
+    const ro = typeof ResizeObserver !== "undefined" ? new ResizeObserver(mark) : null;
+    ro?.observe(el);
+    for (const c of Array.from(el.children)) ro?.observe(c);
+    const mo = typeof MutationObserver !== "undefined" ? new MutationObserver(mark) : null;
+    mo?.observe(el, { childList: true, subtree: true });
+    return () => {
+      el.removeEventListener("scroll", mark);
+      ro?.disconnect();
+      mo?.disconnect();
+    };
+  });
 }
 
 // src/components/Tooltip/Tooltip.tsx
@@ -3255,6 +3283,7 @@ function PopoverCard({ onClose, width = "card", ariaLabel, noClose, closeLabel, 
 function Body({ rail, children }) {
   const ref = useRef12(null);
   useKeyScroll(ref);
+  useScrollFade(ref);
   return /* @__PURE__ */ jsx23("div", { ref, className: cx("ad-popover__body", rail && "ad-popover__rail"), children });
 }
 function PopoverHeader({ eyebrow, title, chip, lead, description, onRename, renameLabel, action, read: read2, suggestions }) {
@@ -3399,6 +3428,9 @@ import { useId as useId7, useRef as useRef13 } from "react";
 import { Fragment as Fragment10, jsx as jsx24, jsxs as jsxs21 } from "react/jsx-runtime";
 var hooksOf = (a) => Object.fromEntries(Object.entries(a).filter(([k]) => k.startsWith("data-")));
 function Dialog({ open, onClose, title, children, body, actions, role = "dialog", width = "dialog", closeLabel, blur, className }) {
+  const rich = useRef13(null);
+  useScrollFade(rich);
+  useKeyScroll(rich);
   const box = useRef13(null);
   const titleId = useId7();
   const bodyId = useId7();
@@ -3424,7 +3456,7 @@ function Dialog({ open, onClose, title, children, body, actions, role = "dialog"
           /* @__PURE__ */ jsx24(CloseButton, { onClose, label: closeLabel }),
           /* @__PURE__ */ jsx24("h2", { id: titleId, className: "ad-dialog__title", children: String(title) }),
           children && /* @__PURE__ */ jsx24("div", { id: bodyId, className: "ad-dialog__body", children: String(children) }),
-          body != null && /* @__PURE__ */ jsx24("div", { className: "ad-dialog__rich", children: body }),
+          body != null && /* @__PURE__ */ jsx24("div", { ref: rich, className: "ad-dialog__rich", children: body }),
           Array.isArray(actions) && actions.length > 0 && (() => {
             const shown = [...actions.filter((a) => !a.main), ...actions.filter((a) => a.main).slice(0, 1)];
             const reasons = shown.filter((a) => a.disabled && a.disabledReason).map((a) => a.disabledReason);
@@ -3685,6 +3717,7 @@ function PickList({ options, value, onPick, searchLabel, noMatch = "Nothing matc
   const [at, setAt] = useState14(start);
   const cur = live[Math.min(at, live.length - 1)];
   const listRef = useRef15(null);
+  useScrollFade(listRef);
   const layerRef = useRef15(null);
   const [hover, setHover] = useState14(null);
   const optId = (o) => `${listId}-${o.id}`;
@@ -4937,7 +4970,7 @@ function ShowSwitch({ setting: s }) {
 import { forwardRef as forwardRef10, useId as useId13, useRef as useRef24, useState as useState24 } from "react";
 import { Fragment as Fragment17, jsx as jsx37, jsxs as jsxs34 } from "react/jsx-runtime";
 function AlertsFloat({ open, onClose, anchor, ariaLabel = "Alerts", id, children }) {
-  return /* @__PURE__ */ jsx37(Popover, { open, onClose, anchor, placement: "drop", width: "wide", ariaLabel, noClose: true, id, className: "ad-alerts-float", children: /* @__PURE__ */ jsx37("div", { role: "list", "aria-label": ariaLabel, children }) });
+  return /* @__PURE__ */ jsx37(Popover, { open, onClose, anchor, placement: "drop", width: "wide", ariaLabel, noClose: true, id, className: "ad-alerts-float", children: /* @__PURE__ */ jsx37("div", { role: "list", "aria-label": ariaLabel, className: "ad-alert-list", children }) });
 }
 function AlertsLine({ alerts, label = "Alerts", snoozeLabel = "Snooze", pillLabel = (p, n) => `${n} priority ${p}`, priorityLabel = (p) => `Priority ${p}`, defaultOpen = false, open, onOpenChange, className }) {
   const [own, setOwn] = useState24(defaultOpen);
@@ -4981,20 +5014,26 @@ function AlertBarHead({ open, onToggle, label = "Alerts", counts, pillLabel = (p
   ] });
 }
 function AlertList({ children, id, hidden, ariaLabel, listProps }) {
-  return /* @__PURE__ */ jsx37("div", { ...strip3(listProps), id, hidden, role: "list", "aria-label": ariaLabel, children });
+  return /* @__PURE__ */ jsx37("div", { ...strip3(listProps), id, hidden, role: "list", "aria-label": ariaLabel, className: "ad-alert-list", children });
 }
-function AlertRow({ priority, priorityLabel = `Priority ${priority}`, sentence, number, actions, onSnooze, snoozeLabel = "Snooze", onDismiss, dismissLabel = "Dismiss", end, details, children, rowProps, muted }) {
+function AlertRow({ priority, priorityLabel = `Priority ${priority}`, sentence, number, actions, go, onSnooze, snoozeLabel = "Snooze", onDismiss, dismissLabel = "Dismiss", end, details, children, rowProps, muted }) {
   const line = /* @__PURE__ */ jsxs34(Fragment17, { children: [
     /* @__PURE__ */ jsx37(CountPill, { priority, label: priorityLabel }),
     /* @__PURE__ */ jsx37("span", { className: "ad-alert__sentence", children: sentence }),
-    number != null && number !== "" && /* @__PURE__ */ jsx37("span", { className: "ad-alert__number ad-note-data", children: number }),
-    details && /* @__PURE__ */ jsx37("span", { className: "ad-alert__number", children: /* @__PURE__ */ jsx37(ButtonSizeScope, { size: "row", children: /* @__PURE__ */ jsx37(IconButton, { ...strip3(details.hooks), label: details.open ? details.hideLabel ?? "Hide details" : details.showLabel ?? "Show details", "aria-expanded": details.open, "aria-controls": details.controls, onClick: details.onToggle, children: /* @__PURE__ */ jsx37(Icon, { job: "info", fill: details.open }) }) }) }),
+    /* @__PURE__ */ jsxs34("span", { className: "ad-alert__info", children: [
+      number != null && number !== "" && /* @__PURE__ */ jsx37("span", { className: "ad-alert__number ad-note-data", children: number }),
+      details && /* @__PURE__ */ jsx37(ButtonSizeScope, { size: "row", children: /* @__PURE__ */ jsx37(IconButton, { ...strip3(details.hooks), label: details.open ? details.hideLabel ?? "Hide details" : details.showLabel ?? "Show details", "aria-expanded": details.open, "aria-controls": details.controls, onClick: details.onToggle, children: /* @__PURE__ */ jsx37(Icon, { job: "info", fill: details.open }) }) })
+    ] }),
     /* @__PURE__ */ jsx37("span", { className: "ad-alert__actions", children: /* @__PURE__ */ jsxs34(ButtonSizeScope, { size: "row", children: [
       actions,
-      onSnooze && /* @__PURE__ */ jsx37(IconButton, { label: snoozeLabel, onClick: onSnooze, children: /* @__PURE__ */ jsx37(Icon, { job: "snooze" }) }),
-      onDismiss && /* @__PURE__ */ jsx37(IconButton, { label: dismissLabel, onClick: onDismiss, children: /* @__PURE__ */ jsx37(Icon, { job: "x" }) }),
-      end != null && /* @__PURE__ */ jsx37("span", { className: "ad-alert__end", children: end })
-    ] }) })
+      go && /* @__PURE__ */ jsxs34(Button, { onClick: go.onSelect, children: [
+        go.label,
+        /* @__PURE__ */ jsx37(Icon, { job: "chevron-right", size: "sm" })
+      ] })
+    ] }) }),
+    /* @__PURE__ */ jsx37("span", { className: "ad-alert__snooze", children: onSnooze && /* @__PURE__ */ jsx37(ButtonSizeScope, { size: "row", children: /* @__PURE__ */ jsx37(IconButton, { label: snoozeLabel, onClick: onSnooze, children: /* @__PURE__ */ jsx37(Icon, { job: "snooze" }) }) }) }),
+    /* @__PURE__ */ jsx37("span", { className: "ad-alert__dismiss", children: onDismiss && /* @__PURE__ */ jsx37(ButtonSizeScope, { size: "row", children: /* @__PURE__ */ jsx37(IconButton, { label: dismissLabel, onClick: onDismiss, children: /* @__PURE__ */ jsx37(Icon, { job: "x" }) }) }) }),
+    /* @__PURE__ */ jsx37("span", { className: "ad-alert__end", children: end != null && /* @__PURE__ */ jsx37(ButtonSizeScope, { size: "row", children: end }) })
   ] });
   const look = cx("ad-alert", muted && "ad-alert--muted");
   if (children == null || children === false) return /* @__PURE__ */ jsx37("div", { ...strip3(rowProps), role: "listitem", className: look, children: line });

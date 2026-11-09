@@ -813,6 +813,10 @@ tr[data-ad-drop="after"] > :is(td, th) { box-shadow: inset 0 calc(var(--bw-selec
 .ad-float:focus { outline: none; }
 @keyframes ad-fade-in { from { opacity: 0; } to { opacity: 1; } }
 @media (prefers-reduced-motion: reduce) { .ad-float { animation: none; } }
+/* A part that scrolls fades its edge while there is more beyond it (useScrollFade), so a cut last row reads as "scroll", never as clipped. */
+[data-more-below] { -webkit-mask-image: linear-gradient(to bottom, var(--bg-base) calc(100% - var(--space-6)), transparent); mask-image: linear-gradient(to bottom, var(--bg-base) calc(100% - var(--space-6)), transparent); }
+[data-more-above] { -webkit-mask-image: linear-gradient(to top, var(--bg-base) calc(100% - var(--space-6)), transparent); mask-image: linear-gradient(to top, var(--bg-base) calc(100% - var(--space-6)), transparent); }
+[data-more-above][data-more-below] { -webkit-mask-image: linear-gradient(to bottom, transparent, var(--bg-base) var(--space-6), var(--bg-base) calc(100% - var(--space-6)), transparent); mask-image: linear-gradient(to bottom, transparent, var(--bg-base) var(--space-6), var(--bg-base) calc(100% - var(--space-6)), transparent); }
 .ad-close {
   position: absolute; top: var(--space-3); right: var(--space-3);
   display: inline-flex; align-items: center; justify-content: center; width: var(--h-close); height: var(--h-close);
@@ -2008,8 +2012,11 @@ button.ad-steps__press:focus-visible { outline: none; box-shadow: var(--ring-sel
 /* src/components/Pickers/Pickers.css */
 /* PickList and DatePicker */
 .ad-picklist { width: var(--w-menu); }
+/* Inside a floating box (a pick field's drop, a pop-over), the list takes the box's width: its rows, their highlight and their
+   cut words end at the box's padding, never past it and never short of it. */
+:is(.ad-float, .ad-popover) .ad-picklist { width: auto; }
 /* Dates at a row's right: the list and its card grow to hold them, so nothing reaches the edge or sticks out. */
-.ad-picklist:has(.ad-picklist__hint .ad-item-dates) { width: max-content; min-width: var(--w-menu); max-width: var(--w-card); }
+.ad-picklist:has(.ad-picklist__hint .ad-item-dates), .ad-pick-field__list:has(.ad-picklist__hint .ad-item-dates) { width: max-content; min-width: var(--w-menu); max-width: var(--w-card); }
 .ad-picklist__hint { flex: none; }
 .ad-picklist__search {
   display: flex; align-items: center; gap: var(--space-2); height: var(--h-btn); padding: 0 var(--space-2); margin-bottom: var(--space-2);
@@ -2155,7 +2162,14 @@ button.ad-steps__press:focus-visible { outline: none; box-shadow: var(--ring-sel
 .ad-facts__icon svg { width: var(--icon-sm); height: var(--icon-sm); }
 /* 16 between the title, the fields and each section. */
 .ad-popover__section { margin-top: var(--space-4); }
-.ad-popover__section:first-child { margin-top: 0; }
+.ad-popover__section:first-child, .ad-close + .ad-popover__section:not(:has(> .ad-popover__section-head .ad-popover__section-end)) { margin-top: 0; }
+/* A section's head beside the card's X sits on the X's line (the X is placed, not in the flow). */
+.ad-close + .ad-popover__section > .ad-popover__section-head:not(:has(.ad-popover__section-end)) { min-height: var(--h-close); margin-top: calc(var(--space-3) - var(--space-4)); padding-right: var(--h-close); }
+/* Settings rows in a card (the header gear): menu-size words in the primary ink, rows a row tall, a hairline between and no other gap. */
+.ad-popover .ad-setting .ad-field-row__label { font: var(--type-name); color: var(--text-primary); }
+.ad-popover__section-body:has(> .ad-setting) { gap: 0; }
+.ad-popover__section-body > .ad-setting + .ad-setting { padding-top: 0; border-top: 0; }
+.ad-popover__section-body > .ad-setting:not(:last-child) { border-bottom: var(--border-w) solid var(--border); }
 /* 8 inside the section. */
 .ad-popover__section-body { display: flex; flex-direction: column; gap: var(--space-2); min-width: 0; }
 .ad-popover__section-body[hidden] { display: none; }
@@ -2938,10 +2952,19 @@ button.ad-milestone:focus-visible { outline: none; box-shadow: var(--ring-select
 .ad-count-pill--p2 { background: var(--priority-p2); }
 .ad-count-pill--p3 { background: var(--priority-p3); }
 .ad-count-pill--p4 { background: var(--priority-p4); }
-.ad-alert { display: flex; align-items: center; gap: var(--space-3); min-height: var(--h-row); padding: 0 var(--space-3); border-top: var(--border-w) solid var(--border); }
+/* One alert, in fixed columns: the pill, the sentence (taking the room), the number and the details' i, the action, Snooze, Dismiss,
+   the app's mark. In a list every row shares the list's columns (subgrid), so each column starts at the same x on every row; an empty
+   column takes no room and no gap (a cell's gap is its own left margin, only while it holds something). */
+.ad-alert { display: grid; grid-template-columns: auto minmax(0, 1fr) repeat(5, auto); align-items: center; min-height: var(--h-row); padding: 0 var(--space-3); border-top: var(--border-w) solid var(--border); }
+.ad-alert > * + *:not(:empty) { margin-left: var(--space-3); }
+.ad-alert > :is(.ad-alert__snooze, .ad-alert__dismiss):not(:empty) { margin-left: var(--space-1); }
+.ad-alert__info, .ad-alert__actions, .ad-alert__snooze, .ad-alert__dismiss { display: flex; align-items: center; gap: var(--space-2); justify-self: start; }
+.ad-alert__actions .ad-button { gap: var(--space-1); }
+.ad-alert-list { display: grid; grid-template-columns: auto minmax(0, 1fr) repeat(5, auto); }
+.ad-alert-list > :is(.ad-alert, .ad-alert-item), .ad-alert-item > .ad-alert, .ad-alert-item > .ad-alert__under { grid-column: 1 / -1; }
+.ad-alert-list > .ad-alert, .ad-alert-list > .ad-alert-item, .ad-alert-list > .ad-alert-item > .ad-alert { display: grid; grid-template-columns: subgrid; }
 .ad-alert__sentence { min-width: 0; line-height: var(--lh-tight); color: var(--text-primary); }
 .ad-alert__number { color: var(--text-secondary); }
-.ad-alert__actions { display: flex; gap: var(--space-2); flex: none; margin-left: auto; }
 .ad-bell { position: relative; }
 .ad-bell svg { width: var(--icon-lg); height: var(--icon-lg); }
 .ad-bell[data-unread]::after { content: ""; position: absolute; top: var(--space-2); right: var(--space-2); width: var(--dot-size); height: var(--dot-size); border-radius: var(--radius-round); background: var(--text-primary); box-shadow: 0 0 0 var(--bw-select) var(--bg-base); }
@@ -2960,7 +2983,7 @@ button.ad-notification:focus-visible { outline: none; box-shadow: var(--ring-sel
 .ad-notification__unread, .ad-notification__read { flex: none; width: var(--dot-size); height: var(--dot-size); margin-top: var(--space-2); border-radius: var(--radius-round); }
 .ad-notification__unread { background: var(--text-primary); }
 /* The alert bar's pieces: the row's end (the app's project mark, its dismiss) and what opens under a row, lined up with the sentence. */
-.ad-alert__end { display: flex; align-items: center; gap: var(--space-2); }
+.ad-alert__end { display: flex; align-items: center; gap: var(--space-2); justify-self: end; }
 .ad-alert__under { padding: 0 var(--space-3) var(--space-2) calc(var(--space-3) * 2 + var(--space-8)); }
 /* A snoozed alert, dimmed: the pill, the sentence and the number in the muted ink; its buttons are untouched and
  stay pressable (an opacity would make them read as off). */
