@@ -2227,6 +2227,12 @@ button.ad-steps__press:focus-visible { outline: none; box-shadow: var(--ring-sel
 .ad-popover .ad-field-row { border-bottom: 0; }
 .ad-popover__section-body > * + *:not(.ad-view__reason), .ad-popover > .ad-field-row + .ad-field-row, .ad-popover__body > .ad-field-row + .ad-field-row { border-top: var(--border-w) solid var(--border); padding-top: var(--space-2); }
 
+/* A list's last row (or its add row) at the end of a card's section, body or card draws no line under it: the next section's line, or
+   the foot's, is the one divider (never two lines 16 apart). Up to two wrappers deep, as an app's list sits in one. */
+:is(.ad-popover__section-body, .ad-popover__body, .ad-popover) > :is(.ad-row, .ad-add-row):last-child,
+:is(.ad-popover__section-body, .ad-popover__body, .ad-popover) > :last-child > :is(.ad-row, .ad-add-row):last-child,
+:is(.ad-popover__section-body, .ad-popover__body, .ad-popover) > :last-child > :last-child > :is(.ad-row, .ad-add-row):last-child { border-bottom: 0; }
+
 /* src/components/Row/Row.css */
 /* Row, RowDate, TodoCheck */
 .ad-row { position: relative; display: flex; align-items: center; gap: var(--space-3); box-sizing: border-box; min-height: var(--h-row); padding: 0 var(--space-2); border-bottom: var(--border-w) solid var(--border); font: var(--type-name); color: var(--text-primary); }
