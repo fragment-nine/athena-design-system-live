@@ -294,6 +294,7 @@
   --h-footer: var(--h-row);
   --numeral-contents: 26px;
   --h-seg: 26px;
+  --w-figure-graphic: var(--w-col-sm);
   --h-pill: 18px;
   --check-size: 18px;
   --knob-size: 14px;
@@ -2614,6 +2615,16 @@ button.ad-row__name:focus-visible { outline: none; box-shadow: var(--ring-select
 .ad-figures--rail.ad-figures--intrinsic { width: max-content; grid-auto-columns: max-content; }
 /* A figure's move since its last reading: an arrow and the change, grey either way, beside the value. */
 .ad-figures__change { display: inline-flex; align-items: center; gap: var(--space-hair); margin-left: var(--space-2); font: var(--type-data); font-size: var(--text-xs); color: var(--text-secondary); vertical-align: middle; white-space: nowrap; }
+
+/* A unit as a word after its value ("3 days"). */
+.ad-figures__unit { margin-left: var(--space-1); white-space: nowrap; font: var(--type-detail); color: var(--text-muted); }
+/* A rail in the display face: the graphic leads at the left, beside it the label, the value in Work Sans with its unit, the note. */
+.ad-figures--rail.ad-figures--display .ad-figures__item { display: grid; grid-template-columns: var(--w-figure-graphic) minmax(0, 1fr); align-content: center; column-gap: var(--space-4); row-gap: var(--space-1); }
+.ad-figures--rail.ad-figures--display .ad-figures__item:not(:has(.ad-figures__graphic)) { grid-template-columns: minmax(0, 1fr); }
+.ad-figures--rail.ad-figures--display .ad-figures__graphic { grid-column: 1; grid-row: 1 / span 3; order: 0; width: var(--w-figure-graphic); height: auto; align-self: center; display: grid; place-items: center; overflow: hidden; }
+.ad-figures--rail.ad-figures--display .ad-figures__label { grid-column: -2; grid-row: 1; text-align: left; }
+.ad-figures--rail.ad-figures--display .ad-figures__value:not(.ad-sr) { grid-column: -2; grid-row: 2; order: 0; height: auto; display: block; font: var(--type-title); line-height: var(--lh-tight); }
+.ad-figures--rail.ad-figures--display .ad-figures__note { grid-column: -2; grid-row: 3; }
 
 /* src/components/Timeline/Ruler.css */
 /* Ruler and ZoomCluster: a line-strong rule, months in white mono caps along the top, ticks from the rule (weeks taller than

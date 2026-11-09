@@ -5097,7 +5097,8 @@ function DataText({ children, dim, small, size, estimate, className }) {
 function Hint({ children, className }) {
   return /* @__PURE__ */ jsx40("span", { className: cx("ad-hint", className), children });
 }
-function Figures({ items, ariaLabel, layout = "strip", density, onIntrinsicWidth, className }) {
+function Figures({ items, ariaLabel, layout = "strip", density, face = "data", onIntrinsicWidth, className }) {
+  const shown = face === "display" && layout === "rail";
   const track = useRef26(null);
   const intrinsic = (layout === "clocks" || layout === "rail") && onIntrinsicWidth != null;
   useLayoutEffect7(() => {
@@ -5110,17 +5111,18 @@ function Figures({ items, ariaLabel, layout = "strip", density, onIntrinsicWidth
     observer.observe(el);
     return () => observer.disconnect();
   }, [intrinsic, onIntrinsicWidth]);
-  return /* @__PURE__ */ jsx40("dl", { ref: track, className: cx("ad-figures", density === "compact" && "ad-figures--dense", layout !== "strip" && "ad-figures--grid", layout === "compact" && "ad-figures--compact", layout === "rail" && "ad-figures--rail", layout === "readings" && "ad-figures--readings", layout === "clocks" && "ad-figures--clocks", intrinsic && "ad-figures--intrinsic", className), "aria-label": ariaLabel, children: (layout !== "strip" ? items : items.slice(0, 4)).map((f) => /* @__PURE__ */ jsxs37("div", { className: "ad-figures__item", title: (layout === "rail" || layout === "readings") && typeof f.note === "string" ? f.note : void 0, children: [
+  return /* @__PURE__ */ jsx40("dl", { ref: track, className: cx("ad-figures", density === "compact" && "ad-figures--dense", layout !== "strip" && "ad-figures--grid", layout === "compact" && "ad-figures--compact", layout === "rail" && "ad-figures--rail", layout === "readings" && "ad-figures--readings", layout === "clocks" && "ad-figures--clocks", shown && "ad-figures--display", intrinsic && "ad-figures--intrinsic", className), "aria-label": ariaLabel, children: (layout !== "strip" ? items : items.slice(0, 4)).map((f) => /* @__PURE__ */ jsxs37("div", { className: "ad-figures__item", title: !shown && (layout === "rail" || layout === "readings") && typeof f.note === "string" ? f.note : void 0, children: [
     /* @__PURE__ */ jsx40("dt", { className: cx("ad-figures__label ad-type-heading", layout === "clocks" && "ad-sr"), children: f.label }),
-    /* @__PURE__ */ jsxs37("dd", { className: cx("ad-figures__value", (layout === "rail" || layout === "clocks") && f.graphic != null && "ad-sr"), children: [
+    /* @__PURE__ */ jsxs37("dd", { className: cx("ad-figures__value", !shown && (layout === "rail" || layout === "clocks") && f.graphic != null && "ad-sr"), children: [
       layout === "readings" ? /* @__PURE__ */ jsx40(ButtonSizeScope, { size: "row", children: f.value }) : f.value,
+      f.unit && /* @__PURE__ */ jsx40("span", { className: "ad-figures__unit", children: f.unit }),
       f.change && /* @__PURE__ */ jsxs37("span", { className: "ad-figures__change", role: "img", "aria-label": f.change.label, children: [
         f.change.direction !== "flat" && /* @__PURE__ */ jsx40(Icon, { name: f.change.direction === "up" ? "arrow-up" : "arrow-down", size: "sm" }),
         f.change.display
       ] })
     ] }),
     f.graphic != null && /* @__PURE__ */ jsx40("dd", { className: "ad-figures__graphic", children: f.graphic }),
-    f.note != null && /* @__PURE__ */ jsx40("dd", { className: cx("ad-figures__note", (layout === "rail" || layout === "readings" || layout === "clocks") && "ad-sr"), children: f.note })
+    f.note != null && /* @__PURE__ */ jsx40("dd", { className: cx("ad-figures__note", !shown && (layout === "rail" || layout === "readings" || layout === "clocks") && "ad-sr"), children: f.note })
   ] }, f.label)) });
 }
 function Kbd({ children, className }) {
