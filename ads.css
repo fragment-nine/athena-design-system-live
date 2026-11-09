@@ -110,8 +110,11 @@
   --print-line-strong: #a0a0a0;
   --wash-warm: rgba(225, 109, 72, 0.14);
   --wash-cool: rgba(111, 159, 196, 0.10);
-  --shadow-float: 0 20px 50px rgba(0, 0, 0, 0.5);
-  --elev-float: inset 0 1px 0 rgba(255, 255, 255, 0.08), 0 20px 50px rgba(0, 0, 0, 0.5);
+  --shadow-float: 0 2px 6px rgba(0, 0, 0, 0.35), 0 24px 60px rgba(0, 0, 0, 0.6);
+  --elev-float: inset 0 1px 0 rgba(255, 255, 255, 0.12), 0 2px 6px rgba(0, 0, 0, 0.35), 0 24px 60px rgba(0, 0, 0, 0.6);
+  --elev-raised: inset 0 1px 0 rgba(255, 255, 255, 0.1), 0 1px 2px rgba(0, 0, 0, 0.5), 0 4px 10px rgba(0, 0, 0, 0.3);
+  --shadow-bar: 0 10px 24px -12px rgba(0, 0, 0, 0.7);
+  --shadow-side: 10px 0 24px -12px rgba(0, 0, 0, 0.7);
   --ring-select: inset 0 0 0 2px #aaa6a1;
   --glow-hover: 0 0 8px rgba(225, 109, 72, 0.35);
   --glow-today: 0 0 6px rgba(225, 109, 72, 0.45);
@@ -227,8 +230,11 @@
   --print-line-strong: #a0a0a0;
   --wash-warm: rgba(225, 109, 72, 0.08);
   --wash-cool: rgba(111, 159, 196, 0.07);
-  --shadow-float: 0 6px 20px rgba(0, 0, 0, 0.05);
-  --elev-float: inset 0 1px 0 rgba(255, 255, 255, 0.9), 0 6px 20px rgba(0, 0, 0, 0.05);
+  --shadow-float: 0 1px 3px rgba(0, 0, 0, 0.06), 0 10px 28px rgba(0, 0, 0, 0.08);
+  --elev-float: inset 0 1px 0 rgba(255, 255, 255, 0.9), 0 1px 3px rgba(0, 0, 0, 0.06), 0 10px 28px rgba(0, 0, 0, 0.08);
+  --elev-raised: inset 0 1px 0 rgba(255, 255, 255, 0.8), 0 1px 2px rgba(0, 0, 0, 0.1), 0 3px 8px rgba(0, 0, 0, 0.06);
+  --shadow-bar: 0 8px 18px -12px rgba(0, 0, 0, 0.12);
+  --shadow-side: 8px 0 18px -12px rgba(0, 0, 0, 0.12);
   --ring-select: inset 0 0 0 2px #6b6b73;
   --ring-today: 0 0 0 2px #111113;
   --shadow-pixx: drop-shadow(0 3px 6px rgba(0, 0, 0, 0.18));
@@ -1697,7 +1703,7 @@ button.ad-contents__button:focus-visible { outline: none; box-shadow: var(--ring
 
 /* src/components/Navigation/Navigation.css */
 /* Rail, SideMenu, ProjectPill */
-.ad-rail { display: flex; flex-direction: column; align-items: center; gap: var(--space-4); box-sizing: border-box; width: var(--w-rail); height: 100%; padding: var(--space-4) 0 var(--space-3); background: var(--bg-side); border-right: var(--border-w) solid var(--border); backdrop-filter: var(--blur-glass); -webkit-backdrop-filter: var(--blur-glass); }
+.ad-rail { display: flex; flex-direction: column; align-items: center; gap: var(--space-4); box-sizing: border-box; width: var(--w-rail); height: 100%; padding: var(--space-4) 0 var(--space-3); background: var(--bg-side); border-right: var(--border-w) solid var(--border); backdrop-filter: var(--blur-glass); -webkit-backdrop-filter: var(--blur-glass); box-shadow: var(--shadow-side); }
 .ad-rail__group { display: flex; flex-direction: column; align-items: center; gap: var(--space-1); }
 /* The project pills sit on the icon column's left edge, not centred, rail and open menu alike. */
 .ad-rail__group--projects, .ad-rail__pinned { align-self: stretch; display: flex; flex-direction: column; align-items: flex-start; gap: var(--space-1); padding-left: calc((var(--w-rail) - var(--h-btn)) / 2); }
@@ -1722,7 +1728,7 @@ button.ad-contents__button:focus-visible { outline: none; box-shadow: var(--ring
 button:hover > .ad-project-pill:not(.ad-project-pill--current) { color: var(--accent); }
 /* The open menu is the rail, wider: the same top padding, the same icon column (each icon where the rail draws it), the same gap after
  Home and between groups, the same foot, so opening and closing moves nothing but the width. */
-.ad-side { display: flex; flex-direction: column; box-sizing: border-box; width: var(--w-side); height: 100%; padding: var(--space-4) var(--space-3) var(--space-3) 0; background: var(--bg-side); border-right: var(--border-w) solid var(--border); backdrop-filter: var(--blur-glass); -webkit-backdrop-filter: var(--blur-glass); }
+.ad-side { display: flex; flex-direction: column; box-sizing: border-box; width: var(--w-side); height: 100%; padding: var(--space-4) var(--space-3) var(--space-3) 0; background: var(--bg-side); border-right: var(--border-w) solid var(--border); backdrop-filter: var(--blur-glass); -webkit-backdrop-filter: var(--blur-glass); box-shadow: var(--shadow-side); }
 /* The open menu's rows sit on the rail's pitch: the same row height and the same gap as the rail's items, so folding changes the
  width and nothing else. */
 .ad-side__list { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: var(--space-1); }
@@ -1796,12 +1802,13 @@ button:hover > .ad-project-pill:not(.ad-project-pill--current) { color: var(--ac
 .ad-page-header { position: relative; }
 .ad-page-header__row { display: flex; align-items: center; gap: var(--space-6); }
 /* The thin bar: one row tall plus a step, a hairline under it from the page column's edge to edge (in a Frame it reaches past the
-   column's insets; elsewhere it spans the header). */
+   column's insets; elsewhere it spans the header). Raised as the left menu is: its breath of glass, blurred, and a soft shadow off its edge. */
 .ad-page-header__row { box-sizing: border-box; min-height: calc(var(--h-row) + var(--space-2)); border-bottom: var(--border-w) solid var(--border);
+  background: var(--bg-side); backdrop-filter: var(--blur-glass); -webkit-backdrop-filter: var(--blur-glass); box-shadow: var(--shadow-bar);
   margin: calc(-1 * var(--ad-page-top, 0px)) calc(-1 * var(--ad-page-end, 0px)) 0 calc(-1 * var(--ad-page-start, 0px));
   padding: 0 var(--ad-page-end, 0px) 0 var(--ad-page-start, 0px); }
-/* The screen's name: small, Work Sans 800 in caps, in the second ink, no icon (the work is the loudest thing, not the title). */
-.ad-page-header__title { display: flex; align-items: center; margin: 0; flex: none; white-space: nowrap; font: var(--type-title); font-size: var(--text-base); font-weight: 800; text-transform: uppercase; line-height: var(--lh-none); color: var(--text-secondary); }
+/* The screen's name: Work Sans 800 in caps at text-20, in the second ink, no icon (the work is the loudest thing, not the title). */
+.ad-page-header__title { display: flex; align-items: center; margin: 0; flex: none; white-space: nowrap; font: var(--type-title); font-size: var(--text-20); font-weight: 800; text-transform: uppercase; line-height: var(--lh-none); color: var(--text-secondary); }
 .ad-page-header__words { display: block; }
 /* HeaderActions: Athena's raised box round the header's icon buttons, kept as it was. */
 .ad-header-actions { display: inline-flex; flex: none; align-items: center; box-sizing: border-box; gap: var(--space-2); height: var(--h-btn-bar); padding: 0 var(--pad-header-actions); border-radius: var(--radius-page); background: var(--bg-surface); }
@@ -2205,7 +2212,7 @@ button.ad-row__name:focus-visible { outline: none; box-shadow: var(--ring-select
 .ad-segmented__option { flex: 0 1 auto; min-width: 0; display: inline-flex; align-items: center; justify-content: center; gap: var(--space-2); height: var(--h-seg); padding: 0 var(--space-3); margin: 0; border: 0; border-radius: var(--radius-control); background: transparent; font: var(--type-heading); text-transform: uppercase; letter-spacing: var(--track-caps); line-height: var(--lh-none); cursor: pointer; }
 .ad-segmented__option:hover { color: var(--accent); }
 .ad-segmented__option:not([aria-checked="true"]) { color: var(--text-secondary); }
-.ad-segmented__option[aria-checked="true"] { background: var(--bg-raised); color: var(--text-primary); }
+.ad-segmented__option[aria-checked="true"] { background: var(--bg-raised); box-shadow: var(--elev-raised); color: var(--text-primary); }
 .ad-segmented__option:focus-visible { outline: none; box-shadow: var(--ring-select); }
 .ad-segmented__option:disabled { opacity: var(--opacity-disabled); cursor: default; color: var(--text-secondary); }
 .ad-segmented__option svg { width: var(--icon-md); height: var(--icon-md); }
@@ -2216,14 +2223,18 @@ button.ad-row__name:focus-visible { outline: none; box-shadow: var(--ring-select
 /* src/components/Settings/Settings.css */
 /* Settings */
 .ad-settings { display: flex; gap: var(--space-8); align-items: flex-start; }
-.ad-settings__nav { position: sticky; top: 0; display: flex; flex-direction: column; width: calc(var(--w-side) - var(--w-col-xs)); flex: none; }
-.ad-settings__nav-item { display: flex; align-items: center; gap: var(--space-2); box-sizing: border-box; width: 100%; height: var(--h-btn); margin: 0; padding: 0 var(--space-2); border: 0; border-radius: var(--radius-page); background: transparent; cursor: pointer; text-align: left; font: var(--type-name); color: var(--text-primary); }
+/* The settings menu: rows a row tall, evenly spaced, a wrapped label growing its own row; 8 between the search above and the first row. */
+.ad-settings__nav { position: sticky; top: 0; display: flex; flex-direction: column; gap: var(--space-hair); width: calc(var(--w-side) - var(--w-col-xs)); flex: none; }
+.ad-settings__nav > :not(.ad-settings__nav-item) + .ad-settings__nav-item { margin-top: calc(var(--space-2) - var(--space-hair)); }
+.ad-settings__nav-item { display: flex; align-items: center; gap: var(--space-2); box-sizing: border-box; width: 100%; min-height: var(--h-row); margin: 0; padding: var(--space-2); border: 0; border-radius: var(--radius-page); background: transparent; cursor: pointer; text-align: left; font: var(--type-name); line-height: var(--lh-tight); color: var(--text-primary); }
 .ad-settings__nav-item:not([aria-current="page"]) { color: var(--text-secondary); }
-.ad-settings__nav-icon { display: inline-flex; color: var(--text-muted); }
+.ad-settings__nav-icon { display: inline-flex; flex: none; color: var(--text-muted); }
 .ad-settings__nav-icon svg { width: var(--icon-md); height: var(--icon-md); }
 .ad-settings__nav-item:hover, .ad-settings__nav-item:hover .ad-settings__nav-icon { color: var(--accent); }
-.ad-settings__nav-item:focus-visible { outline: none; box-shadow: var(--ring-select); }
-.ad-settings__nav-item[aria-current="page"] { background: var(--tint-selected); color: var(--text-primary); }
+/* The current item is raised, as a switcher's chosen option: bg-raised and elev-raised, never outlined. The ring is the keyboard's alone: never after a click. */
+.ad-settings__nav-item[aria-current="page"] { background: var(--bg-raised); box-shadow: var(--elev-raised); color: var(--text-primary); }
+.ad-settings__nav-item:focus-visible:not([data-pointer]) { outline: none; box-shadow: var(--ring-select); }
+.ad-settings__nav-item:focus { outline: none; }
 .ad-settings__pane { flex: 1; min-width: 0; max-width: var(--w-settings); display: flex; flex-direction: column; gap: var(--space-6); }
 /* The pane's one big title, the pop-over title's size; the sections under it stay 13px labels. */
 .ad-settings__title { margin: 0; }
