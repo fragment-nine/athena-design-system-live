@@ -1894,6 +1894,19 @@ var Select = forwardRef2(function Select2({ options, placeholder, quiet, classNa
     /* @__PURE__ */ jsx9(Icon, { name: "caret-down", size: "sm", className: "ad-select__caret" })
   ] });
 });
+function PriorityPicker({ value, onChange, label = "Priority", words = ["P1", "P2", "P3", "P4"], disabled, className }) {
+  return /* @__PURE__ */ jsx9(
+    Select,
+    {
+      "aria-label": label,
+      value: String(value),
+      disabled,
+      onChange: (e) => onChange(Number(e.target.value)),
+      options: words.map((w, i) => ({ value: String(i + 1), label: w })),
+      className: cx("ad-priority-pick", `ad-priority-pick--p${value}`, className)
+    }
+  );
+}
 function FieldRow({ label, children, help, beside, nameFits, controlWidth, htmlFor, className }) {
   const labelId = useId3();
   return /* @__PURE__ */ jsxs7("div", { className: cx("ad-field-row", beside && "ad-field-row--beside", nameFits && "ad-field-row--name-fits", controlWidth === "fill" && "ad-field-row--fill", className), children: [
@@ -7180,6 +7193,7 @@ export {
   PopoverSection,
   Portal,
   PressCard,
+  PriorityPicker,
   ProgressBar,
   ProjectPicker,
   ProjectPill,

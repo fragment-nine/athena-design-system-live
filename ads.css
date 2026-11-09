@@ -594,6 +594,7 @@
   --tint-over-min: 25%;
   --tint-over-max: 85%;
   --tint-presence-wash: 18%;
+  --tint-pick-wash: 30%;
   --tint-lane-wash: 8%;
   --tint-bar-edge: 50%;
   --tint-lane-edge: 45%;
@@ -1446,6 +1447,13 @@ button.ad-card__name:focus-visible { outline: none; box-shadow: var(--ring-selec
 .ad-select__native option { background: var(--bg-float); color: var(--text-primary); }
 .ad-select__caret { position: absolute; right: var(--space-3); width: var(--icon-sm); height: var(--icon-sm); color: var(--text-muted); pointer-events: none; }
 .ad-select:hover .ad-select__caret { color: var(--accent); }
+/* PriorityPicker: the closed box washed in its priority's colour, the P-word on it; one tone lighter while open, as any field. */
+.ad-priority-pick { --ad-pick-ink: var(--priority-p4); background: color-mix(in srgb, var(--ad-pick-ink) var(--tint-pick-wash), var(--bg-raised)); }
+.ad-priority-pick:focus-within { background: color-mix(in srgb, var(--ad-pick-ink) var(--tint-pick-wash), var(--bg-hover)); }
+.ad-priority-pick--p1 { --ad-pick-ink: var(--priority-p1); }
+.ad-priority-pick--p2 { --ad-pick-ink: var(--priority-p2); }
+.ad-priority-pick--p3 { --ad-pick-ink: var(--priority-p3); }
+.ad-priority-pick .ad-select__caret { color: var(--text-secondary); }
 /* A settings row: the label in one column, its control right beside it (never across the screen), a hairline under. */
 .ad-field-row { display: grid; grid-template-columns: var(--w-menu) minmax(0, var(--w-card)); justify-content: start; align-items: center; column-gap: var(--space-4); min-height: var(--h-row); border-bottom: var(--border-w) solid var(--border); }
 .ad-field-row__label { display: inline-flex; align-items: center; gap: var(--space-2); font: var(--type-body); line-height: var(--lh-tight); color: var(--text-secondary); }
