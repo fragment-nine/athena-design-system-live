@@ -2641,6 +2641,9 @@ function PageList({ ariaLabel, head, search, groups, current, onPick }) {
 
 // src/components/Row/Row.tsx
 import { Fragment as Fragment5, jsx as jsx18, jsxs as jsxs15 } from "react/jsx-runtime";
+function Grip() {
+  return /* @__PURE__ */ jsx18("span", { className: "ad-grip", "aria-hidden": "true", children: /* @__PURE__ */ jsx18(Icon, { job: "drag", size: "sm" }) });
+}
 var Row = forwardRef5(function Row2({ name, meta, grip, lead, status, dates, tags, people, trail, selected, picked, dragging, heading, onOpen, onRename, renameLabel, cells, className, onClick, ...rest }, ref) {
   const inList = useInList();
   const { compactRows } = useShow();
@@ -2660,7 +2663,7 @@ var Row = forwardRef5(function Row2({ name, meta, grip, lead, status, dates, tag
       },
       className: cx("ad-row", meta != null && "ad-row--two", compactRows && "ad-row--compact", heading && "ad-row--heading", onOpen && "ad-row--opens", className),
       children: [
-        grip && /* @__PURE__ */ jsx18("span", { className: "ad-row__grip", "aria-hidden": "true", children: /* @__PURE__ */ jsx18(Icon, { job: "drag", size: "sm" }) }),
+        grip && /* @__PURE__ */ jsx18(Grip, {}),
         lead != null && /* @__PURE__ */ jsx18("span", { className: "ad-row__lead", children: /* @__PURE__ */ jsx18(ButtonSizeScope, { size: "row", children: lead }) }),
         /* @__PURE__ */ jsxs15("span", { className: "ad-row__body", children: [
           onRename ? /* @__PURE__ */ jsx18(InlineEdit, { value: String(name), onCommit: onRename, ariaLabel: renameLabel ?? "Name", className: "ad-row__name" }) : onOpen ? /* @__PURE__ */ jsx18("button", { type: "button", className: "ad-row__name ad-open", "aria-current": selected || void 0, onClick: (e) => {
@@ -5315,7 +5318,7 @@ import { useLayoutEffect as useLayoutEffect8, useRef as useRef27, useState as us
 import { jsx as jsx42, jsxs as jsxs39 } from "react/jsx-runtime";
 var NEAR = 8;
 var Arrow = ({ up }) => /* @__PURE__ */ jsx42(SortGlyph, { direction: up ? "ascending" : "descending", size: "sm" });
-function Table({ columns, rows, rowId, caption, sort, onSort, picked, onPickedChange, onPickAllChange, pickLabel, pickAllLabel = "Pick all", onOpen, rowProps, groupProps, rowTone, group, foldGroups, foldedGroups, onFoldGroup, depth, foldParents, foldedRows, onFoldRow, foldLabel, nameColumn, fixed, onInsertRow, onInsertColumn, insertRowLabel = "Insert a row here", insertColumnLabel = "Insert a column here", total, className }) {
+function Table({ columns, rows, rowId, caption, sort, onSort, picked, onPickedChange, onPickAllChange, pickLabel, pickAllLabel = "Pick all", onOpen, rowProps, groupProps, grip, rowTone, group, foldGroups, foldedGroups, onFoldGroup, depth, foldParents, foldedRows, onFoldRow, foldLabel, nameColumn, fixed, onInsertRow, onInsertColumn, insertRowLabel = "Insert a row here", insertColumnLabel = "Insert a column here", total, className }) {
   const span = columns.length + (onPickedChange ? 1 : 0);
   const [ownFolded, setOwnFolded] = useState25(() => /* @__PURE__ */ new Set());
   const folded = foldedGroups ?? ownFolded;
@@ -5464,6 +5467,7 @@ function Table({ columns, rows, rowId, caption, sort, onSort, picked, onPickedCh
             const words = onOpen ? /* @__PURE__ */ jsx42("button", { type: "button", className: "ad-table__open", onClick: () => onOpen(r), children: c.cell(r) }) : c.cell(r);
             const meta = c.meta?.(r);
             return /* @__PURE__ */ jsxs39("th", { scope: "row", className: cx("ad-table__name", frozen, meta != null && "ad-table__name--two"), style: d || c.frozen === "start" ? { ...d ? { ["--ad-depth"]: d } : {}, ...at(c) } : void 0, children: [
+              grip?.(r) && /* @__PURE__ */ jsx42(Grip, {}),
               d > 0 && /* @__PURE__ */ jsx42("span", { className: "ad-table__elbow", "aria-hidden": "true" }),
               parent && /* @__PURE__ */ jsx42("button", { type: "button", className: "ad-table__fold ad-table__fold--row", "aria-expanded": !rowShut, "aria-label": foldLabel?.(r) ?? "Fold", onClick: (e) => {
                 e.stopPropagation();
@@ -7341,6 +7345,7 @@ export {
   FrameKey,
   FrameToolbar,
   FrameWork,
+  Grip,
   Ground,
   GroupBand,
   GroupHeading,

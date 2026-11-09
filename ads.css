@@ -2261,9 +2261,11 @@ button.ad-steps__press:focus-visible { outline: none; box-shadow: var(--ring-sel
 
 /* src/components/Row/Row.css */
 /* Row, RowDate, TodoCheck */
-/* The grip: the six dots a reorderable row is dragged by, muted, coral under the cursor. */
-.ad-row__grip { display: inline-flex; flex: none; margin-left: calc(var(--space-1) * -1); color: var(--text-muted); cursor: grab; }
-.ad-row:hover .ad-row__grip { color: var(--accent); }
+/* The grip: the six dots a reorderable row is dragged by, muted, coral while the pointer is on its row (a Row, a table row, or a row the
+   app lays out itself, which hovers its own way). */
+.ad-grip { display: inline-flex; flex: none; color: var(--text-muted); cursor: grab; }
+.ad-row > .ad-grip { margin-left: calc(var(--space-1) * -1); }
+:is(.ad-row, .ad-table tr):hover .ad-grip, .ad-grip:hover { color: var(--accent); }
 .ad-row { position: relative; display: flex; align-items: center; gap: var(--space-3); box-sizing: border-box; min-height: var(--h-row); padding: 0 var(--space-2); border-bottom: var(--border-w) solid var(--border); font: var(--type-name); color: var(--text-primary); }
 .ad-row--two { align-items: flex-start; min-height: var(--h-row-2); padding-top: var(--space-2); padding-bottom: var(--space-2); }
 .ad-row--two > :not(.ad-row__body) { min-height: calc(var(--text-base) * 1.25); display: flex; align-items: center; }
@@ -2603,6 +2605,8 @@ button.ad-row__name:focus-visible { outline: none; box-shadow: var(--ring-select
 .ad-insert__mark:focus-visible { outline: none; box-shadow: var(--ring-select); }
 /* The totals row: held under the last row behind the one stronger line, its words white. */
 .ad-table .ad-table__total td, .ad-table .ad-table__total th[scope="row"] { position: sticky; bottom: 0; z-index: 1; border-top: var(--border-w-strong) solid var(--line-strong); border-bottom: 0; background: var(--ad-under); color: var(--text-primary); }
+/* A reorderable table row's grip, first in its name cell. */
+.ad-table__name > .ad-grip { margin-right: var(--space-2); vertical-align: middle; }
 
 /* src/components/Tag/Tag.css */
 /* Tag, FilterTag, UnreadDot. (TokenPill's look is .ad-token, in Writing.css: one red pill.) */
