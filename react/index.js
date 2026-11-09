@@ -2837,7 +2837,7 @@ function ListBranch({ className, children, ...rest }) {
   const inList = useInList();
   return /* @__PURE__ */ jsx19("div", { role: inList ? "listitem" : void 0, ...rest, className: cx("ad-list-branch", className), children: /* @__PURE__ */ jsx19(InList2.Provider, { value: false, children }) });
 }
-function ListSection({ title, children, collapsible, collapsed, onCollapsedChange, day, bar, dropTarget, emptySentence, look, tree, className, ...heading }) {
+function ListSection({ title, children, collapsible, collapsed, onCollapsedChange, day, bar, dropTarget, emptySentence, look: _look, tree, className, ...heading }) {
   const none = React.Children.count(children) === 0;
   const [own, setOwn] = useState9(!!collapsible && !heading.needsYou);
   useEffect7(() => {
@@ -2852,7 +2852,7 @@ function ListSection({ title, children, collapsible, collapsed, onCollapsedChang
   };
   const inList = useInList();
   const bare = !day && !bar && (title == null || title === "");
-  return /* @__PURE__ */ jsxs16("section", { role: inList ? "listitem" : void 0, className: cx("ad-section ad-list-section", look === "rule" && "ad-section--rule", tree && bar && !shut && !none && "ad-list-section--tree", dropTarget?.over && "ad-list-section--over", className), children: [
+  return /* @__PURE__ */ jsxs16("section", { role: inList ? "listitem" : void 0, className: cx("ad-section ad-list-section", tree && bar && !shut && !none && "ad-list-section--tree", dropTarget?.over && "ad-list-section--over", className), children: [
     day ? /* @__PURE__ */ jsx19(DayHeading, { day: day.day, today: day.today }) : bar ? /* @__PURE__ */ jsxs16("div", { className: "ad-list-section__bar", children: [
       collapsible && /* @__PURE__ */ jsx19("button", { type: "button", className: "ad-list-section__fold", "aria-expanded": !shut, "aria-controls": bodyId, "aria-label": bar.foldLabel ?? String(title), onClick: toggle, children: /* @__PURE__ */ jsx19(Icon, { job: shut ? "chevron-right" : "chevron-down", size: "sm" }) }),
       /* @__PURE__ */ jsx19(InList2.Provider, { value: false, children: /* @__PURE__ */ jsx19(Row, { heading: true, name: title, lead: bar.lead, meta: bar.meta, status: bar.status, dates: bar.dates, onOpen: bar.onOpen, trail: bar.end }) })
@@ -2992,7 +2992,7 @@ function SectionFrame({ children, level, numbering, className, ...rest }) {
   };
   return /* @__PURE__ */ jsx21(Ctx.Provider, { value, children: /* @__PURE__ */ jsx21("div", { ...rest, "data-section-frame": frameId, className: cx("ad-section-frame", className), children }) });
 }
-var Section = forwardRef6(function Section2({ title, day, beside, children, className, bodyId, rule, needsYou, lead, end, help, collapsible, collapsed, onToggle, look, onMore, moreLabel = "More", ...rest }, ref) {
+var Section = forwardRef6(function Section2({ title, day, beside, children, className, bodyId, rule, needsYou, lead, end, help, collapsible, collapsed, onToggle, look: _look, onMore, moreLabel = "More", ...rest }, ref) {
   const frame = useContext8(Ctx);
   if (!frame) throw new Error("Section: a section sits inside a SectionFrame; a heading on its own is a GroupHeading used as a label.");
   const own = useRef10(null);
@@ -3026,7 +3026,7 @@ var Section = forwardRef6(function Section2({ title, day, beside, children, clas
       },
       "data-section": day ? "day" : "",
       "data-collapsed": collapsible ? String(shut) : void 0,
-      className: cx("ad-section", look === "rule" && "ad-section--rule", className),
+      className: cx("ad-section", className),
       children: [
         day ? /* @__PURE__ */ jsxs18("div", { className: "ad-section__day", children: [
           /* @__PURE__ */ jsx21(DayHeading, { day: day.day, today: day.today, level: frame.level === 2 ? 2 : frame.level === 3 ? 3 : 4 }),
@@ -5250,7 +5250,7 @@ function Figures({ items, ariaLabel, layout = "strip", density, face = "data", o
   return /* @__PURE__ */ jsx40("dl", { ref: track, className: cx("ad-figures", density === "compact" && "ad-figures--dense", layout !== "strip" && "ad-figures--grid", layout === "compact" && "ad-figures--compact", layout === "rail" && "ad-figures--rail", layout === "readings" && "ad-figures--readings", layout === "clocks" && "ad-figures--clocks", shown && "ad-figures--display", intrinsic && "ad-figures--intrinsic", className), "aria-label": ariaLabel, children: (layout !== "strip" ? items : items.slice(0, 4)).map((f) => /* @__PURE__ */ jsxs37("div", { className: "ad-figures__item", title: !shown && (layout === "rail" || layout === "readings") && typeof f.note === "string" ? f.note : void 0, children: [
     /* @__PURE__ */ jsx40("dt", { className: cx("ad-figures__label ad-type-heading", layout === "clocks" && "ad-sr"), children: f.label }),
     /* @__PURE__ */ jsxs37("dd", { className: cx("ad-figures__value", !shown && (layout === "rail" || layout === "clocks") && f.graphic != null && "ad-sr"), children: [
-      layout === "readings" ? /* @__PURE__ */ jsx40(ButtonSizeScope, { size: "row", children: f.value }) : f.value,
+      layout === "readings" ? /* @__PURE__ */ jsx40(ButtonSizeScope, { size: "row", children: f.value }) : f.onOpen ? /* @__PURE__ */ jsx40("button", { type: "button", className: "ad-figures__open", "aria-expanded": f.expanded == null ? void 0 : f.expanded, onClick: f.onOpen, children: f.value }) : f.value,
       f.unit && /* @__PURE__ */ jsx40("span", { className: "ad-figures__unit", children: f.unit }),
       f.change && /* @__PURE__ */ jsxs37("span", { className: "ad-figures__change", role: "img", "aria-label": f.change.label, children: [
         f.change.direction !== "flat" && /* @__PURE__ */ jsx40(Icon, { name: f.change.direction === "up" ? "arrow-up" : "arrow-down", size: "sm" }),

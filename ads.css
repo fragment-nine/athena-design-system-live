@@ -706,9 +706,9 @@
   /* The inset plane a band sits on (every other hour, a group's heading band) so rows read apart. */
   --ad-inset: var(--bg-inset);
 }
-/* On a card or a section the held plane is the card's own glass laid solid (bg-held), and the inset band a faint lift: never the
+/* On a card the held plane is the card's own glass laid solid (bg-held), and the inset band a faint lift: never the
    page's black, nothing inside a card darker than the card (tests/look: no-black-in-cards). */
-.ad-card, .ad-section:not(.ad-section--rule) { --ad-under: var(--bg-held); --ad-inset: var(--bg-surface); }
+.ad-card:not(.ad-card--widget) { --ad-under: var(--bg-held); --ad-inset: var(--bg-surface); }
 /* Hatched: not certain yet. Solid: confirmed. Dashed outline: deal. Dotted outline: backup. Fine hatch: weekends and time off; the past is plain. */
 .ad-hatched { background-image: var(--hatch); }
 .ad-hatched-fine { background-image: var(--hatch-fine); }
@@ -773,6 +773,13 @@
 .ad-glyph-button:hover { color: var(--accent); }
 /* A small data note that never wraps: a time, a count, an off-screen date. */
 .ad-note-data { font: var(--type-data); font-size: var(--text-xs); white-space: nowrap; }
+
+/* A list's last row (its add row, or a field row) at the end of a card's section, body or card, or of a section's body on the page,
+   draws no line under it: the next section's strong rule, or the foot's line, is the one divider (never two lines 16 apart). Up to two
+   wrappers deep, as an app's list sits in one. */
+:is(.ad-popover__section-body, .ad-popover__body, .ad-popover, .ad-section__body, .ad-list-section__body) > :is(.ad-row, .ad-add-row, .ad-field-row):last-child,
+:is(.ad-popover__section-body, .ad-popover__body, .ad-popover, .ad-section__body, .ad-list-section__body) > :last-child > :is(.ad-row, .ad-add-row, .ad-field-row):last-child,
+:is(.ad-popover__section-body, .ad-popover__body, .ad-popover, .ad-section__body, .ad-list-section__body) > :last-child > :last-child > :is(.ad-row, .ad-add-row, .ad-field-row):last-child { border-bottom: 0; }
 
 /* Athena Design System — components.css: the look of every component, plain CSS. Generated from src/components; do not edit. Import order, once per app, all four: fonts.css, tokens.css, patterns.css, components.css. */
 
@@ -1154,12 +1161,17 @@ button.ad-year__day:focus-visible { outline: none; box-shadow: var(--ring-select
 .ad-card { --ad-tray: var(--bg-base); }
 /* Studio glass (locked 2026-10-29): a card is frosted glass over the ground, a 1px edge, one bright top pixel and a long soft lift; a tile inside a panel keeps the glass but not the lift. */
 .ad-card { position: relative; box-sizing: border-box; border-radius: var(--radius-page); border: var(--border-w) solid var(--border); background: var(--bg-surface); box-shadow: var(--elev-float); isolation: isolate; color: var(--text-primary); font: var(--type-name); }
+/* The glass is a layer behind the card, never on the card: glass on the card would make it the box that anything fixed to the window measures from, and a card opened inside would run off the screen. */
+.ad-card::before { content: ""; position: absolute; inset: 0; z-index: -1; border-radius: inherit; pointer-events: none; backdrop-filter: var(--blur-glass); -webkit-backdrop-filter: var(--blur-glass); }
 .ad-card .ad-card, .ad-section .ad-card { border-radius: var(--radius-tile); box-shadow: none; }
 .ad-card .ad-card::before, .ad-section .ad-card::before { display: none; }
 .ad-card--tile { padding: var(--space-2) var(--space-3) var(--space-3); }
-.ad-card--widget { padding: var(--space-3) var(--space-4) var(--space-4); counter-increment: widget; }
+/* A dashboard widget is a section, a place, not a thing (ruled 2026-11-09): its heading under a strong rule, on the ground, no panel. */
+.ad-card.ad-card--widget { padding: var(--space-2) 0 0; border: 0; border-top: var(--border-w) solid var(--line-strong); border-radius: 0; background: transparent; box-shadow: none; counter-increment: widget; }
+.ad-card.ad-card--widget::before { display: none; }
+.ad-card.ad-card--widget.ad-card--opens:hover { background: transparent; }
 /* The site's small index on each piece of work: 01.01, bottom right of a widget, in the quiet ink. */
-.ad-card--widget::after { content: "0" counter(widget) ".01"; position: absolute; right: var(--space-4); bottom: var(--space-3); font: var(--type-data); font-size: var(--text-xs); color: var(--text-muted); opacity: var(--opacity-dim); pointer-events: none; }
+.ad-card--widget::after { content: "0" counter(widget) ".01"; position: absolute; right: 0; bottom: 0; font: var(--type-data); font-size: var(--text-xs); color: var(--text-muted); opacity: var(--opacity-dim); pointer-events: none; }
 .ad-card--unindexed { counter-increment: none; }
 .ad-card--unindexed::after { content: none; }
 /* The alert bar is drawn on a widget card but is not a widget: no index, and it does not count. */
@@ -1189,7 +1201,9 @@ button.ad-card__name:focus-visible { outline: none; box-shadow: var(--ring-selec
 /* A section's More: coral tracked caps with a short rule before it. A widget's is the rule alone (2026-11-07), its words read aloud, in a 24px target. */
 .ad-card__more { display: inline-flex; align-items: center; gap: var(--space-2); margin: 0 0 0 auto; padding: 0; border: 0; background: transparent; font: var(--type-heading); text-transform: uppercase; letter-spacing: var(--track-caps); color: var(--accent); cursor: pointer; }
 .ad-card__more::before { content: ""; display: inline-block; width: var(--space-6); height: var(--border-w); background: currentColor; opacity: var(--opacity-dim); }
-.ad-card__more--line { min-width: var(--target-min); min-height: var(--target-min); justify-content: flex-end; }
+.ad-card__more--line { position: relative; min-width: var(--target-min); min-height: var(--target-min); justify-content: flex-end; }
+/* Its words, read aloud, are held inside the line: at a widget's right edge they would otherwise poke 1px past it and scroll the widget. */
+.ad-card__more--line > .ad-sr { left: 0; top: 0; }
 .ad-card__more:hover { color: var(--accent-hover); }
 .ad-card__more:focus-visible { outline: none; box-shadow: var(--ring-select); border-radius: var(--radius-page); }
 .ad-card__name { line-height: var(--lh-tight); margin-bottom: var(--space-2); }
@@ -1222,6 +1236,9 @@ button.ad-card__name:focus-visible { outline: none; box-shadow: var(--ring-selec
 .ad-card--compact { padding: var(--space-1) var(--space-2); }
 .ad-card--compact.ad-card--inline-head { padding-right: calc(var(--space-2) + var(--target-min) + var(--space-1)); }
 .ad-card--compact.ad-card--inline-head > .ad-card__head { top: var(--space-1); right: var(--space-2); }
+/* A widget has no sides to inset from: its inline head sits at the rule's right end, just under it. */
+.ad-card.ad-card--widget.ad-card--inline-head { padding-right: calc(var(--target-min) + var(--space-2)); }
+.ad-card.ad-card--widget.ad-card--inline-head > .ad-card__head { top: var(--space-2); right: 0; }
 
 /* src/components/Charts/Charts.css */
 /* AmountBars, BudgetBar, ProgressBar, OverTime, Dial, Verdict, as the Charts and Dashboard cards draw them */
@@ -1584,7 +1601,7 @@ button.ad-contents__button:focus-visible { outline: none; box-shadow: var(--ring
 .ad-frame__page { --ad-page-top: var(--space-2); --ad-page-end: var(--space-8); --ad-page-start: var(--space-6); flex: 1; min-width: 0; display: flex; flex-direction: column; gap: var(--space-2); padding: var(--ad-page-top) var(--ad-page-end) var(--space-8) var(--ad-page-start); }
 .ad-frame__page > .ad-toolbar { margin-bottom: var(--space-2); }
 /* A ground inside a card (a names column that scrolls sideways needs an opaque cell) is the card's tone, not the page's black. */
-:is(.ad-card, .ad-section:not(.ad-section--rule)) .ad-ground { background-color: var(--ad-under); background-image: none; }
+.ad-card:not(.ad-card--widget) .ad-ground { background-color: var(--ad-under); background-image: none; }
 /* The slots. The toolbar row, h-row tall, 16 over the work (the page's 8 and its own 8), only while the screen has something for it;
  with no row the work starts 16 under the header. The work fills what is left, the page's whole width. */
 .ad-frame__toolbar { display: flex; align-items: center; flex: none; min-height: var(--h-row); margin-bottom: var(--space-2); }
@@ -2237,11 +2254,7 @@ button.ad-steps__press:focus-visible { outline: none; box-shadow: var(--ring-sel
 .ad-popover .ad-field-row { border-bottom: 0; }
 .ad-popover__section-body > * + *:not(.ad-view__reason), .ad-popover > .ad-field-row + .ad-field-row, .ad-popover__body > .ad-field-row + .ad-field-row { border-top: var(--border-w) solid var(--border); padding-top: var(--space-2); }
 
-/* A list's last row (or its add row) at the end of a card's section, body or card draws no line under it: the next section's line, or
-   the foot's, is the one divider (never two lines 16 apart). Up to two wrappers deep, as an app's list sits in one. */
-:is(.ad-popover__section-body, .ad-popover__body, .ad-popover) > :is(.ad-row, .ad-add-row):last-child,
-:is(.ad-popover__section-body, .ad-popover__body, .ad-popover) > :last-child > :is(.ad-row, .ad-add-row):last-child,
-:is(.ad-popover__section-body, .ad-popover__body, .ad-popover) > :last-child > :last-child > :is(.ad-row, .ad-add-row):last-child { border-bottom: 0; }
+/* A list's last row at the end of a card's or a section's body draws no line under it: patterns.css (one rule for both). */
 
 /* src/components/Row/Row.css */
 /* Row, RowDate, TodoCheck */
@@ -2365,20 +2378,16 @@ button.ad-row__name:focus-visible { outline: none; box-shadow: var(--ring-select
 .ad-search .ad-picklist__option:hover .ad-picklist__lead { color: var(--accent); }
 
 /* src/components/Section/Section.css */
-/* Section and SectionFrame: the one region every screen is built from. The look of a section (its ground, corner and shadow,
-   none at rest) lives here and nowhere else; ListSection, SettingsSection and FormSection carry .ad-section too. */
+/* Section and SectionFrame: the one region every screen is built from. The look of a section (a strong rule over its heading,
+   no panel) lives here and nowhere else; ListSection, SettingsSection and FormSection carry .ad-section too. */
 /* The frame: a screen's sections, 32 apart, the page's whole width. */
 .ad-section-frame { display: flex; flex-direction: column; gap: var(--space-8); min-width: 0; }
-/* The section: a glass panel (Studio glass, locked 2026-10-29) holding its heading, then its body. `ad-section--rule` is the
-   list-only form: no panel, a strong rule over its heading, as the Loudbox site separates blocks. Inside a card or another
-   section, a section is never a panel of its own (no card in a card). */
-.ad-section { display: flex; flex-direction: column; min-width: 0; box-sizing: border-box; padding: var(--space-3) var(--space-6) var(--space-6); border: var(--border-w) solid var(--border); border-radius: var(--radius-page); background: var(--bg-surface); box-shadow: var(--elev-float); position: relative; isolation: isolate; }
-/* The glass is a layer behind the panel, never on the panel: glass on the panel would make it the box that anything fixed to the window measures from, and a card opened inside would run off the screen. */
-.ad-section::before, .ad-card::before { content: ""; position: absolute; inset: 0; z-index: -1; border-radius: inherit; pointer-events: none; backdrop-filter: var(--blur-glass); -webkit-backdrop-filter: var(--blur-glass); }
-.ad-section--rule::before, .ad-card .ad-section::before, .ad-section .ad-section::before { display: none; }
-.ad-section > .ad-group-heading--rule-above { border-top: 0; padding-top: 0; }
-.ad-section--rule, .ad-card .ad-section, .ad-section .ad-section { padding: 0; border: 0; border-radius: 0; background: transparent; box-shadow: none; }
-.ad-section--rule > .ad-group-heading--rule-above { border-top: var(--border-w) solid var(--line-strong); padding-top: var(--space-2); }
+/* The section: a place, not a thing (ruled 2026-11-09). Every section is its heading under a strong rule, on the ground, with no
+   panel, ground, corner or shadow of its own; a card is the only glass. Inside a card or another section, the heading drops the rule
+   (the card's hairline between its sections is the card's). */
+.ad-section { display: flex; flex-direction: column; min-width: 0; box-sizing: border-box; position: relative; }
+.ad-section > .ad-group-heading--rule-above { border-top: var(--border-w) solid var(--line-strong); padding-top: var(--space-2); }
+.ad-card .ad-section > .ad-group-heading--rule-above, .ad-section .ad-section > .ad-group-heading--rule-above { border-top: 0; padding-top: 0; }
 /* The body: the section's groups, 16 apart. */
 .ad-section__body { display: flex; flex-direction: column; gap: var(--space-4); min-width: 0; }
 .ad-section__body[hidden] { display: none; }
@@ -2625,6 +2634,10 @@ button.ad-row__name:focus-visible { outline: none; box-shadow: var(--ring-select
 .ad-figures__item:first-child { padding-left: 0; border-left: 0; }
 .ad-figures__label { margin: 0; }
 .ad-figures__value { margin: 0; font: var(--type-data); font-size: var(--text-20); line-height: var(--lh-none); color: var(--text-primary); }
+/* A count that opens what it counts: the value is the button, plain until pointed at, then coral; never a box. */
+.ad-figures__open { margin: 0; padding: 0; border: 0; background: transparent; font: inherit; color: inherit; cursor: pointer; }
+.ad-figures__open:hover, .ad-figures__open[aria-expanded="true"] { color: var(--accent); }
+.ad-figures__open:focus-visible { outline: none; box-shadow: var(--ring-select); border-radius: var(--radius-control); }
 .ad-figures__note { margin: 0; font: var(--type-detail); line-height: var(--lh-normal); color: var(--text-muted); }
 .ad-figures--grid { grid-template-columns: repeat(auto-fit, minmax(min(100%, var(--card-min-sm)), 1fr)); gap: var(--space-4); border: 0; }
 .ad-figures--grid .ad-figures__item { padding: 0; border: 0; gap: var(--space-1); }
@@ -2862,7 +2875,7 @@ button.ad-milestone:focus-visible { outline: none; box-shadow: var(--ring-select
 /* GroupBand: a group's heading row on the inset plane under a hairline. */
 .ad-group-band { background: var(--ad-inset); border-top: var(--border-w) solid var(--border); }
 /* Inside a card nothing paints the page's black: a band is a step off the card. */
-:is(.ad-card, .ad-section:not(.ad-section--rule)) .ad-group-band { background: var(--bg-surface); }
+.ad-card:not(.ad-card--widget) .ad-group-band { background: var(--bg-surface); }
 /* Lanes and Lane: one row each, the name at the left in the side-menu width, every second lane washed
  bg-surface across the whole width; the marks (day lines, today line) lie over the chart column of every lane. */
 .ad-lanes { position: relative; display: flex; flex-direction: column; }
