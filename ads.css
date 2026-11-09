@@ -3107,7 +3107,11 @@ button.ad-notification:focus-visible { outline: none; box-shadow: var(--ring-sel
 .ad-thread__event { position: relative; display: flex; align-items: baseline; gap: var(--space-3); padding: var(--space-2) 0; font: var(--type-detail); line-height: var(--lh-tight); }
 .ad-thread__event::before { content: ""; position: absolute; left: calc(var(--space-6) * -1 + var(--space-2) - var(--space-1)); top: calc(var(--space-2) + var(--space-hair)); width: var(--space-2); height: var(--space-2); box-sizing: border-box; border-radius: var(--radius-round); background: var(--ad-under); box-shadow: inset 0 0 0 var(--border-w-strong) var(--text-muted); }
 .ad-thread__date { width: var(--w-col-xs); flex: none; font: var(--type-data); font-size: var(--text-xs); color: var(--text-muted); }
-.ad-thread__sentence { flex: 1; min-width: 0; }
+.ad-thread__sentence { flex: 1; min-width: 0; color: var(--text-muted); }
+/* A line about a thing the person can open: the sentence is the press, set left in the same rung and ink, coral under the pointer. */
+.ad-thread__sentence--open { margin: 0; padding: 0; border: 0; background: transparent; font: inherit; text-align: left; cursor: pointer; }
+.ad-thread__sentence--open:hover { color: var(--accent); }
+.ad-thread__sentence--open:focus-visible { outline: none; box-shadow: var(--ring-select); border-radius: var(--radius-control); }
 .ad-thread__time { flex: none; color: var(--text-muted); }
 .ad-rules { display: flex; flex-direction: column; gap: var(--space-2); }
 .ad-rules__match { display: flex; align-items: center; gap: var(--space-2); font: var(--type-body); line-height: var(--lh-tight); color: var(--text-secondary); }

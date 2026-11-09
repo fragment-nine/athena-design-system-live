@@ -4735,7 +4735,7 @@ function Composer({ label, placeholder, value, onChange, onSubmit, submitLabel, 
 function ActivityThread({ events, ariaLabel = "Activity" }) {
   return /* @__PURE__ */ jsx35("ol", { className: "ad-thread", "aria-label": ariaLabel, children: events.map((e) => /* @__PURE__ */ jsxs32("li", { className: "ad-thread__event", children: [
     /* @__PURE__ */ jsx35("span", { className: "ad-thread__date", children: e.date }),
-    /* @__PURE__ */ jsx35("span", { className: "ad-thread__sentence", children: e.sentence }),
+    e.onOpen ? /* @__PURE__ */ jsx35("button", { type: "button", className: "ad-thread__sentence ad-thread__sentence--open", onClick: e.onOpen, children: e.sentence }) : /* @__PURE__ */ jsx35("span", { className: "ad-thread__sentence", children: e.sentence }),
     /* @__PURE__ */ jsx35("span", { className: "ad-thread__time ad-note-data", children: e.time })
   ] }, e.id)) });
 }
