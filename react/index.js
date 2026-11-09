@@ -5773,7 +5773,7 @@ function DayLines({ days, dayWidth }) {
   if (!Number.isFinite(days) || !Number.isFinite(dayWidth) || days <= 0 || dayWidth <= 0) return null;
   return /* @__PURE__ */ jsx44("div", { "aria-hidden": "true", className: "ad-day-lines", style: { width: days * dayWidth, ["--ad-day-w"]: `${dayWidth}px` } });
 }
-function Ruler({ start, days, dayWidth, locale = "en-US", pinned, className }) {
+function Ruler({ start, days, dayWidth, locale = "en-US", pinned, end, className }) {
   const at = (i) => new Date(start.getFullYear(), start.getMonth(), start.getDate() + i);
   const months = [];
   const ticks = [];
@@ -5802,6 +5802,7 @@ function Ruler({ start, days, dayWidth, locale = "en-US", pinned, className }) {
   }
   return /* @__PURE__ */ jsxs41("div", { className: cx("ad-ruler", pinned && "ad-ruler--pinned", className), style: { width: days * dayWidth, ["--ad-day-w"]: `${dayWidth}px` }, children: [
     /* @__PURE__ */ jsx44("div", { className: "ad-ruler__months", "aria-hidden": "true", children: months.map((m) => /* @__PURE__ */ jsx44("span", { className: "ad-ruler__month", style: { left: m.x }, children: m.label }, m.x)) }),
+    end != null && /* @__PURE__ */ jsx44("div", { className: "ad-ruler__end", children: end }),
     /* @__PURE__ */ jsx44("div", { className: "ad-ruler__ticks", "aria-hidden": "true", children: ticks.map((t) => /* @__PURE__ */ jsx44("span", { className: cx("ad-ruler__tick", t.major && "ad-ruler__tick--major"), style: { left: t.x }, children: t.label && /* @__PURE__ */ jsx44("span", { className: "ad-ruler__day", children: t.label }) }, t.x)) })
   ] });
 }
@@ -5824,7 +5825,8 @@ function ZoomCluster({
   fitHeight,
   ariaLabel,
   attrs,
-  labels
+  labels,
+  size = "bar"
 }) {
   const L = { ...NAMES, ...labels };
   const i = zoom ? ORDER.indexOf(zoom) : -1;
@@ -5833,12 +5835,12 @@ function ZoomCluster({
   const inside = onZoomIn ?? (builtin ? () => onZoom(ORDER[Math.max(i - 1, 0)]) : void 0);
   const outLabel = onZoomOut ? L.zoomOut : `${L.zoomOut} (${L[ORDER[Math.min(i + 1, ORDER.length - 1)]]})`;
   const inLabel = onZoomIn ? L.zoomIn : `${L.zoomIn} (${L[ORDER[Math.max(i - 1, 0)]]})`;
-  const btn = (label, glyph, on, off, endpoint) => on && /* @__PURE__ */ jsx44(IconButton, { label: off ? `${label}: ${off}` : label, disabled: !!off || endpoint, onClick: on, children: glyph === "today" ? /* @__PURE__ */ jsx44(Dot, { tone: "neutral" }) : /* @__PURE__ */ jsx44(Icon, { job: glyph, size: "md" }) }, glyph);
-  return /* @__PURE__ */ jsx44(ButtonSizeScope, { size: "bar", children: /* @__PURE__ */ jsxs41(
+  const btn = (label, glyph, on, off, endpoint) => on && /* @__PURE__ */ jsx44(IconButton, { label: off ? `${label}: ${off}` : label, disabled: !!off || endpoint, onClick: on, children: glyph === "today" ? /* @__PURE__ */ jsx44("span", { className: "ad-zoom__today", "aria-hidden": "true" }) : /* @__PURE__ */ jsx44(Icon, { job: glyph, size: size === "compact" ? "sm" : "md" }) }, glyph);
+  return /* @__PURE__ */ jsx44(ButtonSizeScope, { size: size === "compact" ? "row" : "bar", children: /* @__PURE__ */ jsxs41(
     "div",
     {
       ...attrs,
-      className: "ad-zoom",
+      className: cx("ad-zoom", size === "compact" && "ad-zoom--compact"),
       role: "group",
       "aria-label": ariaLabel ?? (zoom ? L[zoom] : "Zoom"),
       "data-fit": fitHeight ? "" : void 0,
@@ -6041,7 +6043,7 @@ function scrollerAbove(el) {
   while (box && !/auto|scroll/.test(getComputedStyle(box).overflowY)) box = box.parentElement;
   return box ?? document.documentElement;
 }
-function TimeGrid({ startHour, endHour, bookings = [], columns, now, hourLabel = clockHour, onOpen, itemProps, columnProps, ariaLabel, bandHours, onPressAt, over, visibleHours, scrollTo, asideWidth = "narrow", hourHeight = "compact", bandHeading, allDayContent, todayLine, className }) {
+function TimeGrid({ headerEnd, startHour, endHour, bookings = [], columns, now, hourLabel = clockHour, onOpen, itemProps, columnProps, ariaLabel, bandHours, onPressAt, over, visibleHours, scrollTo, asideWidth = "narrow", hourHeight = "compact", bandHeading, allDayContent, todayLine, className }) {
   const hours = Math.max(1, endHour - startHour);
   const frame = useRef29(null);
   const [headH, setHeadH] = useState27(0);
@@ -6159,6 +6161,7 @@ function TimeGrid({ startHour, endHour, bookings = [], columns, now, hourLabel =
   const anyBand = cols.some((c) => c.band);
   const headBand = !!bandHeading && anyBand;
   return /* @__PURE__ */ jsxs42("div", { ref: frame, className: cx("ad-time-grid", !!visibleHours && "ad-time-grid--scrolls", `ad-time-grid--aside-${asideWidth}`, hourHeight === "roomy" && "ad-time-grid--roomy", className), role: "group", "aria-label": ariaLabel, tabIndex: visibleHours ? 0 : void 0, style: { ["--ad-hours"]: hours, ["--ad-allday-rows"]: allDayRows, ["--ad-column-count"]: cols.length, ["--ad-allday-content-h"]: `${contentH}px`, ...visibleHours ? { ["--ad-visible-hours"]: visibleHours } : {}, ...headH ? { ["--ad-head-h"]: `${headH}px` } : {} }, children: [
+    headerEnd != null && /* @__PURE__ */ jsx45("div", { className: "ad-time-grid__corner", children: headerEnd }),
     /* @__PURE__ */ jsxs42("div", { className: "ad-time-grid__gutter", "aria-hidden": "true", children: [
       anyBand && !headBand && /* @__PURE__ */ jsx45("div", { className: "ad-time-grid__band-space" }),
       allDayContent != null && /* @__PURE__ */ jsx45("div", { className: "ad-time-grid__content-space" }),

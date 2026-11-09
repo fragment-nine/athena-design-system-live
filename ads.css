@@ -1139,6 +1139,9 @@ button.ad-year__day:focus-visible { outline: none; box-shadow: var(--ring-select
 /* Being made: the span a drag draws out is a coral box with the dark ink on it, as the main button, never a hatch (2026-11-07). */
 .ad-booking--creating { background: var(--accent); background-image: none; box-shadow: none; color: var(--on-accent); }
 .ad-booking--creating :is(.ad-booking__name, .ad-booking__time, .ad-booking__meta) { color: var(--on-accent); }
+/* The time grid's corner (headerEnd): at the right end of the day heads' row, on its own ground over the last head. */
+.ad-time-grid:has(> .ad-time-grid__corner) { position: relative; }
+.ad-time-grid__corner { position: absolute; top: 0; right: 0; z-index: 2; display: flex; align-items: center; }
 
 /* src/components/Card/Card.css */
 /* Card: a board tile, or a dashboard widget as the Dashboard card draws it (small caps title, More at the right in 600). */
@@ -2658,7 +2661,7 @@ button.ad-row__name:focus-visible { outline: none; box-shadow: var(--ring-select
 
 /* src/components/Timeline/Ruler.css */
 /* Ruler and ZoomCluster: a line-strong rule, months in white mono caps along the top, ticks from the rule (weeks taller than
- days), day numbers mono muted in the middle of their day, the ticks on the line where it starts. The zoom cluster sits in the toolbar, before View. */
+ days), day numbers mono muted in the middle of their day, the ticks on the line where it starts. The zoom cluster sits in the chart's top-right corner. */
 .ad-ruler { --ad-day-w: 0px; position: relative; height: var(--h-row); border-bottom: var(--border-w) solid var(--line-strong); font: var(--type-data); font-size: var(--text-xs); color: var(--text-secondary); }
 /* Day spacing is geometry, never rounded to a different scale or dropped with the ruler's labels. */
 .ad-day-lines { --ad-day-w: var(--space-6); position: absolute; top: 0; bottom: 0; left: 0; pointer-events: none; opacity: var(--opacity-faint); background-image: linear-gradient(to right, var(--border) var(--border-w), transparent var(--border-w)); background-size: var(--ad-day-w) 100%; background-repeat: repeat-x; }
@@ -2678,6 +2681,17 @@ button.ad-row__name:focus-visible { outline: none; box-shadow: var(--ring-select
 .ad-zoom[data-fit] .ad-icon-button { width: min(var(--h-btn-bar), var(--ad-zoom-fit)); height: min(var(--h-btn-bar), var(--ad-zoom-fit)); }
 /* Pinned: held at the top of the scroller on its own ground, above the lanes. */
 .ad-ruler--pinned { position: sticky; top: 0; z-index: 2; background: var(--ad-under); }
+/* The chart's corner (Ruler end): over the months' tier at the visible right, held there while the chart scrolls sideways; it may
+   lie over a month's name, on its own ground. */
+.ad-ruler:has(> .ad-ruler__end) { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: start; }
+.ad-ruler:has(> .ad-ruler__end) > .ad-ruler__months { grid-row: 1; grid-column: 1; }
+.ad-ruler__end { grid-row: 1; grid-column: 2; position: sticky; right: 0; z-index: 2; }
+/* Today in the cluster: a short upright line, the chart's today line in miniature. */
+.ad-zoom__today { display: block; width: var(--border-w-strong); height: var(--icon-sm); border-radius: var(--radius-mark); background: currentColor; }
+/* Compact: row-size buttons and small glyphs on one ground of its own, so it reads over a month's name or a day's head. */
+.ad-zoom.ad-zoom--compact, .ad-zoom.ad-zoom--compact[data-fit] { height: var(--h-btn-row); min-height: 0; padding: 0; border: 0; border-radius: var(--radius-control); background: var(--bg-held); }
+.ad-zoom--compact .ad-icon-button { width: var(--h-btn-row); height: var(--h-btn-row); }
+.ad-zoom--compact .ad-zoom__today { height: var(--space-3); }
 
 /* src/components/Timeline/Timeline.css */
 /* Timeline marks, as the Bars and Page-Schedule cards draw them */
