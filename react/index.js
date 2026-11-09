@@ -812,6 +812,9 @@ var REGULAR = {
   "megaphone": [
     "M248,120a48.05,48.05,0,0,0-48-48H160.2c-2.91-.17-53.62-3.74-101.91-44.24A16,16,0,0,0,32,40V200a16,16,0,0,0,26.29,12.25c37.77-31.68,77-40.76,93.71-43.3v31.72A16,16,0,0,0,159.12,214l11,7.33A16,16,0,0,0,194.5,212l11.77-44.36A48.07,48.07,0,0,0,248,120ZM48,199.93V40h0c42.81,35.91,86.63,45,104,47.24v65.48C134.65,155,90.84,164.07,48,199.93Zm131,8,0,.11-11-7.33V168h21.6ZM200,152H168V88h32a32,32,0,1,1,0,64Z"
   ],
+  "milestone-diamond": [
+    "M128,40L216,128L128,216L40,128ZM128,62.6L62.6,128L128,193.4L193.4,128Z"
+  ],
   "minus": [
     "M224,128a8,8,0,0,1-8,8H40a8,8,0,0,1,0-16H216A8,8,0,0,1,224,128Z"
   ],
@@ -1099,6 +1102,9 @@ var FILL = {
   "megaphone": [
     "M200,72H160.2c-2.91-.17-53.62-3.74-101.91-44.24A16,16,0,0,0,32,40V200a16,16,0,0,0,26.29,12.25c37.77-31.68,77-40.76,93.71-43.3v31.72A16,16,0,0,0,159.12,214l11,7.33A16,16,0,0,0,194.5,212l11.77-44.36A48,48,0,0,0,200,72ZM179,207.89l0,.11-11-7.33V168h21.6ZM200,152H168V88h32a32,32,0,1,1,0,64Z"
   ],
+  "milestone-diamond": [
+    "M128,40L216,128L128,216L40,128Z"
+  ],
   "minus": [
     "M208,32H48A16,16,0,0,0,32,48V208a16,16,0,0,0,16,16H208a16,16,0,0,0,16-16V48A16,16,0,0,0,208,32ZM184,136H72a8,8,0,0,1,0-16H184a8,8,0,0,1,0,16Z"
   ],
@@ -1371,6 +1377,9 @@ var LIGHT = {
   "megaphone": [
     "M246,120a46.05,46.05,0,0,0-46-46H160.15c-2.58-.15-54.1-3.57-103.15-44.71A14,14,0,0,0,34,40V200a13.85,13.85,0,0,0,8.07,12.68A14.16,14.16,0,0,0,48,214a13.9,13.9,0,0,0,9-3.3c40-33.52,81.57-42,97-44.07v34a14,14,0,0,0,6.23,11.65l11,7.33a14,14,0,0,0,21.32-8.17l12.13-45.71A46.07,46.07,0,0,0,246,120ZM49.29,201.52A2,2,0,0,1,46,200V40a1.9,1.9,0,0,1,1.15-1.8A2.08,2.08,0,0,1,48,38a1.91,1.91,0,0,1,1.26.48c44,36.92,89,45.19,104.71,47v69C138.29,156.33,93.3,164.61,49.29,201.52Zm131.64,7a2,2,0,0,1-3.05,1.18l-11-7.33a2,2,0,0,1-.89-1.67V166h26.2ZM200,154H166V86h34a34,34,0,1,1,0,68Z"
   ],
+  "milestone-diamond": [
+    "M128,40L216,128L128,216L40,128ZM128,57L57,128L128,199L199,128Z"
+  ],
   "minus": [
     "M222,128a6,6,0,0,1-6,6H40a6,6,0,0,1,0-12H216A6,6,0,0,1,222,128Z"
   ],
@@ -1524,7 +1533,7 @@ var JOBS = {
   "inbox": "tray",
   "info": "info",
   "kind-deliverable": "package",
-  "kind-milestone": "diamond",
+  "kind-milestone": "milestone-diamond",
   "kind-phase": "phase-bar",
   "kind-task": "circle",
   "kind-track": "music-notes",
@@ -2586,7 +2595,8 @@ function SideMenu({ foot = [], screens, projects, views = [], current, onSelect,
     ] })
   ] });
 }
-function PageList({ ariaLabel, head, groups, current, onPick }) {
+function PageList({ ariaLabel, head, search, groups, current, onPick }) {
+  const searching = !!search && search.value.trim() !== "" && search.results != null;
   return /* @__PURE__ */ jsxs14("nav", { className: "ad-side ad-page-list", "aria-label": ariaLabel, children: [
     head && /* @__PURE__ */ jsxs14("div", { className: "ad-page-list__head", children: [
       head.eyebrow != null && /* @__PURE__ */ jsx17("span", { className: "ad-page-list__eyebrow", children: head.eyebrow }),
@@ -2594,7 +2604,32 @@ function PageList({ ariaLabel, head, groups, current, onPick }) {
       head.sub != null && /* @__PURE__ */ jsx17("span", { className: "ad-page-list__sub", children: head.sub }),
       head.state != null && /* @__PURE__ */ jsx17("span", { className: "ad-page-list__state", children: head.state })
     ] }),
-    groups.map((g) => /* @__PURE__ */ jsxs14("div", { className: "ad-page-list__group", children: [
+    search && /* @__PURE__ */ jsx17("div", { className: "ad-page-list__search", children: /* @__PURE__ */ jsx17(
+      TextField,
+      {
+        icon: "search",
+        "aria-label": search.label ?? search.placeholder ?? "Search",
+        placeholder: search.placeholder,
+        value: search.value,
+        onChange: (e) => search.onChange(e.target.value),
+        onKeyDown: (e) => {
+          if (e.key === "Escape" && search.value) {
+            e.preventDefault();
+            e.stopPropagation();
+            search.onChange("");
+          }
+          if (e.key === "ArrowDown") {
+            const first = e.currentTarget.closest(".ad-page-list")?.querySelector(".ad-page-list__results button, .ad-page-list__results [tabindex], .ad-page-list__group button");
+            if (first) {
+              e.preventDefault();
+              first.focus();
+            }
+          }
+        }
+      }
+    ) }),
+    searching && /* @__PURE__ */ jsx17("div", { className: "ad-page-list__results", children: search.results }),
+    !searching && groups.map((g) => /* @__PURE__ */ jsxs14("div", { className: "ad-page-list__group", children: [
       /* @__PURE__ */ jsx17(GroupHeading, { rule: "none", children: g.label }),
       /* @__PURE__ */ jsx17("ul", { className: "ad-side__list", children: g.pages.map((p) => /* @__PURE__ */ jsx17("li", { children: /* @__PURE__ */ jsxs14("button", { type: "button", className: "ad-side__item", "aria-current": p.id === current ? "page" : void 0, onClick: () => onPick(p.id), children: [
         p.icon && /* @__PURE__ */ jsx17("span", { className: "ad-side__icon", "aria-hidden": "true", children: slotIcon(p.icon) }),
@@ -2606,7 +2641,7 @@ function PageList({ ariaLabel, head, groups, current, onPick }) {
 
 // src/components/Row/Row.tsx
 import { Fragment as Fragment5, jsx as jsx18, jsxs as jsxs15 } from "react/jsx-runtime";
-var Row = forwardRef5(function Row2({ name, meta, lead, status, dates, tags, people, trail, selected, picked, dragging, heading, onOpen, onRename, renameLabel, cells, className, onClick, ...rest }, ref) {
+var Row = forwardRef5(function Row2({ name, meta, grip, lead, status, dates, tags, people, trail, selected, picked, dragging, heading, onOpen, onRename, renameLabel, cells, className, onClick, ...rest }, ref) {
   const inList = useInList();
   const { compactRows } = useShow();
   const columns = useContext6(ListColumns);
@@ -2625,6 +2660,7 @@ var Row = forwardRef5(function Row2({ name, meta, lead, status, dates, tags, peo
       },
       className: cx("ad-row", meta != null && "ad-row--two", compactRows && "ad-row--compact", heading && "ad-row--heading", onOpen && "ad-row--opens", className),
       children: [
+        grip && /* @__PURE__ */ jsx18("span", { className: "ad-row__grip", "aria-hidden": "true", children: /* @__PURE__ */ jsx18(Icon, { job: "drag", size: "sm" }) }),
         lead != null && /* @__PURE__ */ jsx18("span", { className: "ad-row__lead", children: /* @__PURE__ */ jsx18(ButtonSizeScope, { size: "row", children: lead }) }),
         /* @__PURE__ */ jsxs15("span", { className: "ad-row__body", children: [
           onRename ? /* @__PURE__ */ jsx18(InlineEdit, { value: String(name), onCommit: onRename, ariaLabel: renameLabel ?? "Name", className: "ad-row__name" }) : onOpen ? /* @__PURE__ */ jsx18("button", { type: "button", className: "ad-row__name ad-open", "aria-current": selected || void 0, onClick: (e) => {
@@ -5279,7 +5315,7 @@ import { useLayoutEffect as useLayoutEffect8, useRef as useRef27, useState as us
 import { jsx as jsx42, jsxs as jsxs39 } from "react/jsx-runtime";
 var NEAR = 8;
 var Arrow = ({ up }) => /* @__PURE__ */ jsx42(SortGlyph, { direction: up ? "ascending" : "descending", size: "sm" });
-function Table({ columns, rows, rowId, caption, sort, onSort, picked, onPickedChange, onPickAllChange, pickLabel, pickAllLabel = "Pick all", onOpen, rowProps, rowTone, group, foldGroups, foldedGroups, onFoldGroup, depth, foldParents, foldedRows, onFoldRow, foldLabel, nameColumn, fixed, onInsertRow, onInsertColumn, insertRowLabel = "Insert a row here", insertColumnLabel = "Insert a column here", total, className }) {
+function Table({ columns, rows, rowId, caption, sort, onSort, picked, onPickedChange, onPickAllChange, pickLabel, pickAllLabel = "Pick all", onOpen, rowProps, groupProps, rowTone, group, foldGroups, foldedGroups, onFoldGroup, depth, foldParents, foldedRows, onFoldRow, foldLabel, nameColumn, fixed, onInsertRow, onInsertColumn, insertRowLabel = "Insert a row here", insertColumnLabel = "Insert a column here", total, className }) {
   const span = columns.length + (onPickedChange ? 1 : 0);
   const [ownFolded, setOwnFolded] = useState25(() => /* @__PURE__ */ new Set());
   const folded = foldedGroups ?? ownFolded;
@@ -5407,7 +5443,7 @@ function Table({ columns, rows, rowId, caption, sort, onSort, picked, onPickedCh
         const head = g != null && g !== lastGroup ? g : null;
         lastGroup = g;
         const shut = !!foldGroups && g != null && folded.has(g);
-        const heading = head != null && /* @__PURE__ */ jsx42("tr", { className: "ad-table__group", children: /* @__PURE__ */ jsx42("th", { scope: "colgroup", colSpan: span, children: foldGroups ? /* @__PURE__ */ jsxs39("button", { type: "button", className: "ad-table__fold", "aria-expanded": !shut, onClick: () => foldGroup(head), children: [
+        const heading = head != null && /* @__PURE__ */ jsx42("tr", { ...groupProps?.(head) ?? {}, className: "ad-table__group", children: /* @__PURE__ */ jsx42("th", { scope: "colgroup", colSpan: span, children: foldGroups ? /* @__PURE__ */ jsxs39("button", { type: "button", className: "ad-table__fold", "aria-expanded": !shut, onClick: () => foldGroup(head), children: [
           /* @__PURE__ */ jsx42(Icon, { name: "caret-down", size: "sm", className: cx("ad-table__chevron", shut && "ad-table__chevron--shut") }),
           head
         ] }) : head }) }, `group-${id}`);
