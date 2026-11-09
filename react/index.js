@@ -6466,7 +6466,7 @@ function Tracker({ periods, ariaLabel, className }) {
 }
 function CellBar({ fraction, display, className }) {
   return /* @__PURE__ */ jsxs45("span", { className: cx("ad-amounts__track", "ad-cellbar", className), children: [
-    /* @__PURE__ */ jsx48("span", { className: "ad-amounts__bar", style: { width: `${clamp01(fraction) * 100}%` }, "aria-hidden": "true" }),
+    /* @__PURE__ */ jsx48("span", { className: "ad-cellbar__room", "aria-hidden": "true", children: /* @__PURE__ */ jsx48("span", { className: "ad-amounts__bar", style: { width: `${clamp01(fraction) * 100}%` } }) }),
     /* @__PURE__ */ jsx48("span", { className: "ad-amounts__value", children: display })
   ] });
 }

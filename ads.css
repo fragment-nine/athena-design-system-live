@@ -1318,6 +1318,7 @@ button.ad-card__name:focus-visible { outline: none; box-shadow: var(--ring-selec
 .ad-tracker__block--problem { background: var(--status-error); }
 
 .ad-cellbar { width: 100%; min-width: calc(var(--w-card) / 2); min-height: 0; }
+.ad-cellbar__room { display: flex; flex: 1; min-width: 0; }
 .ad-cellbar .ad-amounts__bar { height: var(--space-3); }
 
 /* src/components/Checkbox/Checkbox.css */
