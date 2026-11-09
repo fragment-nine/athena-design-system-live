@@ -1261,7 +1261,7 @@ button.ad-card__name:focus-visible { outline: none; box-shadow: var(--ring-selec
 .ad-dial__value { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font: var(--type-data); font-size: var(--text-xs); color: var(--text-primary); }
 .ad-dial__label { font: var(--type-detail); color: var(--text-muted); text-align: center; }
 /* The verdict is the one headline on a screen: the site's weight, a faint coral glow. */
-.ad-verdict__word { margin: 0 0 var(--space-1); font: var(--type-title); font-size: var(--text-28); font-weight: 800; line-height: var(--lh-tight); color: var(--text-primary); text-shadow: var(--glow-hover); }
+.ad-verdict__word { white-space: nowrap; margin: 0 0 var(--space-1); font: var(--type-title); font-size: var(--text-28); font-weight: 800; line-height: var(--lh-tight); color: var(--text-primary); text-shadow: var(--glow-hover); }
 .ad-verdict__sentence { margin: 0; font: var(--type-body); line-height: var(--lh-normal); color: var(--text-secondary); }
 /* A budget's second reading: planned as a lighter layer under the worked part; a named mark where
  another figure falls (the original budget against the revised estimate). */
@@ -2512,6 +2512,9 @@ button.ad-row__name:focus-visible { outline: none; box-shadow: var(--ring-select
 .ad-table .ad-mono { font: var(--type-data); font-size: var(--text-xs); color: var(--text-secondary); }
 .ad-table .ad-num { text-align: right; font: var(--type-data); font-size: var(--text-xs); color: var(--text-secondary); font-variant-numeric: tabular-nums; }
 .ad-table th[scope="col"].ad-num { text-align: right; font: var(--type-heading); text-transform: uppercase; }
+/* A heading the person names by typing keeps their words as typed ("Trim / 9m"), at rest and while typing: the caps are for
+   headings the app writes, never for what someone typed, where a case can change the meaning (metres, not millimetres). */
+.ad-table th[scope="col"] :is(input, textarea, .ad-inline-edit, [contenteditable="true"]) { text-transform: none; }
 .ad-table__row--opens:hover > * { background: var(--tint-hover); }
 .ad-table__row--opens:hover .ad-table__name { color: var(--accent); }
 .ad-table tr[data-picked] > * { background: var(--tint-selected); }

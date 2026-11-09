@@ -3863,7 +3863,7 @@ function PickList({ options, value, onPick, searchLabel, noMatch = "Nothing matc
 }
 
 // src/components/Pickers/Pickers.tsx
-import { cloneElement as cloneElement2, isValidElement as isValidElement3, useRef as useRef16, useState as useState15 } from "react";
+import { cloneElement as cloneElement2, isValidElement as isValidElement3, useEffect as useEffect11, useRef as useRef16, useState as useState15 } from "react";
 import { Fragment as Fragment13, jsx as jsx27, jsxs as jsxs24 } from "react/jsx-runtime";
 function PersonPicker({ people, none, open, anchor, onClose, header, ...rest }) {
   const list = /* @__PURE__ */ jsx27(PickList, { ...rest, options: [...none ? [{ id: none.id, label: none.label, lead: /* @__PURE__ */ jsx27(Icon, { job: "user", size: "sm" }) }] : [], ...people.map((p) => ({ id: p.id, label: p.name, keywords: p.email, hint: p.hint, lead: /* @__PURE__ */ jsx27(Avatar, { name: p.name, initials: p.initials, src: p.src }) }))] });
@@ -3898,6 +3898,11 @@ function PickField({ options, value, onPick, label, placeholder, header, icon, s
     opener()?.focus({ preventScroll: true });
   };
   const z = useLayer(open, close, [box, anchor]);
+  useEffect11(() => {
+    if (!open || typed) return;
+    const id = requestAnimationFrame(() => box.current?.querySelector("[data-autofocus]")?.focus({ preventScroll: true }));
+    return () => cancelAnimationFrame(id);
+  }, [open, typed]);
   const many = Array.isArray(value);
   const picked = options.filter((o) => many ? value.includes(o.id) : o.id === value);
   const face = picked.length === 1 ? picked[0] : null;
@@ -4087,7 +4092,7 @@ function FieldPopover({ label, words, placeholder, icon, title, children, width 
 }
 
 // src/components/Pickers/DatePicker.tsx
-import { useEffect as useEffect11, useId as useId10, useMemo as useMemo2, useRef as useRef17, useState as useState16 } from "react";
+import { useEffect as useEffect12, useId as useId10, useMemo as useMemo2, useRef as useRef17, useState as useState16 } from "react";
 import { jsx as jsx28, jsxs as jsxs25 } from "react/jsx-runtime";
 var EN = { today: "Today", tomorrow: "Tomorrow", nextWeek: "Next week", inTwoWeeks: "In two weeks", previousMonth: "Previous month", nextMonth: "Next month", previousYear: "Previous year", nextYear: "Next year", noDate: "No date", repeat: "Repeat" };
 function DroppedDatePicker({ open, anchor, onClose, repeatEditor, backLabel, ...picker }) {
@@ -4137,7 +4142,7 @@ function DatePickerBody({ value, onChange, today: todayIn, weekStart = 1, locale
   const days = useMemo2(() => Array.from({ length: weeks * 7 }, (_, i) => addDays(start, i)), [formatISO(start), weeks]);
   const weekdays = days.slice(0, 7).map((d) => ({ short: d.toLocaleDateString(locale, { weekday: "narrow" }), long: d.toLocaleDateString(locale, { weekday: "long" }) }));
   const monthName = first.toLocaleDateString(locale, { month: "long", year: "numeric" });
-  useEffect11(() => {
+  useEffect12(() => {
     if (!moved.current) return;
     grid.current?.querySelector(`[data-key="${formatISO(focus)}"]`)?.focus({ preventScroll: true });
   }, [focus]);
@@ -4241,7 +4246,7 @@ function DateField({ onParsed, label, text: given, onText, format, icon, disable
     setText(d ? fmt(d) : "");
     onChange(d);
   };
-  useEffect11(() => {
+  useEffect12(() => {
     if (given === void 0) setOwn(value ? fmt(value) : "");
   }, [value?.getTime()]);
   const result = text && (!value || text !== fmt(value)) ? read2(text) : null;
@@ -4331,14 +4336,14 @@ function SortButton({ keys, value, onKey, direction, onDirection, label = "Sort"
 }
 
 // src/components/Pickers/TimeField.tsx
-import { useEffect as useEffect12, useRef as useRef19, useState as useState18 } from "react";
+import { useEffect as useEffect13, useRef as useRef19, useState as useState18 } from "react";
 import { jsx as jsx30, jsxs as jsxs27 } from "react/jsx-runtime";
 function TimeField({ value, onChange, label, step = 30, bareHoursArePm, className }) {
   const shown = value == null ? "" : formatTimeOfDay(value);
   const [text, setText] = useState18(shown);
   const [open, setOpen] = useState18(false);
   const anchor = useRef19(null);
-  useEffect12(() => setText(shown), [shown]);
+  useEffect13(() => setText(shown), [shown]);
   const read2 = text.trim() && text !== shown ? parseTimeOfDay(text, void 0, { bareHoursArePm }) : null;
   const commit = () => {
     if (read2 != null) onChange(read2);
@@ -4639,14 +4644,14 @@ function Tabs({ tabs, value, onChange, ariaLabel, numbered = true, panelId, clas
 }
 
 // src/components/Toolbar/Toolbar.tsx
-import { forwardRef as forwardRef9, useEffect as useEffect14, useRef as useRef23, useState as useState23 } from "react";
+import { forwardRef as forwardRef9, useEffect as useEffect15, useRef as useRef23, useState as useState23 } from "react";
 
 // src/components/Writing/Writing.tsx
-import { forwardRef as forwardRef8, useEffect as useEffect13, useRef as useRef22 } from "react";
+import { forwardRef as forwardRef8, useEffect as useEffect14, useRef as useRef22 } from "react";
 import { jsx as jsx35, jsxs as jsxs32 } from "react/jsx-runtime";
 function NoteBox({ heading = "Notes", className, value, ...rest }) {
   const ref = useRef22(null);
-  useEffect13(() => {
+  useEffect14(() => {
     const el = ref.current;
     if (el) {
       el.style.height = "auto";
@@ -4660,7 +4665,7 @@ function NoteBox({ heading = "Notes", className, value, ...rest }) {
 }
 function Composer({ label, placeholder, value, onChange, onSubmit, submitLabel, hint, main }) {
   const ref = useRef22(null);
-  useEffect13(() => {
+  useEffect14(() => {
     const el = ref.current;
     if (el) {
       el.style.height = "auto";
@@ -4969,7 +4974,7 @@ function OrderList({ label, items, onReorder }) {
 function ShowSwitch({ setting: s }) {
   const [said, setSaid] = useState23(false);
   const locked = s.on && !!s.reason;
-  useEffect14(() => {
+  useEffect15(() => {
     if (!locked) setSaid(false);
   }, [locked]);
   return /* @__PURE__ */ jsxs33(Fragment16, { children: [
@@ -5887,7 +5892,7 @@ function PeriodCluster({ shown, periods, period, onPeriod, onPrevious, onNext, o
 }
 
 // src/components/Calendar/Calendar.tsx
-import { useEffect as useEffect15, useLayoutEffect as useLayoutEffect10, useRef as useRef29, useState as useState27 } from "react";
+import { useEffect as useEffect16, useLayoutEffect as useLayoutEffect10, useRef as useRef29, useState as useState27 } from "react";
 import { Fragment as Fragment20, jsx as jsx45, jsxs as jsxs42 } from "react/jsx-runtime";
 var code = (it) => it.code ? /* @__PURE__ */ jsx45(ProjectPill, { code: it.code, color: it.color?.startsWith("project-") ? it.color : void 0 }) : null;
 var hooksOf2 = (h) => {
@@ -6048,7 +6053,7 @@ function TimeGrid({ headerEnd, startHour, endHour, bookings = [], columns, now, 
   const hours = Math.max(1, endHour - startHour);
   const frame = useRef29(null);
   const [barW, setBarW] = useState27(0);
-  useEffect15(() => {
+  useEffect16(() => {
     const el = frame.current;
     if (!el || !headerEnd || !visibleHours) return;
     const read2 = () => {
@@ -6092,7 +6097,7 @@ function TimeGrid({ headerEnd, startHour, endHour, bookings = [], columns, now, 
     el.querySelectorAll(".ad-time-grid__head, .ad-time-grid__allday-content").forEach((n) => ro.observe(n));
     return () => ro.disconnect();
   });
-  useEffect15(() => {
+  useEffect16(() => {
     const el = frame.current;
     if (!el || scrollTo == null) return;
     const go = () => {
@@ -6281,7 +6286,7 @@ function PhaseBand({ label, color, unconfirmed }) {
 }
 
 // src/components/Map/Map.tsx
-import { useEffect as useEffect16, useMemo as useMemo3, useRef as useRef30, useState as useState28 } from "react";
+import { useEffect as useEffect17, useMemo as useMemo3, useRef as useRef30, useState as useState28 } from "react";
 
 // src/components/Map/worldGeo.ts
 var GEO_LAT_MAX = 84;
@@ -6354,7 +6359,7 @@ function WorldMap({ pins, at, ariaLabel, onPin, hoverCard, pinProps }) {
   const night = useMemo3(() => nightPath(at), [at]);
   const wrap = useRef30(null);
   const [w, setW] = useState28(0);
-  useEffect16(() => {
+  useEffect17(() => {
     const el = wrap.current;
     if (!el) return;
     setW(el.getBoundingClientRect().width);
@@ -6562,7 +6567,7 @@ function Rings({ rings, ariaLabel, className }) {
 }
 function Verdict({ word, sentence }) {
   return /* @__PURE__ */ jsxs44("div", { className: word ? "ad-verdict" : "ad-verdict ad-verdict--headline", children: [
-    word ? /* @__PURE__ */ jsx47("p", { className: "ad-verdict__word", children: String(word).split(/\s+/)[0] }) : null,
+    word ? /* @__PURE__ */ jsx47("p", { className: "ad-verdict__word", children: String(word) }) : null,
     /* @__PURE__ */ jsx47("p", { className: "ad-verdict__sentence", children: String(sentence) })
   ] });
 }
@@ -6780,7 +6785,7 @@ function Slider({ value, onChange, min = 0, max = 100, step = 1, ariaLabel, disp
 }
 
 // src/components/Toast/Toast.tsx
-import { useEffect as useEffect17, useRef as useRef32, useState as useState29 } from "react";
+import { useEffect as useEffect18, useRef as useRef32, useState as useState29 } from "react";
 import { jsx as jsx51, jsxs as jsxs48 } from "react/jsx-runtime";
 function undoMs() {
   if (typeof window === "undefined") return 4e3;
@@ -6792,7 +6797,7 @@ function Toast({ open, message, action, onClose, closeLabel = "Close", sticky, c
   const [held, setHeld] = useState29(false);
   const close = useRef32(onClose);
   close.current = onClose;
-  useEffect17(() => {
+  useEffect18(() => {
     if (!open || sticky || held) return;
     const t = window.setTimeout(() => close.current(), undoMs());
     return () => window.clearTimeout(t);
@@ -6847,9 +6852,9 @@ function CommandSearch({ open, onClose, query, onQuery, results, onPick, label =
 }
 
 // src/components/Guidance/Guidance.tsx
-import { useEffect as useEffect18, useLayoutEffect as useLayoutEffect11, useRef as useRef34, useState as useState30 } from "react";
+import { useEffect as useEffect19, useLayoutEffect as useLayoutEffect11, useRef as useRef34, useState as useState30 } from "react";
 import { Fragment as Fragment23, jsx as jsx53, jsxs as jsxs49 } from "react/jsx-runtime";
-var useIsoLayoutEffect3 = typeof window === "undefined" ? useEffect18 : useLayoutEffect11;
+var useIsoLayoutEffect3 = typeof window === "undefined" ? useEffect19 : useLayoutEffect11;
 function TourStep({ open, anchor, step, total, title, children, onBack, onNext, onExit, backLabel = "Back", nextLabel = "Next", progressLabel = (s, t) => `${s} of ${t}`, placement, side: older, onClose, closeLabel }) {
   const card = useRef34(null);
   const [rect, setRect] = useState30(null);
@@ -7049,7 +7054,7 @@ function Ground({ children, className, style }) {
 }
 
 // src/runtime/AdsProvider.tsx
-import { useContext as useContext11, useEffect as useEffect19, useMemo as useMemo4 } from "react";
+import { useContext as useContext11, useEffect as useEffect20, useMemo as useMemo4 } from "react";
 import { jsx as jsx55 } from "react/jsx-runtime";
 var MODE = typeof process !== "undefined" && process.env && process.env.NODE_ENV || "development";
 var pending = [];
@@ -7077,11 +7082,11 @@ ${describeViolations(all)}`);
 }
 function AdsProvider({ strict = false, show, children }) {
   const on = strict && MODE !== "production";
-  useEffect19(() => {
+  useEffect20(() => {
     if (!on) return;
     report(scanIn(document.body), true);
   });
-  useEffect19(() => {
+  useEffect20(() => {
     if (!on) return;
     const look = () => report(scanIn(document.body), false);
     const watch = new MutationObserver(look);
