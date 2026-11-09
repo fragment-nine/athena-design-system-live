@@ -2717,6 +2717,11 @@ button.ad-row__name:focus-visible { outline: none; box-shadow: var(--ring-select
 .ad-zoom.ad-zoom--compact, .ad-zoom.ad-zoom--compact[data-fit] { height: var(--h-btn-row); min-height: 0; padding: 0; border: 0; border-radius: var(--radius-control); background: var(--bg-held); }
 .ad-zoom--compact .ad-icon-button { width: var(--h-btn-row); height: var(--h-btn-row); }
 .ad-zoom--compact .ad-zoom__today { height: var(--space-3); }
+/* A day worth a quiet mark (a federal holiday): a tiny neutral dot under the day's number, in the gap above the line; the day's
+   width is its hover target, its name the tip. */
+.ad-ruler__marks { position: absolute; left: 0; right: 0; bottom: 0; height: var(--space-2); }
+.ad-ruler__mark { position: absolute; bottom: 0; width: var(--ad-day-w); height: var(--space-2); }
+.ad-ruler__mark::before { content: ""; position: absolute; left: calc(var(--ad-day-w) / 2); top: 50%; width: var(--space-1); height: var(--space-1); border-radius: var(--radius-round); background: var(--text-muted); transform: translate(-50%, -50%); }
 
 /* src/components/Timeline/Timeline.css */
 /* Timeline marks, as the Bars and Page-Schedule cards draw them */

@@ -5807,7 +5807,7 @@ function DayLines({ days, dayWidth }) {
   if (!Number.isFinite(days) || !Number.isFinite(dayWidth) || days <= 0 || dayWidth <= 0) return null;
   return /* @__PURE__ */ jsx44("div", { "aria-hidden": "true", className: "ad-day-lines", style: { width: days * dayWidth, ["--ad-day-w"]: `${dayWidth}px` } });
 }
-function Ruler({ start, days, dayWidth, locale = "en-US", pinned, end, className }) {
+function Ruler({ start, days, dayWidth, locale = "en-US", pinned, end, marks, className }) {
   const at = (i) => new Date(start.getFullYear(), start.getMonth(), start.getDate() + i);
   const months = [];
   const ticks = [];
@@ -5817,6 +5817,10 @@ function Ruler({ start, days, dayWidth, locale = "en-US", pinned, end, className
   const weekEvery = showDay ? 0 : [1, 2].find((n) => n * 7 * dayWidth >= numberRoom) ?? 0;
   const monthRoom = tokenPx("--w-col-sm", 64);
   let weeks = 0;
+  const pad = (n) => String(n).padStart(2, "0");
+  const dayKey = (d) => `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
+  const marked = new Map((marks ?? []).map((m) => [m.date, m.label]));
+  const dots = [];
   for (let i = 0; i < days; i++) {
     const d = at(i);
     if (d.getDate() === 1 || i === 0) {
@@ -5828,6 +5832,8 @@ function Ruler({ start, days, dayWidth, locale = "en-US", pinned, end, className
         months.push({ x: i * dayWidth, partial: i === 0 && d.getDate() !== 1, label: d.toLocaleDateString(locale, { month: "short", year: d.getMonth() === 0 || first ? "numeric" : void 0 }).toUpperCase() });
       }
     }
+    const mark = showDay && dayEvery ? marked.get(dayKey(d)) : void 0;
+    if (mark) dots.push({ x: i * dayWidth, label: mark, words: `${mark}, ${d.toLocaleDateString(locale, { weekday: "long", month: "long", day: "numeric" })}` });
     const monday = d.getDay() === 1;
     const monthStart = d.getDate() === 1;
     if (showDay) ticks.push({ x: i * dayWidth, major: monday || monthStart, label: dayEvery && i % dayEvery === 0 ? String(d.getDate()) : void 0 });
@@ -5837,7 +5843,8 @@ function Ruler({ start, days, dayWidth, locale = "en-US", pinned, end, className
   return /* @__PURE__ */ jsxs41("div", { className: cx("ad-ruler", pinned && "ad-ruler--pinned", className), style: { width: days * dayWidth, ["--ad-day-w"]: `${dayWidth}px` }, children: [
     /* @__PURE__ */ jsx44("div", { className: "ad-ruler__months", "aria-hidden": "true", children: months.map((m) => /* @__PURE__ */ jsx44("span", { className: "ad-ruler__month", style: { left: m.x }, children: m.label }, m.x)) }),
     end != null && /* @__PURE__ */ jsx44("div", { className: "ad-ruler__end", children: end }),
-    /* @__PURE__ */ jsx44("div", { className: "ad-ruler__ticks", "aria-hidden": "true", children: ticks.map((t) => /* @__PURE__ */ jsx44("span", { className: cx("ad-ruler__tick", t.major && "ad-ruler__tick--major"), style: { left: t.x }, children: t.label && /* @__PURE__ */ jsx44("span", { className: "ad-ruler__day", children: t.label }) }, t.x)) })
+    /* @__PURE__ */ jsx44("div", { className: "ad-ruler__ticks", "aria-hidden": "true", children: ticks.map((t) => /* @__PURE__ */ jsx44("span", { className: cx("ad-ruler__tick", t.major && "ad-ruler__tick--major"), style: { left: t.x }, children: t.label && /* @__PURE__ */ jsx44("span", { className: "ad-ruler__day", children: t.label }) }, t.x)) }),
+    dots.length > 0 && /* @__PURE__ */ jsx44("div", { className: "ad-ruler__marks", children: dots.map((m) => /* @__PURE__ */ jsx44(Tooltip, { text: m.label, children: /* @__PURE__ */ jsx44("span", { className: "ad-ruler__mark", role: "img", "aria-label": m.words, style: { left: m.x } }) }, m.x)) })
   ] });
 }
 var ORDER = ["days", "weeks", "months", "quarters"];
