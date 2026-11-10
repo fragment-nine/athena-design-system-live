@@ -3789,6 +3789,7 @@ function searchOptions(options, query) {
 var ADD_ROW = "__ad-add";
 function PickList({ options, value, onPick, searchLabel, noMatch = "Nothing matches", noSearch, query, onQuery, onAdd, addLabel, footer, className }) {
   const [own, setOwn] = useState14("");
+  const searching = !noSearch && (options.length > 8 || !!onAdd || !!onQuery);
   const q = query ?? own;
   const setQ = (v) => {
     setOwn(v);
@@ -3829,10 +3830,6 @@ function PickList({ options, value, onPick, searchLabel, noMatch = "Nothing matc
       const at2 = (el) => frame.querySelector(`[data-ad-anchor="${CSS.escape(el.dataset.adFor ?? "")}"]`);
       for (const el of items) {
         const a = at2(el);
-        if (a && el.dataset.adGrow) a.style.height = `${el.offsetHeight}px`;
-      }
-      for (const el of items) {
-        const a = at2(el);
         if (a) el.style.top = `${a.offsetTop}px`;
       }
     };
@@ -3851,7 +3848,7 @@ function PickList({ options, value, onPick, searchLabel, noMatch = "Nothing matc
   const onKeyDown2 = (e) => {
     if (e.target.closest?.(".ad-picklist__layer, .ad-picklist__footer")) return;
     const n = !lit && (e.key === "ArrowDown" || e.key === "ArrowUp") ? Math.min(at, live.length - 1) : nextIndex(e.key, Math.min(at, live.length - 1), live.length);
-    if (n != null && (e.key === "ArrowDown" || e.key === "ArrowUp" || noSearch)) {
+    if (n != null && (e.key === "ArrowDown" || e.key === "ArrowUp" || !searching)) {
       e.preventDefault();
       move(n);
       return;
@@ -3871,9 +3868,10 @@ function PickList({ options, value, onPick, searchLabel, noMatch = "Nothing matc
       !many && picked.has(o.id) && /* @__PURE__ */ jsx26("span", { className: "ad-picklist__check", "aria-hidden": "true", children: /* @__PURE__ */ jsx26(Icon, { name: "check", size: "sm" }) })
     ] });
   };
+  const next = shown.find((o) => o.actions != null && picked.has(o.id));
   let lastGroup;
   return /* @__PURE__ */ jsxs23("div", { className: cx("ad-picklist", className), "data-keyed": lit || void 0, onKeyDown: onKeyDown2, children: [
-    !noSearch && /* @__PURE__ */ jsxs23("div", { className: "ad-picklist__search", children: [
+    searching && /* @__PURE__ */ jsxs23("div", { className: "ad-picklist__search", children: [
       /* @__PURE__ */ jsx26(Icon, { name: "magnifying-glass" }),
       /* @__PURE__ */ jsx26(
         "input",
@@ -3896,7 +3894,7 @@ function PickList({ options, value, onPick, searchLabel, noMatch = "Nothing matc
       )
     ] }),
     /* @__PURE__ */ jsxs23("div", { ref: listRef, className: "ad-picklist__list", children: [
-      /* @__PURE__ */ jsxs23("div", { id: listId, role: "listbox", "aria-label": searchLabel, tabIndex: noSearch ? 0 : -1, "data-autofocus": noSearch || void 0, "aria-activedescendant": noSearch && lit && cur ? optId(cur) : void 0, "aria-multiselectable": Array.isArray(value) || void 0, className: "ad-picklist__box", children: [
+      /* @__PURE__ */ jsxs23("div", { id: listId, role: "listbox", "aria-label": searchLabel, tabIndex: searching ? -1 : 0, "data-autofocus": !searching || void 0, "aria-activedescendant": !searching && lit && cur ? optId(cur) : void 0, "aria-multiselectable": Array.isArray(value) || void 0, className: "ad-picklist__box", children: [
         shown.length === 0 && /* @__PURE__ */ jsx26("div", { className: "ad-picklist__empty", children: noMatch }),
         shown.map((o) => {
           const head = o.group && o.group !== lastGroup ? o.group : null;
@@ -3926,8 +3924,7 @@ function PickList({ options, value, onPick, searchLabel, noMatch = "Nothing matc
                 className: "ad-picklist__option",
                 children: row(o, false)
               }
-            ),
-            o.actions != null && picked.has(o.id) && /* @__PURE__ */ jsx26("div", { "aria-hidden": "true", "data-ad-anchor": `${o.id}:actions` })
+            )
           ] }, o.id);
         })
       ] }),
@@ -3943,10 +3940,10 @@ function PickList({ options, value, onPick, searchLabel, noMatch = "Nothing matc
             children: row(o, true)
           },
           `${o.id}:row`
-        ),
-        o.actions != null && picked.has(o.id) && /* @__PURE__ */ jsx26("div", { "data-ad-for": `${o.id}:actions`, "data-ad-grow": "true", role: "group", "aria-label": o.label, className: "ad-picklist__actions", children: /* @__PURE__ */ jsx26(ButtonSizeScope, { size: "row", children: o.actions }) }, `${o.id}:actions`)
+        )
       ]) })
     ] }),
+    next && /* @__PURE__ */ jsx26("div", { role: "group", "aria-label": next.label, className: "ad-picklist__next", children: /* @__PURE__ */ jsx26(ButtonSizeScope, { size: "row", children: next.actions }) }),
     footer != null && /* @__PURE__ */ jsx26("div", { className: "ad-picklist__footer", children: footer })
   ] });
 }
@@ -4008,7 +4005,7 @@ function PickField({ options, value, onPick, label, placeholder, header, icon, s
         options,
         value,
         searchLabel: label,
-        noSearch: !(search ?? options.length > 8),
+        noSearch: search === false,
         footer: foot,
         onPick: (id) => {
           onPick(id);
@@ -4238,7 +4235,7 @@ function DatePickerBody({ value, onChange, today: todayIn, weekStart = 1, locale
   const first = new Date(focus.getFullYear(), focus.getMonth(), 1);
   const lead = (first.getDay() - weekStart + 7) % 7;
   const start = addDays(first, -lead);
-  const weeks = Math.ceil((lead + new Date(focus.getFullYear(), focus.getMonth() + 1, 0).getDate()) / 7);
+  const weeks = 6;
   const days = useMemo2(() => Array.from({ length: weeks * 7 }, (_, i) => addDays(start, i)), [formatISO(start), weeks]);
   const weekdays = days.slice(0, 7).map((d) => ({ short: d.toLocaleDateString(locale, { weekday: "narrow" }), long: d.toLocaleDateString(locale, { weekday: "long" }) }));
   const monthName = first.toLocaleDateString(locale, { month: "long", year: "numeric" });
