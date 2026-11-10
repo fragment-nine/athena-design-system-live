@@ -594,7 +594,6 @@
   --tint-over-min: 25%;
   --tint-over-max: 85%;
   --tint-presence-wash: 18%;
-  --tint-pick-wash: 30%;
   --tint-lane-wash: 8%;
   --tint-bar-edge: 50%;
   --tint-lane-edge: 45%;
@@ -1479,13 +1478,17 @@ button.ad-card__name:focus-visible { outline: none; box-shadow: var(--ring-selec
 .ad-select__native option { background: var(--bg-float); color: var(--text-primary); }
 .ad-select__caret { position: absolute; right: var(--space-3); width: var(--icon-sm); height: var(--icon-sm); color: var(--text-muted); pointer-events: none; }
 .ad-select:hover .ad-select__caret { color: var(--accent); }
-/* PriorityPicker: the closed box washed in its priority's colour, the P-word on it; one tone lighter while open, as any field. */
-.ad-priority-pick { --ad-pick-ink: var(--priority-p4); background: color-mix(in srgb, var(--ad-pick-ink) var(--tint-pick-wash), var(--bg-raised)); }
-.ad-priority-pick:focus-within { background: color-mix(in srgb, var(--ad-pick-ink) var(--tint-pick-wash), var(--bg-hover)); }
+/* PriorityPicker: the closed box drawn as the alerts line's count pill (its height, round corner, mono caps, the priority's colour as
+   the fill, the on-colour ink), with its caret. */
+.ad-priority-pick { --ad-pick-ink: var(--priority-p4); height: var(--h-pill); padding: 0 calc(var(--space-2) + var(--icon-sm) + var(--space-1)) 0 var(--space-2); border-radius: var(--radius-pill); background: var(--ad-pick-ink); color: var(--on-accent); font: var(--type-data); font-size: var(--text-xs); font-variant-numeric: tabular-nums; }
+.ad-priority-pick:focus-within { background: var(--ad-pick-ink); }
+.ad-priority-pick .ad-select__native { height: var(--h-pill); line-height: var(--h-pill); }
 .ad-priority-pick--p1 { --ad-pick-ink: var(--priority-p1); }
 .ad-priority-pick--p2 { --ad-pick-ink: var(--priority-p2); }
 .ad-priority-pick--p3 { --ad-pick-ink: var(--priority-p3); }
-.ad-priority-pick .ad-select__caret { color: var(--text-secondary); }
+.ad-priority-pick .ad-select__caret, .ad-priority-pick:hover .ad-select__caret { right: var(--space-2); color: var(--on-accent); }
+/* A pick box in a row's trail: its closed words at the detail size (the row's meta line), so the row's name reads larger. */
+.ad-row__trail :is(.ad-select, .ad-pick-field):not(.ad-priority-pick) { font: var(--type-detail); }
 /* A settings row: the label in one column, its control right beside it (never across the screen), a hairline under. */
 .ad-field-row { display: grid; grid-template-columns: var(--w-menu) minmax(0, var(--w-card)); justify-content: start; align-items: center; column-gap: var(--space-4); min-height: var(--h-row); border-bottom: var(--border-w) solid var(--border); }
 .ad-field-row__label { display: inline-flex; align-items: center; gap: var(--space-2); font: var(--type-body); line-height: var(--lh-tight); color: var(--text-secondary); }
