@@ -2189,10 +2189,12 @@ var Select = forwardRef2(function Select2({ options, placeholder, quiet, classNa
     open != null && /* @__PURE__ */ jsx10(Portal, { children: /* @__PURE__ */ jsx10("div", { ref: box, style: { ...style, zIndex: z }, className: "ad-float ad-pick-field__list", children: /* @__PURE__ */ jsx10(PickList, { options: options.map((o) => ({ id: o.value, label: o.label, disabled: o.disabled })), value: open, searchLabel: String(rest["aria-label"] ?? placeholder ?? ""), onPick: pick }) }) })
   ] });
 });
-function PriorityPicker({ value, onChange, label = "Priority", words = ["P1", "P2", "P3", "P4"], none, disabled, className }) {
+function PriorityPicker({ value, onChange, label = "Priority", words = ["P1", "P2", "P3", "P4"], none, disabled, className, ...rest }) {
+  const data = Object.fromEntries(Object.entries(rest).filter(([k]) => k.startsWith("data-")));
   return /* @__PURE__ */ jsx10(
     Select,
     {
+      ...data,
       "aria-label": label,
       value: String(value),
       disabled,
@@ -3119,7 +3121,7 @@ function ListBranch({ className, children, ...rest }) {
   const inList = useInList();
   return /* @__PURE__ */ jsx20("div", { role: inList ? "listitem" : void 0, ...rest, className: cx("ad-list-branch", className), children: /* @__PURE__ */ jsx20(InList2.Provider, { value: false, children }) });
 }
-function ListSection({ title, children, collapsible, collapsed, onCollapsedChange, day, bar, dropTarget, emptySentence, look: _look, tree, className, ...heading }) {
+function ListSection({ title, children, collapsible, collapsed, onCollapsedChange, day, bar, dropTarget, emptySentence, tree, className, ...heading }) {
   const none = React.Children.count(children) === 0;
   const [own, setOwn] = useState10(!!collapsible && !heading.needsYou);
   useEffect7(() => {
@@ -3274,7 +3276,7 @@ function SectionFrame({ children, level, numbering, className, ...rest }) {
   };
   return /* @__PURE__ */ jsx22(Ctx.Provider, { value, children: /* @__PURE__ */ jsx22("div", { ...rest, "data-section-frame": frameId, className: cx("ad-section-frame", className), children }) });
 }
-var Section = forwardRef6(function Section2({ title, day, beside, children, className, bodyId, rule, needsYou, lead, end, help, collapsible, collapsed, onToggle, look: _look, onMore, moreLabel = "More", ...rest }, ref) {
+var Section = forwardRef6(function Section2({ title, day, beside, children, className, bodyId, rule, needsYou, lead, end, help, collapsible, collapsed, onToggle, onMore, moreLabel = "More", ...rest }, ref) {
   const frame = useContext8(Ctx);
   if (!frame) throw new Error("Section: a section sits inside a SectionFrame; a heading on its own is a GroupHeading used as a label.");
   const own = useRef11(null);
@@ -4723,10 +4725,8 @@ function countdownWords(c) {
   const days = n === 0 ? "Today" : `${n} ${n === 1 ? "day" : "days"} to`;
   return `${days} ${c.what}`;
 }
-function PageHeader({ title, icon, stamp, tabs, back, description, countdown: given, alerts, picker, gear, onSearch, onPopOut, onHelp, menu, headerLabels, pickerMenu, note, connection, connectionLabels, scramble = true, className }) {
-  const anyEnd = gear || onSearch || onPopOut || onHelp || menu || pickerMenu || connection;
-  const [menuOpen, setMenuOpen] = useState22(false);
-  const menuAt = useRef21(null);
+function PageHeader({ title, icon, stamp, tabs, back, description, countdown: given, alerts, picker, gear, onSearch, onPopOut, onHelp, headerLabels, pickerMenu, note, connection, connectionLabels, scramble = true, className }) {
+  const anyEnd = gear || onSearch || onPopOut || onHelp || pickerMenu || connection;
   const shownStamp = typeof stamp === "string" && STATES.has(stamp);
   const countdown2 = given && typeof given === "object" && given.to instanceof Date ? countdownWords(given) : null;
   return /* @__PURE__ */ jsxs31("header", { className: cx("ad-page-header", className), children: [
@@ -4749,12 +4749,7 @@ function PageHeader({ title, icon, stamp, tabs, back, description, countdown: gi
         gear && /* @__PURE__ */ jsx34(ShowOptionsGear, { ...gear }),
         onSearch && /* @__PURE__ */ jsx34(IconButton, { label: headerLabels?.search ?? "Search", onClick: onSearch, children: /* @__PURE__ */ jsx34(Icon, { job: "search", size: "md" }) }),
         onPopOut && /* @__PURE__ */ jsx34(IconButton, { label: headerLabels?.popOut ?? "Pop out", onClick: onPopOut, children: /* @__PURE__ */ jsx34(Icon, { job: "external", size: "md" }) }),
-        onHelp && /* @__PURE__ */ jsx34(IconButton, { label: headerLabels?.help ?? "Help", onClick: onHelp, children: /* @__PURE__ */ jsx34(Icon, { job: "help", size: "md" }) }),
-        menu && /* @__PURE__ */ jsxs31("span", { className: "ad-page-header__menu", children: [
-          /* @__PURE__ */ jsx34(IconButton, { ref: menuAt, label: menu.label ?? "More", active: menuOpen, "aria-haspopup": "menu", "aria-expanded": menuOpen, onClick: () => setMenuOpen((o) => !o), children: /* @__PURE__ */ jsx34(Icon, { job: "more", size: "md" }) }),
-          menu.marked && /* @__PURE__ */ jsx34("span", { className: "ad-page-header__mark", "aria-hidden": "true" }),
-          /* @__PURE__ */ jsx34(Menu, { open: menuOpen, onClose: () => setMenuOpen(false), anchor: menuAt, ariaLabel: menu.label ?? "More", items: menu.items })
-        ] })
+        onHelp && /* @__PURE__ */ jsx34(IconButton, { label: headerLabels?.help ?? "Help", onClick: onHelp, children: /* @__PURE__ */ jsx34(Icon, { job: "help", size: "md" }) })
       ] })
     ] }),
     tabs && /* @__PURE__ */ jsx34("div", { className: "ad-page-header__tabs", children: tabs })
@@ -5965,7 +5960,7 @@ function OffscreenStart({ date, side = "start" }) {
 var KEY_MARKS = /* @__PURE__ */ new Set(["confirmed", "hatched", "deal", "backup", "clash"]);
 function ChartKey({ items, ariaLabel = "Key" }) {
   return /* @__PURE__ */ jsx43("div", { className: "ad-chart-key", role: "group", "aria-label": ariaLabel, children: items.map((it, i) => {
-    const swatch = typeof it.mark === "string" && KEY_MARKS.has(it.mark) ? /* @__PURE__ */ jsx43("span", { "aria-hidden": "true", className: `ad-chart-key__swatch ad-chart-key__swatch--${it.mark}` }) : it.mark === "away" ? /* @__PURE__ */ jsx43("span", { "aria-hidden": "true", className: "ad-chart-key__presence ad-chart-key__presence--away" }) : it.mark && typeof it.mark === "object" && "presence" in it.mark ? /* @__PURE__ */ jsx43(PresenceSwatch, { colour: it.mark.presence, away: it.mark.away }) : /* @__PURE__ */ jsx43("span", { "aria-hidden": "true", className: "ad-chart-key__mark", children: it.mark });
+    const swatch = typeof it.mark === "string" && KEY_MARKS.has(it.mark) ? /* @__PURE__ */ jsx43("span", { "aria-hidden": "true", className: `ad-chart-key__swatch ad-chart-key__swatch--${it.mark}` }) : it.mark && typeof it.mark === "object" && "presence" in it.mark ? /* @__PURE__ */ jsx43(PresenceSwatch, { colour: it.mark.presence, away: it.mark.away }) : /* @__PURE__ */ jsx43("span", { "aria-hidden": "true", className: "ad-chart-key__mark", children: it.mark });
     const { className: _c, style: _s, ...hooks } = it.itemProps ?? {};
     return it.onPress ? /* @__PURE__ */ jsxs40("button", { type: "button", ...hooks, className: "ad-chart-key__item ad-chart-key__item--press", onClick: (e) => {
       hooks.onClick?.(e);
@@ -6085,11 +6080,9 @@ function ZoomCluster({
   todayOff,
   nextOff,
   noPaging,
-  fitHeight,
   ariaLabel,
   attrs,
-  labels,
-  size = "bar"
+  labels
 }) {
   const L = { ...NAMES, ...labels };
   const i = zoom ? ORDER.indexOf(zoom) : -1;
@@ -6098,54 +6091,14 @@ function ZoomCluster({
   const inside = onZoomIn ?? (builtin ? () => onZoom(ORDER[Math.max(i - 1, 0)]) : void 0);
   const outLabel = onZoomOut ? L.zoomOut : `${L.zoomOut} (${L[ORDER[Math.min(i + 1, ORDER.length - 1)]]})`;
   const inLabel = onZoomIn ? L.zoomIn : `${L.zoomIn} (${L[ORDER[Math.max(i - 1, 0)]]})`;
-  const btn = (label, glyph, on, off, endpoint) => on && /* @__PURE__ */ jsx44(IconButton, { label: off ? `${label}: ${off}` : label, disabled: !!off || endpoint, onClick: on, children: glyph === "today" ? /* @__PURE__ */ jsx44("span", { className: "ad-zoom__today", "aria-hidden": "true" }) : /* @__PURE__ */ jsx44(Icon, { job: glyph, size: size === "compact" ? "sm" : "md" }) }, glyph);
-  return /* @__PURE__ */ jsx44(ButtonSizeScope, { size: size === "compact" ? "row" : "bar", children: /* @__PURE__ */ jsxs41(
-    "div",
-    {
-      ...attrs,
-      className: cx("ad-zoom", size === "compact" && "ad-zoom--compact"),
-      role: "group",
-      "aria-label": ariaLabel ?? (zoom ? L[zoom] : "Zoom"),
-      "data-fit": fitHeight ? "" : void 0,
-      style: fitHeight ? { ["--ad-zoom-fit"]: `${fitHeight}px` } : void 0,
-      children: [
-        btn(outLabel, "minus", out, zoomOutOff, !onZoomOut && i === ORDER.length - 1),
-        !noPaging && btn(L.previous, "chevron-left", onPrevious, previousOff),
-        !noPaging && btn(L.today, "today", onToday, todayOff),
-        !noPaging && btn(L.next, "chevron-right", onNext, nextOff),
-        btn(inLabel, "plus", inside, zoomInOff, !onZoomIn && i === 0)
-      ]
-    }
-  ) });
-}
-function PeriodCluster({ shown, periods, period, onPeriod, onPrevious, onNext, onToday, previousOff, nextOff, labels }) {
-  const L = { previous: "Earlier", today: "Today", next: "Later", period: "Period", ...labels };
-  const sizes = periods && periods.length > 1 && onPeriod ? periods : void 0;
-  const i = sizes ? Math.max(0, sizes.findIndex((p) => p.id === period)) : -1;
-  const wider = sizes && i < sizes.length - 1 ? sizes[i + 1] : void 0;
-  const narrower = sizes && i > 0 ? sizes[i - 1] : void 0;
-  return /* @__PURE__ */ jsx44(
-    ZoomCluster,
-    {
-      ariaLabel: shown,
-      attrs: { "data-period": "" },
-      noPaging: !onPrevious && !onNext && !onToday,
-      onZoomOut: sizes ? () => {
-        if (wider) onPeriod(wider.id);
-      } : void 0,
-      zoomOutOff: sizes && !wider ? "Widest period" : void 0,
-      onZoomIn: sizes ? () => {
-        if (narrower) onPeriod(narrower.id);
-      } : void 0,
-      zoomInOff: sizes && !narrower ? "Narrowest period" : void 0,
-      onPrevious,
-      onNext,
-      onToday,
-      previousOff,
-      nextOff,
-      labels: { previous: L.previous, today: L.today, next: L.next, zoomOut: wider ? `${L.period}: ${wider.label}` : L.period, zoomIn: narrower ? `${L.period}: ${narrower.label}` : L.period }
-    }
-  );
+  const btn = (label, glyph, on, off, endpoint) => on && /* @__PURE__ */ jsx44(IconButton, { label: off ? `${label}: ${off}` : label, disabled: !!off || endpoint, onClick: on, children: glyph === "today" ? /* @__PURE__ */ jsx44("span", { className: "ad-zoom__today", "aria-hidden": "true" }) : /* @__PURE__ */ jsx44(Icon, { job: glyph, size: "sm" }) }, glyph);
+  return /* @__PURE__ */ jsx44(ButtonSizeScope, { size: "row", children: /* @__PURE__ */ jsxs41("div", { ...attrs, className: "ad-zoom ad-zoom--compact", role: "group", "aria-label": ariaLabel ?? (zoom ? L[zoom] : "Zoom"), children: [
+    btn(outLabel, "minus", out, zoomOutOff, !onZoomOut && i === ORDER.length - 1),
+    !noPaging && btn(L.previous, "chevron-left", onPrevious, previousOff),
+    !noPaging && btn(L.today, "today", onToday, todayOff),
+    !noPaging && btn(L.next, "chevron-right", onNext, nextOff),
+    btn(inLabel, "plus", inside, zoomInOff, !onZoomIn && i === 0)
+  ] }) });
 }
 
 // src/components/Calendar/Calendar.tsx
@@ -6513,7 +6466,7 @@ function TimeGrid({ headerEnd, startHour, endHour, bookings = [], columns, now, 
     /* @__PURE__ */ jsx45("div", { className: "ad-time-grid__corner ad-time-grid__corner--pinned", children: headerEnd })
   ] });
 }
-function DayCell({ day, today, where, whereLabel, away, travel, letter, ground, dayProps }) {
+function DayCell({ day, today, where, whereLabel, away, travel, letter, ground, label, dayProps }) {
   const colour = useNamedColour(where);
   const wash = useNamedColour(ground === "none" ? void 0 : ground);
   const n = daysBetween(today, day);
@@ -6524,13 +6477,14 @@ function DayCell({ day, today, where, whereLabel, away, travel, letter, ground, 
     {
       ...hooks,
       role: "group",
-      "aria-label": [day.toDateString(), whereLabel, away ? "away" : "", travel ? "travelling" : ""].filter(Boolean).join(", "),
+      "aria-label": [day.toDateString(), typeof label === "string" ? label : "", whereLabel, away ? "away" : "", travel ? "travelling" : ""].filter(Boolean).join(", "),
       className: cx("ad-day-cell", n < 0 && "ad-day-cell--past", n === 0 && "ad-day-cell--today", weekend && "ad-day-cell--weekend", away && "ad-day-cell--away", wash && "ad-day-cell--ground"),
       style: wash ? { ["--ad-ground"]: wash } : void 0,
       children: [
         /* @__PURE__ */ jsx45("span", { className: "ad-day-cell__letter", "aria-hidden": "true", children: letter ?? ENGLISH.weekdayLetters[day.getDay()] }),
         /* @__PURE__ */ jsx45("span", { className: "ad-day-cell__number", "aria-hidden": "true", children: day.getDate() }),
         /* @__PURE__ */ jsx45("span", { className: "ad-day-cell__where", "aria-hidden": "true", style: colour ? { ["--ad-where"]: colour } : void 0, "data-where": colour ? true : void 0 }),
+        label != null && label !== false && /* @__PURE__ */ jsx45("span", { className: "ad-day-cell__label", "aria-hidden": typeof label === "string" ? true : void 0, children: label }),
         travel && /* @__PURE__ */ jsx45("span", { className: "ad-day-cell__travel", "aria-hidden": "true", children: /* @__PURE__ */ jsx45(Icon, { job: "plane", size: "sm" }) })
       ]
     }
@@ -7530,7 +7484,6 @@ export {
   PageHeader,
   PageList,
   PastHatch,
-  PeriodCluster,
   Person,
   PersonPicker,
   PickField,

@@ -1076,6 +1076,7 @@ button.ad-year__day:focus-visible { outline: none; box-shadow: var(--ring-select
 .ad-day-cell--away .ad-day-cell__where { background: var(--hatch-away), var(--ad-where); }
 .ad-day-cell--ground { background: color-mix(in srgb, var(--ad-ground) var(--tint-presence-wash), transparent); }
 .ad-day-cell--ground.ad-day-cell--today { background: linear-gradient(color-mix(in srgb, var(--ad-ground) var(--tint-presence-wash), transparent), color-mix(in srgb, var(--ad-ground) var(--tint-presence-wash), transparent)), var(--bg-raised); }
+.ad-day-cell__label { align-self: stretch; padding: 0 var(--space-1) var(--space-1); font: var(--type-detail); color: var(--text-muted); text-align: center; overflow-wrap: normal; word-break: normal; hyphens: none; }
 .ad-day-cell__travel { position: absolute; top: var(--space-1); right: var(--space-1); color: var(--text-secondary); }
 
 /* Built 2026-10-28 for the Rehearsal calendar: a rich head, the phase band, overlapping entries side by side, the moments strip. */
@@ -1943,7 +1944,7 @@ button:hover > .ad-project-pill:not(.ad-project-pill--current) { color: var(--ac
 .ad-page-list__search { padding-left: var(--ad-page-list-in); }
 .ad-page-list__search .ad-field { width: 100%; }
 .ad-page-list__head { display: flex; flex-direction: column; gap: var(--space-1); padding-left: var(--ad-page-list-in); }
-.ad-page-list__eyebrow { font: var(--type-heading); text-transform: uppercase; color: var(--text-muted); }
+.ad-page-list__eyebrow { font: var(--type-heading); text-transform: uppercase; color: var(--text-secondary); }
 .ad-page-list__title { font: var(--type-title); text-transform: uppercase; color: var(--text-primary); overflow-wrap: anywhere; }
 .ad-page-list__sub { margin-top: calc(var(--space-1) * -1); font: var(--type-detail); color: var(--text-muted); overflow-wrap: anywhere; }
 .ad-page-list__state { display: flex; align-items: center; min-height: var(--h-btn); }
@@ -1959,7 +1960,7 @@ button:hover > .ad-project-pill:not(.ad-project-pill--current) { color: var(--ac
 .ad-menu__insert { pointer-events: auto; }
 /* Taking one out: an x at the separator's right while you point at it or reach it by keyboard. */
 .ad-menu__sep--removable { position: relative; }
-.ad-menu__sep-remove { position: absolute; right: 0; top: 50%; transform: translateY(-50%); display: inline-flex; align-items: center; justify-content: center; width: var(--h-btn-row); height: var(--h-btn-row); margin: 0; padding: 0; border: 0; border-radius: var(--radius-page); background: var(--bg-raised); color: var(--text-secondary); cursor: pointer; opacity: 0; }
+.ad-menu__sep-remove { position: absolute; right: 0; top: 50%; transform: translateY(-50%); display: inline-flex; align-items: center; justify-content: center; width: var(--h-btn-row); height: var(--h-btn-row); margin: 0; padding: 0; border: 0; border-radius: var(--radius-control); background: var(--bg-raised); color: var(--text-secondary); cursor: pointer; opacity: 0; }
 .ad-menu__sep--removable:hover .ad-menu__sep-remove, .ad-menu__sep-remove:focus-visible { opacity: 1; }
 .ad-menu__sep-remove:hover { color: var(--accent); }
 .ad-menu__sep-remove:focus-visible { outline: none; box-shadow: var(--ring-select); }
@@ -2754,14 +2755,12 @@ button.ad-row__name:focus-visible { outline: none; box-shadow: var(--ring-select
 .ad-ruler__tick { position: absolute; bottom: 0; width: var(--border-w); height: var(--space-1); background: var(--line-strong); }
 .ad-ruler__tick--major { height: var(--space-2); }
 .ad-ruler__day { position: absolute; bottom: var(--space-2); left: calc(var(--ad-day-w) / 2); transform: translateX(-50%); color: var(--text-muted); white-space: nowrap; }
-/* The cluster: toolbar-size icon buttons in a row, the today button a plain dot. It is the one period control on every screen. */
-.ad-zoom { --ad-zoom-fit: var(--h-btn-bar); font: var(--type-data); font-size: var(--text-xs); line-height: var(--lh-none); color: var(--text-muted); }
+/* The cluster: row-size icon buttons in a row on one ground, the today button a plain dot, always compact. It is the one period control on every screen. */
+.ad-zoom { font: var(--type-data); font-size: var(--text-xs); line-height: var(--lh-none); color: var(--text-muted); }
 .ad-zoom__btn { display: inline-flex; align-items: center; justify-content: center; width: var(--h-btn); height: var(--h-seg); margin: 0; padding: 0; border: 0; border-radius: var(--radius-page); background: transparent; color: var(--text-muted); cursor: pointer; }
 .ad-zoom__btn:hover { color: var(--accent); }
 .ad-zoom__btn:focus-visible { outline: none; box-shadow: var(--ring-select); }
 .ad-zoom__btn:disabled { color: var(--text-muted); cursor: default; }
-.ad-zoom[data-fit] { height: var(--ad-zoom-fit); }
-.ad-zoom[data-fit] .ad-icon-button { width: min(var(--h-btn-bar), var(--ad-zoom-fit)); height: min(var(--h-btn-bar), var(--ad-zoom-fit)); }
 /* Pinned: held at the top of the scroller on its own ground, above the lanes. */
 .ad-ruler--pinned { position: sticky; top: 0; z-index: 2; background: var(--ad-under); }
 /* The chart's corner (Ruler end): over the months' tier at the visible right, held there while the chart scrolls sideways; it may
@@ -2772,7 +2771,7 @@ button.ad-row__name:focus-visible { outline: none; box-shadow: var(--ring-select
 /* Today in the cluster: a short upright line, the chart's today line in miniature. */
 .ad-zoom__today { display: block; width: var(--border-w-strong); height: var(--icon-sm); border-radius: var(--radius-mark); background: currentColor; }
 /* Compact: row-size buttons and small glyphs on one ground of its own, so it reads over a month's name or a day's head. */
-.ad-zoom.ad-zoom--compact, .ad-zoom.ad-zoom--compact[data-fit] { height: var(--h-btn-row); min-height: 0; padding: 0; border: 0; border-radius: var(--radius-control); background: var(--bg-held); }
+.ad-zoom.ad-zoom--compact { height: var(--h-btn-row); min-height: 0; padding: 0; border: 0; border-radius: var(--radius-control); background: var(--bg-held); }
 .ad-zoom--compact .ad-icon-button { width: var(--h-btn-row); height: var(--h-btn-row); }
 .ad-zoom--compact .ad-zoom__today { height: var(--space-3); }
 /* A day worth a quiet mark (a federal holiday): a tiny neutral dot under the day's number, in the gap above the line; the day's
