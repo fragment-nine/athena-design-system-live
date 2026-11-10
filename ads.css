@@ -1322,7 +1322,6 @@ button.ad-card__name:focus-visible { outline: none; box-shadow: var(--ring-selec
 .ad-dial__target { stroke: var(--text-primary); stroke-width: var(--border-w-strong); stroke-linecap: round; }
 
 /* A counted dial: the ring in even pieces, a hair of ground between them. */
-.ad-dial__piece { stroke-linecap: butt; }
 /* The fair range: a fine line just inside the ring, never under the arc, so the reading is seen inside it or not. */
 .ad-dial__band { fill: none; stroke: var(--text-muted); stroke-width: var(--border-w-strong); stroke-linecap: round; }
 /* A gauge's scale: a fine tick every tenth outside the ring, longer at the ends and the middle. */
@@ -2403,7 +2402,7 @@ button.ad-row__name:focus-visible { outline: none; box-shadow: var(--ring-select
 
 /* src/components/Section/Section.css */
 /* Section and SectionFrame: the one region every screen is built from. The look of a section (a strong rule over its heading,
-   no panel) lives here and nowhere else; ListSection, SettingsSection and FormSection carry .ad-section too. */
+   no panel) lives here and nowhere else; ListSection and FormSection carry .ad-section too. */
 /* The frame: a screen's sections, 32 apart, the page's whole width. */
 .ad-section-frame { display: flex; flex-direction: column; gap: var(--space-8); min-width: 0; }
 /* The section: a place, not a thing (ruled 2026-11-09). Every section is its heading under a strong rule, on the ground, with no
@@ -2634,7 +2633,6 @@ button.ad-row__name:focus-visible { outline: none; box-shadow: var(--ring-select
 /* src/components/Tag/Tag.css */
 /* Tag, FilterTag, UnreadDot. (TokenPill's look is .ad-token, in Writing.css: one red pill.) */
 .ad-tag { display: inline-flex; align-items: center; justify-content: center; box-sizing: border-box; height: var(--icon-lg); padding: 0 var(--space-1); border-radius: var(--radius-mark); box-shadow: inset 0 0 0 var(--border-w) var(--line-strong); font: var(--type-data); font-size: var(--text-xs); line-height: var(--lh-none); text-transform: uppercase; color: var(--text-secondary); white-space: nowrap; }
-.ad-tag--current { background: var(--text-primary); color: var(--bg-base); box-shadow: none; }
 
 /* An active filter (the Labels card): filled one tone lighter, 28 tall; the axis grey, the value white, its x at the end. */
 .ad-filter-tag { display: inline-flex; align-items: center; gap: var(--space-2); box-sizing: border-box; height: var(--h-btn-bar); padding: 0 var(--space-2) 0 var(--space-3); border-radius: var(--radius-page); background: var(--bg-raised); font: var(--type-name); color: var(--text-primary); white-space: nowrap; }

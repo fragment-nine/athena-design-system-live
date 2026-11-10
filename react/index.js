@@ -2648,8 +2648,8 @@ function Department({ dept: given, name, glyphOnly, onPress, pressLabel }) {
 
 // src/components/Tag/Tag.tsx
 import { jsx as jsx16, jsxs as jsxs13 } from "react/jsx-runtime";
-function Tag({ children, current, tone, className, ...rest }) {
-  return /* @__PURE__ */ jsx16("span", { ...rest, className: cx("ad-tag", current && "ad-tag--current", tone && `ad-tag--${tone}`, className), children });
+function Tag({ children, tone, className, ...rest }) {
+  return /* @__PURE__ */ jsx16("span", { ...rest, className: cx("ad-tag", tone && `ad-tag--${tone}`, className), children });
 }
 function FilterTag({ axis, value, icon, face, onRemove, removeLabel = "Remove filter", size = "bar", className }) {
   return /* @__PURE__ */ jsxs13("span", { className: cx("ad-filter-tag", size === "row" && "ad-filter-tag--row", className), children: [
@@ -4625,7 +4625,7 @@ import { useId as useId12, useRef as useRef21, useState as useState22 } from "re
 import { useRef as useRef20, useState as useState21 } from "react";
 
 // src/components/Settings/Settings.tsx
-import { useId as useId11, useState as useState20 } from "react";
+import { useState as useState20 } from "react";
 import { jsx as jsx32, jsxs as jsxs29 } from "react/jsx-runtime";
 function SettingsLayout({ nav, title, children, className }) {
   return /* @__PURE__ */ jsxs29("div", { className: cx("ad-settings", className), children: [
@@ -4658,13 +4658,6 @@ function SettingsNavItem({ icon, face, label, current, onSelect }) {
       ]
     }
   );
-}
-function SettingsSection({ title, help, number, fold, children }) {
-  const rows = useId11();
-  return /* @__PURE__ */ jsxs29("section", { className: "ad-section ad-settings__section", "data-collapsed": fold ? String(fold.collapsed) : void 0, children: [
-    /* @__PURE__ */ jsx32(GroupHeading, { number, help, collapsible: !!fold, collapsed: fold?.collapsed, onToggle: fold?.onToggle, controls: rows, children: title }),
-    /* @__PURE__ */ jsx32("div", { className: "ad-settings__rows", id: rows, hidden: fold?.collapsed || void 0, children })
-  ] });
 }
 function SettingRow(props) {
   return /* @__PURE__ */ jsx32(FieldRow, { ...props, className: cx("ad-setting", props.className) });
@@ -6695,16 +6688,14 @@ function OverTime({ periods, currentId, grid = [], ariaLabel, className }) {
   ] });
 }
 var clamp01 = (n) => Math.max(0, Math.min(1, Number.isFinite(n) ? n : 0));
-function Dial({ fraction, label, size, value, valueText, half, target, targetLabel, segments: segments2, needle, band, bandLabel, scale, className }) {
+function Dial({ fraction, label, size, value, valueText, half, target, targetLabel, needle, band, bandLabel, scale, className }) {
   const r = 26;
   const span = half ? Math.PI : 2 * Math.PI;
   const c = span * r;
   const f = clamp01(fraction);
-  const pieces = segments2 == null ? 0 : Math.max(2, Math.min(24, Math.round(segments2)));
-  const filled = Math.round(f * pieces);
   const gauge = !!half;
   const pointer = gauge && !!needle;
-  const display = value != null && (size != null || pieces || pointer) ? value : pieces ? `${filled}/${pieces}` : `${Math.round(f * 100)}%`;
+  const display = value != null && (size != null || pointer) ? value : `${Math.round(f * 100)}%`;
   const at = (s, rr) => {
     const a = (gauge ? Math.PI : -Math.PI / 2) + span * s;
     return [35 + rr * Math.cos(a), 35 + rr * Math.sin(a)];
@@ -6721,9 +6712,8 @@ function Dial({ fraction, label, size, value, valueText, half, target, targetLab
   };
   const t = target == null ? null : clamp01(target);
   const b = band == null ? null : [clamp01(Math.min(band[0], band[1])), clamp01(Math.max(band[0], band[1]))];
-  const gap = pieces ? 1.2 / c : 0;
   const said = [
-    size != null || pieces || pointer ? valueText ?? (pieces ? `${filled} of ${pieces}` : null) : null,
+    size != null || pointer ? valueText ?? null : null,
     b != null ? bandLabel ?? `Fair ${Math.round(b[0] * 100)} to ${Math.round(b[1] * 100)}%` : null,
     t != null ? targetLabel ?? `Target ${Math.round(t * 100)}%` : null
   ].filter(Boolean).join(", ");
@@ -6731,9 +6721,9 @@ function Dial({ fraction, label, size, value, valueText, half, target, targetLab
   return /* @__PURE__ */ jsxs44("figure", { className: cx("ad-dial", size != null && "ad-dial--compact", size === "small" && "ad-dial--small", gauge && "ad-dial--half", pointer && "ad-dial--needle", gauge && scale && "ad-dial--scaled", className), children: [
     /* @__PURE__ */ jsxs44("div", { className: "ad-dial__face", role: "meter", "aria-valuemin": 0, "aria-valuemax": 100, "aria-valuenow": Math.round(f * 100), "aria-label": String(label), "aria-valuetext": said || void 0, children: [
       /* @__PURE__ */ jsxs44("svg", { viewBox: gauge ? "0 0 70 40" : "0 0 70 70", "aria-hidden": "true", children: [
-        pieces ? Array.from({ length: pieces }, (_, i) => /* @__PURE__ */ jsx47("path", { className: i < filled ? "ad-dial__arc ad-dial__piece" : "ad-dial__track ad-dial__piece", d: arc(i / pieces + gap, (i + 1) / pieces - gap) }, i)) : gauge ? /* @__PURE__ */ jsx47("path", { className: "ad-dial__track", d: track }) : /* @__PURE__ */ jsx47("circle", { className: "ad-dial__track", cx: "35", cy: "35", r }),
-        b != null && !pieces && b[1] > b[0] && /* @__PURE__ */ jsx47("path", { className: "ad-dial__band", d: arc(b[0], b[1], r - 5.5) }),
-        !pieces && !pointer && (gauge ? /* @__PURE__ */ jsx47("path", { className: "ad-dial__arc", d: track, strokeDasharray: `${c * f} ${c}` }) : /* @__PURE__ */ jsx47("circle", { className: "ad-dial__arc", cx: "35", cy: "35", r, strokeDasharray: `${c * f} ${c}`, transform: "rotate(-90 35 35)" })),
+        gauge ? /* @__PURE__ */ jsx47("path", { className: "ad-dial__track", d: track }) : /* @__PURE__ */ jsx47("circle", { className: "ad-dial__track", cx: "35", cy: "35", r }),
+        b != null && b[1] > b[0] && /* @__PURE__ */ jsx47("path", { className: "ad-dial__band", d: arc(b[0], b[1], r - 5.5) }),
+        !pointer && (gauge ? /* @__PURE__ */ jsx47("path", { className: "ad-dial__arc", d: track, strokeDasharray: `${c * f} ${c}` }) : /* @__PURE__ */ jsx47("circle", { className: "ad-dial__arc", cx: "35", cy: "35", r, strokeDasharray: `${c * f} ${c}`, transform: "rotate(-90 35 35)" })),
         gauge && scale && Array.from({ length: 11 }, (_, i) => /* @__PURE__ */ jsx47("line", { className: "ad-dial__tick", ...line(i / 10, r + 4.5, i % 5 === 0 ? r + 8 : r + 6.5) }, i)),
         t != null && /* @__PURE__ */ jsx47("line", { className: "ad-dial__target", ...line(t, r - 5, r + 5) }),
         pointer && /* @__PURE__ */ jsxs44(Fragment21, { children: [
@@ -7410,7 +7400,6 @@ export {
   SettingsLayout,
   SettingsNav,
   SettingsNavItem,
-  SettingsSection,
   ShareBar,
   ShowOptionsGear,
   SideMenu,
