@@ -1951,7 +1951,7 @@ var Select = forwardRef2(function Select2({ options, placeholder, quiet, classNa
     /* @__PURE__ */ jsx9(Icon, { name: "caret-down", size: "sm", className: "ad-select__caret" })
   ] });
 });
-function PriorityPicker({ value, onChange, label = "Priority", words = ["P1", "P2", "P3", "P4"], disabled, className }) {
+function PriorityPicker({ value, onChange, label = "Priority", words = ["P1", "P2", "P3", "P4"], none, disabled, className }) {
   return /* @__PURE__ */ jsx9(
     Select,
     {
@@ -1959,7 +1959,7 @@ function PriorityPicker({ value, onChange, label = "Priority", words = ["P1", "P
       value: String(value),
       disabled,
       onChange: (e) => onChange(Number(e.target.value)),
-      options: words.map((w, i) => ({ value: String(i + 1), label: w })),
+      options: [...none != null ? [{ value: "0", label: none }] : [], ...words.map((w, i) => ({ value: String(i + 1), label: w }))],
       className: cx("ad-priority-pick", `ad-priority-pick--p${value}`, className)
     }
   );
@@ -3586,7 +3586,7 @@ function ordered(items) {
   const all = danger.length ? [...rest, { kind: "separator", id: "__danger" }, ...danger] : rest;
   return all.filter((i, n) => i.kind !== "separator" || n > 0 && n < all.length - 1 && all[n - 1].kind !== "separator" && all[n - 1].kind !== "heading");
 }
-function MenuRow({ item, i, lit, keepCursor, focusable, onEnter, onChoose }) {
+function MenuRow({ item, i, lit, keepCursor, focusable, checks, onEnter, onChoose }) {
   const { triggerProps, node } = useTooltip(item.tip);
   return /* @__PURE__ */ jsxs22(Fragment11, { children: [
     /* @__PURE__ */ jsxs22(
@@ -3622,7 +3622,7 @@ function MenuRow({ item, i, lit, keepCursor, focusable, onEnter, onChoose }) {
             /* @__PURE__ */ jsx25("span", { className: "ad-menu__sub", children: item.sub })
           ] }) : /* @__PURE__ */ jsx25("span", { className: "ad-menu__label ad-clamp-line", children: item.label }),
           item.shortcut && /* @__PURE__ */ jsx25("kbd", { className: "ad-menu__shortcut", children: item.shortcut }),
-          item.checked && /* @__PURE__ */ jsx25("span", { className: "ad-menu__check", "aria-hidden": "true", children: /* @__PURE__ */ jsx25(Icon, { job: "check", size: "sm" }) })
+          (checks || item.checked) && /* @__PURE__ */ jsx25("span", { className: "ad-menu__check", "aria-hidden": "true", children: item.checked && /* @__PURE__ */ jsx25(Icon, { job: "check", size: "sm" }) })
         ]
       }
     ),
@@ -3699,6 +3699,7 @@ function Menu({ open, onClose, anchor: given_anchor, at: point, items: given, ar
       }
     }
   };
+  const checks = items.some((e) => isItem(e) && e.checked);
   let index = -1;
   const row = (item) => {
     const i = item.disabled ? -1 : ++index;
@@ -3710,6 +3711,7 @@ function Menu({ open, onClose, anchor: given_anchor, at: point, items: given, ar
         lit: i >= 0 && i === lit,
         keepCursor,
         focusable: i === at,
+        checks,
         onEnter: () => {
           if (i < 0) return;
           if (keepCursor) onActiveChange?.(i);
@@ -4927,7 +4929,7 @@ function ViewPopover({ open, onClose, anchor, builtInViews = [], savedViews, cur
       ...onStarView ? { leadControl: /* @__PURE__ */ jsx36(IconButton, { label: v.starred === false ? L.star : L.unstar, "aria-pressed": v.starred !== false, onClick: (e) => {
         e.stopPropagation();
         onStarView(v.id, v.starred === false);
-      }, children: /* @__PURE__ */ jsx36(Icon, { job: "star", fill: v.starred !== false }) }) } : {},
+      }, children: /* @__PURE__ */ jsx36(Icon, { job: "star", fill: v.starred !== false }) }) } : { lead: /* @__PURE__ */ jsx36("span", { className: "ad-view-lead", "aria-hidden": "true" }) },
       hintControl: viewActions ? /* @__PURE__ */ jsx36(IconButton, { label: `${L.more}: ${v.label}`, onClick: (e) => {
         e.stopPropagation();
         menuAnchor.current = e.currentTarget;
@@ -4954,8 +4956,8 @@ function ViewPopover({ open, onClose, anchor, builtInViews = [], savedViews, cur
     setName("");
   };
   return /* @__PURE__ */ jsxs33(Popover, { open, onClose, anchor, ariaLabel: L.view, children: [
-    viewsShown && /* @__PURE__ */ jsxs33(PopoverSection, { label: savedViews && builtInViews.length ? void 0 : savedViews ? L.savedViews : L.builtInViews, children: [
-      savedViews && savedViews.length === 0 && !builtInViews.length && /* @__PURE__ */ jsx36("p", { className: "ad-view-none", children: L.noSaved }),
+    viewsShown && /* @__PURE__ */ jsxs33(PopoverSection, { label: savedViews ? L.savedViews : L.builtInViews, children: [
+      savedViews && savedViews.length === 0 && /* @__PURE__ */ jsx36("p", { className: "ad-view-none", children: L.noSaved }),
       views.length > 0 && /* @__PURE__ */ jsx36(
         PickList,
         {
@@ -4964,6 +4966,7 @@ function ViewPopover({ open, onClose, anchor, builtInViews = [], savedViews, cur
           searchLabel: L.savedViews,
           value: currentView ?? null,
           options: views,
+          className: cx("ad-view-list", savedViews && savedViews.length > 0 && "ad-view-list--named"),
           onPick: (id) => onPickView?.(id)
         }
       ),
@@ -5083,7 +5086,7 @@ function ShowSwitch({ setting: s }) {
     if (!locked) setSaid(false);
   }, [locked]);
   return /* @__PURE__ */ jsxs33(Fragment16, { children: [
-    /* @__PURE__ */ jsx36(FieldRow, { label: s.label, children: /* @__PURE__ */ jsx36(Switch, { checked: s.on, "aria-label": s.label, onChange: (on) => {
+    /* @__PURE__ */ jsx36(SettingRow, { label: s.label, children: /* @__PURE__ */ jsx36(Switch, { checked: s.on, "aria-label": s.label, onChange: (on) => {
       if (locked && !on) {
         setSaid(true);
         return;

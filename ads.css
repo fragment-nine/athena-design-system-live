@@ -377,6 +377,7 @@
   --w-drawer: 268px;
   --w-tip: 200px;
   --w-key: 54px;
+  --w-alert-action: 136px;
   --w-attach-label: 110px;
   --w-scale: 34px;
   --w-number-box: 72px;
@@ -1492,7 +1493,10 @@ button.ad-card__name:focus-visible { outline: none; box-shadow: var(--ring-selec
 .ad-priority-pick--p1 { --ad-pick-ink: var(--priority-p1); }
 .ad-priority-pick--p2 { --ad-pick-ink: var(--priority-p2); }
 .ad-priority-pick--p3 { --ad-pick-ink: var(--priority-p3); }
+/* No priority: an empty pick in the pill's shape, the muted words on the field's fill. */
+.ad-priority-pick.ad-priority-pick--p0 { background: var(--bg-raised); color: var(--text-muted); }
 .ad-priority-pick .ad-select__caret, .ad-priority-pick:hover .ad-select__caret { right: var(--space-2); color: var(--on-accent); }
+.ad-priority-pick--p0 .ad-select__caret, .ad-priority-pick--p0:hover .ad-select__caret { color: var(--text-muted); }
 /* A pick box in a row's trail: its closed words at the detail size (the row's meta line), so the row's name reads larger. */
 .ad-row__trail :is(.ad-select, .ad-pick-field):not(.ad-priority-pick) { font: var(--type-detail); }
 /* A settings row: the label in one column, its control right beside it (never across the screen), a hairline under. */
@@ -1842,7 +1846,7 @@ button.ad-contents__button:focus-visible { outline: none; box-shadow: var(--ring
 .ad-menu__item--two { height: auto; min-height: var(--h-row-2); padding-block: var(--space-2); align-items: flex-start; }
 .ad-menu__words { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: var(--space-hair); }
 .ad-menu__sub { font: var(--type-detail); line-height: var(--lh-normal); color: var(--text-muted); white-space: normal; }
-.ad-menu__check { display: inline-flex; color: var(--text-secondary); }
+.ad-menu__check { display: inline-flex; flex: none; width: var(--icon-sm); color: var(--text-secondary); }
 .ad-menu__item:hover .ad-menu__check { color: var(--text-secondary); }
 /* A group's heading: the group-heading style inside the menu, over its items. */
 .ad-menu__heading { min-height: var(--h-btn); padding: 0 var(--space-3); }
@@ -2279,7 +2283,7 @@ button.ad-steps__press:focus-visible { outline: none; box-shadow: var(--ring-sel
 /* A hairline between a card's sections and between every item in them; a row draws none of its own here, so a line never doubles. */
 .ad-popover__section + .ad-popover__section { border-top: var(--border-w) solid var(--border); padding-top: var(--space-4); }
 .ad-popover .ad-field-row { border-bottom: 0; }
-.ad-popover__section-body > * + *:not(.ad-view__reason), .ad-popover > .ad-field-row + .ad-field-row, .ad-popover__body > .ad-field-row + .ad-field-row { border-top: var(--border-w) solid var(--border); padding-top: var(--space-2); }
+.ad-popover__section-body > * + *:not(.ad-view__reason, .ad-view-or, .ad-view-or + *), .ad-popover > .ad-field-row + .ad-field-row, .ad-popover__body > .ad-field-row + .ad-field-row { border-top: var(--border-w) solid var(--border); padding-top: var(--space-2); }
 
 /* A list's last row at the end of a card's or a section's body draws no line under it: patterns.css (one rule for both). */
 
@@ -3027,6 +3031,12 @@ button.ad-milestone:focus-visible { outline: none; box-shadow: var(--ring-select
 .ad-toolbar .ad-icon-button, .ad-zoom .ad-icon-button, .ad-toolbar .ad-button--view, .ad-toolbar .ad-segmented__option--icon { color: var(--text-primary); }
 .ad-view-save-row { margin-top: var(--space-4); padding-top: var(--space-2); border-top: var(--border-w) solid var(--border); }
 .ad-view-lock { color: var(--text-muted); }
+/* The views list: its group headings on the section labels' line, the saved group's heading not drawn twice (the section's label
+   says it), and every view's lead in one fixed slot (a star, a lock or none), so every name starts on one x. */
+.ad-view-list .ad-picklist__group { padding-left: 0; }
+.ad-view-list--named .ad-picklist__box > :first-child > .ad-picklist__group { display: none; }
+.ad-view-list .ad-picklist__lead { justify-content: center; width: var(--h-btn-row); }
+.ad-view-list .ad-picklist__lead .ad-icon-button { width: var(--h-btn-row); height: var(--h-btn-row); }
 
 /* A Show switch that cannot go off now: its reason, under it, once pressed. */
 .ad-view__reason { display: block; margin: calc(-1 * var(--space-1)) 0 var(--space-2); }
@@ -3058,12 +3068,12 @@ button.ad-milestone:focus-visible { outline: none; box-shadow: var(--ring-select
 /* One alert, in fixed columns: the pill, the sentence (taking the room), the number and the details' i, the action, Snooze, Dismiss,
    the app's mark. In a list every row shares the list's columns (subgrid), so each column starts at the same x on every row; an empty
    column takes no room and no gap (a cell's gap is its own left margin, only while it holds something). */
-.ad-alert { display: grid; grid-template-columns: auto minmax(0, 1fr) repeat(5, auto); align-items: center; min-height: var(--h-row); padding: 0 var(--space-3); border-top: var(--border-w) solid var(--border); }
+.ad-alert { display: grid; grid-template-columns: auto minmax(0, 1fr) auto minmax(var(--w-alert-action), auto) auto auto minmax(var(--w-col-sm), auto); align-items: center; min-height: var(--h-row); padding: 0 var(--space-3); border-top: var(--border-w) solid var(--border); }
 .ad-alert > * + *:not(:empty) { margin-left: var(--space-3); }
 .ad-alert > :is(.ad-alert__snooze, .ad-alert__dismiss):not(:empty) { margin-left: var(--space-1); }
 .ad-alert__info, .ad-alert__actions, .ad-alert__snooze, .ad-alert__dismiss { display: flex; align-items: center; gap: var(--space-2); justify-self: start; }
 .ad-alert__actions .ad-button { gap: var(--space-1); }
-.ad-alert-list { display: grid; grid-template-columns: auto minmax(0, 1fr) repeat(5, auto); }
+.ad-alert-list { display: grid; grid-template-columns: auto minmax(0, 1fr) auto minmax(var(--w-alert-action), auto) auto auto minmax(var(--w-col-sm), auto); }
 .ad-alert-list > :is(.ad-alert, .ad-alert-item), .ad-alert-item > .ad-alert, .ad-alert-item > .ad-alert__under { grid-column: 1 / -1; }
 .ad-alert-list > .ad-alert, .ad-alert-list > .ad-alert-item, .ad-alert-list > .ad-alert-item > .ad-alert { display: grid; grid-template-columns: subgrid; }
 .ad-alert__sentence { min-width: 0; line-height: var(--lh-tight); color: var(--text-primary); }
@@ -3100,8 +3110,9 @@ button.ad-notification:focus-visible { outline: none; box-shadow: var(--ring-sel
 .ad-alerts-line { position: relative; display: inline-flex; align-items: center; }
 .ad-alerts-line .ad-alert-bar__head { width: auto; height: var(--h-btn-bar); padding: 0 var(--space-2); }
 /* The alerts, floating: the list as a glass sheet under the line, over the work; nothing on the page moves. Rows edge to edge. */
-.ad-alerts-float.ad-popover { padding: 0; }
-.ad-alerts-float .ad-alert:first-child { border-top: 0; }
+.ad-alerts-float.ad-popover { padding: var(--space-2) 0; }
+/* A hairline between rows and none above the first (the first row only: a row inside its item wrapper is that wrapper's first child). */
+.ad-alerts-float .ad-alert-list > .ad-alert:first-child, .ad-alerts-float .ad-alert-list > .ad-alert-item:first-child > .ad-alert { border-top: 0; }
 
 /* src/components/Writing/Writing.css */
 /* TokenInput, NoteBox, ActivityThread, RuleBuilder, RuleValue */
@@ -3116,7 +3127,7 @@ button.ad-notification:focus-visible { outline: none; box-shadow: var(--ring-sel
 .ad-token-input__field:has(.ad-token-input__box:focus-visible) { box-shadow: var(--ring-select); }
 .ad-token-input__lead { display: inline-flex; align-items: center; flex: none; }
 .ad-token-input__box { flex: 1; min-width: 0; box-sizing: border-box; padding: calc((var(--h-field) - var(--text-base) * var(--lh-tight)) / 2) 0; font: var(--type-name); line-height: var(--lh-tight); color: var(--text-primary); white-space: pre-wrap; outline: none; }
-.ad-token-input--query .ad-token-input__box { font: var(--type-data); color: var(--text-secondary); }
+.ad-token-input--query .ad-token-input__box { font: var(--type-data); font-size: var(--text-xs); color: var(--text-secondary); }
 .ad-token-input__box[data-empty]::before { content: attr(data-placeholder); color: var(--text-muted); pointer-events: none; }
 /* In the box the pill is drawn in place behind the letters: no padding and no margin, so the
  words keep their place and neighbours keep a clear gap. */
