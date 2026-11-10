@@ -4221,7 +4221,7 @@ function PickField({ options, value, onPick, label, placeholder, header, icon, s
     list
   ] });
 }
-function FieldPopover({ label, words, placeholder, icon, title, children, width = "card", disabled, className }) {
+function FieldPopover({ label, words, placeholder, icon, title, children, width = "card", disabled, fill, className }) {
   const [open, setOpen] = useState15(false);
   const anchor = useRef16(null);
   const close = () => {
@@ -4240,7 +4240,7 @@ function FieldPopover({ label, words, placeholder, icon, title, children, width 
         "aria-expanded": open,
         disabled,
         onClick: () => setOpen((o) => !o),
-        className: cx("ad-field", "ad-pick-field", "ad-field-popover", disabled && "ad-field--disabled", className),
+        className: cx("ad-field", "ad-pick-field", "ad-field-popover", fill && "ad-field--fill", disabled && "ad-field--disabled", className),
         children: [
           icon && /* @__PURE__ */ jsx27(Icon, { job: icon, size: "md", className: "ad-pick-field__icon" }),
           /* @__PURE__ */ jsx27("span", { className: cx("ad-pick-field__words", "ad-clamp-line", empty && "ad-pick-field__words--empty"), children: empty ? placeholder ?? label : words }),
@@ -4726,7 +4726,7 @@ function countdownWords(c) {
   const days = n === 0 ? "Today" : `${n} ${n === 1 ? "day" : "days"} to`;
   return `${days} ${c.what}`;
 }
-function PageHeader({ title, icon, stamp, tabs, back, description, countdown: given, alerts, picker: _picker, gear, onSearch, onPopOut, onHelp, headerLabels, pickerMenu, note, connection, connectionLabels, scramble = true, className }) {
+function PageHeader({ title, icon, stamp, tabs, back, description, countdown: given, alerts, gear, onSearch, onPopOut, onHelp, headerLabels, pickerMenu, note, connection, connectionLabels, scramble = true, className }) {
   const anyEnd = gear || onSearch || onPopOut || onHelp || pickerMenu || connection;
   const shownStamp = typeof stamp === "string" && STATES.has(stamp);
   const countdown2 = given && typeof given === "object" && given.to instanceof Date ? countdownWords(given) : null;
