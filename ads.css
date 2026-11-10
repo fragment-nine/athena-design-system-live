@@ -2614,6 +2614,9 @@ button.ad-row__name:focus-visible { outline: none; box-shadow: var(--ring-select
 .ad-table .ad-table__row--alt > * { background-image: linear-gradient(var(--bg-surface), var(--bg-surface)); }
 /* Column lines: a hairline between columns, from the heading down, in the rows' line. */
 .ad-table--column-lines :is(th, td) + :is(th, td) { border-left: var(--border-w) solid var(--border); }
+/* An add row inside a table (Table addRow, or an app's own): no underline of its own, the table's hairline is the one line; it fills the
+   name cell's height. */
+.ad-table .ad-add-row { border-bottom: 0; height: auto; min-height: var(--h-btn-row); padding: 0; }
 
 /* src/components/Tag/Tag.css */
 /* Tag, FilterTag, UnreadDot. (TokenPill's look is .ad-token, in Writing.css: one red pill.) */
