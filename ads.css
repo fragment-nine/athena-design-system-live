@@ -910,7 +910,9 @@ tr[data-ad-drop="after"] > :is(td, th) { box-shadow: inset 0 calc(var(--bw-selec
 .ad-icon-button:hover { color: var(--accent); background: var(--tint-hover); }
 .ad-icon-button--active { background: var(--bg-raised); color: var(--text-primary); }
 .ad-icon-button:disabled:hover { color: var(--text-muted); background: transparent; }
-.ad-icon-button svg { width: var(--icon-md); height: var(--icon-md); }
+/* An icon button draws its glyph at icon-md unless the glyph is given at sm (a row's remove, a toast's X): then it is sm, as the
+   other marks on its row. */
+.ad-icon-button svg:not(.ad-icon--sm) { width: var(--icon-md); height: var(--icon-md); }
 
 /* src/components/Calendar/Calendar.css */
 /* MonthCalendar, Booking, NowMarker, WeekendShade, TimeGrid, as the Calendar card draws them */
