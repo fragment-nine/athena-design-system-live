@@ -6904,18 +6904,27 @@ function CellBar({ fraction, display, className }) {
 
 // src/components/Path/Path.tsx
 import { Fragment as Fragment22, jsx as jsx49, jsxs as jsxs46 } from "react/jsx-runtime";
-function Steps({ steps, current, onPress, ariaLabel, className }) {
-  const at = Math.max(0, steps.findIndex((s) => s.id === current));
-  return /* @__PURE__ */ jsx49("ol", { className: cx("ad-steps", className), "aria-label": ariaLabel, style: { gridTemplateColumns: `repeat(${Math.max(1, steps.length)}, minmax(0, 1fr))` }, children: steps.map((s, i) => {
-    const state = i < at ? "done" : i === at ? "current" : "next";
-    const words = /* @__PURE__ */ jsxs46(Fragment22, { children: [
-      /* @__PURE__ */ jsx49("span", { className: cx("ad-steps__bar", `ad-steps__bar--${state}`), "aria-hidden": "true" }),
-      /* @__PURE__ */ jsx49("span", { className: "ad-steps__name ad-clamp-line", children: s.label }),
-      s.note && /* @__PURE__ */ jsx49("span", { className: "ad-steps__note ad-clamp-line", children: s.note }),
-      /* @__PURE__ */ jsx49("span", { className: "ad-sr", children: state === "done" ? ", done" : state === "next" ? ", to do" : "" })
-    ] });
-    return /* @__PURE__ */ jsx49("li", { className: cx("ad-steps__step", `ad-steps__step--${state}`), "aria-current": state === "current" ? "step" : void 0, children: state === "done" && onPress ? /* @__PURE__ */ jsx49("button", { type: "button", className: "ad-steps__press", onClick: () => onPress(s.id), children: words }) : /* @__PURE__ */ jsx49("span", { className: "ad-steps__press", children: words }) }, s.id);
-  }) });
+function Steps({ steps, current, onPress, ariaLabel, compact, late, complete, className }) {
+  const finished = useNamedColour(complete);
+  const at = finished ? steps.length : Math.max(0, steps.findIndex((s) => s.id === current));
+  return /* @__PURE__ */ jsx49(
+    "ol",
+    {
+      className: cx("ad-steps", compact && "ad-steps--compact", finished && "ad-steps--complete", className),
+      "aria-label": ariaLabel,
+      style: { gridTemplateColumns: `repeat(${Math.max(1, steps.length)}, minmax(0, 1fr))`, ...finished ? { ["--ad-steps-complete"]: finished } : {} },
+      children: steps.map((s, i) => {
+        const state = i < at ? "done" : i === at ? "current" : "next";
+        const words = /* @__PURE__ */ jsxs46(Fragment22, { children: [
+          /* @__PURE__ */ jsx49("span", { className: cx("ad-steps__bar", `ad-steps__bar--${state}`, state === "current" && late && "ad-steps__bar--late"), "aria-hidden": "true" }),
+          /* @__PURE__ */ jsx49("span", { className: compact ? "ad-sr" : "ad-steps__name ad-clamp-line", children: s.label }),
+          s.note && !compact && /* @__PURE__ */ jsx49("span", { className: "ad-steps__note ad-clamp-line", children: s.note }),
+          /* @__PURE__ */ jsx49("span", { className: "ad-sr", children: state === "done" ? ", done" : state === "next" ? ", to do" : late ? ", late" : "" })
+        ] });
+        return /* @__PURE__ */ jsx49("li", { className: cx("ad-steps__step", `ad-steps__step--${state}`), "aria-current": state === "current" ? "step" : void 0, children: state === "done" && onPress ? /* @__PURE__ */ jsx49("button", { type: "button", className: "ad-steps__press", onClick: () => onPress(s.id), children: words }) : /* @__PURE__ */ jsx49("span", { className: "ad-steps__press", children: words }) }, s.id);
+      })
+    }
+  );
 }
 function Breadcrumbs({ trail, onPress, ariaLabel = "Where you are", className }) {
   return /* @__PURE__ */ jsx49("nav", { className: cx("ad-crumbs", className), "aria-label": ariaLabel, children: /* @__PURE__ */ jsx49("ol", { className: "ad-crumbs__list", children: trail.map((c, i) => {

@@ -2054,7 +2054,7 @@ button:hover > .ad-project-pill:not(.ad-project-pill--current) { color: var(--ac
 
 /* src/components/Path/Path.css */
 /* Steps and Breadcrumbs. */
-.ad-steps { display: grid; gap: var(--space-hair); margin: 0; padding: 0; list-style: none; }
+.ad-steps { --ad-steps-complete: var(--bitrate-grey); display: grid; gap: var(--space-hair); margin: 0; padding: 0; list-style: none; }
 .ad-steps__step { min-width: 0; }
 .ad-steps__press { display: flex; flex-direction: column; gap: var(--space-1); width: 100%; margin: 0; padding: 0; border: 0; background: none; color: inherit; font: inherit; text-align: left; }
 button.ad-steps__press { cursor: pointer; }
@@ -2065,6 +2065,11 @@ button.ad-steps__press:focus-visible { outline: none; box-shadow: var(--ring-sel
 .ad-steps__step:last-child .ad-steps__bar { border-radius: 0 var(--radius-mark) var(--radius-mark) 0; }
 .ad-steps__bar--current { background: var(--text-primary); }
 .ad-steps__bar--next { background: transparent; background-image: var(--hatch); box-shadow: inset 0 0 0 var(--border-w) var(--line-strong); }
+.ad-steps__bar--late { background: var(--status-error-ink); }
+/* The bar alone in a cell: no room under it; every segment the final colour once the run is approved. */
+.ad-steps--compact .ad-steps__bar { margin-bottom: 0; }
+.ad-steps--compact .ad-steps__press { gap: 0; }
+.ad-steps--complete .ad-steps__bar { background: var(--ad-steps-complete); background-image: none; box-shadow: none; }
 .ad-steps__name { font: var(--type-name); color: var(--text-primary); }
 .ad-steps__step--done .ad-steps__name, .ad-steps__step--next .ad-steps__name { color: var(--text-secondary); }
 .ad-steps__note { font: var(--type-detail); color: var(--text-muted); }
