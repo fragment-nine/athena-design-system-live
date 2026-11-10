@@ -814,6 +814,8 @@ tr[data-ad-drop="after"] > :is(td, th) { box-shadow: inset 0 calc(var(--bw-selec
 
 /* src/components/floating/floating.css */
 /* The shared floating surface: neutral glass, one bright pixel along the top, 8 corner. And the loudbox X. */
+/* A drop's trigger width (usePlacement writes it inline): the list or menu is at least that wide. None: no floor. */
+.ad-float { --ad-trigger-w: auto; }
 .ad-float { box-sizing: border-box; --ad-tray: var(--bg-base); /* Quiet buttons and face discs sit one tone lighter than the glass they are on. */
   --ad-lift: var(--bg-float); background: var(--glass-bg); backdrop-filter: var(--blur-glass); -webkit-backdrop-filter: var(--blur-glass); box-shadow: var(--elev-float); border-radius: var(--radius-float); color: var(--text-primary); font: var(--type-name); animation: ad-fade-in var(--dur) var(--ease-out); }
 .ad-float:focus { outline: none; }
@@ -1818,8 +1820,8 @@ button.ad-contents__button:focus-visible { outline: none; box-shadow: var(--ring
 
 /* src/components/Menu/Menu.css */
 /* Menu */
-.ad-menu { display: flex; flex-direction: column; width: var(--w-menu); padding: var(--space-2); } /* its own layout, no longer borrowed from the left menu's frame through the shared name */
-.ad-menu__item { display: flex; align-items: center; gap: var(--space-3); box-sizing: border-box; width: 100%; height: var(--h-btn); margin: 0; padding: 0 var(--space-3); border: 0; border-radius: var(--radius-page); background: transparent; font: var(--type-name); color: var(--text-primary); text-align: left; cursor: pointer; }
+.ad-menu { display: flex; flex-direction: column; width: var(--w-menu); min-width: var(--ad-trigger-w); padding: var(--space-2); overflow-y: auto; } /* its own layout, no longer borrowed from the left menu's frame through the shared name */
+.ad-menu__item { display: flex; align-items: center; gap: var(--space-3); box-sizing: border-box; width: 100%; height: var(--h-btn); margin: 0; padding: 0 var(--space-2); border: 0; border-radius: var(--radius-page); background: transparent; font: var(--type-name); color: var(--text-primary); text-align: left; cursor: pointer; }
 .ad-menu__icon { display: inline-flex; color: var(--text-muted); }
 .ad-menu__icon svg { width: var(--icon-md); height: var(--icon-md); }
 .ad-menu__label { flex: 1; }
@@ -2074,8 +2076,10 @@ button.ad-steps__press:focus-visible { outline: none; box-shadow: var(--ring-sel
 .ad-picklist__search input { all: unset; flex: 1; min-width: 0; font: var(--type-name); color: var(--text-primary); }
 .ad-picklist__search input::placeholder { color: var(--text-muted); }
 .ad-picklist__search:focus-within { background: var(--bg-float); }
-.ad-picklist__search:has(input:focus-visible) { box-shadow: var(--ring-select); }
-.ad-picklist__list { position: relative; max-height: calc(var(--h-row) * 8); overflow-y: auto; outline: none; }
+/* The search takes the cursor when the list opens, with no ring: the ring shows once the keys have moved in the list. */
+.ad-picklist[data-keyed] .ad-picklist__search:has(input:focus-visible) { box-shadow: var(--ring-select); }
+/* A list shows eight rows and scrolls inside past that, wherever it is (a card, a pop-over, the page). */
+.ad-picklist__list { position: relative; max-height: calc(var(--h-btn) * 8); overflow-y: auto; outline: none; }
 .ad-picklist__box { outline: none; }
 .ad-picklist__list:has(> .ad-picklist__box:focus-visible) { box-shadow: var(--ring-select); border-radius: var(--radius-page); }
 /* A row's buttons, beside the listbox (a listbox holds choices only), each placed over its row by PickList. */
@@ -2086,7 +2090,8 @@ button.ad-steps__press:focus-visible { outline: none; box-shadow: var(--ring-sel
 .ad-picklist__place { visibility: hidden; }
 /* A group's heading sits on the same left edge as the rows under it; it reads as a title, in the primary ink. */
 .ad-picklist__group { padding: var(--space-3) var(--space-2) var(--space-1); font: var(--type-heading); text-transform: uppercase; color: var(--text-secondary); }
-.ad-picklist__option, .ad-picklist__over { display: flex; align-items: center; gap: var(--space-3); box-sizing: border-box; height: var(--h-row); padding: 0 var(--space-2); border-radius: var(--radius-page); font: var(--type-name); color: var(--text-primary); cursor: pointer; }
+/* One row height for every menu and pick list (h-btn), an even inset (space-2) at both ends. */
+.ad-picklist__option, .ad-picklist__over { display: flex; align-items: center; gap: var(--space-3); box-sizing: border-box; height: var(--h-btn); padding: 0 var(--space-2); border-radius: var(--radius-page); font: var(--type-name); color: var(--text-primary); cursor: pointer; }
 /* Coral is the light under the cursor only (DR Colour, DR Behaviour): the keyboard's active option keeps the tint, not the ink. */
 .ad-picklist__option[data-active], .ad-picklist__option:hover, .ad-picklist__option[data-hover] { background: var(--tint-hover); }
 .ad-picklist__option:hover, .ad-picklist__option:hover .ad-picklist__lead, .ad-picklist__option[data-hover], .ad-picklist__over[data-hover] .ad-picklist__lead { color: var(--accent); }
@@ -2098,10 +2103,10 @@ button.ad-steps__press:focus-visible { outline: none; box-shadow: var(--ring-sel
 
 .ad-datepicker { width: calc(var(--day-cell) * 7); }
 .ad-datepicker__quick { padding-bottom: var(--space-2); margin-bottom: var(--space-2); border-bottom: var(--border-w) solid var(--border); }
-.ad-datepicker__pick { display: flex; align-items: center; box-sizing: border-box; width: 100%; height: var(--h-btn-bar); margin: 0; padding: 0 var(--space-2); border: 0; border-radius: var(--radius-page); background: transparent; font: var(--type-name); color: var(--text-primary); text-align: left; cursor: pointer; }
+/* A quick pick is a menu row: the row height, the current one marked by the check alone (in a fixed column at the end), no band. */
+.ad-datepicker__pick { display: flex; align-items: center; gap: var(--space-2); box-sizing: border-box; width: 100%; height: var(--h-btn); margin: 0; padding: 0 var(--space-2); border: 0; border-radius: var(--radius-page); background: transparent; font: var(--type-name); color: var(--text-primary); text-align: left; cursor: pointer; }
 .ad-datepicker__pick:hover { background: var(--tint-hover); color: var(--accent); }
 .ad-datepicker__pick:focus-visible { outline: none; box-shadow: var(--ring-select); }
-.ad-datepicker__pick[aria-pressed="true"] { background: var(--bg-hover); }
 .ad-datepicker__pick-date { margin-left: auto; font: var(--type-data); font-size: var(--text-xs); color: var(--text-muted); }
 .ad-datepicker__month { display: flex; align-items: center; justify-content: space-between; padding: var(--space-1) var(--space-2) var(--space-2); }
 .ad-datepicker__navs { display: inline-flex; align-items: center; }
@@ -2135,6 +2140,10 @@ button.ad-steps__press:focus-visible { outline: none; box-shadow: var(--ring-sel
 .ad-datefield__drop.ad-popover { width: auto; padding: var(--space-2); }
 /* What is picked shows: one pick carries a check at the right; picking several draws the tick box before each row. Never coral. */
 .ad-picklist__check { display: inline-flex; margin-left: auto; color: var(--text-secondary); }
+.ad-datepicker__pick .ad-picklist__check { flex: none; width: var(--icon-sm); margin-left: 0; }
+.ad-datepicker__pick > :first-child { flex: 1; }
+/* Bare figures in a pick list (a time list) are in mono, as the date quick picks' are. */
+.ad-picklist--figures .ad-picklist__label { font: var(--type-data); }
 .ad-picklist__option .ad-checkbox__box { margin-right: var(--space-1); }
 /* PickField: the field's skin (filled one tone lighter, no edge) holding the pick's face or code, its words, a caret. */
 .ad-pick-field { cursor: pointer; text-align: left; padding-right: var(--space-3); max-width: 100%; }
@@ -2147,7 +2156,7 @@ button.ad-steps__press:focus-visible { outline: none; box-shadow: var(--ring-sel
 .ad-pick-field:hover .ad-pick-field__caret { color: var(--accent); }
 .ad-pick-field[aria-expanded="true"] { background: var(--bg-hover); }
 .ad-pick-field:focus-visible { outline: none; box-shadow: var(--ring-select); }
-.ad-pick-field__list { width: var(--w-menu); padding: var(--space-2); }
+.ad-pick-field__list { width: var(--w-menu); min-width: var(--ad-trigger-w); padding: var(--space-2); overflow-y: auto; }
 /* The picker's Repeat line under the month: the quick picks' look, its current words in mono at the right. */
 .ad-datepicker__repeat { display: flex; align-items: center; gap: var(--space-2); width: 100%; height: var(--h-btn); margin-top: var(--space-2); padding: 0 var(--space-2); border: 0; border-top: var(--border-w) solid var(--border); border-radius: 0; background: transparent; font: var(--type-name); color: var(--text-primary); cursor: pointer; text-align: left; }
 .ad-datepicker__repeat .ad-datepicker__pick-date { margin-left: auto; }
@@ -2155,7 +2164,7 @@ button.ad-steps__press:focus-visible { outline: none; box-shadow: var(--ring-sel
 .ad-datepicker__repeat:focus-visible { outline: none; box-shadow: var(--ring-select); }
 /* TimeField: the field, and the half-hour list dropping from it. */
 .ad-timefield { display: inline-flex; flex-direction: column; }
-.ad-timefield__drop { width: var(--w-menu); max-height: calc(var(--h-btn) * 8); }
+.ad-popover.ad-timefield__drop { padding: var(--space-2); }
 /* A mark under a day (how busy it is, a clash), and the key for them under the month. */
 .ad-datepicker__mark { position: absolute; bottom: var(--space-hair); left: 50%; transform: translateX(-50%); display: inline-flex; line-height: 0; }
 .ad-datepicker__key { margin-top: var(--space-2); }
@@ -2186,6 +2195,7 @@ button.ad-steps__press:focus-visible { outline: none; box-shadow: var(--ring-sel
 .ad-popover--card { width: var(--w-card); }
 .ad-popover--wide { width: var(--w-wide); }
 .ad-popover--menu { width: var(--w-menu); }
+.ad-popover--menu[style*="--ad-trigger-w"] { min-width: var(--ad-trigger-w); }
 /* As wide as what it holds: a calendar's card with nothing empty beside it. */
 .ad-popover--fit { width: fit-content; }
 /* A row in a card: its name, then its control hard at the card's right edge (2026-10-31, "right justified"); a beside-row's fields
@@ -2260,7 +2270,6 @@ button.ad-steps__press:focus-visible { outline: none; box-shadow: var(--ring-sel
 .ad-popover__title-read .ad-token-input__box { padding: var(--space-1) 0; font: var(--type-title); line-height: var(--lh-tight); overflow-wrap: anywhere; }
 
 /* A list inside a card grows to its rows: the card's body is the one scroll area. */
-.ad-popover .ad-picklist__list { max-height: none; overflow: visible; }
 
 /* A hairline between a card's sections and between every item in them; a row draws none of its own here, so a line never doubles. */
 .ad-popover__section + .ad-popover__section { border-top: var(--border-w) solid var(--border); padding-top: var(--space-4); }

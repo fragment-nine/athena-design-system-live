@@ -268,7 +268,7 @@ function usePlacement(open, anchor, floating, placement, within) {
     const footer = placement === "side" || placement === "over" || placement === "drop" ? (doc ?? document).querySelector(".ad-footer")?.getBoundingClientRect() : void 0;
     const footerTop = footer && footer.height > 0 && footer.top > vh / 2 && footer.top < vh ? footer.top : vh;
     const floor = placement === "drop" && a && a.bottom > footerTop ? vh : footerTop;
-    const header = (placement === "side" || placement === "over") && a ? (doc ?? document).querySelector(".ad-page-header")?.getBoundingClientRect() : void 0;
+    const header = (placement === "side" || placement === "over" || placement === "drop") && a ? (doc ?? document).querySelector(".ad-page-header")?.getBoundingClientRect() : void 0;
     const ceiling = header && header.height > 0 && header.bottom < vh / 2 && a && a.top >= header.bottom ? header.bottom + edge : edge;
     let top;
     let left;
@@ -287,15 +287,20 @@ function usePlacement(open, anchor, floating, placement, within) {
       left = Math.min(a.left, vw - fw - edge);
       top = Math.min(a.top, (room ? Math.min(room.bottom, floor - edge) : floor - edge) - fh);
     } else {
-      left = a.left;
-      top = a.bottom + gap;
-      if (left + fw > vw - edge) left = a.right - fw;
-      const below = floor - edge - top, above = a.top - gap - edge;
-      if (fh > below && below < tokenPx("--h-row", 40) * 4 && above > below) top = Math.max(edge, a.top - gap - Math.min(fh, above));
+      const card = anchor?.current?.closest(".ad-popover, .ad-dialog, .ad-card")?.getBoundingClientRect();
+      const span = card ?? { left: edge, right: vw - edge, width: vw - edge * 2 };
+      left = (a.left + a.right) / 2 > (span.left + span.right) / 2 ? a.right - fw : a.left;
+      if (card && fw <= card.width) left = Math.min(Math.max(left, card.left), card.right - fw);
+      left = Math.min(left, vw - fw - edge);
+      const down = a.bottom + gap, below = floor - edge - down, above = a.top - gap - ceiling;
+      if (fh <= below) top = down;
+      else if (fh <= above) top = a.top - gap - fh;
+      else if (fh <= floor - edge - ceiling) top = floor - edge - fh;
+      else top = below >= above ? down : ceiling;
     }
     const placedTop = Math.round(Math.max(ceiling, top));
-    const next = { top: placedTop, left: Math.round(Math.max(edge, left)), maxHeight: Math.max(0, Math.round(floor - placedTop - edge)) };
-    setPos((p) => p && p.top === next.top && p.left === next.left && p.maxHeight === next.maxHeight ? p : next);
+    const next = { top: placedTop, left: Math.round(Math.max(edge, left)), maxHeight: Math.max(0, Math.round(floor - placedTop - edge)), trigger: placement === "drop" && a ? Math.round(a.width) : 0 };
+    setPos((p) => p && p.top === next.top && p.left === next.left && p.maxHeight === next.maxHeight && p.trigger === next.trigger ? p : next);
   };
   const watched = useRef2(null);
   useIsoLayoutEffect(() => {
@@ -325,7 +330,7 @@ function usePlacement(open, anchor, floating, placement, within) {
       win.removeEventListener("scroll", run, true);
     };
   }, [open]);
-  return pos ? { position: "fixed", top: pos.top, left: pos.left, maxHeight: pos.maxHeight } : { position: "fixed", top: 0, left: 0, visibility: "hidden" };
+  return pos ? { position: "fixed", top: pos.top, left: pos.left, maxHeight: pos.maxHeight, ...pos.trigger ? { "--ad-trigger-w": `${pos.trigger}px` } : {} } : { position: "fixed", top: 0, left: 0, visibility: "hidden" };
 }
 var layers = [];
 var listening = /* @__PURE__ */ new Map();
@@ -3335,7 +3340,7 @@ function PopoverCard({ onClose, width = "card", ariaLabel, noClose, closeLabel, 
   useScrollFade(own);
   const pos = {};
   if (style) {
-    for (const k of ["position", "top", "left", "right", "bottom", "inset", "maxHeight", "zIndex", "visibility"]) if (style[k] !== void 0) pos[k] = style[k];
+    for (const k of ["position", "top", "left", "right", "bottom", "inset", "maxHeight", "zIndex", "visibility", "--ad-trigger-w"]) if (style[k] !== void 0) pos[k] = style[k];
   }
   return /* @__PURE__ */ jsxs20(
     "div",
@@ -3634,11 +3639,13 @@ function Menu({ open, onClose, anchor: given_anchor, at: point, items: given, ar
   const z = useLayer(open, onClose, [box, anchor]);
   const live = items.filter((i) => isItem(i) && !i.disabled);
   const [at, setAt] = useState13(0);
+  const [moved, setMoved] = useState13(false);
   const typed = useRef14({ word: "", at: 0 });
   const doc = useFloatingDocument() ?? document;
   useEffect10(() => {
     if (!open || keepCursor) return;
     setAt(0);
+    setMoved(false);
     const before = doc.activeElement;
     return () => {
       if (before && doc.contains(before)) before.focus({ preventScroll: true });
@@ -3650,7 +3657,7 @@ function Menu({ open, onClose, anchor: given_anchor, at: point, items: given, ar
     return () => cancelAnimationFrame(id);
   }, [open, at]);
   if (!open) return null;
-  const lit = keepCursor ? active ?? 0 : at;
+  const lit = keepCursor ? active ?? 0 : moved ? at : -1;
   const choose = (i) => {
     const item = live[i];
     if (!item) return;
@@ -3661,7 +3668,8 @@ function Menu({ open, onClose, anchor: given_anchor, at: point, items: given, ar
     const n = nextIndex(e.key, at, live.length);
     if (n != null) {
       e.preventDefault();
-      setAt(n);
+      setMoved(true);
+      if (moved || e.key !== "ArrowDown" && e.key !== "ArrowUp") setAt(n);
       return;
     }
     if (e.key === "Enter" || e.key === " ") {
@@ -3685,6 +3693,7 @@ function Menu({ open, onClose, anchor: given_anchor, at: point, items: given, ar
         const j = (at + s) % live.length;
         if (live[j].label.toLowerCase().startsWith(seek)) {
           setAt(j);
+          setMoved(true);
           break;
         }
       }
@@ -3704,7 +3713,10 @@ function Menu({ open, onClose, anchor: given_anchor, at: point, items: given, ar
         onEnter: () => {
           if (i < 0) return;
           if (keepCursor) onActiveChange?.(i);
-          else setAt(i);
+          else {
+            setAt(i);
+            setMoved(true);
+          }
         },
         onChoose: () => {
           if (i >= 0) choose(i);
@@ -3798,9 +3810,14 @@ function PickList({ options, value, onPick, searchLabel, noMatch = "Nothing matc
   const live = shown.filter((o) => !o.disabled);
   const start = Math.max(0, live.findIndex((o) => picked.has(o.id)));
   const [at, setAt] = useState14(start);
+  const [lit, setLit] = useState14(false);
   const cur = live[Math.min(at, live.length - 1)];
   const listRef = useRef15(null);
   useScrollFade(listRef);
+  useLayoutEffect6(() => {
+    const list = listRef.current, row2 = list?.querySelector('[aria-selected="true"]');
+    if (list && row2 && list.scrollHeight > list.clientHeight) list.scrollTop = Math.max(0, row2.offsetTop - (list.clientHeight - row2.offsetHeight) / 2);
+  }, []);
   const layerRef = useRef15(null);
   const [hover, setHover] = useState14(null);
   const optId = (o) => `${listId}-${o.id}`;
@@ -3828,17 +3845,18 @@ function PickList({ options, value, onPick, searchLabel, noMatch = "Nothing matc
   });
   const move = (i) => {
     setAt(i);
+    setLit(true);
     requestAnimationFrame(() => listRef.current?.querySelector(`[data-active]`)?.scrollIntoView({ block: "nearest" }));
   };
   const onKeyDown2 = (e) => {
     if (e.target.closest?.(".ad-picklist__layer, .ad-picklist__footer")) return;
-    const n = nextIndex(e.key, Math.min(at, live.length - 1), live.length);
+    const n = !lit && (e.key === "ArrowDown" || e.key === "ArrowUp") ? Math.min(at, live.length - 1) : nextIndex(e.key, Math.min(at, live.length - 1), live.length);
     if (n != null && (e.key === "ArrowDown" || e.key === "ArrowUp" || noSearch)) {
       e.preventDefault();
       move(n);
       return;
     }
-    if (e.key === "Enter" && cur) {
+    if (e.key === "Enter" && cur && lit) {
       e.preventDefault();
       pick(cur.id);
     }
@@ -3854,7 +3872,7 @@ function PickList({ options, value, onPick, searchLabel, noMatch = "Nothing matc
     ] });
   };
   let lastGroup;
-  return /* @__PURE__ */ jsxs23("div", { className: cx("ad-picklist", className), onKeyDown: onKeyDown2, children: [
+  return /* @__PURE__ */ jsxs23("div", { className: cx("ad-picklist", className), "data-keyed": lit || void 0, onKeyDown: onKeyDown2, children: [
     !noSearch && /* @__PURE__ */ jsxs23("div", { className: "ad-picklist__search", children: [
       /* @__PURE__ */ jsx26(Icon, { name: "magnifying-glass" }),
       /* @__PURE__ */ jsx26(
@@ -3864,7 +3882,7 @@ function PickList({ options, value, onPick, searchLabel, noMatch = "Nothing matc
           role: "combobox",
           "aria-expanded": "true",
           "aria-controls": listId,
-          "aria-activedescendant": cur ? optId(cur) : void 0,
+          "aria-activedescendant": lit && cur ? optId(cur) : void 0,
           "aria-autocomplete": "list",
           "aria-label": searchLabel,
           placeholder: searchLabel,
@@ -3872,17 +3890,18 @@ function PickList({ options, value, onPick, searchLabel, noMatch = "Nothing matc
           onChange: (e) => {
             setQ(e.target.value);
             setAt(0);
+            setLit(!!e.target.value.trim());
           }
         }
       )
     ] }),
     /* @__PURE__ */ jsxs23("div", { ref: listRef, className: "ad-picklist__list", children: [
-      /* @__PURE__ */ jsxs23("div", { id: listId, role: "listbox", "aria-label": searchLabel, tabIndex: noSearch ? 0 : -1, "data-autofocus": noSearch || void 0, "aria-activedescendant": noSearch && cur ? optId(cur) : void 0, "aria-multiselectable": Array.isArray(value) || void 0, className: "ad-picklist__box", children: [
+      /* @__PURE__ */ jsxs23("div", { id: listId, role: "listbox", "aria-label": searchLabel, tabIndex: noSearch ? 0 : -1, "data-autofocus": noSearch || void 0, "aria-activedescendant": noSearch && lit && cur ? optId(cur) : void 0, "aria-multiselectable": Array.isArray(value) || void 0, className: "ad-picklist__box", children: [
         shown.length === 0 && /* @__PURE__ */ jsx26("div", { className: "ad-picklist__empty", children: noMatch }),
         shown.map((o) => {
           const head = o.group && o.group !== lastGroup ? o.group : null;
           lastGroup = o.group;
-          const active = o === cur;
+          const active = lit && o === cur;
           return /* @__PURE__ */ jsxs23("div", { role: "presentation", children: [
             head && /* @__PURE__ */ jsx26("div", { className: "ad-picklist__group", role: "presentation", children: head }),
             /* @__PURE__ */ jsx26(
@@ -3898,7 +3917,10 @@ function PickList({ options, value, onPick, searchLabel, noMatch = "Nothing matc
                 "data-ad-anchor": `${o.id}:row`,
                 onPointerMove: () => {
                   const i = live.indexOf(o);
-                  if (i >= 0 && i !== at) setAt(i);
+                  if (i >= 0 && (i !== at || !lit)) {
+                    setAt(i);
+                    setLit(true);
+                  }
                 },
                 onClick: () => !o.disabled && pick(o.id),
                 className: "ad-picklist__option",
@@ -4251,9 +4273,13 @@ function DatePickerBody({ value, onChange, today: todayIn, weekStart = 1, locale
     (picks.length > 0 || onClear) && /* @__PURE__ */ jsxs25("div", { className: "ad-datepicker__quick", children: [
       picks.map((p) => /* @__PURE__ */ jsxs25("button", { type: "button", className: "ad-datepicker__pick", "aria-pressed": sameDay(value, p.date), onClick: () => onChange(dayOf(p.date)), children: [
         /* @__PURE__ */ jsx28("span", { children: p.label }),
-        /* @__PURE__ */ jsx28("span", { className: "ad-datepicker__pick-date", children: pickDate(p.date) })
+        /* @__PURE__ */ jsx28("span", { className: "ad-datepicker__pick-date", children: pickDate(p.date) }),
+        /* @__PURE__ */ jsx28("span", { className: "ad-picklist__check", "aria-hidden": "true", children: sameDay(value, p.date) && /* @__PURE__ */ jsx28(Icon, { name: "check", size: "sm" }) })
       ] }, p.id)),
-      onClear && /* @__PURE__ */ jsx28("button", { type: "button", className: "ad-datepicker__pick", "aria-pressed": value == null, onClick: onClear, children: /* @__PURE__ */ jsx28("span", { children: labels.noDate }) })
+      onClear && /* @__PURE__ */ jsxs25("button", { type: "button", className: "ad-datepicker__pick", "aria-pressed": value == null, onClick: onClear, children: [
+        /* @__PURE__ */ jsx28("span", { children: labels.noDate }),
+        /* @__PURE__ */ jsx28("span", { className: "ad-picklist__check", "aria-hidden": "true", children: value == null && /* @__PURE__ */ jsx28(Icon, { name: "check", size: "sm" }) })
+      ] })
     ] }),
     /* @__PURE__ */ jsxs25("div", { className: "ad-datepicker__month", children: [
       /* @__PURE__ */ jsx28("span", { className: "ad-datepicker__month-name", "aria-live": "polite", children: monthName }),
@@ -4457,10 +4483,11 @@ function TimeField({ value, onChange, label, step = 30, bareHoursArePm, classNam
         }
       }
     ),
-    /* @__PURE__ */ jsx30(Popover, { open, onClose: () => setOpen(false), anchor, noClose: true, keepFocus: true, ariaLabel: label, className: "ad-timefield__drop", children: /* @__PURE__ */ jsx30(
+    /* @__PURE__ */ jsx30(Popover, { open, onClose: () => setOpen(false), anchor, width: "menu", noClose: true, keepFocus: true, ariaLabel: label, className: "ad-timefield__drop", children: /* @__PURE__ */ jsx30(
       PickList,
       {
         noSearch: true,
+        className: "ad-picklist--figures",
         searchLabel: label,
         value: value == null ? null : String(value),
         options: times.map((m) => ({ id: String(m), label: formatTimeOfDay(m) })),
