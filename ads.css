@@ -1045,7 +1045,7 @@ button.ad-year__day:focus-visible { outline: none; box-shadow: var(--ring-select
 /* A figure takes the second line: a seven-day column has no room for it beside the day and its buttons. */
 .ad-time-grid:has(.ad-time-grid__figure) { --ad-day-h: calc(var(--h-btn-row) * 2); }
 .ad-time-grid__column > .ad-time-grid__day { position: sticky; top: 0; bottom: auto; left: auto; z-index: var(--z-sticky); display: flex; flex-direction: column; box-sizing: border-box; height: var(--ad-day-h); min-width: 0; overflow: hidden; padding: 0 var(--space-2); background: var(--ad-under); }
-.ad-time-grid:not(:has(.ad-time-grid__head)) .ad-time-grid__gutter::before, .ad-time-grid--scrolls .ad-time-grid__gutter::before { content: ''; display: block; position: sticky; top: 0; z-index: var(--z-sticky); height: var(--ad-day-h); background: var(--ad-under); }
+.ad-time-grid:not(:has(.ad-time-grid__head)) .ad-time-grid__gutter::before { content: ''; display: block; position: sticky; top: 0; z-index: var(--z-sticky); height: var(--ad-day-h); background: var(--ad-under); }
 .ad-time-grid__item { --ad-span: 1; }
 .ad-time-grid__item[data-span] { position: relative; z-index: 1; width: calc(var(--ad-span) * 100% + (var(--ad-span) - 1) * var(--border-w)); }
 .ad-time-grid__day-line { display: flex; flex: none; align-items: center; gap: var(--space-1); height: var(--h-btn-row); min-width: 0; }
@@ -1053,14 +1053,14 @@ button.ad-year__day:focus-visible { outline: none; box-shadow: var(--ring-select
 /* Every day's first line sits level, its buttons at the column's right, whether or not a figure follows. */
 .ad-time-grid__day-line > .ad-time-grid__marks { flex: none; gap: var(--space-hair); margin-left: auto; }
 .ad-time-grid__figure { flex: none; height: var(--h-btn-row); line-height: var(--h-btn-row); min-width: 0; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; font: var(--type-data); text-transform: none; color: var(--text-muted); }
-/* With no scroller of its own the all-day lane stays in view under the headings; a bar spanning days reads over the columns after it. */
+/* The all-day lane stays in view under the headings while the hours scroll, whether the page scrolls or the grid's own box does; a bar spanning days reads over the columns after it. */
 .ad-time-grid { --ad-held-top: var(--ad-day-h); }
 .ad-time-grid:has(.ad-time-grid__head) { --ad-held-top: max(var(--space-6), var(--ad-head-h)); }
-.ad-time-grid:not(.ad-time-grid--scrolls) .ad-time-grid__allday, .ad-time-grid:not(.ad-time-grid--scrolls) .ad-time-grid__allday-space { position: sticky; top: var(--ad-held-top); background: var(--ad-under); }
+.ad-time-grid .ad-time-grid__allday, .ad-time-grid .ad-time-grid__allday-space { position: sticky; top: var(--ad-held-top); background: var(--ad-under); }
 /* The held lane sits over every block scrolling under it, and a bar spanning days over the columns after it. */
 .ad-time-grid { --ad-lane-over: 0; }
-.ad-time-grid:not(.ad-time-grid--scrolls) .ad-time-grid__allday { z-index: calc(var(--z-sticky) + var(--ad-lane-over)); }
-.ad-time-grid:not(.ad-time-grid--scrolls) .ad-time-grid__allday-space { z-index: var(--z-sticky); }
+.ad-time-grid .ad-time-grid__allday { z-index: calc(var(--z-sticky) + var(--ad-lane-over)); }
+.ad-time-grid .ad-time-grid__allday-space { z-index: var(--z-sticky); }
 
 /* DayCell: one day in a week of days. */
 .ad-day-cell { --ad-where: transparent; --ad-ground: transparent; position: relative; display: flex; flex-direction: column; align-items: center; gap: var(--space-1); padding: var(--space-2) var(--space-1) 0; border-radius: var(--radius-page); }
@@ -1091,11 +1091,11 @@ button.ad-year__day:focus-visible { outline: none; box-shadow: var(--ring-select
 
 /* 2026-10-28: the grid makes room for the tallest head; the moments strip in three widths, the wide ones writing a call's time and words. */
 .ad-time-grid { --ad-head-h: 0px; --ad-aside: var(--space-6); }
-.ad-time-grid:has(.ad-time-grid__head) { padding-top: max(var(--space-6), var(--ad-head-h)); }
-/* With no visibleHours the grid has no scroller of its own: the page scrolls once. The day headings are in the flow, held at the top by the page's scroll, the all-day lane under them. */
-.ad-time-grid:not(.ad-time-grid--scrolls):has(.ad-time-grid__head) { padding-top: 0; }
-.ad-time-grid:not(.ad-time-grid--scrolls):has(.ad-time-grid__head) .ad-time-grid__gutter { padding-top: max(var(--space-6), var(--ad-head-h)); }
-.ad-time-grid:not(.ad-time-grid--scrolls) .ad-time-grid__head { position: sticky; top: 0; z-index: var(--z-sticky); box-sizing: border-box; min-height: max(var(--space-6), var(--ad-head-h)); background: var(--ad-under); }
+/* The day heads are in the flow, held at the top while the hours scroll under them, the all-day lane under them: by the page's scroll
+   with no visibleHours, by the grid's own box with it (gap 160, 2026-11-09). The gutter holds a blank of the heads' height beside them. */
+.ad-time-grid:has(.ad-time-grid__head) { padding-top: 0; }
+.ad-time-grid:has(.ad-time-grid__head) .ad-time-grid__gutter::before { content: ''; display: block; position: sticky; top: 0; z-index: var(--z-sticky); height: max(var(--space-6), var(--ad-head-h)); background: var(--ad-under); }
+.ad-time-grid .ad-time-grid__head { position: sticky; top: 0; z-index: var(--z-sticky); box-sizing: border-box; min-height: max(var(--space-6), var(--ad-head-h)); background: var(--ad-under); }
 .ad-time-grid--aside-wide { --ad-aside: var(--w-aside); }
 .ad-time-grid--aside-day { --ad-aside: var(--w-side); }
 .ad-time-grid .ad-time-grid__body--aside { padding-right: var(--ad-aside); }
@@ -1142,11 +1142,10 @@ button.ad-year__day:focus-visible { outline: none; box-shadow: var(--ring-select
 .ad-time-grid__allday-content { position: sticky; top: var(--ad-held-top); z-index: var(--z-sticky); width: calc(100% * var(--ad-column-count) + (var(--ad-column-count) - 1) * var(--border-w)); }
 .ad-time-grid__content-space { height: var(--ad-allday-content-h); }
 
-.ad-time-grid:has(.ad-time-grid__allday-content):not(.ad-time-grid--scrolls) .ad-time-grid__allday, .ad-time-grid:has(.ad-time-grid__allday-content):not(.ad-time-grid--scrolls) .ad-time-grid__allday-space { top: calc(var(--ad-held-top) + var(--ad-allday-content-h)); }
+.ad-time-grid:has(.ad-time-grid__allday-content) .ad-time-grid__allday, .ad-time-grid:has(.ad-time-grid__allday-content) .ad-time-grid__allday-space { top: calc(var(--ad-held-top) + var(--ad-allday-content-h)); }
 /* The today line runs the whole calendar: from under the headings through the all-day band and every hour. First in its column, so
    the held headings cover it as the page scrolls and it draws over the all-day band. */
 .ad-time-grid__today { top: var(--ad-held-top); z-index: var(--z-sticky); }
-.ad-time-grid--scrolls:has(.ad-time-grid__head) .ad-time-grid__today { top: 0; }
 /* Being made: the span a drag draws out is a coral box with the dark ink on it, as the main button, never a hatch (2026-11-07). */
 .ad-booking--creating { background: var(--accent); background-image: none; box-shadow: none; color: var(--on-accent); }
 .ad-booking--creating :is(.ad-booking__name, .ad-booking__time, .ad-booking__meta) { color: var(--on-accent); }
