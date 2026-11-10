@@ -63,6 +63,7 @@ import {
   isToday,
   isValidZone,
   isWeekday,
+  keyChord,
   laterAt,
   localToday,
   matchesRule,
@@ -119,7 +120,7 @@ import {
   zoneAbbr,
   zoneHint,
   zonedWeekdayHour
-} from "../chunk-7L6BYN7Y.js";
+} from "../chunk-QLN6EA5L.js";
 
 // src/language/queryAssist.ts
 function recognizeQuery(text, vocab = {}) {
@@ -253,6 +254,7 @@ export {
   isToday,
   isValidZone,
   isWeekday,
+  keyChord,
   laterAt,
   localToday,
   matchesRule,

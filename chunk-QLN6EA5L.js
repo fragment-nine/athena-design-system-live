@@ -13,6 +13,13 @@ function textIs(a, b) {
 function initials(name) {
   return name.trim().split(/\s+/).slice(0, 2).map((w) => w[0] ?? "").join("").toUpperCase();
 }
+var MODIFIERS = "\u2303\u2325\u21E7\u2318";
+function keyChord(keys) {
+  let i = 0;
+  while (i < keys.length && MODIFIERS.includes(keys[i])) i++;
+  const mods = [...keys.slice(0, i)].sort((a, b) => MODIFIERS.indexOf(a) - MODIFIERS.indexOf(b));
+  return mods.join("") + keys.slice(i);
+}
 
 // src/language/searchMatch.ts
 var plain = (s) => s.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
@@ -1817,6 +1824,7 @@ export {
   textHas,
   textIs,
   initials,
+  keyChord,
   searchRank,
   SECOND_MS,
   MINUTE_MS,
@@ -1934,4 +1942,4 @@ export {
   parseDurationHours,
   formatDurationHours
 };
-//# sourceMappingURL=chunk-7L6BYN7Y.js.map
+//# sourceMappingURL=chunk-QLN6EA5L.js.map

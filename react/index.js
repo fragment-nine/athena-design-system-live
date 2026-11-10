@@ -11,6 +11,7 @@ import {
   formatTimeOfDay,
   initials,
   isLate,
+  keyChord,
   monoDate,
   nextWeekday,
   parseTask,
@@ -20,7 +21,7 @@ import {
   sameDay,
   searchRank,
   weekStartOf
-} from "../chunk-7L6BYN7Y.js";
+} from "../chunk-QLN6EA5L.js";
 import {
   describeViolations,
   scanIn
@@ -3861,7 +3862,7 @@ function MenuRow({ item, i, lit, keepCursor, focusable, checks, onEnter, onChoos
             /* @__PURE__ */ jsx26("span", { className: "ad-menu__label ad-clamp-line", children: item.label }),
             /* @__PURE__ */ jsx26("span", { className: "ad-menu__sub", children: item.sub })
           ] }) : /* @__PURE__ */ jsx26("span", { className: "ad-menu__label ad-clamp-line", children: item.label }),
-          item.shortcut && /* @__PURE__ */ jsx26("kbd", { className: "ad-menu__shortcut", children: item.shortcut }),
+          item.shortcut && /* @__PURE__ */ jsx26("kbd", { className: "ad-menu__shortcut", children: keyChord(item.shortcut) }),
           (checks || item.checked) && /* @__PURE__ */ jsx26("span", { className: "ad-menu__check", "aria-hidden": "true", children: item.checked && /* @__PURE__ */ jsx26(Icon, { job: "check", size: "sm" }) })
         ]
       }
@@ -5399,7 +5400,7 @@ function Figures({ items, ariaLabel, layout = "strip", density, face = "data", o
   ] }, f.label)) });
 }
 function Kbd({ children, className }) {
-  return /* @__PURE__ */ jsx40("kbd", { className: cx("ad-kbd", className), children });
+  return /* @__PURE__ */ jsx40("kbd", { className: cx("ad-kbd", className), children: keyChord(children) });
 }
 
 // src/components/Columns/Columns.tsx
