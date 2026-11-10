@@ -5696,13 +5696,14 @@ function Envelope({ side }) {
     /* @__PURE__ */ jsx43("path", { d: curve, vectorEffect: "non-scaling-stroke" })
   ] });
 }
-function Bar({ code: code2, travel, dim, label, unconfirmed, deal, backup, color, selected, startLabel, endLabel, lead, children, thin, labelOutside, onOpen, ends, barProps, labelInset, labelHidden, late, dense, fade, fadeStart, fadeEnd, onCramped, detail, suffix, className, style }) {
+function Bar({ code: code2, travel, dim, day: dayGiven, billing, label, unconfirmed, deal, backup, color, selected, startLabel, endLabel, lead, children, thin, labelOutside, onOpen, ends, barProps, labelInset, labelHidden, late, dense, fade, fadeStart, fadeEnd, onCramped, detail, suffix, className, style }) {
   const asButton = !!onOpen && !ends;
   const Tag2 = asButton ? "button" : "div";
   const hue = useHue(color);
   const hooks = strip4(barProps);
   const paint = barColour(color, hue);
   const plain = !thin && !code2;
+  const day = code2 ? dayGiven ?? (travel ? "travel" : dim ? "dark" : void 0) : void 0;
   const root = useRef28(null);
   const [cramped, setCramped] = useState26(false);
   const [suffixFits, setSuffixFits] = useState26(true);
@@ -5768,7 +5769,7 @@ function Bar({ code: code2, travel, dim, label, unconfirmed, deal, backup, color
       },
       "aria-current": selected || void 0,
       title: tip ?? hooks.title,
-      className: cx("ad-bar", "ad-striped", code2 && "ad-bar--code", code2 && travel && "ad-bar--travel", code2 && dim && "ad-bar--dim", labelOutside === "never" && "ad-bar--keep-in", clip && "ad-bar--clip", labelOutside === "never" && cramped && "ad-bar--name-gone", labelOutside === "before" && "ad-bar--label-before", plain && !!paint["--ad-bar"] && "ad-bar--hued", plain && !unconfirmed && !deal && !backup && "ad-bar--confirmed", unconfirmed && "ad-bar--unconfirmed", deal && "ad-bar--deal", backup && "ad-bar--backup", thin && "ad-bar--thin", outside && "ad-bar--label-outside", selected && "ad-bar--selected", late && "ad-bar--late", dense && "ad-bar--dense", fade && `ad-bar--fade-${fade}`, labelHidden && "ad-bar--label-hidden", className),
+      className: cx("ad-bar", "ad-striped", code2 && "ad-bar--code", code2 && travel && "ad-bar--travel", code2 && dim && !dayGiven && !billing && "ad-bar--dim", day && `ad-bar--day-${day}`, code2 && billing && billing !== "plain" && `ad-bar--bill-${billing}`, labelOutside === "never" && "ad-bar--keep-in", clip && "ad-bar--clip", labelOutside === "never" && cramped && "ad-bar--name-gone", labelOutside === "before" && "ad-bar--label-before", plain && !!paint["--ad-bar"] && "ad-bar--hued", plain && !unconfirmed && !deal && !backup && "ad-bar--confirmed", unconfirmed && "ad-bar--unconfirmed", deal && "ad-bar--deal", backup && "ad-bar--backup", thin && "ad-bar--thin", outside && "ad-bar--label-outside", selected && "ad-bar--selected", late && "ad-bar--late", dense && "ad-bar--dense", fade && `ad-bar--fade-${fade}`, labelHidden && "ad-bar--label-hidden", className),
       style: { ...style, ...paint, ...labelInset ? { ["--ad-label-in"]: `${Math.max(0, labelInset)}px` } : {}, ...fade && fadeStart != null ? { ["--ad-fade-start"]: `${Math.max(0, fadeStart)}px` } : {}, ...fade && fadeEnd != null ? { ["--ad-fade-end"]: `${Math.max(0, fadeEnd)}px` } : {} },
       children: [
         fade && /* @__PURE__ */ jsx43("span", { className: "ad-bar__ground", "aria-hidden": "true" }),
@@ -5960,7 +5961,10 @@ function OffscreenStart({ date, side = "start" }) {
 var KEY_MARKS = /* @__PURE__ */ new Set(["confirmed", "hatched", "deal", "backup", "clash"]);
 function ChartKey({ items, ariaLabel = "Key" }) {
   return /* @__PURE__ */ jsx43("div", { className: "ad-chart-key", role: "group", "aria-label": ariaLabel, children: items.map((it, i) => {
-    const swatch = typeof it.mark === "string" && KEY_MARKS.has(it.mark) ? /* @__PURE__ */ jsx43("span", { "aria-hidden": "true", className: `ad-chart-key__swatch ad-chart-key__swatch--${it.mark}` }) : it.mark && typeof it.mark === "object" && "presence" in it.mark ? /* @__PURE__ */ jsx43(PresenceSwatch, { colour: it.mark.presence, away: it.mark.away }) : /* @__PURE__ */ jsx43("span", { "aria-hidden": "true", className: "ad-chart-key__mark", children: it.mark });
+    const swatch = typeof it.mark === "string" && KEY_MARKS.has(it.mark) ? /* @__PURE__ */ jsx43("span", { "aria-hidden": "true", className: `ad-chart-key__swatch ad-chart-key__swatch--${it.mark}` }) : it.mark && typeof it.mark === "object" && "code" in it.mark ? (() => {
+      const m = it.mark;
+      return /* @__PURE__ */ jsx43("span", { "aria-hidden": "true", className: cx("ad-bar", "ad-bar--code", "ad-chart-key__code", m.day && `ad-bar--day-${m.day}`, m.day === "travel" && "ad-bar--travel", m.billing && m.billing !== "plain" && `ad-bar--bill-${m.billing}`), children: m.code });
+    })() : it.mark && typeof it.mark === "object" && "presence" in it.mark ? /* @__PURE__ */ jsx43(PresenceSwatch, { colour: it.mark.presence, away: it.mark.away }) : /* @__PURE__ */ jsx43("span", { "aria-hidden": "true", className: "ad-chart-key__mark", children: it.mark });
     const { className: _c, style: _s, ...hooks } = it.itemProps ?? {};
     return it.onPress ? /* @__PURE__ */ jsxs40("button", { type: "button", ...hooks, className: "ad-chart-key__item ad-chart-key__item--press", onClick: (e) => {
       hooks.onClick?.(e);
