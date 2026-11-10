@@ -6395,8 +6395,9 @@ function TimeGrid({ headerEnd, startHour, endHour, bookings = [], columns, now, 
       }) }),
       /* @__PURE__ */ jsxs42("div", { className: cx("ad-time-grid__body", c.aside && "ad-time-grid__body--aside"), onClick: pressAt(c.id), children: [
         (c.blocks ?? []).map((b) => {
-          const n = Math.max(1, b.lanes ?? 1), k = Math.min(n - 1, Math.max(0, b.lane ?? 0));
-          return /* @__PURE__ */ jsx45("div", { className: "ad-time-grid__slot", "data-lane": n > 1 ? `${k + 1}/${n}` : void 0, style: { top: at(b.start), height: `calc(${at(b.end)} - ${at(b.start)})`, ...n > 1 ? { ["--ad-lane-k"]: k, ["--ad-lanes"]: n } : {} }, children: b.node }, b.id);
+          const reach = b.span ? Math.max(colAt, ...b.span.map((id) => cols.findIndex((x) => x.id === id))) - colAt + 1 : 1;
+          const n = reach > 1 ? 1 : Math.max(1, b.lanes ?? 1), k = Math.min(n - 1, Math.max(0, b.lane ?? 0));
+          return /* @__PURE__ */ jsx45("div", { className: cx("ad-time-grid__slot", reach > 1 && "ad-time-grid__slot--span"), "data-lane": n > 1 ? `${k + 1}/${n}` : void 0, style: { top: at(b.start), height: `calc(${at(b.end)} - ${at(b.start)})`, ...n > 1 ? { ["--ad-lane-k"]: k, ["--ad-lanes"]: n } : {}, ...reach > 1 ? { ["--ad-span"]: reach } : {} }, children: b.node }, b.id);
         }),
         c.aside && /* @__PURE__ */ jsx45("div", { className: "ad-time-grid__aside", children: [...c.aside].sort((x, y) => x.at - y.at).map((m, i) => {
           const words = [m.time, m.title].filter(Boolean).join(" ");
@@ -6423,8 +6424,9 @@ function TimeGrid({ headerEnd, startHour, endHour, bookings = [], columns, now, 
     /* @__PURE__ */ jsx45("div", { className: "ad-time-grid__corner ad-time-grid__corner--pinned", children: headerEnd })
   ] });
 }
-function DayCell({ day, today, where, whereLabel, away, travel, letter, dayProps }) {
+function DayCell({ day, today, where, whereLabel, away, travel, letter, ground, dayProps }) {
   const colour = useNamedColour(where);
+  const wash = useNamedColour(ground === "none" ? void 0 : ground);
   const n = daysBetween(today, day);
   const weekend = day.getDay() === 0 || day.getDay() === 6;
   const hooks = hooksOf2(dayProps);
@@ -6434,7 +6436,8 @@ function DayCell({ day, today, where, whereLabel, away, travel, letter, dayProps
       ...hooks,
       role: "group",
       "aria-label": [day.toDateString(), whereLabel, away ? "away" : "", travel ? "travelling" : ""].filter(Boolean).join(", "),
-      className: cx("ad-day-cell", n < 0 && "ad-day-cell--past", n === 0 && "ad-day-cell--today", weekend && "ad-day-cell--weekend", away && "ad-day-cell--away"),
+      className: cx("ad-day-cell", n < 0 && "ad-day-cell--past", n === 0 && "ad-day-cell--today", weekend && "ad-day-cell--weekend", away && "ad-day-cell--away", wash && "ad-day-cell--ground"),
+      style: wash ? { ["--ad-ground"]: wash } : void 0,
       children: [
         /* @__PURE__ */ jsx45("span", { className: "ad-day-cell__letter", "aria-hidden": "true", children: letter ?? ENGLISH.weekdayLetters[day.getDay()] }),
         /* @__PURE__ */ jsx45("span", { className: "ad-day-cell__number", "aria-hidden": "true", children: day.getDate() }),

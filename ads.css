@@ -1063,7 +1063,7 @@ button.ad-year__day:focus-visible { outline: none; box-shadow: var(--ring-select
 .ad-time-grid:not(.ad-time-grid--scrolls) .ad-time-grid__allday-space { z-index: var(--z-sticky); }
 
 /* DayCell: one day in a week of days. */
-.ad-day-cell { --ad-where: transparent; position: relative; display: flex; flex-direction: column; align-items: center; gap: var(--space-1); padding: var(--space-2) var(--space-1) 0; border-radius: var(--radius-page); }
+.ad-day-cell { --ad-where: transparent; --ad-ground: transparent; position: relative; display: flex; flex-direction: column; align-items: center; gap: var(--space-1); padding: var(--space-2) var(--space-1) 0; border-radius: var(--radius-page); }
 .ad-day-cell__letter { font: var(--type-heading); text-transform: uppercase; color: var(--text-secondary); }
 .ad-day-cell__number { display: inline-flex; align-items: center; justify-content: center; width: var(--h-btn); height: var(--h-btn); border-radius: var(--radius-page); font: var(--type-data); font-size: var(--text-base); color: var(--text-primary); }
 /* Today: the 2px white ring round the day's cell, square as every day grid draws it. */
@@ -1071,6 +1071,8 @@ button.ad-year__day:focus-visible { outline: none; box-shadow: var(--ring-select
 .ad-day-cell--weekend .ad-day-cell__letter, .ad-day-cell--weekend .ad-day-cell__number { color: var(--text-muted); }
 .ad-day-cell__where { align-self: stretch; height: var(--space-2); border-radius: var(--radius-page); background: var(--ad-where); }
 .ad-day-cell--away .ad-day-cell__where { background: var(--hatch-away), var(--ad-where); }
+.ad-day-cell--ground { background: color-mix(in srgb, var(--ad-ground) var(--tint-presence-wash), transparent); }
+.ad-day-cell--ground.ad-day-cell--today { background: linear-gradient(color-mix(in srgb, var(--ad-ground) var(--tint-presence-wash), transparent), color-mix(in srgb, var(--ad-ground) var(--tint-presence-wash), transparent)), var(--bg-raised); }
 .ad-day-cell__travel { position: absolute; top: var(--space-1); right: var(--space-1); color: var(--text-secondary); }
 
 /* Built 2026-10-28 for the Rehearsal calendar: a rich head, the phase band, overlapping entries side by side, the moments strip. */
@@ -1080,6 +1082,7 @@ button.ad-year__day:focus-visible { outline: none; box-shadow: var(--ring-select
 .ad-time-grid__band-label { position: absolute; left: var(--space-2); top: 100%; font: var(--type-detail); color: var(--text-muted); white-space: nowrap; }
 .ad-time-grid__slot { --ad-lane-k: 0; --ad-lanes: 1; }
 .ad-time-grid__slot[data-lane] { left: calc(var(--space-1) + (100% - var(--space-2)) * var(--ad-lane-k) / var(--ad-lanes)); right: auto; width: calc((100% - var(--space-2)) / var(--ad-lanes) - var(--space-hair)); }
+.ad-time-grid__slot--span { z-index: 1; right: auto; width: calc(var(--ad-span) * 100% + (var(--ad-span) - 1) * var(--border-w) - var(--space-2)); }
 .ad-time-grid__body--aside { padding-right: var(--space-6); box-sizing: border-box; }
 .ad-time-grid__body--aside .ad-time-grid__slot { right: calc(var(--space-6) + var(--space-1)); }
 .ad-time-grid__body--aside .ad-time-grid__slot[data-lane] { width: calc((100% - var(--space-6) - var(--space-2)) / var(--ad-lanes) - var(--space-hair)); left: calc(var(--space-1) + (100% - var(--space-6) - var(--space-2)) * var(--ad-lane-k) / var(--ad-lanes)); }
