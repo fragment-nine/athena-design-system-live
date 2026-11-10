@@ -2118,7 +2118,7 @@ var InlineFigure = forwardRef2(function InlineFigure2({ value, onCommit, unit, a
     }
   );
 });
-var Select = forwardRef2(function Select2({ options, placeholder, quiet, className, value, defaultValue, onMouseDown, onKeyDown: onKeyDown2, ...rest }, ref) {
+var Select = forwardRef2(function Select2({ options, placeholder, quiet, fill, className, value, defaultValue, onMouseDown, onKeyDown: onKeyDown2, ...rest }, ref) {
   const labelledBy = useRowLabel(rest);
   const own = useRef6(null);
   const wrap = useRef6(null);
@@ -2153,7 +2153,7 @@ var Select = forwardRef2(function Select2({ options, placeholder, quiet, classNa
     }
     el.focus({ preventScroll: true });
   };
-  return /* @__PURE__ */ jsxs8("span", { ref: wrap, className: cx("ad-field", "ad-select", rest.disabled && "ad-field--disabled", className), children: [
+  return /* @__PURE__ */ jsxs8("span", { ref: wrap, className: cx("ad-field", "ad-select", fill && "ad-field--fill", rest.disabled && "ad-field--disabled", className), children: [
     /* @__PURE__ */ jsxs8(
       "select",
       {
@@ -4035,7 +4035,7 @@ function StatusPicker({ statuses, noSearch = true, open, anchor, onClose, header
   }), anchor, ariaLabel: rest.searchLabel, items: statuses.map((s) => ({ id: s.id, label: s.label, dot: s.tone ?? "neutral", checked: s.id === rest.value, onSelect: () => rest.onPick(s.id) })) });
   return /* @__PURE__ */ jsx27(PickList, { ...rest, noSearch, options: statuses.map((s) => ({ id: s.id, label: s.label, lead: /* @__PURE__ */ jsx27(Dot, { tone: s.tone }), hint: s.hint })) });
 }
-function PickField({ options, value, onPick, label, placeholder, header, icon, search, disabled, className, trigger, marks, footer, typed, onTyped, compact }) {
+function PickField({ options, value, onPick, label, placeholder, header, icon, search, disabled, className, trigger, marks, footer, typed, onTyped, compact, fill }) {
   const [open, setOpen] = useState15(false);
   const [draft, setDraft] = useState15(null);
   const [editing, setEditing] = useState15(false);
@@ -4095,7 +4095,7 @@ function PickField({ options, value, onPick, label, placeholder, header, icon, s
     const words2 = draft ?? words;
     const narrowed = draft ? searchOptions(options, draft) : options;
     return /* @__PURE__ */ jsxs24(Fragment13, { children: [
-      /* @__PURE__ */ jsxs24("span", { ref: anchor, className: cx("ad-field", "ad-pick-field", "ad-pick-field--typed", compact && "ad-pick-field--compact", disabled && "ad-field--disabled", className), children: [
+      /* @__PURE__ */ jsxs24("span", { ref: anchor, className: cx("ad-field", "ad-pick-field", "ad-pick-field--typed", compact && "ad-pick-field--compact", fill && "ad-field--fill", disabled && "ad-field--disabled", className), children: [
         icon && /* @__PURE__ */ jsx27(Icon, { job: icon, size: "md", className: "ad-pick-field__icon" }),
         /* @__PURE__ */ jsx27(
           "input",
@@ -4202,7 +4202,7 @@ function PickField({ options, value, onPick, label, placeholder, header, icon, s
             setOpen(true);
           }
         } : void 0,
-        className: cx("ad-field", "ad-pick-field", compact && "ad-pick-field--compact", disabled && "ad-field--disabled", className),
+        className: cx("ad-field", "ad-pick-field", compact && "ad-pick-field--compact", fill && "ad-field--fill", disabled && "ad-field--disabled", className),
         title: compact && words ? words : void 0,
         children: [
           icon && /* @__PURE__ */ jsx27(Icon, { job: icon, size: "md", className: "ad-pick-field__icon" }),
@@ -4726,7 +4726,7 @@ function countdownWords(c) {
   const days = n === 0 ? "Today" : `${n} ${n === 1 ? "day" : "days"} to`;
   return `${days} ${c.what}`;
 }
-function PageHeader({ title, icon, stamp, tabs, back, description, countdown: given, alerts, picker, gear, onSearch, onPopOut, onHelp, headerLabels, pickerMenu, note, connection, connectionLabels, scramble = true, className }) {
+function PageHeader({ title, icon, stamp, tabs, back, description, countdown: given, alerts, picker: _picker, gear, onSearch, onPopOut, onHelp, headerLabels, pickerMenu, note, connection, connectionLabels, scramble = true, className }) {
   const anyEnd = gear || onSearch || onPopOut || onHelp || pickerMenu || connection;
   const shownStamp = typeof stamp === "string" && STATES.has(stamp);
   const countdown2 = given && typeof given === "object" && given.to instanceof Date ? countdownWords(given) : null;
@@ -4745,7 +4745,6 @@ function PageHeader({ title, icon, stamp, tabs, back, description, countdown: gi
       ] }),
       alerts && /* @__PURE__ */ jsx34("div", { className: "ad-page-header__alerts", children: alerts }),
       shownStamp && /* @__PURE__ */ jsx34("div", { className: "ad-page-header__stamp", children: stamp }),
-      picker != null && picker !== false && /* @__PURE__ */ jsx34("div", { className: "ad-page-header__picker", children: picker }),
       anyEnd && /* @__PURE__ */ jsxs31(HeaderActions, { groupProps: { "aria-label": headerLabels?.group ?? "Screen actions" }, pickerMenu, connection, connectionLabels, children: [
         gear && /* @__PURE__ */ jsx34(ShowOptionsGear, { ...gear }),
         onSearch && /* @__PURE__ */ jsx34(IconButton, { label: headerLabels?.search ?? "Search", onClick: onSearch, children: /* @__PURE__ */ jsx34(Icon, { job: "search", size: "md" }) }),

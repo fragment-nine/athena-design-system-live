@@ -1582,6 +1582,8 @@ button.ad-card__name:focus-visible { outline: none; box-shadow: var(--ring-selec
 /* A full-form control column: only callers requesting fill stretch their shared field skins. */
 .ad-field-row--fill .ad-field-row__control > * { flex: 1 1 0; width: 100%; }
 .ad-field-row--fill .ad-field-row__control :is(.ad-field-wrap, .ad-datefield, .ad-timefield, .ad-pick-field, .ad-select) { width: 100%; }
+/* A pick box on its own, outside a FieldRow, taking its cell's whole width (`PickField fill`, `Select fill`). */
+.ad-field.ad-field--fill { box-sizing: border-box; width: 100%; min-width: 0; }
 /* A wide text field: as wide as what holds it, so a long name is never cut at the box's own width. */
 .ad-field-wrap--wide { display: flex; flex: 1 1 auto; width: 100%; }
 .ad-field-wrap--wide > .ad-field { width: 100%; }
@@ -2002,7 +2004,7 @@ button:hover > .ad-project-pill:not(.ad-project-pill--current) { color: var(--ac
 .ad-connection:focus-visible { outline: none; box-shadow: var(--ring-select); }
 .ad-page-header__row > .ad-connection { margin-left: auto; }
 .ad-page-header__row > .ad-connection + .ad-header-actions { margin-left: calc(var(--space-2) - var(--space-6)); }
-.ad-page-header__alerts ~ .ad-connection, .ad-page-header__stamp ~ .ad-connection, .ad-page-header__picker ~ .ad-connection { margin-left: 0; }
+.ad-page-header__alerts ~ .ad-connection, .ad-page-header__stamp ~ .ad-connection { margin-left: 0; }
 /* The alerts line at the end of the title row, before the stamp and the icon buttons; it takes no height of its own. */
 .ad-page-header__alerts { display: inline-flex; align-items: center; flex: none; margin-left: auto; }
 .ad-page-header__alerts ~ .ad-page-header__stamp, .ad-page-header__alerts ~ .ad-header-actions { margin-left: 0; }
@@ -2010,9 +2012,6 @@ button:hover > .ad-project-pill:not(.ad-project-pill--current) { color: var(--ac
 /* The stamp is the site's ghost type: tracked caps, faint. */
 .ad-page-header__stamp { flex: none; margin-left: auto; pointer-events: none; white-space: nowrap; font: var(--type-title); font-size: var(--text-28); text-transform: uppercase; letter-spacing: var(--track-caps); color: var(--text-primary); opacity: var(--opacity-stamp); }
 .ad-page-header__stamp + .ad-header-actions { margin-left: 0; }
-/* A screen's one own picker, just before the icon box, at the box's height (toolbar size). */
-.ad-page-header__picker { display: inline-flex; align-items: center; flex: none; margin-left: auto; --h-field: var(--h-btn-bar); }
-.ad-page-header__alerts ~ .ad-page-header__picker, .ad-page-header__stamp ~ .ad-page-header__picker, .ad-page-header__picker + .ad-header-actions { margin-left: 0; }
 /* A project's tabs, under the title row. */
 .ad-page-header__tabs { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-2) var(--space-6); margin-top: var(--space-4); }
 /* The title and its description: beside it while there is room; when the title and stamp leave none, the description and
