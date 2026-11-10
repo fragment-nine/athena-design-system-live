@@ -4184,7 +4184,7 @@ function PickField({ options, value, onPick, label, placeholder, header, icon, s
           onClick: (e) => {
             if (!disabled && !e.defaultPrevented) setOpen((o) => !o);
           },
-          children: cloneElement2(own, { "aria-haspopup": "listbox", "aria-expanded": open })
+          children: cloneElement2(own, { "aria-haspopup": "listbox", "aria-expanded": open, ...own.type === Button || own.type === IconButton ? { active: open } : {} })
         }
       ),
       list
