@@ -1079,7 +1079,8 @@ button.ad-year__day:focus-visible { outline: none; box-shadow: var(--ring-select
 .ad-time-grid .ad-time-grid__allday-space { z-index: var(--z-sticky); }
 
 /* DayCell: one day in a week of days. */
-.ad-day-cell { --ad-where: transparent; --ad-ground: transparent; position: relative; display: flex; flex-direction: column; align-items: center; gap: var(--space-1); padding: var(--space-2) var(--space-1) 0; border-radius: var(--radius-page); }
+.ad-day-cell { --ad-where: transparent; --ad-ground: transparent; position: relative; box-sizing: border-box; display: flex; flex-direction: column; align-items: center; justify-content: flex-start; align-self: stretch; flex: 1 1 0; min-width: var(--w-col-sm); gap: var(--space-1); padding: var(--space-2) var(--space-1) 0; border-radius: var(--radius-page); }
+/* A week of days: every cell one width whatever its name (the row's share, at least a small column), the date at the top so a row lines up; the name wraps inside it, never setting it. */
 .ad-day-cell__letter { font: var(--type-heading); text-transform: uppercase; color: var(--text-secondary); }
 .ad-day-cell__number { display: inline-flex; align-items: center; justify-content: center; width: var(--h-btn); height: var(--h-btn); border-radius: var(--radius-page); font: var(--type-data); font-size: var(--text-base); color: var(--text-primary); }
 /* Today: the 2px white ring round the day's cell, square as every day grid draws it. */
@@ -1089,7 +1090,7 @@ button.ad-year__day:focus-visible { outline: none; box-shadow: var(--ring-select
 .ad-day-cell--away .ad-day-cell__where { background: var(--hatch-away), var(--ad-where); }
 .ad-day-cell--ground { background: color-mix(in srgb, var(--ad-ground) var(--tint-presence-wash), transparent); }
 .ad-day-cell--ground.ad-day-cell--today { background: linear-gradient(color-mix(in srgb, var(--ad-ground) var(--tint-presence-wash), transparent), color-mix(in srgb, var(--ad-ground) var(--tint-presence-wash), transparent)), var(--bg-raised); }
-.ad-day-cell__label { align-self: stretch; padding: 0 var(--space-1) var(--space-1); font: var(--type-detail); color: var(--text-muted); text-align: center; overflow-wrap: normal; word-break: normal; hyphens: none; }
+.ad-day-cell__label { align-self: stretch; box-sizing: border-box; width: 0; min-width: 100%; padding: 0 var(--space-1) var(--space-1); font: var(--type-detail); color: var(--text-muted); text-align: center; overflow-wrap: normal; word-break: normal; hyphens: none; }
 .ad-day-cell__travel { position: absolute; top: var(--space-1); right: var(--space-1); color: var(--text-secondary); }
 
 /* Built 2026-10-28 for the Rehearsal calendar: a rich head, the phase band, overlapping entries side by side, the moments strip. */
