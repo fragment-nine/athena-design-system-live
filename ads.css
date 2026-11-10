@@ -828,8 +828,8 @@ tr[data-ad-drop="after"] > :is(td, th) { box-shadow: inset 0 calc(var(--bw-selec
 
 /* src/components/floating/floating.css */
 /* The shared floating surface: neutral glass, one bright pixel along the top, 8 corner. And the loudbox X. */
-/* A drop's trigger width (usePlacement writes it inline): the list or menu is at least that wide. None: no floor. */
-.ad-float { --ad-trigger-w: auto; }
+/* A drop's trigger width (usePlacement writes it inline): the list or menu is at least that wide. None: a menu's width. */
+.ad-float { --ad-trigger-w: var(--w-menu); }
 .ad-float { box-sizing: border-box; --ad-tray: var(--bg-base); /* Quiet buttons and face discs sit one tone lighter than the glass they are on. */
   --ad-lift: var(--bg-float); background: var(--glass-bg); backdrop-filter: var(--blur-glass); -webkit-backdrop-filter: var(--blur-glass); box-shadow: var(--elev-float); border-radius: var(--radius-float); color: var(--text-primary); font: var(--type-name); animation: ad-fade-in var(--dur) var(--ease-out); }
 .ad-float:focus { outline: none; }
@@ -1442,6 +1442,10 @@ button.ad-card__name:focus-visible { outline: none; box-shadow: var(--ring-selec
 .ad-dialog__body p { margin: 0; }
 .ad-dialog__actions { display: flex; gap: var(--space-2); }
 .ad-dialog__actions > * { flex: 1; }
+/* A dialog holding a form (`body`: a new project, a client) keeps its foot as every card's: right-set, Cancel then the main button,
+   each as wide as its words. Only "Are you sure?" sits as equal halves. */
+.ad-dialog--rich .ad-dialog__actions { justify-content: flex-end; }
+.ad-dialog--rich .ad-dialog__actions > * { flex: none; }
 /* A rich body: pieces 16 apart; the body alone scrolls past h-dialog-cap. */
 .ad-dialog--rich { display: flex; flex-direction: column; max-height: var(--h-dialog-cap); box-sizing: border-box; }
 .ad-dialog__rich { flex: 1 1 auto; min-height: 0; overflow-y: auto; display: flex; flex-direction: column; gap: var(--space-4); margin: 0 calc(var(--space-1) * -1) var(--space-4); padding: var(--space-1); }
@@ -2149,7 +2153,8 @@ button.ad-steps__press:focus-visible { outline: none; box-shadow: var(--ring-sel
 .ad-pick-field:hover .ad-pick-field__caret { color: var(--accent); }
 .ad-pick-field[aria-expanded="true"] { background: var(--bg-hover); }
 .ad-pick-field:focus-visible { outline: none; box-shadow: var(--ring-select); }
-.ad-pick-field__list { width: var(--w-menu); min-width: var(--ad-trigger-w); padding: var(--space-2); overflow-y: auto; }
+/* A pick list grows to its longest row (a role's whole name), up to a card's width, never narrower than a menu or its field. */
+.ad-pick-field__list { width: max-content; min-width: max(var(--w-menu), var(--ad-trigger-w)); max-width: var(--w-card); padding: var(--space-2); overflow-y: auto; }
 /* The picker's Repeat line under the month: the quick picks' look, its current words in mono at the right. */
 .ad-datepicker__repeat { display: flex; align-items: center; gap: var(--space-2); width: 100%; height: var(--h-btn); margin-top: var(--space-2); padding: 0 var(--space-2); border: 0; border-top: var(--border-w) solid var(--border); border-radius: 0; background: transparent; font: var(--type-name); color: var(--text-primary); cursor: pointer; text-align: left; }
 .ad-datepicker__repeat .ad-datepicker__pick-date { margin-left: auto; }
