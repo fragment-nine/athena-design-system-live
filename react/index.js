@@ -3955,6 +3955,7 @@ function PickField({ options, value, onPick, label, placeholder, header, icon, s
   const [editing, setEditing] = useState15(false);
   const settle = useRef16(false);
   const holding = useRef16(false);
+  const pressed = useRef16(false);
   const quiet = !!(compact && typed && !editing);
   const anchor = useRef16(null);
   const box = useRef16(null);
@@ -4097,13 +4098,23 @@ function PickField({ options, value, onPick, label, placeholder, header, icon, s
         "aria-haspopup": "listbox",
         "aria-expanded": open,
         disabled,
-        onClick: quiet ? () => setEditing(true) : () => setOpen((o) => !o),
+        onClick: quiet ? () => {
+          setEditing(true);
+          setOpen(true);
+        } : () => setOpen((o) => !o),
+        onPointerDown: quiet ? () => {
+          pressed.current = true;
+        } : void 0,
         onFocus: quiet ? () => {
           if (settle.current) {
             settle.current = false;
             return;
           }
           setEditing(true);
+          if (pressed.current) {
+            pressed.current = false;
+            setOpen(true);
+          }
         } : void 0,
         className: cx("ad-field", "ad-pick-field", compact && "ad-pick-field--compact", disabled && "ad-field--disabled", className),
         title: compact && words ? words : void 0,
@@ -4292,7 +4303,7 @@ function DatePickerBody({ value, onChange, today: todayIn, weekStart = 1, locale
     ] })
   ] });
 }
-function DateField({ onParsed, label, text: given, onText, format, icon, disabled, due, done, className, value, onChange, ...picker }) {
+function DateField({ onParsed, label, text: given, onText, format, icon, disabled, due, done, compact, className, value, onChange, ...picker }) {
   const fmt = format ?? ((d) => monoDate(d));
   const read2 = (t) => {
     const r = readDate(t, picker.today, { weekStart: picker.weekStart });
@@ -4317,7 +4328,7 @@ function DateField({ onParsed, label, text: given, onText, format, icon, disable
     if (given === void 0) setOwn(value ? fmt(value) : "");
   }, [value?.getTime()]);
   const result = text && (!value || text !== fmt(value)) ? read2(text) : null;
-  return /* @__PURE__ */ jsxs25("span", { ref: anchor, className: cx("ad-datefield", className), children: [
+  return /* @__PURE__ */ jsxs25("span", { ref: anchor, className: cx("ad-datefield", compact && "ad-datefield--compact", className), children: [
     /* @__PURE__ */ jsx28(
       TextField,
       {
@@ -4325,7 +4336,7 @@ function DateField({ onParsed, label, text: given, onText, format, icon, disable
         className: value && text === fmt(value) ? cx(due && isLate(value, picker.today, { done }) && "ad-datefield__field--late") : void 0,
         icon,
         "aria-label": label,
-        placeholder: label,
+        placeholder: compact ? void 0 : label,
         value: text,
         role: "combobox",
         "aria-haspopup": "dialog",
@@ -4337,6 +4348,9 @@ function DateField({ onParsed, label, text: given, onText, format, icon, disable
         onClick: () => {
           if (!disabled) setOpen(true);
         },
+        onFocus: compact ? () => {
+          if (!disabled) setOpen(true);
+        } : void 0,
         onKeyDown: (e) => {
           if (e.key === "ArrowDown") {
             e.preventDefault();
@@ -5318,7 +5332,7 @@ import { useLayoutEffect as useLayoutEffect8, useRef as useRef27, useState as us
 import { jsx as jsx42, jsxs as jsxs39 } from "react/jsx-runtime";
 var NEAR = 8;
 var Arrow = ({ up }) => /* @__PURE__ */ jsx42(SortGlyph, { direction: up ? "ascending" : "descending", size: "sm" });
-function Table({ columns, rows, rowId, caption, sort, onSort, picked, onPickedChange, onPickAllChange, pickLabel, pickAllLabel = "Pick all", onOpen, rowProps, groupProps, grip, rowTone, group, groups, foldGroups, foldedGroups, onFoldGroup, depth, foldParents, foldedRows, onFoldRow, foldLabel, nameColumn, fixed, onInsertRow, onInsertColumn, insertRowLabel = "Insert a row here", insertColumnLabel = "Insert a column here", total, className }) {
+function Table({ columns, rows, rowId, caption, sort, onSort, picked, onPickedChange, onPickAllChange, pickLabel, pickAllLabel = "Pick all", onOpen, rowProps, groupProps, grip, striped, columnLines, rowTone, group, groups, foldGroups, foldedGroups, onFoldGroup, depth, foldParents, foldedRows, onFoldRow, foldLabel, nameColumn, fixed, onInsertRow, onInsertColumn, insertRowLabel = "Insert a row here", insertColumnLabel = "Insert a column here", total, className }) {
   const span = columns.length + (onPickedChange ? 1 : 0);
   const [ownFolded, setOwnFolded] = useState25(() => /* @__PURE__ */ new Set());
   const folded = foldedGroups ?? ownFolded;
@@ -5346,6 +5360,7 @@ function Table({ columns, rows, rowId, caption, sort, onSort, picked, onPickedCh
     onFoldGroup?.(g, shut);
   };
   let lastGroup;
+  let stripe = 0;
   const all = rows.length > 0 && rows.every((r) => picked?.has(rowId(r)));
   const nameAt = Math.max(0, nameColumn ? columns.findIndex((c) => c.id === nameColumn) : 0);
   const headRow = useRef27(null);
@@ -5419,7 +5434,7 @@ function Table({ columns, rows, rowId, caption, sort, onSort, picked, onPickedCh
     setNear((was) => was && found && was.kind === found.kind && was.at === found.at && was.x === found.x && was.y === found.y ? was : found);
   };
   return /* @__PURE__ */ jsxs39("div", { ref: wrap, className: cx("ad-table-wrap", inserts && "ad-table-wrap--inserts", className), onPointerMove: inserts ? findNear : void 0, onPointerLeave: inserts ? () => setNear(null) : void 0, children: [
-    /* @__PURE__ */ jsxs39("table", { className: cx("ad-table", fixed && "ad-table--fixed"), children: [
+    /* @__PURE__ */ jsxs39("table", { className: cx("ad-table", fixed && "ad-table--fixed", columnLines && "ad-table--column-lines"), children: [
       /* @__PURE__ */ jsx42("caption", { className: "ad-sr", children: caption }),
       /* @__PURE__ */ jsx42("thead", { children: /* @__PURE__ */ jsxs39("tr", { ref: headRow, children: [
         onPickedChange && /* @__PURE__ */ jsx42("th", { scope: "col", className: "ad-table__pick", children: /* @__PURE__ */ jsx42(Checkbox, { "aria-label": pickAllLabel, checked: all, onChange: (on) => onPickAllChange?.(on) }) }),
@@ -5457,7 +5472,7 @@ function Table({ columns, rows, rowId, caption, sort, onSort, picked, onPickedCh
           const rowShut = parent && rowsShut.has(id);
           if (rowShut) hideBelow = d;
           const { className: _c, style: _s, ...hooks } = rowProps?.(r) ?? {};
-          const tr = /* @__PURE__ */ jsxs39("tr", { ...hooks, "data-row-at": onInsertRow ? rowAt : void 0, "data-picked": on || void 0, "data-depth": d || void 0, className: cx(onOpen && "ad-table__row--opens", rowTone?.(r) && `ad-table__row--tone-${rowTone(r)}`), onClick: (e) => {
+          const tr = /* @__PURE__ */ jsxs39("tr", { ...hooks, "data-row-at": onInsertRow ? rowAt : void 0, "data-picked": on || void 0, "data-depth": d || void 0, className: cx(onOpen && "ad-table__row--opens", rowTone?.(r) && `ad-table__row--tone-${rowTone(r)}`, striped && stripe++ % 2 === 1 && !rowTone?.(r) && "ad-table__row--alt"), onClick: (e) => {
             hooks.onClick?.(e);
             if (onOpen && !e.target.closest("input,button,a")) onOpen(r);
           }, children: [

@@ -2120,6 +2120,9 @@ button.ad-steps__press:focus-visible { outline: none; box-shadow: var(--ring-sel
 .ad-daterange__to { display: inline-flex; flex: none; align-items: center; height: var(--h-field); color: var(--text-muted); }
 /* A date's field is as wide as its date. */
 /* Sized to its words, with room for the caret at the end, so focusing never scrolls the first letter under the padding. */
+.ad-datefield--compact .ad-field { height: var(--h-btn-row); padding: 0 var(--space-1); background: transparent; }
+.ad-datefield--compact .ad-field:hover, .ad-datefield--compact .ad-field:focus-within { background: var(--bg-raised); }
+.ad-datefield--compact .ad-field__input { min-width: calc(var(--check-size) * 4); }
 .ad-datefield .ad-field__input { field-sizing: content; min-width: var(--w-col-sm); padding-inline-end: var(--space-hair); }
 .ad-datefield__field--late .ad-field__input { color: var(--status-error-ink); }
 .ad-datefield__drop.ad-popover { width: auto; padding: var(--space-2); }
@@ -2607,6 +2610,10 @@ button.ad-row__name:focus-visible { outline: none; box-shadow: var(--ring-select
 .ad-table .ad-table__total td, .ad-table .ad-table__total th[scope="row"] { position: sticky; bottom: 0; z-index: 1; border-top: var(--border-w-strong) solid var(--line-strong); border-bottom: 0; background: var(--ad-under); color: var(--text-primary); }
 /* A reorderable table row's grip, first in its name cell. */
 .ad-table__name > .ad-grip { margin-right: var(--space-2); vertical-align: middle; }
+/* Striped: every other row no priority washes takes the lanes' quiet alternate ground, painted as the wash is, so frozen cells keep it. */
+.ad-table .ad-table__row--alt > * { background-image: linear-gradient(var(--bg-surface), var(--bg-surface)); }
+/* Column lines: a hairline between columns, from the heading down, in the rows' line. */
+.ad-table--column-lines :is(th, td) + :is(th, td) { border-left: var(--border-w) solid var(--border); }
 
 /* src/components/Tag/Tag.css */
 /* Tag, FilterTag, UnreadDot. (TokenPill's look is .ad-token, in Writing.css: one red pill.) */
