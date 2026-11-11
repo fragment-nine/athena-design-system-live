@@ -7072,11 +7072,12 @@ function PixxFigure({ onPress, open, unread = 0, tip = "Pixx", motion, body, tai
 
 // src/components/Furniture/Furniture.tsx
 import { Fragment as Fragment24, jsx as jsx53, jsxs as jsxs49 } from "react/jsx-runtime";
-function Footer({ code: code2, number, venue, description, countdown: countdown2, page, undo }) {
+function Footer({ code: code2, number, venue, description, countdown: countdown2, page, undo, news }) {
   return /* @__PURE__ */ jsxs49("footer", { className: "ad-footer", children: [
     /* @__PURE__ */ jsxs49("span", { className: "ad-footer__cell ad-footer__code", children: [
       code2 ?? "LOUDBOX",
-      number && /* @__PURE__ */ jsx53("span", { className: "ad-footer__number", children: number })
+      number && /* @__PURE__ */ jsx53("span", { className: "ad-footer__number", children: number }),
+      news && /* @__PURE__ */ jsx53("button", { type: "button", ref: news.anchorRef, className: "ad-footer__news", "aria-label": news.label, title: news.label, onClick: news.onOpen, children: /* @__PURE__ */ jsx53("span", { className: "ad-unread", "aria-hidden": "true" }) })
     ] }),
     /* @__PURE__ */ jsxs49("span", { className: "ad-footer__cell ad-footer__venue", children: [
       venue,
