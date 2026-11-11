@@ -2938,7 +2938,7 @@ button.ad-milestone:focus-visible { outline: none; box-shadow: var(--ring-select
 
 /* A day cell (`code`): an outlined box filling its day, the code centred inside, never moved outside; a travel day dashed, a dark day
  dimmed. */
-.ad-bar--code { --ad-bar: transparent; justify-content: center; padding-left: var(--space-hair); padding-right: var(--space-hair); border: var(--border-w) solid var(--ad-edge-ink); }
+.ad-bar--code { --ad-bar: transparent; justify-content: center; padding-left: 0; padding-right: 0; border: var(--border-w) solid var(--ad-edge-ink); font: var(--type-data); font-size: var(--text-xs); }
 /* The day's kind is its fill, how it is billed is its letter's colour (his labor spreadsheet); the outline is a plain bar's edge. */
 .ad-bar--day-work { --ad-day: var(--day-work); }
 .ad-bar--day-travel { --ad-day: var(--day-travel); }
@@ -2948,7 +2948,7 @@ button.ad-milestone:focus-visible { outline: none; box-shadow: var(--ring-select
 .ad-bar--code.ad-bar--bill-dark { color: var(--day-ink-dark); }
 .ad-bar--code.ad-bar--bill-unbilled { color: var(--day-ink-unbilled); }
 /* In the key, the cell in small: the code's letters in their box, as wide as they are. */
-.ad-chart-key__code.ad-bar { width: auto; min-width: var(--space-6); height: var(--space-6); padding: 0 var(--space-1); font: var(--type-data); font-size: var(--text-xs); }
+.ad-chart-key__code.ad-bar { width: auto; min-width: var(--space-6); height: var(--space-6); padding: 0 var(--space-1); }
 .ad-bar--code .ad-bar__label { margin-left: 0; gap: 0; overflow: hidden; }
 .ad-bar--code .ad-bar__name { overflow: hidden; text-overflow: clip; }
 .ad-bar--code.ad-bar--travel { border-style: dashed; }
