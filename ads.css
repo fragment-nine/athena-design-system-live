@@ -2558,6 +2558,9 @@ button.ad-row__name:focus-visible { outline: none; box-shadow: var(--ring-select
 .ad-table th[scope="col"] { position: sticky; top: 0; z-index: 1; height: var(--h-btn); padding: 0 var(--space-2); text-align: left; white-space: nowrap; background: var(--ad-under); border-bottom: var(--border-w) solid var(--border); font: var(--type-heading); text-transform: uppercase; color: var(--text-secondary); letter-spacing: var(--track-caps); }
 .ad-table th[aria-sort="ascending"], .ad-table th[aria-sort="descending"] { color: var(--text-primary); }
 .ad-table td, .ad-table th[scope="row"] { height: var(--h-row); padding: 0 var(--space-2); border-bottom: var(--border-w) solid var(--border); text-align: left; white-space: nowrap; }
+/* The name cell is the Name rung, as a person or a name typed in place inside it already is: one weight for every name, never the
+   bold a browser gives a row heading. */
+.ad-table th[scope="row"] { font: var(--type-name); }
 .ad-table .ad-mono { font: var(--type-data); font-size: var(--text-xs); color: var(--text-secondary); }
 .ad-table .ad-num { text-align: right; font: var(--type-data); font-size: var(--text-xs); color: var(--text-secondary); font-variant-numeric: tabular-nums; }
 .ad-table th[scope="col"].ad-num { text-align: right; font: var(--type-heading); text-transform: uppercase; letter-spacing: var(--track-caps); }

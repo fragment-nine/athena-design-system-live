@@ -5452,7 +5452,7 @@ import { useLayoutEffect as useLayoutEffect8, useRef as useRef27, useState as us
 import { Fragment as Fragment19, jsx as jsx42, jsxs as jsxs39 } from "react/jsx-runtime";
 var NEAR = 8;
 var Arrow = ({ up }) => /* @__PURE__ */ jsx42(SortGlyph, { direction: up ? "ascending" : "descending", size: "sm" });
-function Table({ columns, rows, rowId, caption, sort, onSort, picked, onPickedChange, onPickAllChange, pickLabel, pickAllLabel = "Pick all", onOpen, rowProps, groupProps, grip, addRow, striped = true, columnLines, rowTone, group, groups, foldGroups, foldedGroups, onFoldGroup, depth, foldParents, foldedRows, onFoldRow, foldLabel, nameColumn, fixed, onInsertRow, onInsertColumn, insertRowLabel = "Insert a row here", insertColumnLabel = "Insert a column here", total, className }) {
+function Table({ columns, rows, rowId, caption, sort, onSort, picked, onPickedChange, onPickAllChange, pickLabel, pickAllLabel = "Pick all", onOpen, rowProps, groupProps, grip, addRow, addToGroup, striped = true, columnLines, rowTone, group, groups, foldGroups, foldedGroups, onFoldGroup, depth, foldParents, foldedRows, onFoldRow, foldLabel, nameColumn, fixed, onInsertRow, onInsertColumn, insertRowLabel = "Insert a row here", insertColumnLabel = "Insert a column here", total, className }) {
   const span = columns.length + (onPickedChange ? 1 : 0);
   const [ownFolded, setOwnFolded] = useState24(() => /* @__PURE__ */ new Set());
   const folded = foldedGroups ?? ownFolded;
@@ -5586,6 +5586,11 @@ function Table({ columns, rows, rowId, caption, sort, onSort, picked, onPickedCh
           const chain = [];
           const runs = (i, l) => !!more[i][l] || chain[l - 1] != null && !!addRow?.(chain[l - 1]);
           const trunks = (i, upTo) => Array.from({ length: upTo }, (_, k) => k + 1).filter((l) => runs(i, l)).map((l) => /* @__PURE__ */ jsx42("span", { className: "ad-table__trunk", "aria-hidden": "true", style: { ["--ad-level"]: l } }, l));
+          const groupAdd = (g) => {
+            const a = addToGroup?.(g);
+            if (!a || !!foldGroups && folded.has(g)) return null;
+            return /* @__PURE__ */ jsx42("tr", { className: "ad-table__add ad-table__add--group", children: /* @__PURE__ */ jsx42("th", { scope: "row", colSpan: span, className: "ad-table__name", children: /* @__PURE__ */ jsx42(AddRow, { label: a.label, onAdd: a.onAdd }) }) }, `group-add-${g}`);
+          };
           const addFor = (r, d, rowAt) => {
             const a = addRow?.(r);
             if (!a) return null;
@@ -5595,6 +5600,7 @@ function Table({ columns, rows, rowId, caption, sort, onSort, picked, onPickedCh
               /* @__PURE__ */ jsx42(AddRow, { label: a.label, onAdd: a.onAdd })
             ] }) }, `add-${rowId(r)}`);
           };
+          let groupNow;
           const out = rows.map((r, rowAt) => {
             const dd = depth?.(r) ?? 0;
             const closing = [];
@@ -5604,8 +5610,13 @@ function Table({ columns, rows, rowId, caption, sort, onSort, picked, onPickedCh
             }
             chain[dd] = r;
             chain.length = dd + 1;
-            const drawn = draw(r, rowAt);
             const g = group?.(r);
+            if (g !== groupNow) {
+              const foot = groupNow != null ? groupAdd(groupNow) : null;
+              if (foot) closing.push(foot);
+              groupNow = g;
+            }
+            const drawn = draw(r, rowAt);
             const hidden = drawn == null || !!foldGroups && g != null && folded.has(g) || !!foldParents && rowsShut.has(rowId(r));
             open.push({ depth: dd, node: hidden ? null : addFor(r, dd, rowAt) });
             return closing.length ? [...closing, drawn] : drawn;
@@ -5613,6 +5624,10 @@ function Table({ columns, rows, rowId, caption, sort, onSort, picked, onPickedCh
           while (open.length) {
             const o = open.pop();
             if (o.node) out.push(o.node);
+          }
+          if (groupNow != null) {
+            const foot = groupAdd(groupNow);
+            if (foot) out.push(foot);
           }
           return out;
           function draw(r, rowAt) {
@@ -5669,7 +5684,13 @@ function Table({ columns, rows, rowId, caption, sort, onSort, picked, onPickedCh
         })(),
         group && groups && (() => {
           const seen = new Set(rows.map((r) => group(r)));
-          return groups.filter((g) => !seen.has(g)).map((g) => /* @__PURE__ */ jsx42("tr", { ...groupProps?.(g) ?? {}, className: "ad-table__group ad-table__group--empty", children: /* @__PURE__ */ jsx42("th", { scope: "colgroup", colSpan: span, children: g }) }, `group-empty-${g}`));
+          return groups.filter((g) => !seen.has(g)).flatMap((g) => {
+            const a = addToGroup?.(g);
+            return [
+              /* @__PURE__ */ jsx42("tr", { ...groupProps?.(g) ?? {}, className: "ad-table__group ad-table__group--empty", children: /* @__PURE__ */ jsx42("th", { scope: "colgroup", colSpan: span, children: g }) }, `group-empty-${g}`),
+              a ? /* @__PURE__ */ jsx42("tr", { className: "ad-table__add ad-table__add--group", children: /* @__PURE__ */ jsx42("th", { scope: "row", colSpan: span, className: "ad-table__name", children: /* @__PURE__ */ jsx42(AddRow, { label: a.label, onAdd: a.onAdd }) }) }, `group-add-${g}`) : null
+            ];
+          });
         })()
       ] }),
       total && /* @__PURE__ */ jsx42("tfoot", { className: "ad-table__total", children: /* @__PURE__ */ jsxs39("tr", { children: [
