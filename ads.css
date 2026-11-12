@@ -1963,6 +1963,9 @@ button:hover > .ad-project-pill:not(.ad-project-pill--current) { color: var(--ac
 .ad-page-list__sub { margin-top: calc(var(--space-1) * -1); font: var(--type-detail); color: var(--text-muted); overflow-wrap: anywhere; }
 .ad-page-list__state { display: flex; align-items: center; min-height: var(--h-btn); }
 .ad-page-list__group > .ad-group-heading { padding-left: var(--ad-page-list-in); }
+/* The screens inside a page: the menu's nested rows under it, set in to its word; the one showing is lit as any row. */
+.ad-page-list__inside { margin-top: var(--space-1); }
+.ad-page-list__inside .ad-side__item { padding-left: calc(var(--ad-page-list-in) + var(--icon-lg) + var(--space-2)); }
 /* A separator the person placed among the screens: a short hairline with room above and below, grabbed like any row. */
 .ad-menu__sep { list-style: none; display: flex; align-items: center; height: var(--space-3); cursor: grab; }
 .ad-menu__sep::before { content: ''; flex: 1; height: var(--border-w); margin: 0 var(--space-2); background: var(--border); }

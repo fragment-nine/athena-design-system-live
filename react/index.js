@@ -2942,10 +2942,13 @@ function PageList({ ariaLabel, head, search, groups, current, onPick, inline }) 
     searching && /* @__PURE__ */ jsx18("div", { className: "ad-page-list__results", children: search.results }),
     !searching && groups.map((g) => /* @__PURE__ */ jsxs15("div", { className: "ad-page-list__group", children: [
       g.label !== "" && /* @__PURE__ */ jsx18(GroupHeading, { rule: "none", children: g.label }),
-      /* @__PURE__ */ jsx18("ul", { className: "ad-side__list", children: g.pages.map((p) => /* @__PURE__ */ jsx18("li", { children: /* @__PURE__ */ jsxs15("button", { type: "button", className: "ad-side__item", "aria-current": p.id === current ? "page" : void 0, onClick: () => onPick(p.id), children: [
-        (p.face || p.icon) && /* @__PURE__ */ jsx18("span", { className: "ad-side__icon", "aria-hidden": "true", children: p.face ? /* @__PURE__ */ jsx18(Avatar, { name: p.face.name, src: p.face.src, decorative: true }) : slotIcon(p.icon) }),
-        p.label
-      ] }) }, p.id)) })
+      /* @__PURE__ */ jsx18("ul", { className: "ad-side__list", children: g.pages.map((p) => /* @__PURE__ */ jsxs15("li", { children: [
+        /* @__PURE__ */ jsxs15("button", { type: "button", className: "ad-side__item", "aria-current": p.id === current ? "page" : void 0, onClick: () => onPick(p.id), children: [
+          (p.face || p.icon) && /* @__PURE__ */ jsx18("span", { className: "ad-side__icon", "aria-hidden": "true", children: p.face ? /* @__PURE__ */ jsx18(Avatar, { name: p.face.name, src: p.face.src, decorative: true }) : slotIcon(p.icon) }),
+          p.label
+        ] }),
+        p.pages != null && p.pages.length > 0 && /* @__PURE__ */ jsx18("ul", { className: "ad-side__list ad-side__list--nested ad-page-list__inside", children: p.pages.map((s) => /* @__PURE__ */ jsx18("li", { children: /* @__PURE__ */ jsx18("button", { type: "button", className: "ad-side__item", "aria-current": s.id === current ? "page" : void 0, onClick: () => onPick(s.id), children: s.label }) }, s.id)) })
+      ] }, p.id)) })
     ] }, g.label || g.pages[0]?.id))
   ] });
 }
