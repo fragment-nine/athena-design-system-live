@@ -2707,6 +2707,8 @@ button.ad-row__name:focus-visible { outline: none; box-shadow: var(--ring-select
 /* The slim summary rail: all chosen readings on one line, graphics carry the reading, details stay available. */
 .ad-figures--rail { grid-template-columns: none; grid-auto-flow: column; grid-auto-columns: minmax(0, 1fr); gap: var(--space-2); }
 .ad-figures--rail .ad-figures__item { align-items: stretch; gap: var(--space-1); }
+/* A hairline between one reading and the next, the section's rule weight; none before the first or after the last. */
+.ad-figures--rail > .ad-figures__item + .ad-figures__item { padding-left: var(--space-4); border-left: var(--border-w) solid var(--border); }
 .ad-figures--rail .ad-figures__label { overflow: hidden; white-space: nowrap; text-overflow: ellipsis; text-align: center; }
 .ad-figures--rail .ad-figures__graphic, .ad-figures--rail .ad-figures__value:not(.ad-sr) { order: -1; height: var(--h-row-2); display: grid; place-items: center; }
 .ad-figures--rail .ad-figures__value:not(.ad-sr) { font: var(--type-data); font-size: var(--text-28); line-height: var(--lh-tight); }
