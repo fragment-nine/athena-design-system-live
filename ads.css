@@ -2013,7 +2013,6 @@ button:hover > .ad-project-pill:not(.ad-project-pill--current) { color: var(--ac
 .ad-page-header__stamp { flex: none; margin-left: auto; pointer-events: none; white-space: nowrap; font: var(--type-title); font-size: var(--text-28); text-transform: uppercase; letter-spacing: var(--track-caps); color: var(--text-primary); opacity: var(--opacity-stamp); }
 .ad-page-header__stamp + .ad-header-actions { margin-left: 0; }
 /* A project's tabs, under the title row. */
-.ad-page-header__tabs { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-2) var(--space-6); margin-top: var(--space-4); }
 /* The title and its description: beside it while there is room; when the title and stamp leave none, the description and
  countdown drop under the title instead of squeezing to a word a line. */
 .ad-page-header__lead { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-2) var(--space-6); flex: 1 1 auto; min-width: 0; }

@@ -4774,33 +4774,30 @@ function countdownWords(c) {
   const days = n === 0 ? "Today" : `${n} ${n === 1 ? "day" : "days"} to`;
   return `${days} ${c.what}`;
 }
-function PageHeader({ title, icon, stamp, tabs, back, description, countdown: given, alerts, gear, onSearch, onPopOut, onHelp, headerLabels, pickerMenu, connection, connectionLabels, scramble = true, className }) {
+function PageHeader({ title, icon, stamp, back, description, countdown: given, alerts, gear, onSearch, onPopOut, onHelp, headerLabels, pickerMenu, connection, connectionLabels, scramble = true, className }) {
   const anyEnd = gear || onSearch || onPopOut || onHelp || pickerMenu || connection;
   const shownStamp = typeof stamp === "string" && STATES.has(stamp);
   const countdown2 = given && typeof given === "object" && given.to instanceof Date ? countdownWords(given) : null;
-  return /* @__PURE__ */ jsxs31("header", { className: cx("ad-page-header", className), children: [
-    /* @__PURE__ */ jsxs31("div", { className: "ad-page-header__row", children: [
-      /* @__PURE__ */ jsxs31("div", { className: "ad-page-header__lead", children: [
-        /* @__PURE__ */ jsxs31("div", { className: "ad-page-header__titled", children: [
-          back && /* @__PURE__ */ jsx34("button", { type: "button", className: "ad-page-header__back", "aria-label": back.label, title: back.label, onClick: back.onBack, children: /* @__PURE__ */ jsx34(Icon, { job: "chevron-left", size: "lg" }) }),
-          /* @__PURE__ */ jsx34("h1", { className: "ad-page-header__title", children: /* @__PURE__ */ jsx34("span", { className: "ad-page-header__words", children: scramble ? /* @__PURE__ */ jsx34(TextScramble, { text: title }) : title }) })
-        ] }),
-        (description || countdown2) && /* @__PURE__ */ jsxs31("div", { className: "ad-page-header__aside", children: [
-          description && /* @__PURE__ */ jsx34("p", { className: "ad-page-header__description", children: String(description) }),
-          countdown2 && /* @__PURE__ */ jsx34("p", { className: "ad-page-header__countdown", children: countdown2 })
-        ] })
+  return /* @__PURE__ */ jsx34("header", { className: cx("ad-page-header", className), children: /* @__PURE__ */ jsxs31("div", { className: "ad-page-header__row", children: [
+    /* @__PURE__ */ jsxs31("div", { className: "ad-page-header__lead", children: [
+      /* @__PURE__ */ jsxs31("div", { className: "ad-page-header__titled", children: [
+        back && /* @__PURE__ */ jsx34("button", { type: "button", className: "ad-page-header__back", "aria-label": back.label, title: back.label, onClick: back.onBack, children: /* @__PURE__ */ jsx34(Icon, { job: "chevron-left", size: "lg" }) }),
+        /* @__PURE__ */ jsx34("h1", { className: "ad-page-header__title", children: /* @__PURE__ */ jsx34("span", { className: "ad-page-header__words", children: scramble ? /* @__PURE__ */ jsx34(TextScramble, { text: title }) : title }) })
       ] }),
-      alerts && /* @__PURE__ */ jsx34("div", { className: "ad-page-header__alerts", children: alerts }),
-      shownStamp && /* @__PURE__ */ jsx34("div", { className: "ad-page-header__stamp", children: stamp }),
-      anyEnd && /* @__PURE__ */ jsxs31(HeaderActions, { groupProps: { "aria-label": headerLabels?.group ?? "Screen actions" }, pickerMenu, connection, connectionLabels, children: [
-        gear && /* @__PURE__ */ jsx34(ShowOptionsGear, { ...gear }),
-        onSearch && /* @__PURE__ */ jsx34(IconButton, { label: headerLabels?.search ?? "Search", onClick: onSearch, children: /* @__PURE__ */ jsx34(Icon, { job: "search", size: "md" }) }),
-        onPopOut && /* @__PURE__ */ jsx34(IconButton, { label: headerLabels?.popOut ?? "Pop out", onClick: onPopOut, children: /* @__PURE__ */ jsx34(Icon, { job: "external", size: "md" }) }),
-        onHelp && /* @__PURE__ */ jsx34(IconButton, { label: headerLabels?.help ?? "Help", onClick: onHelp, children: /* @__PURE__ */ jsx34(Icon, { job: "help", size: "md" }) })
+      (description || countdown2) && /* @__PURE__ */ jsxs31("div", { className: "ad-page-header__aside", children: [
+        description && /* @__PURE__ */ jsx34("p", { className: "ad-page-header__description", children: String(description) }),
+        countdown2 && /* @__PURE__ */ jsx34("p", { className: "ad-page-header__countdown", children: countdown2 })
       ] })
     ] }),
-    tabs && /* @__PURE__ */ jsx34("div", { className: "ad-page-header__tabs", children: tabs })
-  ] });
+    alerts && /* @__PURE__ */ jsx34("div", { className: "ad-page-header__alerts", children: alerts }),
+    shownStamp && /* @__PURE__ */ jsx34("div", { className: "ad-page-header__stamp", children: stamp }),
+    anyEnd && /* @__PURE__ */ jsxs31(HeaderActions, { groupProps: { "aria-label": headerLabels?.group ?? "Screen actions" }, pickerMenu, connection, connectionLabels, children: [
+      gear && /* @__PURE__ */ jsx34(ShowOptionsGear, { ...gear }),
+      onSearch && /* @__PURE__ */ jsx34(IconButton, { label: headerLabels?.search ?? "Search", onClick: onSearch, children: /* @__PURE__ */ jsx34(Icon, { job: "search", size: "md" }) }),
+      onPopOut && /* @__PURE__ */ jsx34(IconButton, { label: headerLabels?.popOut ?? "Pop out", onClick: onPopOut, children: /* @__PURE__ */ jsx34(Icon, { job: "external", size: "md" }) }),
+      onHelp && /* @__PURE__ */ jsx34(IconButton, { label: headerLabels?.help ?? "Help", onClick: onHelp, children: /* @__PURE__ */ jsx34(Icon, { job: "help", size: "md" }) })
+    ] })
+  ] }) });
 }
 function HeaderPick({ label, items, marked, ariaLabel }) {
   const [open, setOpen] = useState21(false);
