@@ -2894,11 +2894,12 @@ function PageList({ ariaLabel, head, search, groups, current, onPick, inline }) 
     search && /* @__PURE__ */ jsx18("div", { className: "ad-page-list__search", children: /* @__PURE__ */ jsx18(
       TextField,
       {
+        wide: true,
         icon: "search",
         "aria-label": search.label ?? search.placeholder ?? "Search",
         placeholder: search.placeholder,
         value: search.value,
-        end: search.value ? /* @__PURE__ */ jsx18(IconButton, { label: search.clearLabel ?? "Clear search", onClick: () => search.onChange(""), children: /* @__PURE__ */ jsx18(Icon, { job: "x" }) }) : void 0,
+        end: search.value ? /* @__PURE__ */ jsx18(ButtonSizeScope, { size: "row", children: /* @__PURE__ */ jsx18(IconButton, { label: search.clearLabel ?? "Clear search", onClick: () => search.onChange(""), children: /* @__PURE__ */ jsx18(Icon, { job: "x" }) }) }) : void 0,
         onChange: (e) => search.onChange(e.target.value),
         onKeyDown: (e) => {
           if (e.key === "Escape" && search.value) {

@@ -1937,11 +1937,10 @@ button:hover > .ad-project-pill:not(.ad-project-pill--current) { color: var(--ac
 .ad-rail > .ad-menu__list { align-self: stretch; }
 /* PageList: a thing's own pages as a second left list, the open menu's rows; its kind, name and state on top, the pages in named groups. */
 .ad-page-list { --ad-page-list-in: calc((var(--w-rail) - var(--icon-lg)) / 2); flex: none; gap: var(--space-4); overflow-y: auto; }
-/* The search at the top of a page list, lined up with its rows. */
 /* Inline, beside a pane: the same list on the ground, no glass and no edge, held at the top while the pane scrolls. */
 .ad-side.ad-page-list--inline { position: sticky; top: 0; height: auto; padding: 0; background: none; border-right: 0; backdrop-filter: none; -webkit-backdrop-filter: none; box-shadow: none; }
-.ad-page-list__search { padding-left: var(--ad-page-list-in); }
-.ad-page-list__search .ad-field { width: 100%; }
+/* The search at the top of a page list, lined up with its rows: the field fills its column and never grows past it, its clear x inside. */
+.ad-page-list__search { display: flex; min-width: 0; padding-left: var(--ad-page-list-in); }
 .ad-page-list__head { display: flex; flex-direction: column; gap: var(--space-1); padding-left: var(--ad-page-list-in); }
 .ad-page-list__title { font: var(--type-title); text-transform: uppercase; color: var(--text-primary); overflow-wrap: anywhere; }
 .ad-page-list__sub { margin-top: calc(var(--space-1) * -1); font: var(--type-detail); color: var(--text-muted); overflow-wrap: anywhere; }
