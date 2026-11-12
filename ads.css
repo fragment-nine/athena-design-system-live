@@ -2442,9 +2442,9 @@ button.ad-row__name:focus-visible { outline: none; box-shadow: var(--ring-select
 .ad-segmented {
   gap: var(--space-hair);
 }
-/* The tray: the view switch's, the zoom's, and the toolbar's bar. Never outlined, wherever it sits, as the header's icon box is not: the
-   fill alone. It never runs past its box: its choices give way first. */
-.ad-segmented, .ad-zoom, .ad-toolbar__end { display: inline-flex; align-items: center; width: max-content; min-width: 0; max-width: 100%; box-sizing: border-box; height: var(--h-btn); padding: calc(var(--space-hair) + var(--border-w)); border: 0; border-radius: var(--radius-control); background: var(--bg-surface); }
+/* The tray: the view switch's, the zoom's, and the toolbar's bar. Never outlined, wherever it sits, and rounded as the header's icon box is (radius-page):
+   the fill alone. It never runs past its box: its choices give way first. */
+.ad-segmented, .ad-zoom, .ad-toolbar__end { display: inline-flex; align-items: center; width: max-content; min-width: 0; max-width: 100%; box-sizing: border-box; height: var(--h-btn); padding: calc(var(--space-hair) + var(--border-w)); border: 0; border-radius: var(--radius-page); background: var(--bg-surface); }
 .ad-segmented__option { flex: 0 1 auto; min-width: 0; display: inline-flex; align-items: center; justify-content: center; gap: var(--space-2); height: var(--h-seg); padding: 0 var(--space-3); margin: 0; border: 0; border-radius: var(--radius-control); background: transparent; font: var(--type-heading); text-transform: uppercase; letter-spacing: var(--track-caps); line-height: var(--lh-none); cursor: pointer; }
 .ad-segmented__option:hover { color: var(--accent); }
 .ad-segmented__option:not([aria-checked="true"]) { color: var(--text-secondary); }
@@ -2782,7 +2782,7 @@ button.ad-row__name:focus-visible { outline: none; box-shadow: var(--ring-select
 /* Today in the cluster: a short upright line, the chart's today line in miniature. */
 .ad-zoom__today { display: block; width: var(--border-w-strong); height: var(--icon-sm); border-radius: var(--radius-mark); background: currentColor; }
 /* Compact: row-size buttons and small glyphs on one ground of its own, so it reads over a month's name or a day's head. */
-.ad-zoom.ad-zoom--compact { height: var(--h-btn-row); min-height: 0; padding: 0; border: 0; border-radius: var(--radius-control); background: var(--bg-held); }
+.ad-zoom.ad-zoom--compact { height: var(--h-btn-row); min-height: 0; padding: 0; border: 0; border-radius: var(--radius-page); background: var(--bg-held); }
 .ad-zoom--compact .ad-icon-button { width: var(--h-btn-row); height: var(--h-btn-row); }
 .ad-zoom--compact .ad-zoom__today { height: var(--space-3); }
 /* A day worth a quiet mark (a federal holiday): a tiny neutral dot under the day's number, in the gap above the line; the day's
