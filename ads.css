@@ -407,7 +407,7 @@
   --w-rm-reply: 600px;
   --w-rm-search: 384px;
   --h-dash-row: 54px;
-  --h-dash-summary: var(--h-res-empty);
+  --h-dash-summary: 112px;
   --h-pop-md: 240px;
   --st-label-w: 220px;
   --st-field-w: var(--st-label-w);
@@ -779,10 +779,6 @@
 .ad-sort-button { display: inline-flex; align-items: center; gap: var(--space-1); margin: 0; padding: 0; border: 0; background: transparent; font: inherit; color: inherit; cursor: pointer; }
 .ad-sort-button:hover { color: var(--accent); }
 .ad-sort-button:focus-visible { outline: none; box-shadow: var(--ring-select); border-radius: var(--radius-page); }
-/* A quiet glyph button at the touch target: a date picker's month arrows, a filter tag's x. */
-.ad-glyph-button { display: inline-flex; align-items: center; justify-content: center; width: var(--target-min); height: var(--target-min); margin: 0; padding: 0; border: 0; border-radius: var(--radius-page); background: transparent; color: var(--text-muted); cursor: pointer; }
-.ad-glyph-button svg { width: var(--icon-sm); height: var(--icon-sm); }
-.ad-glyph-button:hover { color: var(--accent); }
 /* A small data note that never wraps: a time, a count, an off-screen date. */
 .ad-note-data { font: var(--type-data); font-size: var(--text-xs); white-space: nowrap; }
 
@@ -1311,11 +1307,12 @@ button.ad-card__name:focus-visible { outline: none; box-shadow: var(--ring-selec
 /* A sentence standing alone (no word) is the headline: large, white. */
 .ad-verdict--headline .ad-verdict__sentence { font: var(--type-title); color: var(--text-primary); }
 
-/* Existing dial geometry, scaled to the two-line row for a slim personal-summary rail. */
+/* The summary band's ring: the dial's own geometry at the two-line row, 56 across. */
 .ad-dial--compact { gap: 0; }
 .ad-dial--compact .ad-dial__face { width: var(--h-row-2); height: var(--h-row-2); }
 .ad-dial--compact .ad-dial__value { font: var(--type-data); font-size: var(--text-base); }
 
+/* Retiring: a 32 ring. The band's ring is the 56 one above; this goes once no app draws it. */
 .ad-dial--small .ad-dial__face { width: var(--h-btn); height: var(--h-btn); }
 .ad-dial--small .ad-dial__value { font: var(--type-data); }
 
@@ -2110,7 +2107,6 @@ button.ad-steps__press:focus-visible { outline: none; box-shadow: var(--ring-sel
 .ad-datepicker__month { display: flex; align-items: center; justify-content: space-between; padding: var(--space-1) var(--space-2) var(--space-2); }
 .ad-datepicker__navs { display: inline-flex; align-items: center; }
 .ad-datepicker__month-name { font: var(--type-heading); text-transform: uppercase; letter-spacing: var(--track-caps); }
-.ad-datepicker__nav:focus-visible { outline: none; box-shadow: var(--ring-select); }
 .ad-datepicker__week { display: grid; grid-template-columns: repeat(7, var(--day-cell)); }
 .ad-datepicker__dow { height: var(--space-6); display: flex; align-items: center; justify-content: center; font: var(--type-data); font-size: var(--text-xs); color: var(--text-muted); }
 .ad-datepicker__day { position: relative; display: flex; align-items: center; justify-content: center; width: var(--day-cell); height: var(--h-btn-bar); margin: 0; padding: 0; border: 0; border-radius: var(--radius-page); background: transparent; font: var(--type-data); font-size: var(--text-xs); color: var(--text-secondary); cursor: pointer; }
@@ -2653,7 +2649,6 @@ button.ad-row__name:focus-visible { outline: none; box-shadow: var(--ring-select
 .ad-filter-tag__icon { display: inline-flex; color: var(--text-muted); }
 .ad-filter-tag__icon svg { width: var(--icon-sm); height: var(--icon-sm); }
 .ad-filter-tag__axis { color: var(--text-muted); }
-.ad-filter-tag__remove:focus-visible { outline: none; box-shadow: var(--ring-select); }
 
 /* Unread: a small white dot after the word ("Notes ·"), never a count. */
 .ad-unread { display: inline-block; width: var(--dot-size); height: var(--dot-size); margin-left: var(--space-2); border-radius: var(--radius-round); background: var(--text-primary); vertical-align: middle; }

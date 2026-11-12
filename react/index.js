@@ -2694,7 +2694,7 @@ function FilterTag({ axis, value, icon, face, onRemove, removeLabel = "Remove fi
     (face || icon != null) && /* @__PURE__ */ jsx16("span", { className: "ad-filter-tag__icon", "aria-hidden": "true", children: face ? /* @__PURE__ */ jsx16(Avatar, { name: face.name, src: face.src, size: "sm", decorative: true }) : slotIcon(icon, { size: "sm" }) }),
     axis != null && /* @__PURE__ */ jsx16("span", { className: "ad-filter-tag__axis", children: axis }),
     /* @__PURE__ */ jsx16("span", { className: "ad-filter-tag__value", children: value }),
-    /* @__PURE__ */ jsx16("button", { type: "button", className: "ad-filter-tag__remove ad-glyph-button", "aria-label": removeLabel, title: removeLabel, onClick: onRemove, children: /* @__PURE__ */ jsx16(Icon, { name: "x" }) })
+    /* @__PURE__ */ jsx16(ButtonSizeScope, { size: "row", children: /* @__PURE__ */ jsx16(IconButton, { className: "ad-filter-tag__remove", label: removeLabel, onClick: onRemove, children: /* @__PURE__ */ jsx16(Icon, { name: "x" }) }) })
   ] });
 }
 function ActiveFilters({ filters, onRemove, onClear, clearLabel = "Clear", label = "Active filters" }) {
@@ -4402,12 +4402,12 @@ function DatePickerBody({ value, onChange, today: todayIn, weekStart = 1, locale
     ] }),
     /* @__PURE__ */ jsxs26("div", { className: "ad-datepicker__month", children: [
       /* @__PURE__ */ jsx29("span", { className: "ad-datepicker__month-name", "aria-live": "polite", children: monthName }),
-      /* @__PURE__ */ jsxs26("span", { className: "ad-datepicker__navs", children: [
-        yearly && /* @__PURE__ */ jsx29("button", { type: "button", className: "ad-datepicker__nav ad-glyph-button", "aria-label": labels.previousYear, onClick: () => go(addMonthsClamped(focus, -12)), children: /* @__PURE__ */ jsx29(Icon, { job: "year-back" }) }),
-        /* @__PURE__ */ jsx29("button", { type: "button", className: "ad-datepicker__nav ad-glyph-button", "aria-label": labels.previousMonth, onClick: () => go(addMonthsClamped(focus, -1)), children: /* @__PURE__ */ jsx29(Icon, { name: "caret-left" }) }),
-        /* @__PURE__ */ jsx29("button", { type: "button", className: "ad-datepicker__nav ad-glyph-button", "aria-label": labels.nextMonth, onClick: () => go(addMonthsClamped(focus, 1)), children: /* @__PURE__ */ jsx29(Icon, { name: "caret-right" }) }),
-        yearly && /* @__PURE__ */ jsx29("button", { type: "button", className: "ad-datepicker__nav ad-glyph-button", "aria-label": labels.nextYear, onClick: () => go(addMonthsClamped(focus, 12)), children: /* @__PURE__ */ jsx29(Icon, { job: "year-forward" }) })
-      ] })
+      /* @__PURE__ */ jsx29("span", { className: "ad-datepicker__navs", children: /* @__PURE__ */ jsxs26(ButtonSizeScope, { size: "row", children: [
+        yearly && /* @__PURE__ */ jsx29(IconButton, { className: "ad-datepicker__nav", label: labels.previousYear, onClick: () => go(addMonthsClamped(focus, -12)), children: /* @__PURE__ */ jsx29(Icon, { job: "year-back" }) }),
+        /* @__PURE__ */ jsx29(IconButton, { className: "ad-datepicker__nav", label: labels.previousMonth, onClick: () => go(addMonthsClamped(focus, -1)), children: /* @__PURE__ */ jsx29(Icon, { name: "caret-left" }) }),
+        /* @__PURE__ */ jsx29(IconButton, { className: "ad-datepicker__nav", label: labels.nextMonth, onClick: () => go(addMonthsClamped(focus, 1)), children: /* @__PURE__ */ jsx29(Icon, { name: "caret-right" }) }),
+        yearly && /* @__PURE__ */ jsx29(IconButton, { className: "ad-datepicker__nav", label: labels.nextYear, onClick: () => go(addMonthsClamped(focus, 12)), children: /* @__PURE__ */ jsx29(Icon, { job: "year-forward" }) })
+      ] }) })
     ] }),
     /* @__PURE__ */ jsxs26("div", { ref: grid, role: "grid", "aria-label": monthName, className: "ad-datepicker__grid", onKeyDown: onGridKey, children: [
       /* @__PURE__ */ jsx29("div", { role: "row", className: "ad-datepicker__week", children: weekdays.map((w, i) => /* @__PURE__ */ jsx29("span", { role: "columnheader", "aria-label": w.long, className: "ad-datepicker__dow", children: w.short }, i)) }),
