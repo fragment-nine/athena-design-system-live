@@ -6262,7 +6262,7 @@ function Booking({ name, time, unconfirmed, color, style, onOpen, bookingProps, 
         ] }),
         !labelOutside && !fit && /* @__PURE__ */ jsx45("span", { className: "ad-booking__time", children: time }),
         meta != null && !fit && !narrow && /* @__PURE__ */ jsx45("span", { className: "ad-booking__meta", children: meta }),
-        !beside && mark != null && mark !== false && /* @__PURE__ */ jsx45("span", { className: "ad-booking__mark", children: mark }),
+        mark != null && mark !== false && /* @__PURE__ */ jsx45("span", { className: "ad-booking__mark", children: mark }),
         !beside && actions != null && /* @__PURE__ */ jsx45("span", { className: "ad-booking__actions", children: /* @__PURE__ */ jsx45(ButtonSizeScope, { size: "row", children: actions }) }),
         !beside && grip("end", ends?.end)
       ]

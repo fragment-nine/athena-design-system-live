@@ -991,7 +991,7 @@ button.ad-booking { cursor: pointer; }
 /* A quiet mark at the top right (a work-light level): no press, the name keeping clear of it; it steps aside while the actions show. */
 .ad-booking__mark { position: absolute; top: var(--space-1); right: var(--space-1); z-index: 1; display: inline-flex; color: var(--text-secondary); pointer-events: none; }
 .ad-booking:has(> .ad-booking__mark) > .ad-booking__name { padding-right: calc(var(--icon-sm) + var(--space-1)); }
-.ad-booking:has(> .ad-booking__actions):hover > .ad-booking__mark, .ad-booking:has(> .ad-booking__actions):focus-within > .ad-booking__mark { visibility: hidden; }
+.ad-booking:has(> .ad-booking__actions):hover > .ad-booking__mark, .ad-booking:has(> .ad-booking__actions):focus-within > .ad-booking__mark, .ad-booking-hold:has(> .ad-booking__actions):hover > .ad-booking > .ad-booking__mark, .ad-booking-hold:has(> .ad-booking__actions):focus-within > .ad-booking > .ad-booking__mark { visibility: hidden; }
 @media (prefers-reduced-motion: reduce) { .ad-booking__actions { transition: none; } }
 @media (prefers-reduced-motion: reduce) { .ad-booking__grip::after { transition: none; } }
 button.ad-booking:hover { box-shadow: var(--glow-hover); }
