@@ -778,8 +778,9 @@
 .ad-striped::before { content: ""; position: absolute; top: 0; bottom: 0; left: 0; width: var(--w-stripe); border-radius: var(--radius-page) 0 0 var(--radius-page); background: var(--ad-stripe); }
 /* A quiet small glyph beside words: the caret of a pick field, any glyph in a row's meta. */
 .ad-glyph-quiet, .ad-row__meta svg { width: var(--icon-sm); height: var(--icon-sm); color: var(--text-muted); flex: none; }
-/* A column head's sort button: the words themselves, coral under the cursor. */
-.ad-sort-button { display: inline-flex; align-items: center; gap: var(--space-1); margin: 0; padding: 0; border: 0; background: transparent; font: inherit; color: inherit; cursor: pointer; }
+/* A column head's sort button: the heading's own words, coral under the cursor. It is the Heading rung itself (a button drops the
+   caps and the tracking of the heading it sits in unless it says them), so a heading that sorts reads exactly as one that does not. */
+.ad-sort-button { display: inline-flex; align-items: center; gap: var(--space-1); margin: 0; padding: 0; border: 0; background: transparent; font: var(--type-heading); text-transform: uppercase; letter-spacing: var(--track-caps); color: inherit; cursor: pointer; }
 .ad-sort-button:hover { color: var(--accent); }
 .ad-sort-button:focus-visible { outline: none; box-shadow: var(--ring-select); border-radius: var(--radius-page); }
 /* A small data note that never wraps: a time, a count, an off-screen date. */
