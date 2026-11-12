@@ -284,7 +284,8 @@ function usePlacement(open, anchor, floating, placement, within) {
     const room = within?.current?.getBoundingClientRect();
     const footer = placement === "side" || placement === "over" || placement === "drop" ? (doc ?? document).querySelector(".ad-footer")?.getBoundingClientRect() : void 0;
     const footerTop = footer && footer.height > 0 && footer.top > vh / 2 && footer.top < vh ? footer.top : vh;
-    const floor = placement === "drop" && a && a.bottom > footerTop ? vh : footerTop;
+    const floor = footerTop;
+    const fromFoot = placement === "drop" && !!a && footerTop < vh && a.bottom > footerTop;
     const header = (placement === "side" || placement === "over" || placement === "drop") && a ? (doc ?? document).querySelector(".ad-page-header")?.getBoundingClientRect() : void 0;
     const ceiling = header && header.height > 0 && header.bottom < vh / 2 && a && a.top >= header.bottom ? header.bottom + edge : edge;
     let top;
@@ -310,7 +311,8 @@ function usePlacement(open, anchor, floating, placement, within) {
       if (card && fw <= card.width) left = Math.min(Math.max(left, card.left), card.right - fw);
       left = Math.min(left, vw - fw - edge);
       const down = a.bottom + gap, below = floor - edge - down, above = a.top - gap - ceiling;
-      if (fh <= below) top = down;
+      if (fromFoot) top = fh <= floor - edge - ceiling ? floor - edge - fh : ceiling;
+      else if (fh <= below) top = down;
       else if (fh <= above) top = a.top - gap - fh;
       else if (fh <= floor - edge - ceiling) top = floor - edge - fh;
       else top = below >= above ? down : ceiling;
