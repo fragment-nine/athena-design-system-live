@@ -1910,11 +1910,10 @@ function PickList({ options, value, onPick, searchLabel, noMatch = "Nothing matc
   const row = (o, layer) => {
     const control = (node, cls) => /* @__PURE__ */ jsx9("span", { className: cx(cls, layer ? "ad-picklist__control" : "ad-picklist__place"), children: node });
     return /* @__PURE__ */ jsxs7(Fragment5, { children: [
-      many && /* @__PURE__ */ jsx9("span", { className: "ad-checkbox__box", "data-state": picked.has(o.id) ? "on" : "off", "aria-hidden": "true", children: picked.has(o.id) && /* @__PURE__ */ jsx9(Icon, { name: "check" }) }),
       o.leadControl != null ? control(o.leadControl, "ad-picklist__lead") : o.lead != null && /* @__PURE__ */ jsx9("span", { className: "ad-picklist__lead", children: o.lead }),
       /* @__PURE__ */ jsx9("span", { className: "ad-picklist__label ad-clamp-line", children: o.label }),
       o.hintControl != null ? control(o.hintControl, "ad-picklist__hint") : o.hint != null && /* @__PURE__ */ jsx9("span", { className: "ad-picklist__hint", children: o.hint }),
-      !many && picked.has(o.id) && /* @__PURE__ */ jsx9("span", { className: "ad-picklist__check", "aria-hidden": "true", children: /* @__PURE__ */ jsx9(Icon, { name: "check", size: "sm" }) })
+      picked.has(o.id) && /* @__PURE__ */ jsx9("span", { className: "ad-picklist__check", "aria-hidden": "true", children: /* @__PURE__ */ jsx9(Icon, { name: "check", size: "sm" }) })
     ] });
   };
   const next = shown.find((o) => o.actions != null && picked.has(o.id));
