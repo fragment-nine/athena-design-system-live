@@ -90,11 +90,11 @@ function scanIn(root) {
     const form = forms[i];
     if (!shown(form)) continue;
     const fields = [];
-    const list = form.querySelectorAll(".ad-field, .ad-facts__cell");
+    const list = form.querySelectorAll(".ad-field, .ad-note-box, .ad-facts__cell");
     for (let j = 0; j < list.length; j++) if (shown(list[j])) fields.push(list[j]);
     if (fields.length <= 6) continue;
     const loose = fields.filter((f) => !f.closest(".ad-form-section"));
-    const boxes = loose.filter((f) => !(f.classList.contains("ad-field") && !f.closest(".ad-facts") && fields.indexOf(f) < 2));
+    const boxes = loose.filter((f) => !((f.classList.contains("ad-field") || f.classList.contains("ad-note-box")) && !f.closest(".ad-facts") && fields.indexOf(f) < 2));
     if (!boxes.length) continue;
     out.push({
       kind: "long-form",
@@ -113,4 +113,4 @@ export {
   scanIn,
   describeViolations
 };
-//# sourceMappingURL=chunk-5DPRZLB3.js.map
+//# sourceMappingURL=chunk-WZUPHMQT.js.map

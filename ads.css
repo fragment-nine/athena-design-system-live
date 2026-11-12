@@ -743,7 +743,6 @@
   :focus-visible { outline: var(--border-w-strong) solid Highlight !important; outline-offset: var(--space-hair); }
   /* The same ring where a piece draws it on a wrapper or keeps it without :focus-visible. */
   .ad-field:has(:focus-visible),
-  .ad-textarea:focus,
   .ad-note-box:focus,
   .ad-token-input__field:has(.ad-token-input__box:focus-visible),
   .ad-menu__item[data-active],
@@ -936,7 +935,7 @@ tr[data-ad-drop="after"] > :is(td, th) { box-shadow: inset 0 calc(var(--bw-selec
 .ad-month__dows { display: grid; grid-template-columns: repeat(7, 1fr); }
 .ad-month__dow { padding: var(--space-1) var(--space-2); border-right: var(--border-w) solid var(--border); border-bottom: var(--border-w) solid var(--border); font: var(--type-data); font-size: var(--text-xs); text-transform: uppercase; color: var(--text-muted); }
 .ad-month__week {
-  position: relative; display: grid; grid-template-columns: repeat(7, 1fr); grid-template-rows: var(--space-6) repeat(var(--ad-lanes), var(--space-4)) 1fr;
+  position: relative; display: grid; grid-template-columns: repeat(7, 1fr); grid-template-rows: var(--space-6) repeat(var(--ad-lanes), var(--h-bar)) 1fr;
   row-gap: var(--space-1); min-height: var(--cal-cell);
 }
 .ad-month__cell { grid-row: 1 / -1; display: flex; flex-direction: column; justify-content: space-between; padding: var(--space-1) var(--space-1); border-right: var(--border-w) solid var(--border); border-bottom: var(--border-w) solid var(--border); }
@@ -953,25 +952,18 @@ tr[data-ad-drop="after"] > :is(td, th) { box-shadow: inset 0 calc(var(--bw-selec
 /* The row glyph's size, as the timeline's. */
 .ad-month__bar--past .ad-month__diamond { background: var(--text-muted); }
 .ad-month__bar--unconfirmed .ad-month__diamond { background-color: var(--ad-under); background-image: var(--hatch-ink); border: var(--border-w) solid var(--text-primary); }
-/* One bar across its days, one lane high: solid when confirmed, hatched with its name on a solid patch when not. */
-.ad-month__bar { --ad-bar: var(--bg-hover); --ad-lane: 0; grid-row: calc(var(--ad-lane) + 2); z-index: 1; display: flex; align-items: center; min-width: 0; margin: 0 var(--space-1); padding: 0 var(--space-2); border: 0; border-radius: var(--radius-page); background: var(--ad-bar); color: var(--text-primary); font: var(--type-name); text-align: left; overflow: hidden; }
-/* An item or phase colour is never the fill of a calendar item or a booking: it runs as the side stripe down the left side
-. hue.tsx barColour sets --ad-stripe. */
-.ad-month__bar, .ad-booking { --ad-stripe: transparent; }
-.ad-month__bar { position: relative; }
+/* One bar across its days, one lane high: the timeline's own bar (Bar's classes: its height, its solid edge when confirmed, its
+   hatch and backed name when not, its hover and focus). Only its place in the week is the month's. */
+.ad-bar.ad-month__bar { --ad-lane: 0; grid-row: calc(var(--ad-lane) + 2); z-index: 1; width: auto; min-width: 0; margin: 0 var(--space-1); overflow: hidden; }
+.ad-month__bar .ad-bar__label { max-width: 100%; }
+.ad-month__bar .ad-bar__label > .ad-dept { flex: none; }
+/* A milestone is its diamond and its name, no bar. */
 .ad-month__bar--milestone::before { content: none; }
 .ad-month__bar--cut-start::before { border-radius: 0; }
+/* An item or phase colour is never the fill of a booking: it runs as the side stripe down the left side. hue.tsx barColour sets --ad-stripe. */
+.ad-booking { --ad-stripe: transparent; }
 /* A department colour is the department's glyph before the name, in its colour: Department.tsx DeptGlyph. */
-.ad-month__bar > .ad-dept { flex: none; }
 .ad-booking__name > .ad-dept { margin-right: var(--space-1); vertical-align: middle; }
-.ad-month__bar > span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.ad-month__bar { gap: var(--space-1); }
-button.ad-month__bar { cursor: pointer; }
-button.ad-month__bar:hover { box-shadow: var(--glow-hover); }
-button.ad-month__bar:hover > span { color: var(--accent); }
-button.ad-month__bar:focus-visible { outline: none; box-shadow: var(--ring-select); }
-.ad-month__bar--unconfirmed { background: transparent; background-image: var(--hatch); box-shadow: inset 0 0 0 var(--border-w) var(--line-strong); }
-.ad-month__bar--unconfirmed > span { background: var(--ad-under); padding: 0 var(--space-1); border-radius: var(--radius-page); }
 .ad-month__bar--cut-start { border-top-left-radius: 0; border-bottom-left-radius: 0; margin-left: 0; }
 .ad-month__bar--cut-end { border-top-right-radius: 0; border-bottom-right-radius: 0; margin-right: 0; }
 .ad-booking { --ad-bar: var(--bg-hover); display: flex; flex-direction: column; gap: var(--space-hair); box-sizing: border-box; width: 100%; margin: 0; padding: var(--space-1) var(--space-2); border: 0; border-radius: var(--radius-page); background: var(--ad-bar); color: var(--text-primary); font: var(--type-name); line-height: var(--lh-tight); text-align: left; overflow: hidden; }
@@ -1085,7 +1077,7 @@ button.ad-year__day:focus-visible { outline: none; box-shadow: var(--ring-select
 .ad-day-cell__number { display: inline-flex; align-items: center; justify-content: center; width: min(var(--h-btn), 100%); height: var(--h-btn); border-radius: var(--radius-page); font: var(--type-data); font-size: var(--text-base); color: var(--text-primary); }
 /* Today in a week of days: a quiet filled ground one tone lighter, never a ring. */
 .ad-day-cell--today { background: var(--bg-raised); }
-.ad-day-cell__where { align-self: stretch; height: var(--space-2); border-radius: var(--radius-page); background: var(--ad-where); }
+.ad-day-cell__where { align-self: stretch; height: var(--w-stripe); border-radius: var(--radius-page); background: var(--ad-where); }
 .ad-day-cell--away .ad-day-cell__where { background: var(--hatch-away), var(--ad-where); }
 .ad-day-cell--ground { background: color-mix(in srgb, var(--ad-ground) var(--tint-presence-wash), transparent); }
 .ad-day-cell--ground.ad-day-cell--today { background: linear-gradient(color-mix(in srgb, var(--ad-ground) var(--tint-presence-wash), transparent), color-mix(in srgb, var(--ad-ground) var(--tint-presence-wash), transparent)), var(--bg-raised); }
@@ -1462,22 +1454,21 @@ button.ad-card__name:focus-visible { outline: none; box-shadow: var(--ring-selec
 .ad-empty__actions { display: flex; gap: var(--space-2); }
 
 /* src/components/Field/Field.css */
-/* TextField, TextArea, Select, FieldRow */
+/* TextField, Select, FieldRow (a TextArea draws the note box: Writing.css) */
 .ad-field-wrap { display: inline-flex; flex-direction: column; min-width: 0; }
 .ad-field { display: inline-flex; align-items: center; gap: var(--space-2); box-sizing: border-box; height: var(--h-field); padding: 0 var(--space-3); min-width: 0; border: 0; border-radius: var(--radius-page); background: var(--bg-raised); color: var(--text-primary); font: var(--type-name); line-height: var(--lh-tight); }
 /* Focus = one tone lighter, no edge (approved Controls card). */
-.ad-field:focus-within, .ad-textarea:focus { outline: none; background: var(--bg-hover); }
+.ad-field:focus-within { outline: none; background: var(--bg-hover); }
 /* Keyboard focus always shows the same ring (DR Behaviour). The ring is the white ring-select, not a coloured edge (DR Controls);
    the tone change stays. `:has` carries it to the native <select> and to the input inside the field's skin. */
-.ad-field:has(:focus-visible), .ad-textarea:focus-visible { box-shadow: var(--ring-select); }
+.ad-field:has(:focus-visible) { box-shadow: var(--ring-select); }
 .ad-field__error { margin-top: var(--space-2); font: var(--type-body); line-height: var(--lh-normal); color: var(--text-secondary); }
 .ad-field--disabled { opacity: var(--opacity-disabled); }
 .ad-field__input, .ad-select__native { all: unset; box-sizing: border-box; flex: 1; min-width: 0; height: 100%; font: inherit; color: inherit; }
-.ad-field__input::placeholder, .ad-textarea::placeholder { color: var(--text-muted); }
+.ad-field__input::placeholder { color: var(--text-muted); }
 .ad-field__icon, .ad-field__end { display: inline-flex; color: var(--text-muted); }
 .ad-field__icon svg { width: var(--icon-md); height: var(--icon-md); }
 .ad-field__parsed { margin-top: var(--space-2); font: var(--type-data); font-size: var(--text-xs); text-transform: lowercase; color: var(--text-secondary); }
-.ad-textarea { display: block; width: 100%; height: auto; min-height: calc(var(--h-field) * 3); padding: var(--space-2) var(--space-3); resize: vertical; line-height: var(--lh-normal); }
 .ad-select { position: relative; cursor: pointer; padding-right: var(--space-8); }
 .ad-select__native { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; height: var(--h-field); line-height: var(--h-field); cursor: pointer; padding-right: var(--space-6); margin-right: calc(var(--space-6) * -1); }
 .ad-select__native option { background: var(--bg-float); color: var(--text-primary); }
@@ -1766,8 +1757,7 @@ button.ad-contents__button:focus-visible { outline: none; box-shadow: var(--ring
 .ad-list-section__bar:has(> .ad-row--two) > .ad-list-section__fold { align-self: flex-start; margin-top: var(--space-1); }
 .ad-list-section__fold:hover { color: var(--accent); }
 .ad-list-section__fold:focus-visible { outline: none; box-shadow: var(--ring-select); }
-.ad-list-section__body--nested { margin-left: calc(var(--h-btn-row) / 2); padding-left: var(--space-4); border-left: var(--border-w) solid var(--border); }
-/* Everything's opt-in tree: each child continues the trunk, the last ends at its elbow. The parent joins at its lead. */
+/* Under a deliverable, always the tree: each child continues the trunk, the last ends at its elbow. The parent joins at its lead. */
 .ad-list-section--tree { --ad-branch-offset: calc(var(--space-2) + var(--icon-sm) / 2); }
 .ad-list-section--tree:has(> .ad-list-section__bar > .ad-list-section__fold) { --ad-branch-offset: calc(var(--h-btn-row) + var(--space-1) + var(--space-2) + var(--icon-sm) / 2); }
 .ad-list-section--tree > .ad-list-section__bar { position: relative; }
@@ -1793,7 +1783,8 @@ button.ad-contents__button:focus-visible { outline: none; box-shadow: var(--ring
 /* A drop target: lit one tone while a row or a file is dragged over; an empty section keeps a row of height. */
 .ad-list-section--over .ad-list-section__body, .ad-file-drop--over { background: var(--tint-selected); border-radius: var(--radius-page); }
 .ad-list-section__body--empty { min-height: var(--h-row); }
-.ad-list-section__empty { margin: 0; height: var(--h-row); display: flex; align-items: center; padding: 0 var(--space-2); font: var(--type-body); line-height: var(--lh-tight); color: var(--text-secondary); }
+/* An empty section's line is the quiet sentence (EmptyState's own); here it only lines up with the rows. */
+.ad-list-section__empty { padding: 0 var(--space-2); }
 
 .ad-day-heading__caption { margin: var(--space-1) 0 0; font: var(--type-body); color: var(--text-secondary); }
 
@@ -1944,6 +1935,8 @@ button:hover > .ad-project-pill:not(.ad-project-pill--current) { color: var(--ac
 /* PageList: a thing's own pages as a second left list, the open menu's rows; its kind, name and state on top, the pages in named groups. */
 .ad-page-list { --ad-page-list-in: calc((var(--w-rail) - var(--icon-lg)) / 2); flex: none; gap: var(--space-4); overflow-y: auto; }
 /* The search at the top of a page list, lined up with its rows. */
+/* Inline, beside a pane: the same list on the ground, no glass and no edge, held at the top while the pane scrolls. */
+.ad-side.ad-page-list--inline { position: sticky; top: 0; height: auto; padding: 0; background: none; border-right: 0; backdrop-filter: none; -webkit-backdrop-filter: none; box-shadow: none; }
 .ad-page-list__search { padding-left: var(--ad-page-list-in); }
 .ad-page-list__search .ad-field { width: 100%; }
 .ad-page-list__head { display: flex; flex-direction: column; gap: var(--space-1); padding-left: var(--ad-page-list-in); }
@@ -2069,15 +2062,10 @@ button.ad-steps__press:focus-visible { outline: none; box-shadow: var(--ring-sel
 /* Dates at a row's right: the list and its card grow to hold them, so nothing reaches the edge or sticks out. */
 .ad-picklist:has(.ad-picklist__hint .ad-item-dates), .ad-pick-field__list:has(.ad-picklist__hint .ad-item-dates) { width: max-content; min-width: var(--w-menu); max-width: var(--w-card); }
 .ad-picklist__hint { flex: none; }
-.ad-picklist__search {
-  display: flex; align-items: center; gap: var(--space-2); height: var(--h-btn); padding: 0 var(--space-2); margin-bottom: var(--space-2);
-  border-radius: var(--radius-page); background: var(--bg-hover); color: var(--text-muted);
-}
-.ad-picklist__search svg { width: var(--icon-md); height: var(--icon-md); flex: none; }
-.ad-picklist__search input { all: unset; flex: 1; min-width: 0; font: var(--type-name); color: var(--text-primary); }
-.ad-picklist__search input::placeholder { color: var(--text-muted); }
-.ad-picklist__search:focus-within { background: var(--bg-float); }
+/* The search is the field itself (one field look), its glass always at the start; it spans the list. */
+.ad-picklist__search { display: flex; margin-bottom: var(--space-2); }
 /* The search takes the cursor when the list opens, with no ring: the ring shows once the keys have moved in the list. */
+.ad-picklist .ad-picklist__search:has(input:focus-visible) { box-shadow: none; }
 .ad-picklist[data-keyed] .ad-picklist__search:has(input:focus-visible) { box-shadow: var(--ring-select); }
 /* A list shows eight rows and scrolls inside past that, wherever it is (a card, a pop-over, the page). */
 .ad-picklist__list { position: relative; max-height: calc(var(--h-btn) * 8); overflow-y: auto; outline: none; }
@@ -2601,10 +2589,14 @@ button.ad-row__name:focus-visible { outline: none; box-shadow: var(--ring-select
 .ad-table__chevron--shut { transform: rotate(-90deg); }
 .ad-table__fold--row { margin-right: var(--space-2); vertical-align: middle; }
 .ad-table__group th { height: var(--h-btn); padding: var(--space-4) var(--space-2) 0; text-align: left; border-bottom: var(--border-w) solid var(--border); font: var(--type-heading); text-transform: uppercase; color: var(--text-secondary); letter-spacing: var(--track-caps); }
-/* A child row: indented one step per level, an elbow before its name, its turn rounded (one elbow build-wide, the tree's too). */
-.ad-table th.ad-table__name { --ad-depth: 0; padding-left: calc(var(--space-2) + var(--ad-depth) * var(--space-6)); }
+/* A child row: indented one step per level, hung on the list's own elbow (one elbow build-wide): one trunk down the parent's
+   children, a 16 arm into each, its turn rounded, the trunk ending at the last child. */
+.ad-table th.ad-table__name { --ad-depth: 0; padding-left: calc(var(--space-2) + var(--ad-depth) * var(--space-8)); }
 .ad-table th.ad-table__name:not(.ad-table__frozen--start) { position: relative; }
-.ad-table__elbow { position: absolute; left: calc(var(--space-2) + (var(--ad-depth) - 1) * var(--space-6) + var(--space-2)); top: 0; width: var(--space-2); height: 50%; border-left: var(--border-w) solid var(--line-strong); border-bottom: var(--border-w) solid var(--line-strong); border-bottom-left-radius: var(--radius-page); }
+.ad-table__elbow, .ad-table__trunk { position: absolute; top: 0; box-sizing: border-box; border-left: var(--border-w) solid var(--line-strong); pointer-events: none; }
+.ad-table__elbow { left: calc(var(--space-4) + (var(--ad-depth) - 1) * var(--space-8)); width: var(--space-4); height: 50%; border-bottom: var(--border-w) solid var(--line-strong); border-bottom-left-radius: var(--radius-page); }
+.ad-table__elbow--on::after { content: ""; position: absolute; left: calc(var(--border-w) * -1); top: 0; height: 200%; border-left: var(--border-w) solid var(--line-strong); }
+.ad-table__trunk { --ad-level: 1; left: calc(var(--space-4) + (var(--ad-level) - 1) * var(--space-8)); bottom: 0; }
 /* A name with a grey second line: the row is 56. */
 .ad-table th.ad-table__name--two { height: var(--h-row-2); }
 .ad-table__words { display: inline-flex; flex-direction: column; gap: var(--space-hair); }
