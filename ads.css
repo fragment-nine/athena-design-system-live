@@ -2285,6 +2285,8 @@ button.ad-steps__press:focus-visible { outline: none; box-shadow: var(--ring-sel
 
 /* A hairline between a card's sections and between every item in them; a row draws none of its own here, so a line never doubles. */
 .ad-popover__section + .ad-popover__section { border-top: var(--border-w) solid var(--border); padding-top: var(--space-4); }
+/* A section with no heading is no group break: it follows the one before at the rows' own pitch, the one hairline between rows. */
+.ad-popover__section + .ad-popover__section:not(:has(> .ad-popover__section-head)) { margin-top: var(--space-2); padding-top: var(--space-2); }
 .ad-popover .ad-field-row { border-bottom: 0; }
 .ad-popover__section-body > * + *:not(.ad-view__reason, .ad-view-or, .ad-view-or + *), .ad-popover > .ad-field-row + .ad-field-row, .ad-popover__body > .ad-field-row + .ad-field-row { border-top: var(--border-w) solid var(--border); padding-top: var(--space-2); }
 
@@ -2671,10 +2673,10 @@ button.ad-row__name:focus-visible { outline: none; box-shadow: var(--ring-select
 /* The cells split by hairlines, as his Overview picture draws them. */
 .ad-figures__item { display: flex; flex-direction: column; gap: var(--space-2); min-width: 0; padding: var(--space-4) var(--space-6); border-left: var(--border-w) solid var(--border); }
 .ad-figures__item:first-child { padding-left: 0; border-left: 0; }
-/* In a section the section's hairline is the only rule: the strip draws none of its own, no dividers, and space splits the
-   figures, the first flush left. */
+/* In a section the section's hairline is the only horizontal rule: the strip draws no top or bottom rule. Its figures are split as a
+   rail's readings are, a hairline between one and the next with space after it, the first flush left. */
 .ad-section .ad-figures { border-top: 0; border-bottom: 0; }
-.ad-section .ad-figures__item { padding-left: 0; border-left: 0; }
+.ad-section .ad-figures__item + .ad-figures__item { padding-left: var(--space-4); }
 /* A strip lines its readings up: the labels on one row, the values on the next, the graphics under them taking the slack, and the
    notes on one line at the bottom however tall a graphic runs. In a section it fills the section, so strips side by side end level. */
 .ad-figures:not(.ad-figures--grid) { grid-template-rows: auto auto 1fr auto; }
