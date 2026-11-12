@@ -988,6 +988,10 @@ button.ad-booking { cursor: pointer; }
 .ad-booking__actions { position: absolute; top: var(--space-1); right: var(--space-1); z-index: 2; display: inline-flex; gap: var(--space-hair); opacity: 0; transition: opacity var(--dur-fast) var(--ease-out); }
 /* A block's actions show under the cursor or on focus, never over its words at rest. */
 .ad-booking:hover .ad-booking__actions, .ad-booking:focus-within .ad-booking__actions { opacity: 1; }
+/* A quiet mark at the top right (a work-light level): no press, the name keeping clear of it; it steps aside while the actions show. */
+.ad-booking__mark { position: absolute; top: var(--space-1); right: var(--space-1); z-index: 1; display: inline-flex; color: var(--text-secondary); pointer-events: none; }
+.ad-booking:has(> .ad-booking__mark) > .ad-booking__name { padding-right: calc(var(--icon-sm) + var(--space-1)); }
+.ad-booking:has(> .ad-booking__actions):hover > .ad-booking__mark, .ad-booking:has(> .ad-booking__actions):focus-within > .ad-booking__mark { visibility: hidden; }
 @media (prefers-reduced-motion: reduce) { .ad-booking__actions { transition: none; } }
 @media (prefers-reduced-motion: reduce) { .ad-booking__grip::after { transition: none; } }
 button.ad-booking:hover { box-shadow: var(--glow-hover); }
@@ -1083,6 +1087,12 @@ button.ad-year__day:focus-visible { outline: none; box-shadow: var(--ring-select
 .ad-day-cell--ground.ad-day-cell--today { background: linear-gradient(color-mix(in srgb, var(--ad-ground) var(--tint-presence-wash), transparent), color-mix(in srgb, var(--ad-ground) var(--tint-presence-wash), transparent)), var(--bg-raised); }
 .ad-day-cell__label { align-self: stretch; box-sizing: border-box; width: 0; min-width: 100%; padding: 0 var(--space-1) var(--space-1); font: var(--type-detail); color: var(--text-muted); text-align: center; overflow-wrap: normal; word-break: normal; hyphens: none; }
 .ad-day-cell__travel { position: absolute; top: var(--space-1); right: var(--space-1); color: var(--text-secondary); }
+/* Compact, a row of days over a calendar: half as tall. Letter and number on one line, the name under on at most two lines. */
+.ad-day-cell--compact { flex-flow: row wrap; align-content: flex-start; align-items: baseline; justify-content: center; gap: var(--space-hair) var(--space-1); padding-top: var(--space-1); }
+.ad-day-cell--compact .ad-day-cell__number { width: auto; height: auto; }
+.ad-day-cell--compact .ad-day-cell__where { flex: 0 0 100%; }
+.ad-day-cell--compact .ad-day-cell__where:not([data-where]) { display: none; }
+.ad-day-cell--compact .ad-day-cell__label { flex: 0 0 100%; min-width: 0; display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; overflow: hidden; }
 
 /* Built 2026-10-28 for the Rehearsal calendar: a rich head, the phase band, overlapping entries side by side, the moments strip. */
 .ad-time-grid__head { position: absolute; top: calc(-1 * var(--ad-head-h)); left: 0; right: 0; padding: 0 var(--space-2) var(--space-3); } /* every head starts on one line at the top; the grid reserves the tallest */
@@ -2912,6 +2922,9 @@ button.ad-milestone:focus-visible { outline: none; box-shadow: var(--ring-select
 .ad-chart-key__swatch--clash { box-shadow: var(--glow-clash); }
 .ad-chart-key__swatch--hatched { background: transparent; background-image: var(--hatch); box-shadow: inset 0 0 0 var(--border-w) var(--line-strong); }
 .ad-chart-key__swatch--deal { background: transparent; outline: var(--border-w) dashed var(--text-muted); outline-offset: calc(var(--border-w) * -1); }
+/* A call (a moment in the hours' side strip): its small raised tile with the hairline under it, in small. */
+.ad-chart-key__swatch--moment { position: relative; height: var(--space-2); margin-bottom: var(--space-1); background: var(--bg-raised); }
+.ad-chart-key__swatch--moment::after { content: ""; position: absolute; left: 0; right: 0; top: calc(100% + var(--space-hair)); border-bottom: var(--border-w) solid var(--line-strong); }
 .ad-chart-key__swatch--backup { background: transparent; outline: var(--border-w) dotted var(--line-strong); outline-offset: calc(var(--border-w) * -1); }
 /* DragBand: the span a new item will cover while it is dragged out. */
 /* What is being made is coral: a box down the whole timeline, a bar inside one lane (2026-11-07). */

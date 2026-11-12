@@ -755,6 +755,9 @@ var REGULAR = {
   "dots-three": [
     "M140,128a12,12,0,1,1-12-12A12,12,0,0,1,140,128Zm56-12a12,12,0,1,0,12,12A12,12,0,0,0,196,116ZM60,116a12,12,0,1,0,12,12A12,12,0,0,0,60,116Z"
   ],
+  "export": [
+    "M216,112v96a16,16,0,0,1-16,16H56a16,16,0,0,1-16-16V112A16,16,0,0,1,56,96H80a8,8,0,0,1,0,16H56v96H200V112H176a8,8,0,0,1,0-16h24A16,16,0,0,1,216,112ZM93.66,69.66,120,43.31V136a8,8,0,0,0,16,0V43.31l26.34,26.35a8,8,0,0,0,11.32-11.32l-40-40a8,8,0,0,0-11.32,0l-40,40A8,8,0,0,0,93.66,69.66Z"
+  ],
   "eye": [
     "M247.31,124.76c-.35-.79-8.82-19.58-27.65-38.41C194.57,61.26,162.88,48,128,48S61.43,61.26,36.34,86.35C17.51,105.18,9,124,8.69,124.76a8,8,0,0,0,0,6.5c.35.79,8.82,19.57,27.65,38.4C61.43,194.74,93.12,208,128,208s66.57-13.26,91.66-38.34c18.83-18.83,27.3-37.61,27.65-38.4A8,8,0,0,0,247.31,124.76ZM128,192c-30.78,0-57.67-11.19-79.93-33.25A133.47,133.47,0,0,1,25,128,133.33,133.33,0,0,1,48.07,97.25C70.33,75.19,97.22,64,128,64s57.67,11.19,79.93,33.25A133.46,133.46,0,0,1,231.05,128C223.84,141.46,192.43,192,128,192Zm0-112a48,48,0,1,0,48,48A48.05,48.05,0,0,0,128,80Zm0,80a32,32,0,1,1,32-32A32,32,0,0,1,128,160Z"
   ],
@@ -799,6 +802,15 @@ var REGULAR = {
   ],
   "lightning": [
     "M215.79,118.17a8,8,0,0,0-5-5.66L153.18,90.9l14.66-73.33a8,8,0,0,0-13.69-7l-112,120a8,8,0,0,0,3,13l57.63,21.61L88.16,238.43a8,8,0,0,0,13.69,7l112-120A8,8,0,0,0,215.79,118.17ZM109.37,214l10.47-52.38a8,8,0,0,0-5-9.06L62,132.71l84.62-90.66L136.16,94.43a8,8,0,0,0,5,9.06l52.8,19.8Z"
+  ],
+  "lights-half": [
+    "M128,24A104,104,0,1,0,232,128,104.11,104.11,0,0,0,128,24ZM40,128a88.1,88.1,0,0,1,88-88V216A88.1,88.1,0,0,1,40,128Z"
+  ],
+  "lights-localised": [
+    "M128,24A104,104,0,1,0,232,128,104.11,104.11,0,0,0,128,24Zm0,192a88,88,0,1,1,88-88A88.1,88.1,0,0,1,128,216Zm40-88a40,40,0,1,1-40-40A40,40,0,0,1,168,128Z"
+  ],
+  "lights-on": [
+    "M232,128A104,104,0,1,1,128,24,104.13,104.13,0,0,1,232,128Z"
   ],
   "list-checks": [
     "M224,128a8,8,0,0,1-8,8H128a8,8,0,0,1,0-16h88A8,8,0,0,1,224,128ZM128,72h88a8,8,0,0,0,0-16H128a8,8,0,0,0,0,16Zm88,112H128a8,8,0,0,0,0,16h88a8,8,0,0,0,0-16ZM82.34,42.34,56,68.69,45.66,58.34A8,8,0,0,0,34.34,69.66l16,16a8,8,0,0,0,11.32,0l32-32A8,8,0,0,0,82.34,42.34Zm0,64L56,132.69,45.66,122.34a8,8,0,0,0-11.32,11.32l16,16a8,8,0,0,0,11.32,0l32-32a8,8,0,0,0-11.32-11.32Zm0,64L56,196.69,45.66,186.34a8,8,0,0,0-11.32,11.32l16,16a8,8,0,0,0,11.32,0l32-32a8,8,0,0,0-11.32-11.32Z"
@@ -1501,6 +1513,11 @@ var JOBS = {
   "chevron-down": "caret-down",
   "chevron-left": "caret-left",
   "chevron-right": "caret-right",
+  "export": "export",
+  "lights-half": "lights-half",
+  "lights-localised": "lights-localised",
+  "lights-off": "circle",
+  "lights-on": "lights-on",
   "year-back": "caret-double-left",
   "year-forward": "caret-double-right",
   "chevron-up": "caret-up",
@@ -5966,7 +5983,7 @@ function OffscreenStart({ date, side = "start" }) {
     date
   ] });
 }
-var KEY_MARKS = /* @__PURE__ */ new Set(["confirmed", "hatched", "deal", "backup", "clash"]);
+var KEY_MARKS = /* @__PURE__ */ new Set(["confirmed", "hatched", "deal", "backup", "clash", "moment"]);
 function ChartKey({ items, ariaLabel = "Key" }) {
   return /* @__PURE__ */ jsx43("div", { className: "ad-chart-key", role: "group", "aria-label": ariaLabel, children: items.map((it, i) => {
     const swatch = typeof it.mark === "string" && KEY_MARKS.has(it.mark) ? /* @__PURE__ */ jsx43("span", { "aria-hidden": "true", className: `ad-chart-key__swatch ad-chart-key__swatch--${it.mark}` }) : it.mark && typeof it.mark === "object" && "code" in it.mark ? (() => {
@@ -6203,7 +6220,7 @@ function YearCalendar({ year, today: todayIn, busy, onPressDay, weekStart = 1, l
     ] }, m);
   }) });
 }
-function Booking({ name, time, unconfirmed, color, style, onOpen, bookingProps, ends, actions, labelOutside, meta, fit, narrow, dragging, creating }) {
+function Booking({ name, time, unconfirmed, color, style, onOpen, bookingProps, ends, actions, mark, labelOutside, meta, fit, narrow, dragging, creating }) {
   const asButton = !!onOpen && !ends && actions == null;
   const Tag2 = asButton ? "button" : "div";
   const hue = useHue(color);
@@ -6245,6 +6262,7 @@ function Booking({ name, time, unconfirmed, color, style, onOpen, bookingProps, 
         ] }),
         !labelOutside && !fit && /* @__PURE__ */ jsx45("span", { className: "ad-booking__time", children: time }),
         meta != null && !fit && !narrow && /* @__PURE__ */ jsx45("span", { className: "ad-booking__meta", children: meta }),
+        !beside && mark != null && mark !== false && /* @__PURE__ */ jsx45("span", { className: "ad-booking__mark", children: mark }),
         !beside && actions != null && /* @__PURE__ */ jsx45("span", { className: "ad-booking__actions", children: /* @__PURE__ */ jsx45(ButtonSizeScope, { size: "row", children: actions }) }),
         !beside && grip("end", ends?.end)
       ]
@@ -6478,7 +6496,7 @@ function TimeGrid({ headerEnd, startHour, endHour, bookings = [], columns, now, 
     /* @__PURE__ */ jsx45("div", { className: "ad-time-grid__corner ad-time-grid__corner--pinned", children: headerEnd })
   ] });
 }
-function DayCell({ day, today, where, whereLabel, away, travel, letter, ground, label, dayProps }) {
+function DayCell({ day, today, where, whereLabel, away, travel, letter, ground, label, compact, dayProps }) {
   const colour = useNamedColour(where);
   const wash = useNamedColour(ground === "none" ? void 0 : ground);
   const n = daysBetween(today, day);
@@ -6490,13 +6508,13 @@ function DayCell({ day, today, where, whereLabel, away, travel, letter, ground, 
       ...hooks,
       role: "group",
       "aria-label": [day.toDateString(), typeof label === "string" ? label : "", whereLabel, away ? "away" : "", travel ? "travelling" : ""].filter(Boolean).join(", "),
-      className: cx("ad-day-cell", n < 0 && "ad-day-cell--past", n === 0 && "ad-day-cell--today", weekend && "ad-day-cell--weekend", away && "ad-day-cell--away", wash && "ad-day-cell--ground"),
+      className: cx("ad-day-cell", n < 0 && "ad-day-cell--past", n === 0 && "ad-day-cell--today", weekend && "ad-day-cell--weekend", away && "ad-day-cell--away", wash && "ad-day-cell--ground", compact && "ad-day-cell--compact"),
       style: wash ? { ["--ad-ground"]: wash } : void 0,
       children: [
         /* @__PURE__ */ jsx45("span", { className: "ad-day-cell__letter ad-type-heading", "aria-hidden": "true", children: letter ?? ENGLISH.weekdayLetters[day.getDay()] }),
         /* @__PURE__ */ jsx45("span", { className: "ad-day-cell__number", "aria-hidden": "true", children: day.getDate() }),
         /* @__PURE__ */ jsx45("span", { className: "ad-day-cell__where", "aria-hidden": "true", style: colour ? { ["--ad-where"]: colour } : void 0, "data-where": colour ? true : void 0 }),
-        label != null && label !== false && /* @__PURE__ */ jsx45("span", { className: "ad-day-cell__label", "aria-hidden": typeof label === "string" ? true : void 0, children: label }),
+        label != null && label !== false && /* @__PURE__ */ jsx45("span", { className: "ad-day-cell__label", title: compact && typeof label === "string" ? label : void 0, "aria-hidden": typeof label === "string" ? true : void 0, children: label }),
         travel && /* @__PURE__ */ jsx45("span", { className: "ad-day-cell__travel", "aria-hidden": "true", children: /* @__PURE__ */ jsx45(Icon, { job: "plane", size: "sm" }) })
       ]
     }
