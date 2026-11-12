@@ -736,14 +736,14 @@
 /* The grain plate is retired (Studio glass, locked 2026-10-29): it fought the hairlines. The ground's washes are drawn by Furniture.css. */
 /* Windows high contrast (forced-colors). The system replaces every colour and drops box-shadow, so the
    focus ring — drawn everywhere as `outline: none; box-shadow: var(--ring-select)` — disappears and the
-   keyboard user cannot see where they are. DR: "Keyboard focus always shows the same ring." These rules
+   keyboard user cannot see where they are. DR: the white ring is the keyboard's alone, the same ring everywhere. These rules
    put a real outline back, in the system's own Highlight colour (the one place a colour is not a token:
    in forced colours the user's settings choose it, not us), and nothing else about the look changes. */
 @media (forced-colors: active) {
   :focus-visible { outline: var(--border-w-strong) solid Highlight !important; outline-offset: var(--space-hair); }
   /* The same ring where a piece draws it on a wrapper or keeps it without :focus-visible. */
   .ad-field:has(:focus-visible),
-  .ad-note-box:focus,
+  .ad-note-box:focus-visible,
   .ad-token-input__field:has(.ad-token-input__box:focus-visible),
   .ad-menu__item[data-active],
   .ad-bar--selected { outline: var(--border-w-strong) solid Highlight !important; outline-offset: var(--space-hair); }
@@ -1469,9 +1469,10 @@ button.ad-card__name:focus-visible { outline: none; box-shadow: var(--ring-selec
 .ad-field { display: inline-flex; align-items: center; gap: var(--space-2); box-sizing: border-box; height: var(--h-field); padding: 0 var(--space-3); min-width: 0; border: 0; border-radius: var(--radius-page); background: var(--bg-raised); color: var(--text-primary); font: var(--type-name); line-height: var(--lh-tight); }
 /* Focus = one tone lighter, no edge (approved Controls card). */
 .ad-field:focus-within { outline: none; background: var(--bg-hover); }
-/* Keyboard focus always shows the same ring (DR Behaviour). The ring is the white ring-select, not a coloured edge (DR Controls);
-   the tone change stays. `:has` carries it to the native <select> and to the input inside the field's skin. */
-.ad-field:has(:focus-visible) { box-shadow: var(--ring-select); }
+/* The ring is the keyboard's alone (DR Behaviour): reached with Tab, the field draws the white ring-select; touched or clicked
+   (`data-ad-pointer` on the page, focusHow.ts) it never does, and the tone change alone says the cursor is here. `:has` carries
+   it to the native <select> and to the input inside the field's skin; `:where` keeps each ring rule at the weight it had. */
+:where(:root:not([data-ad-pointer])) .ad-field:has(:focus-visible) { box-shadow: var(--ring-select); }
 .ad-field__error { margin-top: var(--space-2); font: var(--type-body); line-height: var(--lh-normal); color: var(--text-secondary); }
 .ad-field--disabled { opacity: var(--opacity-disabled); }
 .ad-field__input, .ad-select__native { all: unset; box-sizing: border-box; flex: 1; min-width: 0; height: 100%; font: inherit; color: inherit; }
@@ -1545,7 +1546,7 @@ button.ad-card__name:focus-visible { outline: none; box-shadow: var(--ring-selec
 .ad-inline-edit--title { font: var(--type-title); line-height: var(--lh-tight); padding-block: var(--space-1); }
 .ad-inline-edit:hover { background: var(--bg-raised); }
 .ad-inline-edit:focus { background: var(--bg-hover); }
-.ad-inline-edit:focus-visible { box-shadow: var(--ring-select); }
+:where(:root:not([data-ad-pointer])) .ad-inline-edit:focus-visible { box-shadow: var(--ring-select); }
 .ad-inline-edit::placeholder { color: var(--text-muted); }
 .ad-inline-edit:disabled { background: transparent; cursor: default; }
 /* A canvas page's own title: the words alone, no fill, no ring. */
@@ -2073,7 +2074,7 @@ button.ad-steps__press:focus-visible { outline: none; box-shadow: var(--ring-sel
 .ad-picklist__search { display: flex; margin-bottom: var(--space-2); }
 /* The search takes the cursor when the list opens, with no ring: the ring shows once the keys have moved in the list. */
 .ad-picklist .ad-picklist__search:has(input:focus-visible) { box-shadow: none; }
-.ad-picklist[data-keyed] .ad-picklist__search:has(input:focus-visible) { box-shadow: var(--ring-select); }
+:where(:root:not([data-ad-pointer])) .ad-picklist[data-keyed] .ad-picklist__search:has(input:focus-visible) { box-shadow: var(--ring-select); }
 /* A list shows eight rows and scrolls inside past that, wherever it is (a card, a pop-over, the page). */
 .ad-picklist__list { position: relative; max-height: calc(var(--h-btn) * 8); overflow-y: auto; outline: none; }
 .ad-picklist__box { outline: none; }
@@ -3121,7 +3122,7 @@ button.ad-notification:focus-visible { outline: none; box-shadow: var(--ring-sel
   border-radius: var(--radius-page); background: var(--bg-hover); cursor: text;
 }
 .ad-token-input__field:hover, .ad-token-input__field:focus-within { background: var(--bg-float); }
-.ad-token-input__field:has(.ad-token-input__box:focus-visible) { box-shadow: var(--ring-select); }
+:where(:root:not([data-ad-pointer])) .ad-token-input__field:has(.ad-token-input__box:focus-visible) { box-shadow: var(--ring-select); }
 .ad-token-input__lead { display: inline-flex; align-items: center; flex: none; }
 .ad-token-input__box { flex: 1; min-width: 0; box-sizing: border-box; padding: calc((var(--h-field) - var(--text-base) * var(--lh-tight)) / 2) 0; font: var(--type-name); line-height: var(--lh-tight); color: var(--text-primary); white-space: pre-wrap; outline: none; }
 .ad-token-input--query .ad-token-input__box { font: var(--type-data); font-size: var(--text-xs); color: var(--text-secondary); }
@@ -3144,7 +3145,8 @@ button.ad-notification:focus-visible { outline: none; box-shadow: var(--ring-sel
 .ad-note-label { margin: 0 0 var(--space-2); font: var(--type-heading); text-transform: uppercase; color: var(--text-secondary); letter-spacing: var(--track-caps); }
 .ad-note-box { display: block; box-sizing: border-box; width: 100%; min-height: calc(var(--h-row) * 1.5); margin: 0; padding: var(--space-3) var(--space-3); border: 0; border-radius: var(--radius-page); background: var(--bg-raised); color: var(--text-secondary); font: var(--type-body); line-height: var(--lh-normal); resize: none; overflow: hidden; }
 .ad-note-box::placeholder { color: var(--text-muted); }
-.ad-note-box:focus { outline: none; background: var(--bg-hover); box-shadow: var(--ring-select); }
+.ad-note-box:focus { outline: none; background: var(--bg-hover); }
+:where(:root:not([data-ad-pointer])) .ad-note-box:focus-visible { box-shadow: var(--ring-select); }
 /* Composer: the note box always open for a new entry, three lines at rest, growing with its words; the hint and the button under it. */
 .ad-composer { display: flex; flex-direction: column; gap: var(--space-3); min-width: 0; }
 .ad-composer__box { min-height: calc(var(--h-field) * 3); resize: none; overflow: hidden; }

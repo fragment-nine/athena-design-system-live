@@ -27,6 +27,21 @@ import {
   scanIn
 } from "../chunk-WZUPHMQT.js";
 
+// src/components/focusHow.ts
+var MARK = "data-ad-pointer";
+var watching = false;
+function watchFocusHow() {
+  if (watching || typeof document === "undefined") return;
+  watching = true;
+  const root = document.documentElement;
+  root.setAttribute(MARK, "");
+  document.addEventListener("pointerdown", () => root.setAttribute(MARK, ""), true);
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Tab") root.removeAttribute(MARK);
+  }, true);
+}
+watchFocusHow();
+
 // src/components/cx.ts
 function fromControl(e) {
   const hit = e.target.closest('button,a,input,select,textarea,label,[role="checkbox"],[role="switch"],[role="menuitem"],[contenteditable="true"]');
