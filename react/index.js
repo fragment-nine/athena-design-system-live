@@ -6720,17 +6720,19 @@ function ProgressBar({ fraction, ariaLabel, thin, planned, marks = [], meter: as
     marks.map((m) => /* @__PURE__ */ jsx47("span", { className: "ad-progress__mark", role: "img", "aria-label": m.label, title: m.label, style: { left: `${Math.max(0, Math.min(1, m.at)) * 100}%` } }, m.label))
   ] });
 }
-function OverTime({ periods, currentId, grid = [], ariaLabel, className }) {
+function OverTime({ periods, currentId, grid: lines = [], size, ariaLabel, className }) {
+  const compact = size === "compact";
+  const grid = compact ? [] : lines;
   const top = Math.max(1, ...periods.map((p) => p.value), ...grid.map((g) => g.value));
-  return /* @__PURE__ */ jsxs44("figure", { className: cx("ad-overtime", className), "aria-label": ariaLabel, children: [
+  return /* @__PURE__ */ jsxs44("figure", { className: cx("ad-overtime", compact && "ad-overtime--compact", className), "aria-label": ariaLabel, children: [
     /* @__PURE__ */ jsxs44("div", { className: "ad-overtime__plot", children: [
       grid.map((g) => /* @__PURE__ */ jsx47("div", { className: "ad-overtime__grid", style: { bottom: `${g.value / top * 100}%` }, children: /* @__PURE__ */ jsx47("span", { children: g.display }) }, g.value)),
       /* @__PURE__ */ jsx47("div", { className: "ad-overtime__columns", role: "list", children: periods.map((p) => {
         const cur = p.id === currentId;
-        return /* @__PURE__ */ jsx47("div", { className: "ad-overtime__slot", role: "listitem", "aria-label": `${p.label}: ${p.display}`, children: /* @__PURE__ */ jsx47("div", { className: cx("ad-overtime__column", cur && "ad-overtime__column--current"), style: { height: `${p.value / top * 100}%` }, children: cur && /* @__PURE__ */ jsx47("span", { className: "ad-overtime__cap", children: p.display }) }) }, p.id);
+        return /* @__PURE__ */ jsx47("div", { className: "ad-overtime__slot", role: "listitem", "aria-label": `${p.label}: ${p.display}`, children: /* @__PURE__ */ jsx47("div", { className: cx("ad-overtime__column", cur && "ad-overtime__column--current"), style: { height: `${p.value / top * 100}%` }, children: cur && !compact && /* @__PURE__ */ jsx47("span", { className: "ad-overtime__cap", children: p.display }) }) }, p.id);
       }) })
     ] }),
-    /* @__PURE__ */ jsxs44("div", { className: "ad-overtime__labels", "aria-hidden": "true", children: [
+    !compact && /* @__PURE__ */ jsxs44("div", { className: "ad-overtime__labels", "aria-hidden": "true", children: [
       /* @__PURE__ */ jsx47("span", { children: periods[0]?.label }),
       periods.length > 1 && /* @__PURE__ */ jsx47("span", { children: periods[periods.length - 1].label })
     ] })
