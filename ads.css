@@ -1012,6 +1012,8 @@ button.ad-booking:focus-visible { outline: none; box-shadow: var(--ring-select);
 .ad-time-grid__body { position: relative; height: calc(var(--ad-hour) * var(--ad-hours)); }
 .ad-time-grid__hour { box-sizing: border-box; height: var(--ad-hour); border-top: var(--border-w) solid var(--border); }
 .ad-time-grid__slot { position: absolute; left: var(--space-1); right: var(--space-1); display: flex; }
+/* A block fills its slot and never widens it: a one-line name is cut with … inside the slot, never drawn over the next column. */
+.ad-time-grid__slot > * { flex: 1 1 0; min-width: 0; }
 /* The all-day lane over the hours: one short bar per thing with a date and no time, as tall as the
  fullest day; the hours' gutter steps down by the same. */
 .ad-time-grid { --ad-allday-rows: 0; }
