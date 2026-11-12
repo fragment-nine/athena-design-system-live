@@ -4745,7 +4745,7 @@ function countdownWords(c) {
   const days = n === 0 ? "Today" : `${n} ${n === 1 ? "day" : "days"} to`;
   return `${days} ${c.what}`;
 }
-function PageHeader({ title, icon, stamp, tabs, back, description, countdown: given, alerts, gear, onSearch, onPopOut, onHelp, headerLabels, pickerMenu, note, connection, connectionLabels, scramble = true, className }) {
+function PageHeader({ title, icon, stamp, tabs, back, description, countdown: given, alerts, gear, onSearch, onPopOut, onHelp, headerLabels, pickerMenu, connection, connectionLabels, scramble = true, className }) {
   const anyEnd = gear || onSearch || onPopOut || onHelp || pickerMenu || connection;
   const shownStamp = typeof stamp === "string" && STATES.has(stamp);
   const countdown2 = given && typeof given === "object" && given.to instanceof Date ? countdownWords(given) : null;
@@ -4756,7 +4756,6 @@ function PageHeader({ title, icon, stamp, tabs, back, description, countdown: gi
           back && /* @__PURE__ */ jsx34("button", { type: "button", className: "ad-page-header__back", "aria-label": back.label, title: back.label, onClick: back.onBack, children: /* @__PURE__ */ jsx34(Icon, { job: "chevron-left", size: "lg" }) }),
           /* @__PURE__ */ jsx34("h1", { className: "ad-page-header__title", children: /* @__PURE__ */ jsx34("span", { className: "ad-page-header__words", children: scramble ? /* @__PURE__ */ jsx34(TextScramble, { text: title }) : title }) })
         ] }),
-        note != null && note !== false && /* @__PURE__ */ jsx34("div", { className: "ad-page-header__note", children: note }),
         (description || countdown2) && /* @__PURE__ */ jsxs31("div", { className: "ad-page-header__aside", children: [
           description && /* @__PURE__ */ jsx34("p", { className: "ad-page-header__description", children: String(description) }),
           countdown2 && /* @__PURE__ */ jsx34("p", { className: "ad-page-header__countdown", children: countdown2 })
@@ -6764,7 +6763,7 @@ function Dial({ fraction, label, size, value, valueText, half, target, targetLab
     t != null ? targetLabel ?? `Target ${Math.round(t * 100)}%` : null
   ].filter(Boolean).join(", ");
   const track = gauge ? arc(0, 1) : null;
-  return /* @__PURE__ */ jsxs44("figure", { className: cx("ad-dial", size != null && "ad-dial--compact", size === "small" && "ad-dial--small", gauge && "ad-dial--half", pointer && "ad-dial--needle", gauge && scale && "ad-dial--scaled", className), children: [
+  return /* @__PURE__ */ jsxs44("figure", { className: cx("ad-dial", size != null && "ad-dial--compact", gauge && "ad-dial--half", pointer && "ad-dial--needle", gauge && scale && "ad-dial--scaled", className), children: [
     /* @__PURE__ */ jsxs44("div", { className: "ad-dial__face", role: "meter", "aria-valuemin": 0, "aria-valuemax": 100, "aria-valuenow": Math.round(f * 100), "aria-label": String(label), "aria-valuetext": said || void 0, children: [
       /* @__PURE__ */ jsxs44("svg", { viewBox: gauge ? "0 0 70 40" : "0 0 70 70", "aria-hidden": "true", children: [
         gauge ? /* @__PURE__ */ jsx47("path", { className: "ad-dial__track", d: track }) : /* @__PURE__ */ jsx47("circle", { className: "ad-dial__track", cx: "35", cy: "35", r }),

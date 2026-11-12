@@ -1312,10 +1312,6 @@ button.ad-card__name:focus-visible { outline: none; box-shadow: var(--ring-selec
 .ad-dial--compact .ad-dial__face { width: var(--h-row-2); height: var(--h-row-2); }
 .ad-dial--compact .ad-dial__value { font: var(--type-data); font-size: var(--text-base); }
 
-/* Retiring: a 32 ring. The band's ring is the 56 one above; this goes once no app draws it. */
-.ad-dial--small .ad-dial__face { width: var(--h-btn); height: var(--h-btn); }
-.ad-dial--small .ad-dial__value { font: var(--type-data); }
-
 /* A gauge: half the ring over the top, the reading sitting in its bowl. */
 .ad-dial--half .ad-dial__face { height: calc(var(--dial-size) * 40 / 70); }
 .ad-dial--half .ad-dial__value { align-items: flex-end; }
@@ -2019,8 +2015,6 @@ button:hover > .ad-project-pill:not(.ad-project-pill--current) { color: var(--ac
 /* The way back from a detail page: a bare chevron directly before the title, on the title row, no words and no line of its own
 . */
 /* A short quiet line beside the name for a while: Detail, muted, one line, its one quiet button inside at the row's size. */
-.ad-page-header__note { display: inline-flex; align-items: center; gap: var(--space-2); flex: 0 1 auto; min-width: 0; overflow: hidden; white-space: nowrap; font: var(--type-detail); color: var(--text-muted); }
-.ad-page-header__note .ad-button { height: var(--h-btn-row); }
 .ad-page-header__titled { display: flex; align-items: center; gap: var(--space-2); flex: none; min-width: 0; }
 .ad-page-header__back { display: inline-flex; align-items: center; justify-content: center; flex: none; margin: 0; padding: 0; border: 0; background: transparent; color: var(--text-secondary); cursor: pointer; }
 .ad-page-header__back:hover { color: var(--accent); }
