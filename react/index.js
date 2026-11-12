@@ -2709,7 +2709,7 @@ function FilterTag({ axis, value, icon, face, onRemove, removeLabel = "Remove fi
     (face || icon != null) && /* @__PURE__ */ jsx16("span", { className: "ad-filter-tag__icon", "aria-hidden": "true", children: face ? /* @__PURE__ */ jsx16(Avatar, { name: face.name, src: face.src, size: "sm", decorative: true }) : slotIcon(icon, { size: "sm" }) }),
     axis != null && /* @__PURE__ */ jsx16("span", { className: "ad-filter-tag__axis", children: axis }),
     /* @__PURE__ */ jsx16("span", { className: "ad-filter-tag__value", children: value }),
-    /* @__PURE__ */ jsx16(ButtonSizeScope, { size: "row", children: /* @__PURE__ */ jsx16(IconButton, { className: "ad-filter-tag__remove", label: removeLabel, onClick: onRemove, children: /* @__PURE__ */ jsx16(Icon, { name: "x" }) }) })
+    /* @__PURE__ */ jsx16(ButtonSizeScope, { size: "row", children: /* @__PURE__ */ jsx16(IconButton, { className: "ad-filter-tag__remove", label: removeLabel, onClick: onRemove, children: /* @__PURE__ */ jsx16(Icon, { job: "x", size: "sm" }) }) })
   ] });
 }
 function ActiveFilters({ filters, onRemove, onClear, clearLabel = "Clear", label = "Active filters" }) {
@@ -2784,7 +2784,7 @@ function MenuFoot({ children }) {
 function MenuSeparator({ itemProps, onRemove, removeLabel = "Remove separator" }) {
   if (useContext5(InList)) return /* @__PURE__ */ jsxs14("li", { ...strip(itemProps), className: cx("ad-menu__sep", onRemove && "ad-menu__sep--removable"), children: [
     /* @__PURE__ */ jsx17("span", { role: "separator" }),
-    onRemove && /* @__PURE__ */ jsx17("button", { type: "button", className: "ad-menu__sep-remove", "aria-label": removeLabel, title: removeLabel, onClick: onRemove, children: /* @__PURE__ */ jsx17(Icon, { job: "x", size: "sm" }) })
+    onRemove && /* @__PURE__ */ jsx17(ButtonSizeScope, { size: "row", children: /* @__PURE__ */ jsx17(IconButton, { className: "ad-menu__sep-remove", label: removeLabel, onClick: onRemove, children: /* @__PURE__ */ jsx17(Icon, { job: "x", size: "sm" }) }) })
   ] });
   const Row3 = "div";
   return /* @__PURE__ */ jsx17(Row3, { ...strip(itemProps), role: "separator", className: "ad-menu__sep" });
@@ -2914,7 +2914,7 @@ function PageList({ ariaLabel, head, search, groups, current, onPick, inline }) 
         "aria-label": search.label ?? search.placeholder ?? "Search",
         placeholder: search.placeholder,
         value: search.value,
-        end: search.value ? /* @__PURE__ */ jsx18(ButtonSizeScope, { size: "row", children: /* @__PURE__ */ jsx18(IconButton, { label: search.clearLabel ?? "Clear search", onClick: () => search.onChange(""), children: /* @__PURE__ */ jsx18(Icon, { job: "x" }) }) }) : void 0,
+        end: search.value ? /* @__PURE__ */ jsx18(ButtonSizeScope, { size: "row", children: /* @__PURE__ */ jsx18(IconButton, { label: search.clearLabel ?? "Clear search", onClick: () => search.onChange(""), children: /* @__PURE__ */ jsx18(Icon, { job: "x", size: "sm" }) }) }) : void 0,
         onChange: (e) => search.onChange(e.target.value),
         onKeyDown: (e) => {
           if (e.key === "Escape" && search.value) {
@@ -4912,7 +4912,7 @@ function RuleBuilder({ match, onMatch, rules, onChange, fields, operators, rende
       /* @__PURE__ */ jsx35(Select, { "aria-label": L.field, value: r.field, onChange: (e) => set(r.id, { field: e.target.value }), options: fields }),
       /* @__PURE__ */ jsx35(Select, { "aria-label": L.operator, value: r.operator, onChange: (e) => set(r.id, { operator: e.target.value }), options: operators(r.field) }),
       /* @__PURE__ */ jsx35("span", { className: "ad-rules__value", children: renderValue(r, (value) => set(r.id, { value })) }),
-      /* @__PURE__ */ jsx35(ButtonSizeScope, { size: "row", children: /* @__PURE__ */ jsx35(IconButton, { label: L.removeRule, className: "ad-rules__remove", onClick: () => onChange(rules.filter((x) => x.id !== r.id)), children: /* @__PURE__ */ jsx35(Icon, { name: "x", size: "sm" }) }) })
+      /* @__PURE__ */ jsx35(ButtonSizeScope, { size: "row", children: /* @__PURE__ */ jsx35(IconButton, { label: L.removeRule, className: "ad-rules__remove", onClick: () => onChange(rules.filter((x) => x.id !== r.id)), children: /* @__PURE__ */ jsx35(Icon, { job: "x", size: "sm" }) }) })
     ] }, r.id)),
     /* @__PURE__ */ jsx35("div", { className: "ad-rules__add", children: /* @__PURE__ */ jsxs32(ButtonSizeScope, { size: "bar", children: [
       /* @__PURE__ */ jsx35(Button, { icon: "plus", onClick: () => onChange([...rules, newRule()]), children: L.addRule }),
@@ -5243,7 +5243,7 @@ function AlertRow({ priority, priorityLabel = `Priority ${priority}`, sentence, 
       ] })
     ] }) }),
     /* @__PURE__ */ jsx37("span", { className: "ad-alert__snooze", children: onSnooze && /* @__PURE__ */ jsx37(ButtonSizeScope, { size: "row", children: /* @__PURE__ */ jsx37(IconButton, { label: snoozeLabel, onClick: onSnooze, children: /* @__PURE__ */ jsx37(Icon, { job: "snooze" }) }) }) }),
-    /* @__PURE__ */ jsx37("span", { className: "ad-alert__dismiss", children: onDismiss && /* @__PURE__ */ jsx37(ButtonSizeScope, { size: "row", children: /* @__PURE__ */ jsx37(IconButton, { label: dismissLabel, onClick: onDismiss, children: /* @__PURE__ */ jsx37(Icon, { job: "x" }) }) }) }),
+    /* @__PURE__ */ jsx37("span", { className: "ad-alert__dismiss", children: onDismiss && /* @__PURE__ */ jsx37(ButtonSizeScope, { size: "row", children: /* @__PURE__ */ jsx37(IconButton, { label: dismissLabel, onClick: onDismiss, children: /* @__PURE__ */ jsx37(Icon, { job: "x", size: "sm" }) }) }) }),
     /* @__PURE__ */ jsx37("span", { className: "ad-alert__end", children: end != null && /* @__PURE__ */ jsx37(ButtonSizeScope, { size: "row", children: end }) })
   ] });
   const look = cx("ad-alert", muted && "ad-alert--muted");
