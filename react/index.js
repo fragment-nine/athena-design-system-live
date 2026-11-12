@@ -819,13 +819,18 @@ var REGULAR = {
     "M215.79,118.17a8,8,0,0,0-5-5.66L153.18,90.9l14.66-73.33a8,8,0,0,0-13.69-7l-112,120a8,8,0,0,0,3,13l57.63,21.61L88.16,238.43a8,8,0,0,0,13.69,7l112-120A8,8,0,0,0,215.79,118.17ZM109.37,214l10.47-52.38a8,8,0,0,0-5-9.06L62,132.71l84.62-90.66L136.16,94.43a8,8,0,0,0,5,9.06l52.8,19.8Z"
   ],
   "lights-half": [
-    "M128,24A104,104,0,1,0,232,128,104.11,104.11,0,0,0,128,24ZM40,128a88.1,88.1,0,0,1,88-88V216A88.1,88.1,0,0,1,40,128Z"
+    "M176,232a8,8,0,0,1-8,8H88a8,8,0,0,1,0-16h80A8,8,0,0,1,176,232ZM216,104a87.55,87.55,0,0,1-33.64,69.21A16.24,16.24,0,0,0,176,186v6a16,16,0,0,1-16,16H96a16,16,0,0,1-16-16v-6a16,16,0,0,0-6.23-12.66A87.59,87.59,0,0,1,40,104.5C39.74,56.83,78.26,17.15,125.88,16A88,88,0,0,1,216,104Zm-16,0a72,72,0,0,0-73.74-72c-39,.92-70.47,33.39-70.26,72.39a71.64,71.64,0,0,0,27.64,56.3A32,32,0,0,1,96,186v6h64v-6a32.12,32.12,0,0,1,12.47-25.35A71.65,71.65,0,0,0,200,104Z",
+    "M56,104.39a71.64,71.64,0,0,0,27.64,56.3A32,32,0,0,1,96,186v6h64v-6a32.12,32.12,0,0,1,12.47-25.35A71.65,71.65,0,0,0,200,104Z"
   ],
   "lights-localised": [
-    "M128,24A104,104,0,1,0,232,128,104.11,104.11,0,0,0,128,24Zm0,192a88,88,0,1,1,88-88A88.1,88.1,0,0,1,128,216Zm40-88a40,40,0,1,1-40-40A40,40,0,0,1,168,128Z"
+    "M176,232a8,8,0,0,1-8,8H88a8,8,0,0,1,0-16h80A8,8,0,0,1,176,232ZM216,104a87.55,87.55,0,0,1-33.64,69.21A16.24,16.24,0,0,0,176,186v6a16,16,0,0,1-16,16H96a16,16,0,0,1-16-16v-6a16,16,0,0,0-6.23-12.66A87.59,87.59,0,0,1,40,104.5C39.74,56.83,78.26,17.15,125.88,16A88,88,0,0,1,216,104Zm-16,0a72,72,0,0,0-73.74-72c-39,.92-70.47,33.39-70.26,72.39a71.64,71.64,0,0,0,27.64,56.3A32,32,0,0,1,96,186v6h64v-6a32.12,32.12,0,0,1,12.47-25.35A71.65,71.65,0,0,0,200,104Z",
+    "M152,104a24,24,0,1,1-24-24A24,24,0,0,1,152,104Z"
+  ],
+  "lights-off": [
+    "M176,232a8,8,0,0,1-8,8H88a8,8,0,0,1,0-16h80A8,8,0,0,1,176,232ZM216,104a87.55,87.55,0,0,1-33.64,69.21A16.24,16.24,0,0,0,176,186v6a16,16,0,0,1-16,16H96a16,16,0,0,1-16-16v-6a16,16,0,0,0-6.23-12.66A87.59,87.59,0,0,1,40,104.5C39.74,56.83,78.26,17.15,125.88,16A88,88,0,0,1,216,104Zm-16,0a72,72,0,0,0-73.74-72c-39,.92-70.47,33.39-70.26,72.39a71.64,71.64,0,0,0,27.64,56.3A32,32,0,0,1,96,186v6h64v-6a32.12,32.12,0,0,1,12.47-25.35A71.65,71.65,0,0,0,200,104Z"
   ],
   "lights-on": [
-    "M232,128A104,104,0,1,1,128,24,104.13,104.13,0,0,1,232,128Z"
+    "M176,232a8,8,0,0,1-8,8H88a8,8,0,0,1,0-16h80A8,8,0,0,1,176,232ZM216,104a87.55,87.55,0,0,1-33.64,69.21A16.24,16.24,0,0,0,176,186v6a16,16,0,0,1-16,16H96a16,16,0,0,1-16-16v-6a16,16,0,0,0-6.23-12.66A87.59,87.59,0,0,1,40,104.5C39.74,56.83,78.26,17.15,125.88,16A88,88,0,0,1,216,104Z"
   ],
   "list-checks": [
     "M224,128a8,8,0,0,1-8,8H128a8,8,0,0,1,0-16h88A8,8,0,0,1,224,128ZM128,72h88a8,8,0,0,0,0-16H128a8,8,0,0,0,0,16Zm88,112H128a8,8,0,0,0,0,16h88a8,8,0,0,0,0-16ZM82.34,42.34,56,68.69,45.66,58.34A8,8,0,0,0,34.34,69.66l16,16a8,8,0,0,0,11.32,0l32-32A8,8,0,0,0,82.34,42.34Zm0,64L56,132.69,45.66,122.34a8,8,0,0,0-11.32,11.32l16,16a8,8,0,0,0,11.32,0l32-32a8,8,0,0,0-11.32-11.32Zm0,64L56,196.69,45.66,186.34a8,8,0,0,0-11.32,11.32l16,16a8,8,0,0,0,11.32,0l32-32a8,8,0,0,0-11.32-11.32Z"
@@ -1531,7 +1536,7 @@ var JOBS = {
   "export": "export",
   "lights-half": "lights-half",
   "lights-localised": "lights-localised",
-  "lights-off": "circle",
+  "lights-off": "lights-off",
   "lights-on": "lights-on",
   "year-back": "caret-double-left",
   "year-forward": "caret-double-right",
@@ -1637,13 +1642,14 @@ function slotIcon(icon, props = {}) {
   return /* @__PURE__ */ jsx3("span", { className: "ad-icon-slot--own", "data-ad-own-drawing": "", children: icon });
 }
 var ITEM_TYPES = /* @__PURE__ */ new Set(["phase", "milestone", "deliverable", "todo", "travel"]);
+var LIT = /* @__PURE__ */ new Set(["lights-on", "lights-half", "lights-localised"]);
 function Icon(props) {
   const { name, job, size = "md", fill, weight, label, tint, className, resolved } = props;
   if (tint && ITEM_TYPES.has(tint) && resolved === void 0) return /* @__PURE__ */ jsx3(TintedIcon, { ...props });
   const glyph = job ? JOBS[job] : name;
   const paths = fill && FILL[glyph] || weight === "light" && LIGHT[glyph] || REGULAR[glyph];
   if (!paths) throw new Error(`Icon: "${String(job ?? name)}" is not a glyph or a job in the icon map (assets/icons/README.md). One set: nothing outside it is drawn.`);
-  return /* @__PURE__ */ jsx3("svg", { viewBox: "0 0 256 256", className: cx("ad-icon", `ad-icon--${size}`, className), role: label ? "img" : void 0, "aria-label": label, "aria-hidden": label ? void 0 : true, focusable: "false", "data-tint": resolved ? tint : void 0, style: resolved ? { color: resolved } : void 0, children: paths.map((d, i) => /* @__PURE__ */ jsx3("path", { fill: "currentColor", d }, i)) });
+  return /* @__PURE__ */ jsx3("svg", { viewBox: "0 0 256 256", className: cx("ad-icon", `ad-icon--${size}`, job && LIT.has(job) && "ad-icon--lit", className), role: label ? "img" : void 0, "aria-label": label, "aria-hidden": label ? void 0 : true, focusable: "false", "data-tint": resolved ? tint : void 0, style: resolved ? { color: resolved } : void 0, children: paths.map((d, i) => /* @__PURE__ */ jsx3("path", { fill: "currentColor", d }, i)) });
 }
 function TintedIcon(props) {
   const resolved = useHue(`item-${props.tint}`) ?? null;
