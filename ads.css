@@ -1079,9 +1079,10 @@ button.ad-year__day:focus-visible { outline: none; box-shadow: var(--ring-select
 .ad-time-grid .ad-time-grid__allday-space { z-index: var(--z-sticky); }
 
 /* DayCell: one day in a week of days. */
-.ad-day-cell { --ad-where: transparent; --ad-ground: transparent; position: relative; box-sizing: border-box; display: flex; flex-direction: column; align-items: center; justify-content: flex-start; align-self: stretch; flex: 1 1 0; min-width: var(--w-col-sm); gap: var(--space-1); padding: var(--space-2) var(--space-1) 0; border-radius: var(--radius-page); }
-/* A week of days: every cell one width whatever its name (the row's share, at least a small column), the date at the top so a row lines up; the name wraps inside it, never setting it. */
-.ad-day-cell__number { display: inline-flex; align-items: center; justify-content: center; width: var(--h-btn); height: var(--h-btn); border-radius: var(--radius-page); font: var(--type-data); font-size: var(--text-base); color: var(--text-primary); }
+.ad-day-cell { --ad-where: transparent; --ad-ground: transparent; position: relative; box-sizing: border-box; display: flex; flex-direction: column; align-items: center; justify-content: flex-start; align-self: stretch; flex: 1 1 0; min-width: 0; gap: var(--space-1); padding: var(--space-2) 0 0; border-radius: var(--radius-page); }
+/* A week of days: every cell one width whatever its name, exactly the column it is given however narrow (no floor of its own, so
+   today's ground is one day wide), the date at the top so a row lines up; the name wraps inside it, never setting it. */
+.ad-day-cell__number { display: inline-flex; align-items: center; justify-content: center; width: min(var(--h-btn), 100%); height: var(--h-btn); border-radius: var(--radius-page); font: var(--type-data); font-size: var(--text-base); color: var(--text-primary); }
 /* Today in a week of days: a quiet filled ground one tone lighter, never a ring. */
 .ad-day-cell--today { background: var(--bg-raised); }
 .ad-day-cell__where { align-self: stretch; height: var(--space-2); border-radius: var(--radius-page); background: var(--ad-where); }
