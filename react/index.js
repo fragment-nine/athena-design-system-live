@@ -5395,7 +5395,7 @@ import { useLayoutEffect as useLayoutEffect8, useRef as useRef27, useState as us
 import { jsx as jsx42, jsxs as jsxs39 } from "react/jsx-runtime";
 var NEAR = 8;
 var Arrow = ({ up }) => /* @__PURE__ */ jsx42(SortGlyph, { direction: up ? "ascending" : "descending", size: "sm" });
-function Table({ columns, rows, rowId, caption, sort, onSort, picked, onPickedChange, onPickAllChange, pickLabel, pickAllLabel = "Pick all", onOpen, rowProps, groupProps, grip, addRow, striped, columnLines, rowTone, group, groups, foldGroups, foldedGroups, onFoldGroup, depth, foldParents, foldedRows, onFoldRow, foldLabel, nameColumn, fixed, onInsertRow, onInsertColumn, insertRowLabel = "Insert a row here", insertColumnLabel = "Insert a column here", total, className }) {
+function Table({ columns, rows, rowId, caption, sort, onSort, picked, onPickedChange, onPickAllChange, pickLabel, pickAllLabel = "Pick all", onOpen, rowProps, groupProps, grip, addRow, striped = true, columnLines, rowTone, group, groups, foldGroups, foldedGroups, onFoldGroup, depth, foldParents, foldedRows, onFoldRow, foldLabel, nameColumn, fixed, onInsertRow, onInsertColumn, insertRowLabel = "Insert a row here", insertColumnLabel = "Insert a column here", total, className }) {
   const span = columns.length + (onPickedChange ? 1 : 0);
   const [ownFolded, setOwnFolded] = useState25(() => /* @__PURE__ */ new Set());
   const folded = foldedGroups ?? ownFolded;
