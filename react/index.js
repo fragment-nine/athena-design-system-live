@@ -31,9 +31,10 @@ import {
 var MARK = "data-ad-pointer";
 var watching = false;
 function watchFocusHow() {
-  if (watching || typeof document === "undefined") return;
-  watching = true;
+  if (watching || typeof document === "undefined" || typeof document.addEventListener !== "function") return;
   const root = document.documentElement;
+  if (!root || typeof root.setAttribute !== "function" || typeof root.removeAttribute !== "function") return;
+  watching = true;
   root.setAttribute(MARK, "");
   document.addEventListener("pointerdown", () => root.setAttribute(MARK, ""), true);
   document.addEventListener("keydown", (e) => {
