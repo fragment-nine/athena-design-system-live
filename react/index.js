@@ -4845,7 +4845,7 @@ function Tabs({ tabs, value, onChange, ariaLabel, numbered = true, panelId, clas
 }
 
 // src/components/Toolbar/Toolbar.tsx
-import { forwardRef as forwardRef9, useEffect as useEffect15, useRef as useRef23, useState as useState22 } from "react";
+import { Children as Children2, forwardRef as forwardRef9, useEffect as useEffect15, useRef as useRef23, useState as useState22 } from "react";
 
 // src/components/Writing/Writing.tsx
 import { forwardRef as forwardRef8 } from "react";
@@ -4935,6 +4935,9 @@ function Toolbar({ children, end, ariaLabel, className }) {
     children,
     end && /* @__PURE__ */ jsx36("div", { className: "ad-toolbar__end", children: end })
   ] }) });
+}
+function ToolbarTray({ children, ariaLabel, className }) {
+  return /* @__PURE__ */ jsx36("div", { className: cx("ad-toolbar__end", "ad-toolbar__end--alone", className), role: "group", "aria-label": ariaLabel, children: /* @__PURE__ */ jsx36(ButtonSizeScope, { size: "bar", children: Children2.toArray(children).map((tool, i) => /* @__PURE__ */ jsx36("span", { className: "ad-toolbar__group", children: tool }, i)) }) });
 }
 var ViewButton = forwardRef9(function ViewButton2({ label = "No view", open, opens, narrowed, onClick }, ref) {
   return /* @__PURE__ */ jsxs33(
@@ -7496,6 +7499,7 @@ export {
   TokenPill,
   Toolbar,
   ToolbarSeparator,
+  ToolbarTray,
   Tooltip,
   TourStep,
   Tracker,

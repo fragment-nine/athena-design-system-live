@@ -2430,8 +2430,9 @@ button.ad-row__name:focus-visible { outline: none; box-shadow: var(--ring-select
 .ad-segmented {
   gap: var(--space-hair);
 }
-/* The tray: the view switch's, the zoom's, and the toolbar's right side. It never runs past its box: its choices give way first. */
-.ad-segmented, .ad-zoom, .ad-toolbar__end { display: inline-flex; align-items: center; width: max-content; min-width: 0; max-width: 100%; box-sizing: border-box; height: var(--h-btn); padding: var(--space-hair); border: var(--border-w) solid var(--border); border-radius: var(--radius-control); background: var(--bg-surface); }
+/* The tray: the view switch's, the zoom's, and the toolbar's bar. Never outlined, wherever it sits, as the header's icon box is not: the
+   fill alone. It never runs past its box: its choices give way first. */
+.ad-segmented, .ad-zoom, .ad-toolbar__end { display: inline-flex; align-items: center; width: max-content; min-width: 0; max-width: 100%; box-sizing: border-box; height: var(--h-btn); padding: calc(var(--space-hair) + var(--border-w)); border: 0; border-radius: var(--radius-control); background: var(--bg-surface); }
 .ad-segmented__option { flex: 0 1 auto; min-width: 0; display: inline-flex; align-items: center; justify-content: center; gap: var(--space-2); height: var(--h-seg); padding: 0 var(--space-3); margin: 0; border: 0; border-radius: var(--radius-control); background: transparent; font: var(--type-heading); text-transform: uppercase; letter-spacing: var(--track-caps); line-height: var(--lh-none); cursor: pointer; }
 .ad-segmented__option:hover { color: var(--accent); }
 .ad-segmented__option:not([aria-checked="true"]) { color: var(--text-secondary); }
@@ -2986,12 +2987,18 @@ button.ad-milestone:focus-visible { outline: none; box-shadow: var(--ring-select
 .ad-toolbar__separator { width: var(--border-w); height: var(--icon-lg); margin: 0 var(--space-2); background: var(--border); }
 /* The right side: one bar, the view switch's tray. A hairline between its groups; a zoom inside draws no bar of its own. */
 .ad-toolbar__end { margin-left: auto; gap: var(--space-hair); }
-/* A toolbar's groups are never outlined, as the header's icon box is not: the fill alone (the edge's width becomes padding, so nothing moves). */
-:is(.ad-toolbar, .ad-frame__toolbar) :is(.ad-segmented, .ad-zoom), .ad-toolbar__end { border-width: 0; padding: calc(var(--space-hair) + var(--border-w)); }
 .ad-toolbar__end:empty { display: none; }
-.ad-toolbar__end .ad-zoom { height: auto; padding: 0; border: 0; background: transparent; }
+.ad-toolbar__end :is(.ad-zoom, .ad-segmented) { height: auto; padding: 0; border: 0; background: transparent; }
 .ad-toolbar__end > .ad-zoom, .ad-toolbar__end > .ad-button--view { border-radius: 0; box-shadow: calc(var(--border-w) * -1) 0 0 var(--border); }
 .ad-toolbar__end > :first-child { box-shadow: none; }
+/* The bar on its own: a section's or a tab's own tools, in its corner. Each tool is a group with a hairline before it; a switcher
+   draws no bar of its own in it and a button is the View button's bare words, so nothing in it has a box of its own. */
+.ad-toolbar__end--alone { margin-left: 0; }
+.ad-toolbar__group { display: inline-flex; align-items: center; min-width: 0; }
+.ad-toolbar__group + .ad-toolbar__group { margin-left: var(--space-hair); padding-left: var(--space-hair); box-shadow: calc(var(--border-w) * -1) 0 0 var(--border); }
+.ad-toolbar__group .ad-button { height: var(--h-seg); background: transparent; border: 0; color: var(--text-primary); }
+.ad-toolbar__group .ad-button:hover { background: var(--tint-hover); color: var(--accent); }
+.ad-toolbar__group .ad-button.ad-button--active, .ad-toolbar__group .ad-button[aria-expanded="true"] { background: var(--bg-raised); color: var(--text-primary); }
 /* The View button reads as one of the bar's tools: regular weight, coral under the cursor; on bg-raised and text-primary only while its pop-over is open. */
 .ad-button--view { background: transparent; border: 0; color: var(--text-muted); }
 .ad-button--view:hover { background: var(--tint-hover); color: var(--accent); }
