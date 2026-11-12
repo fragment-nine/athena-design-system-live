@@ -2441,18 +2441,6 @@ button.ad-row__name:focus-visible { outline: none; box-shadow: var(--ring-select
 /* src/components/Settings/Settings.css */
 /* Settings */
 .ad-settings { display: flex; gap: var(--space-8); align-items: flex-start; }
-/* The settings menu: rows a row tall, evenly spaced, a wrapped label growing its own row; 8 between the search above and the first row. */
-.ad-settings__nav { position: sticky; top: 0; display: flex; flex-direction: column; gap: var(--space-hair); width: calc(var(--w-side) - var(--w-col-xs)); flex: none; }
-.ad-settings__nav > :not(.ad-settings__nav-item) + .ad-settings__nav-item { margin-top: calc(var(--space-2) - var(--space-hair)); }
-.ad-settings__nav-item { display: flex; align-items: center; gap: var(--space-2); box-sizing: border-box; width: 100%; min-height: var(--h-row); margin: 0; padding: var(--space-2); border: 0; border-radius: var(--radius-page); background: transparent; cursor: pointer; text-align: left; font: var(--type-name); line-height: var(--lh-tight); color: var(--text-primary); }
-.ad-settings__nav-item:not([aria-current="page"]) { color: var(--text-secondary); }
-.ad-settings__nav-icon { display: inline-flex; flex: none; color: var(--text-muted); }
-.ad-settings__nav-icon svg { width: var(--icon-md); height: var(--icon-md); }
-.ad-settings__nav-item:hover, .ad-settings__nav-item:hover .ad-settings__nav-icon { color: var(--accent); }
-/* The current item is raised, as a switcher's chosen option: bg-raised and elev-raised, never outlined. The ring is the keyboard's alone: never after a click. */
-.ad-settings__nav-item[aria-current="page"] { background: var(--bg-raised); box-shadow: var(--elev-raised); color: var(--text-primary); }
-.ad-settings__nav-item:focus-visible:not([data-pointer]) { outline: none; box-shadow: var(--ring-select); }
-.ad-settings__nav-item:focus { outline: none; }
 .ad-settings__pane { flex: 1; min-width: 0; max-width: var(--w-settings); display: flex; flex-direction: column; gap: var(--space-8); }
 /* The pane's one big title, the pop-over title's size; the sections under it stay 13px labels. */
 .ad-settings__title { margin: 0; }

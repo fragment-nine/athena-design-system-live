@@ -4660,13 +4660,13 @@ function Picture({ src, alt, ...rest }) {
 }
 
 // src/components/PageHeader/PageHeader.tsx
-import { useId as useId12, useRef as useRef21, useState as useState22 } from "react";
+import { useId as useId12, useRef as useRef21, useState as useState21 } from "react";
 
 // src/components/ShowOptions/ShowOptions.tsx
-import { useRef as useRef20, useState as useState21 } from "react";
+import { useRef as useRef20, useState as useState20 } from "react";
 
 // src/components/Settings/Settings.tsx
-import { useState as useState20 } from "react";
+import { Children, isValidElement as isValidElement4 } from "react";
 import { jsx as jsx32, jsxs as jsxs29 } from "react/jsx-runtime";
 function SettingsLayout({ nav, title, children, className }) {
   return /* @__PURE__ */ jsxs29("div", { className: cx("ad-settings", className), children: [
@@ -4678,27 +4678,29 @@ function SettingsLayout({ nav, title, children, className }) {
   ] });
 }
 function SettingsNav({ children, ariaLabel }) {
-  return /* @__PURE__ */ jsx32("nav", { className: "ad-settings__nav", "aria-label": ariaLabel, children });
+  const out = [];
+  let run = [];
+  const flush = () => {
+    if (run.length) {
+      out.push(/* @__PURE__ */ jsx32("ul", { className: "ad-side__list", children: run.map((c, i) => /* @__PURE__ */ jsx32("li", { children: c }, i)) }, `l${out.length}`));
+      run = [];
+    }
+  };
+  Children.forEach(children, (c) => {
+    if (isValidElement4(c) && c.type === SettingsNavItem) run.push(c);
+    else if (c != null && c !== false) {
+      flush();
+      out.push(c);
+    }
+  });
+  flush();
+  return /* @__PURE__ */ jsx32("nav", { className: "ad-side ad-page-list ad-page-list--inline", "aria-label": ariaLabel, children: out });
 }
 function SettingsNavItem({ icon, face, label, current, onSelect }) {
-  const [pointer, setPointer] = useState20(false);
-  return /* @__PURE__ */ jsxs29(
-    "button",
-    {
-      type: "button",
-      className: "ad-settings__nav-item",
-      "aria-current": current ? "page" : void 0,
-      "data-pointer": pointer ? "" : void 0,
-      onPointerDown: () => setPointer(true),
-      onKeyDown: () => setPointer(false),
-      onBlur: () => setPointer(false),
-      onClick: onSelect,
-      children: [
-        (face || icon) && /* @__PURE__ */ jsx32("span", { "aria-hidden": "true", className: "ad-settings__nav-icon", children: face ? /* @__PURE__ */ jsx32(Avatar, { name: face.name, src: face.src, decorative: true }) : slotIcon(icon) }),
-        label
-      ]
-    }
-  );
+  return /* @__PURE__ */ jsxs29("button", { type: "button", className: "ad-side__item", "aria-current": current ? "page" : void 0, onClick: onSelect, children: [
+    (face || icon) && /* @__PURE__ */ jsx32("span", { className: "ad-side__icon", "aria-hidden": "true", children: face ? /* @__PURE__ */ jsx32(Avatar, { name: face.name, src: face.src, decorative: true }) : slotIcon(icon) }),
+    label
+  ] });
 }
 function SettingRow(props) {
   return /* @__PURE__ */ jsx32(FieldRow, { ...props, className: cx("ad-setting", props.className) });
@@ -4727,7 +4729,7 @@ var WORDS = {
   archive: "Show archive"
 };
 function ShowOptionsGear({ value, onChange, options = [...showOrder], labels: l = {} }) {
-  const [open, setOpen] = useState21(false);
+  const [open, setOpen] = useState20(false);
   const gear = useRef20(null);
   const now = { ...SHOW_DEFAULTS, ...value };
   const shown = showOrder.filter((o) => options.includes(o));
@@ -4776,7 +4778,7 @@ function PageHeader({ title, icon, stamp, tabs, back, description, countdown: gi
   ] });
 }
 function HeaderPick({ label, items, marked, ariaLabel }) {
-  const [open, setOpen] = useState22(false);
+  const [open, setOpen] = useState21(false);
   const at = useRef21(null);
   return /* @__PURE__ */ jsxs31("span", { className: "ad-page-header__menu", children: [
     /* @__PURE__ */ jsxs31("button", { ref: at, type: "button", className: cx("ad-page-header__pick", open && "ad-page-header__pick--open"), "aria-label": ariaLabel ? `${ariaLabel}: ${label}` : void 0, "aria-haspopup": "menu", "aria-expanded": open, onClick: () => setOpen((o) => !o), children: [
@@ -4828,7 +4830,7 @@ function Tabs({ tabs, value, onChange, ariaLabel, numbered = true, panelId, clas
 }
 
 // src/components/Toolbar/Toolbar.tsx
-import { forwardRef as forwardRef9, useEffect as useEffect15, useRef as useRef23, useState as useState23 } from "react";
+import { forwardRef as forwardRef9, useEffect as useEffect15, useRef as useRef23, useState as useState22 } from "react";
 
 // src/components/Writing/Writing.tsx
 import { forwardRef as forwardRef8 } from "react";
@@ -4944,13 +4946,13 @@ function ToolbarSeparator() {
 function ViewPopover({ open, onClose, anchor, builtInViews = [], savedViews, currentView, onPickView, onStarView, viewActions, builtInViewActions, onSaveView, saveScopes, renaming, onRenameView, onCancelRename, onReorderViews, saveOff, query, rules, groupBy, sortBy, show, labels: l = {} }) {
   const L = { noSaved: "No saved views yet", noMatch: "No view by that name", or: "or", default: "Default", rename: "Rename", show: "Show", view: "View", builtInViews: "Views", savedViews: "Saved views", saveView: "Save this view\u2026", viewName: "View name", save: "Save", cancel: "Cancel", star: "Star", unstar: "Unstar", more: "More", filter: "Filter", groupBy: "Group by", sortBy: "Sort by", ascending: "Ascending", descending: "Descending", ...l };
   const SAVE = "__save";
-  const [naming, setNaming] = useState23(false);
-  const [name, setName] = useState23("");
-  const [scope, setScope] = useState23(saveScopes?.[0]?.value);
-  const [menuFor, setMenuFor] = useState23(null);
+  const [naming, setNaming] = useState22(false);
+  const [name, setName] = useState22("");
+  const [scope, setScope] = useState22(saveScopes?.[0]?.value);
+  const [menuFor, setMenuFor] = useState22(null);
   const menuAnchor = useRef23(null);
-  const [drag, setDrag] = useState23(null);
-  const [over, setOver] = useState23(null);
+  const [drag, setDrag] = useState22(null);
+  const [over, setOver] = useState22(null);
   const savedIds = (savedViews ?? []).map((v) => v.id);
   const movable = (id) => onReorderViews ? {
     draggable: true,
@@ -4980,7 +4982,7 @@ function ViewPopover({ open, onClose, anchor, builtInViews = [], savedViews, cur
       setOver(null);
     }
   } : {};
-  const [newName, setNewName] = useState23("");
+  const [newName, setNewName] = useState22("");
   const viewsShown = builtInViews.length > 0 || savedViews != null;
   const views = [
     ...(savedViews ?? []).map((v) => ({
@@ -5101,8 +5103,8 @@ function ViewPopover({ open, onClose, anchor, builtInViews = [], savedViews, cur
   ] });
 }
 function OrderList({ label, items, onReorder }) {
-  const [drag, setDrag] = useState23(null);
-  const [over, setOver] = useState23(null);
+  const [drag, setDrag] = useState22(null);
+  const [over, setOver] = useState22(null);
   const ids = items.map((i) => i.id);
   return /* @__PURE__ */ jsxs33("div", { className: "ad-view-order", role: "group", "aria-label": label, children: [
     /* @__PURE__ */ jsx36("div", { className: "ad-view-order__label", children: label }),
@@ -5143,7 +5145,7 @@ function OrderList({ label, items, onReorder }) {
   ] });
 }
 function ShowSwitch({ setting: s }) {
-  const [said, setSaid] = useState23(false);
+  const [said, setSaid] = useState22(false);
   const locked = s.on && !!s.reason;
   useEffect15(() => {
     if (!locked) setSaid(false);
@@ -5161,13 +5163,13 @@ function ShowSwitch({ setting: s }) {
 }
 
 // src/components/Warnings/Warnings.tsx
-import { forwardRef as forwardRef10, useId as useId13, useRef as useRef24, useState as useState24 } from "react";
+import { forwardRef as forwardRef10, useId as useId13, useRef as useRef24, useState as useState23 } from "react";
 import { Fragment as Fragment17, jsx as jsx37, jsxs as jsxs34 } from "react/jsx-runtime";
 function AlertsFloat({ open, onClose, anchor, ariaLabel = "Alerts", id, children }) {
   return /* @__PURE__ */ jsx37(Popover, { open, onClose, anchor, placement: "drop", width: "wide", ariaLabel, noClose: true, id, className: "ad-alerts-float", children: /* @__PURE__ */ jsx37("div", { role: "list", "aria-label": ariaLabel, className: "ad-alert-list", children }) });
 }
 function AlertsLine({ alerts, label = "Alerts", snoozeLabel = "Snooze", pillLabel = (p, n) => `${n} priority ${p}`, priorityLabel = (p) => `Priority ${p}`, defaultOpen = false, open, onOpenChange, className }) {
-  const [own, setOwn] = useState24(defaultOpen);
+  const [own, setOwn] = useState23(defaultOpen);
   const isOpen = open ?? own;
   const box = useRef24(null);
   const listId = useId13();
@@ -5418,15 +5420,15 @@ function Columns({ main, side, sideWidth = "card", className }) {
 }
 
 // src/components/Table/Table.tsx
-import { useLayoutEffect as useLayoutEffect8, useRef as useRef27, useState as useState25 } from "react";
+import { useLayoutEffect as useLayoutEffect8, useRef as useRef27, useState as useState24 } from "react";
 import { Fragment as Fragment19, jsx as jsx42, jsxs as jsxs39 } from "react/jsx-runtime";
 var NEAR = 8;
 var Arrow = ({ up }) => /* @__PURE__ */ jsx42(SortGlyph, { direction: up ? "ascending" : "descending", size: "sm" });
 function Table({ columns, rows, rowId, caption, sort, onSort, picked, onPickedChange, onPickAllChange, pickLabel, pickAllLabel = "Pick all", onOpen, rowProps, groupProps, grip, addRow, striped = true, columnLines, rowTone, group, groups, foldGroups, foldedGroups, onFoldGroup, depth, foldParents, foldedRows, onFoldRow, foldLabel, nameColumn, fixed, onInsertRow, onInsertColumn, insertRowLabel = "Insert a row here", insertColumnLabel = "Insert a column here", total, className }) {
   const span = columns.length + (onPickedChange ? 1 : 0);
-  const [ownFolded, setOwnFolded] = useState25(() => /* @__PURE__ */ new Set());
+  const [ownFolded, setOwnFolded] = useState24(() => /* @__PURE__ */ new Set());
   const folded = foldedGroups ?? ownFolded;
-  const [ownRows, setOwnRows] = useState25(() => /* @__PURE__ */ new Set());
+  const [ownRows, setOwnRows] = useState24(() => /* @__PURE__ */ new Set());
   const rowsShut = foldedRows ?? ownRows;
   const foldRow = (id) => {
     const shut = !rowsShut.has(id);
@@ -5454,7 +5456,7 @@ function Table({ columns, rows, rowId, caption, sort, onSort, picked, onPickedCh
   const all = rows.length > 0 && rows.every((r) => picked?.has(rowId(r)));
   const nameAt = Math.max(0, nameColumn ? columns.findIndex((c) => c.id === nameColumn) : 0);
   const headRow = useRef27(null);
-  const [held, setHeld] = useState25({});
+  const [held, setHeld] = useState24({});
   const heldKey = columns.filter((c) => c.frozen === "start").map((c) => c.id).join(" ");
   useLayoutEffect8(() => {
     const tr = headRow.current;
@@ -5477,7 +5479,7 @@ function Table({ columns, rows, rowId, caption, sort, onSort, picked, onPickedCh
   const wrap = useRef27(null);
   useKeyScroll(wrap);
   const at = (c) => c.frozen === "start" && held[c.id] ? { ["--ad-held"]: `${held[c.id]}px` } : {};
-  const [near, setNear] = useState25(null);
+  const [near, setNear] = useState24(null);
   const inserts = !!(onInsertRow || onInsertColumn);
   const findNear = (e) => {
     const el = wrap.current;
@@ -5659,7 +5661,7 @@ function Table({ columns, rows, rowId, caption, sort, onSort, picked, onPickedCh
   ] });
 }
 function SelectionBar({ count, countLabel = (n) => `${n} selected`, actions, lead, onClear, clearLabel = "Clear", showAtZero, emptyLabel = "Nothing selected", onExit, exitLabel = "Exit", className }) {
-  const [open, setOpen] = useState25(null);
+  const [open, setOpen] = useState24(null);
   const anchor = useRef27(null);
   const ordered2 = [...actions.filter((a) => !a.danger), ...actions.filter((a) => a.danger)];
   if (count <= 0 && !showAtZero) return null;
@@ -5708,7 +5710,7 @@ function SelectionBarRoom() {
 }
 
 // src/components/Timeline/Timeline.tsx
-import { useLayoutEffect as useLayoutEffect9, useRef as useRef28, useState as useState26 } from "react";
+import { useLayoutEffect as useLayoutEffect9, useRef as useRef28, useState as useState25 } from "react";
 import { Fragment as Fragment20, jsx as jsx43, jsxs as jsxs40 } from "react/jsx-runtime";
 var strip4 = (h) => {
   if (!h) return {};
@@ -5731,9 +5733,9 @@ function Bar({ code: code2, travel, dim, day: dayGiven, billing, label, unconfir
   const plain = !thin && !code2;
   const day = code2 ? dayGiven ?? (travel ? "travel" : dim ? "dark" : void 0) : void 0;
   const root = useRef28(null);
-  const [cramped, setCramped] = useState26(false);
-  const [suffixFits, setSuffixFits] = useState26(true);
-  const [suffixText, setSuffixText] = useState26("");
+  const [cramped, setCramped] = useState25(false);
+  const [suffixFits, setSuffixFits] = useState25(true);
+  const [suffixText, setSuffixText] = useState25("");
   const tell = useRef28(onCramped);
   tell.current = onCramped;
   useLayoutEffect9(() => {
@@ -5842,7 +5844,7 @@ function DeliverableBar({ parts, ...props }) {
 function DeliverableRow({ lead, status, showStatus, statusLabel, markers: given, expandable, expanded, onToggle, toggleLabel = "Show parts", className, ...bar }) {
   const done = status === "good";
   const row = useRef28(null);
-  const [marksOff, setMarksOff] = useState26(null);
+  const [marksOff, setMarksOff] = useState25(null);
   const onCramped = (c) => {
     const width = row.current?.clientWidth ?? 0;
     if (c && marksOff === null && given.length) setMarksOff(width);
@@ -5876,7 +5878,7 @@ function DeliverableRow({ lead, status, showStatus, statusLabel, markers: given,
 var LEAD_AT = 0.12;
 function Lanes({ children, marks, ariaLabel, nameWidth, className }) {
   const box = useRef28(null);
-  const [fit, setFit] = useState26(null);
+  const [fit, setFit] = useState25(null);
   useLayoutEffect9(() => {
     const el = box.current;
     if (!el || nameWidth !== "fit") return;
@@ -6006,7 +6008,7 @@ function ChartKey({ items, ariaLabel = "Key" }) {
 }
 
 // src/components/Timeline/Ruler.tsx
-import { useEffect as useEffect16, useRef as useRef29, useState as useState27 } from "react";
+import { useEffect as useEffect16, useRef as useRef29, useState as useState26 } from "react";
 import { jsx as jsx44, jsxs as jsxs41 } from "react/jsx-runtime";
 function DayLines({ days, dayWidth }) {
   if (!Number.isFinite(days) || !Number.isFinite(dayWidth) || days <= 0 || dayWidth <= 0) return null;
@@ -6015,7 +6017,7 @@ function DayLines({ days, dayWidth }) {
 function Ruler({ start, days, dayWidth, locale = "en-US", pinned, end, marks, className }) {
   const root = useRef29(null);
   const corner = useRef29(null);
-  const [under, setUnder] = useState27(null);
+  const [under, setUnder] = useState26(null);
   const hasEnd = end != null;
   useEffect16(() => {
     const el = root.current, c = corner.current;
@@ -6132,7 +6134,7 @@ function ZoomCluster({
 }
 
 // src/components/Calendar/Calendar.tsx
-import { useEffect as useEffect17, useLayoutEffect as useLayoutEffect10, useRef as useRef30, useState as useState28 } from "react";
+import { useEffect as useEffect17, useLayoutEffect as useLayoutEffect10, useRef as useRef30, useState as useState27 } from "react";
 import { Fragment as Fragment21, jsx as jsx45, jsxs as jsxs42 } from "react/jsx-runtime";
 var code = (it) => it.code ? /* @__PURE__ */ jsx45(ProjectPill, { code: it.code, color: it.color?.startsWith("project-") ? it.color : void 0 }) : null;
 var hooksOf2 = (h) => {
@@ -6293,7 +6295,7 @@ function scrollerAbove(el) {
 function TimeGrid({ headerEnd, startHour, endHour, bookings = [], columns, now, hourLabel = clockHour, onOpen, itemProps, columnProps, ariaLabel, bandHours, onPressAt, over, visibleHours, scrollTo, asideWidth = "narrow", hourHeight = "compact", bandHeading, allDayContent, todayLine, className }) {
   const hours = Math.max(1, endHour - startHour);
   const frame = useRef30(null);
-  const [barW, setBarW] = useState28(0);
+  const [barW, setBarW] = useState27(0);
   useEffect17(() => {
     const el = frame.current;
     if (!el || !headerEnd || !visibleHours) return;
@@ -6307,8 +6309,8 @@ function TimeGrid({ headerEnd, startHour, endHour, bookings = [], columns, now, 
     ro?.observe(el);
     return () => ro?.disconnect();
   }, [headerEnd, visibleHours]);
-  const [headH, setHeadH] = useState28(0);
-  const [contentH, setContentH] = useState28(0);
+  const [headH, setHeadH] = useState27(0);
+  const [contentH, setContentH] = useState27(0);
   useLayoutEffect10(() => {
     const el = frame.current;
     if (!el) return;
@@ -6531,7 +6533,7 @@ function PhaseBand({ label, color, unconfirmed }) {
 }
 
 // src/components/Map/Map.tsx
-import { useEffect as useEffect18, useMemo as useMemo3, useRef as useRef31, useState as useState29 } from "react";
+import { useEffect as useEffect18, useMemo as useMemo3, useRef as useRef31, useState as useState28 } from "react";
 
 // src/components/Map/worldGeo.ts
 var GEO_LAT_MAX = 84;
@@ -6600,10 +6602,10 @@ var LABEL_ALL_FROM = 760;
 var LABEL_SOME_FROM = 380;
 var PICKS = new Set(pickColours);
 function WorldMap({ pins, at, ariaLabel, onPin, hoverCard, pinProps }) {
-  const [hover, setHover] = useState29(null);
+  const [hover, setHover] = useState28(null);
   const night = useMemo3(() => nightPath(at), [at]);
   const wrap = useRef31(null);
-  const [w, setW] = useState29(0);
+  const [w, setW] = useState28(0);
   useEffect18(() => {
     const el = wrap.current;
     if (!el) return;
@@ -6997,13 +6999,13 @@ function CommandSearch({ open, onClose, query, onQuery, results, onPick, label =
 }
 
 // src/components/Guidance/Guidance.tsx
-import { useEffect as useEffect19, useLayoutEffect as useLayoutEffect11, useRef as useRef34, useState as useState30 } from "react";
+import { useEffect as useEffect19, useLayoutEffect as useLayoutEffect11, useRef as useRef34, useState as useState29 } from "react";
 import { Fragment as Fragment24, jsx as jsx52, jsxs as jsxs48 } from "react/jsx-runtime";
 var useIsoLayoutEffect3 = typeof window === "undefined" ? useEffect19 : useLayoutEffect11;
 function TourStep({ open, anchor, step, total, title, children, onBack, onNext, onExit, backLabel = "Back", nextLabel = "Next", progressLabel = (s, t) => `${s} of ${t}`, placement, side: older, onClose, closeLabel }) {
   const card = useRef34(null);
-  const [rect, setRect] = useState30(null);
-  const [size, setSize] = useState30(null);
+  const [rect, setRect] = useState29(null);
+  const [size, setSize] = useState29(null);
   const asked = placement ?? older ?? "below";
   const doc = useFloatingDocument() ?? document;
   useFocusReturn(open, card);
