@@ -5569,130 +5569,136 @@ function Table({ columns, rows, rowId, caption, sort, onSort, picked, onPickedCh
           ] }, c.id);
         })
       ] }) }),
-      /* @__PURE__ */ jsxs39("tbody", { children: [
-        (() => {
-          const open = [];
-          const depths = rows.map((r) => depth?.(r) ?? 0);
-          const more = rows.map(() => []);
-          const deepest = depths.reduce((a, b) => Math.max(a, b), 0);
-          for (let l = 1; l <= deepest + 1; l++) {
-            let seen = false;
-            for (let i = rows.length - 1; i >= 0; i--) {
-              more[i][l] = seen;
-              if (depths[i] < l) seen = false;
-              else if (depths[i] === l) seen = true;
-            }
+      /* @__PURE__ */ jsx42("tbody", { children: (() => {
+        const open = [];
+        const withRows = new Set(group ? rows.map((r) => group(r)) : []);
+        const drawnEmpty = /* @__PURE__ */ new Set();
+        const emptyGroup = (g) => {
+          drawnEmpty.add(g);
+          const a = addToGroup?.(g);
+          return [
+            /* @__PURE__ */ jsx42("tr", { ...groupProps?.(g) ?? {}, className: "ad-table__group ad-table__group--empty", children: /* @__PURE__ */ jsx42("th", { scope: "colgroup", colSpan: span, children: g }) }, `group-empty-${g}`),
+            a ? /* @__PURE__ */ jsx42("tr", { className: "ad-table__add ad-table__add--group", children: /* @__PURE__ */ jsx42("th", { scope: "row", colSpan: span, className: "ad-table__name", children: /* @__PURE__ */ jsx42(AddRow, { label: a.label, onAdd: a.onAdd }) }) }, `group-add-${g}`) : null
+          ];
+        };
+        const emptiesBefore = (g) => {
+          const at2 = groups ? groups.indexOf(g) : -1;
+          return at2 < 0 ? [] : groups.slice(0, at2).filter((e) => !withRows.has(e) && !drawnEmpty.has(e)).flatMap(emptyGroup);
+        };
+        const depths = rows.map((r) => depth?.(r) ?? 0);
+        const more = rows.map(() => []);
+        const deepest = depths.reduce((a, b) => Math.max(a, b), 0);
+        for (let l = 1; l <= deepest + 1; l++) {
+          let seen = false;
+          for (let i = rows.length - 1; i >= 0; i--) {
+            more[i][l] = seen;
+            if (depths[i] < l) seen = false;
+            else if (depths[i] === l) seen = true;
           }
-          const chain = [];
-          const runs = (i, l) => !!more[i][l] || chain[l - 1] != null && !!addRow?.(chain[l - 1]);
-          const trunks = (i, upTo) => Array.from({ length: upTo }, (_, k) => k + 1).filter((l) => runs(i, l)).map((l) => /* @__PURE__ */ jsx42("span", { className: "ad-table__trunk", "aria-hidden": "true", style: { ["--ad-level"]: l } }, l));
-          const groupAdd = (g) => {
-            const a = addToGroup?.(g);
-            if (!a || !!foldGroups && folded.has(g)) return null;
-            return /* @__PURE__ */ jsx42("tr", { className: "ad-table__add ad-table__add--group", children: /* @__PURE__ */ jsx42("th", { scope: "row", colSpan: span, className: "ad-table__name", children: /* @__PURE__ */ jsx42(AddRow, { label: a.label, onAdd: a.onAdd }) }) }, `group-add-${g}`);
-          };
-          const addFor = (r, d, rowAt) => {
-            const a = addRow?.(r);
-            if (!a) return null;
-            return /* @__PURE__ */ jsx42("tr", { className: "ad-table__add", children: /* @__PURE__ */ jsxs39("th", { scope: "row", colSpan: span, className: "ad-table__name", style: { ["--ad-depth"]: d + 1 }, children: [
-              trunks(rowAt, d),
-              /* @__PURE__ */ jsx42("span", { className: "ad-table__elbow", "aria-hidden": "true" }),
-              /* @__PURE__ */ jsx42(AddRow, { label: a.label, onAdd: a.onAdd })
-            ] }) }, `add-${rowId(r)}`);
-          };
-          let groupNow;
-          const out = rows.map((r, rowAt) => {
-            const dd = depth?.(r) ?? 0;
-            const closing = [];
-            while (open.length && open[open.length - 1].depth >= dd) {
-              const o = open.pop();
-              if (o.node) closing.push(o.node);
-            }
-            chain[dd] = r;
-            chain.length = dd + 1;
-            const g = group?.(r);
-            if (g !== groupNow) {
-              const foot = groupNow != null ? groupAdd(groupNow) : null;
-              if (foot) closing.push(foot);
-              groupNow = g;
-            }
-            const drawn = draw(r, rowAt);
-            const hidden = drawn == null || !!foldGroups && g != null && folded.has(g) || !!foldParents && rowsShut.has(rowId(r));
-            open.push({ depth: dd, node: hidden ? null : addFor(r, dd, rowAt) });
-            return closing.length ? [...closing, drawn] : drawn;
-          });
-          while (open.length) {
+        }
+        const chain = [];
+        const runs = (i, l) => !!more[i][l] || chain[l - 1] != null && !!addRow?.(chain[l - 1]);
+        const trunks = (i, upTo) => Array.from({ length: upTo }, (_, k) => k + 1).filter((l) => runs(i, l)).map((l) => /* @__PURE__ */ jsx42("span", { className: "ad-table__trunk", "aria-hidden": "true", style: { ["--ad-level"]: l } }, l));
+        const groupAdd = (g) => {
+          const a = addToGroup?.(g);
+          if (!a || !!foldGroups && folded.has(g)) return null;
+          return /* @__PURE__ */ jsx42("tr", { className: "ad-table__add ad-table__add--group", children: /* @__PURE__ */ jsx42("th", { scope: "row", colSpan: span, className: "ad-table__name", children: /* @__PURE__ */ jsx42(AddRow, { label: a.label, onAdd: a.onAdd }) }) }, `group-add-${g}`);
+        };
+        const addFor = (r, d, rowAt) => {
+          const a = addRow?.(r);
+          if (!a) return null;
+          return /* @__PURE__ */ jsx42("tr", { className: "ad-table__add", children: /* @__PURE__ */ jsxs39("th", { scope: "row", colSpan: span, className: "ad-table__name", style: { ["--ad-depth"]: d + 1 }, children: [
+            trunks(rowAt, d),
+            /* @__PURE__ */ jsx42("span", { className: "ad-table__elbow", "aria-hidden": "true" }),
+            /* @__PURE__ */ jsx42(AddRow, { label: a.label, onAdd: a.onAdd })
+          ] }) }, `add-${rowId(r)}`);
+        };
+        let groupNow;
+        const out = rows.map((r, rowAt) => {
+          const dd = depth?.(r) ?? 0;
+          const closing = [];
+          while (open.length && open[open.length - 1].depth >= dd) {
             const o = open.pop();
-            if (o.node) out.push(o.node);
+            if (o.node) closing.push(o.node);
           }
-          if (groupNow != null) {
-            const foot = groupAdd(groupNow);
-            if (foot) out.push(foot);
+          chain[dd] = r;
+          chain.length = dd + 1;
+          const g = group?.(r);
+          if (g !== groupNow) {
+            const foot = groupNow != null ? groupAdd(groupNow) : null;
+            if (foot) closing.push(foot);
+            groupNow = g;
           }
-          return out;
-          function draw(r, rowAt) {
-            const id = rowId(r);
-            if (foldParents) {
-              const deep = depth?.(r) ?? 0;
-              if (hideBelow != null && deep > hideBelow) return null;
-              hideBelow = null;
-            }
-            const on = picked?.has(id);
-            const g = group?.(r);
-            const head = g != null && g !== lastGroup ? g : null;
-            lastGroup = g;
-            const shut = !!foldGroups && g != null && folded.has(g);
-            const heading = head != null && /* @__PURE__ */ jsx42("tr", { ...groupProps?.(head) ?? {}, className: "ad-table__group", children: /* @__PURE__ */ jsx42("th", { scope: "colgroup", colSpan: span, children: foldGroups ? /* @__PURE__ */ jsxs39("button", { type: "button", className: "ad-table__fold", "aria-expanded": !shut, onClick: () => foldGroup(head), children: [
-              /* @__PURE__ */ jsx42(Icon, { name: "caret-down", size: "sm", className: cx("ad-table__chevron", shut && "ad-table__chevron--shut") }),
-              head
-            ] }) : head }) }, `group-${id}`);
-            if (shut) return heading || null;
-            const d = depth?.(r) ?? 0;
-            const parent = !!foldParents && rowAt + 1 < rows.length && (depth?.(rows[rowAt + 1]) ?? 0) > d;
-            const rowShut = parent && rowsShut.has(id);
-            if (rowShut) hideBelow = d;
-            const { className: _c, style: _s, ...hooks } = rowProps?.(r) ?? {};
-            const tr = /* @__PURE__ */ jsxs39("tr", { ...hooks, "data-row-at": onInsertRow ? rowAt : void 0, "data-picked": on || void 0, "data-depth": d || void 0, className: cx(onOpen && "ad-table__row--opens", rowTone?.(r) && `ad-table__row--tone-${rowTone(r)}`, striped && stripe++ % 2 === 1 && !rowTone?.(r) && "ad-table__row--alt"), onClick: (e) => {
-              hooks.onClick?.(e);
-              if (onOpen && !e.target.closest("input,button,a")) onOpen(r);
-            }, children: [
-              onPickedChange && /* @__PURE__ */ jsx42("td", { className: "ad-table__pick", children: /* @__PURE__ */ jsx42(Checkbox, { "aria-label": pickLabel?.(r) ?? id, checked: !!on, onChange: (v) => onPickedChange(id, v) }) }),
-              columns.map((c, i) => {
-                const frozen = c.frozen && `ad-table__frozen--${c.frozen}`;
-                if (i !== nameAt) return /* @__PURE__ */ jsx42("td", { className: cx(c.numeric && "ad-num", c.mono && "ad-mono", frozen), style: c.frozen === "start" ? at(c) : void 0, children: c.cell(r) }, c.id);
-                const words = onOpen ? /* @__PURE__ */ jsx42("button", { type: "button", className: "ad-table__open", onClick: () => onOpen(r), children: c.cell(r) }) : c.cell(r);
-                const meta = c.meta?.(r);
-                return /* @__PURE__ */ jsxs39("th", { scope: "row", className: cx("ad-table__name", frozen, meta != null && "ad-table__name--two"), style: d || c.frozen === "start" ? { ...d ? { ["--ad-depth"]: d } : {}, ...at(c) } : void 0, children: [
-                  grip?.(r) && /* @__PURE__ */ jsx42(Grip, {}),
-                  d > 0 && /* @__PURE__ */ jsxs39(Fragment19, { children: [
-                    trunks(rowAt, d - 1),
-                    /* @__PURE__ */ jsx42("span", { className: cx("ad-table__elbow", runs(rowAt, d) && "ad-table__elbow--on"), "aria-hidden": "true" })
-                  ] }),
-                  parent && /* @__PURE__ */ jsx42("button", { type: "button", className: "ad-table__fold ad-table__fold--row", "aria-expanded": !rowShut, "aria-label": foldLabel?.(r) ?? "Fold", onClick: (e) => {
-                    e.stopPropagation();
-                    foldRow(id);
-                  }, children: /* @__PURE__ */ jsx42(Icon, { name: "caret-down", size: "sm", className: cx("ad-table__chevron", rowShut && "ad-table__chevron--shut") }) }),
-                  meta != null ? /* @__PURE__ */ jsxs39("span", { className: "ad-table__words", children: [
-                    words,
-                    /* @__PURE__ */ jsx42("span", { className: "ad-table__meta", children: meta })
-                  ] }) : words
-                ] }, c.id);
-              })
-            ] }, id);
-            return heading ? [heading, tr] : tr;
+          const drawn = draw(r, rowAt);
+          const hidden = drawn == null || !!foldGroups && g != null && folded.has(g) || !!foldParents && rowsShut.has(rowId(r));
+          open.push({ depth: dd, node: hidden ? null : addFor(r, dd, rowAt) });
+          return closing.length ? [...closing, drawn] : drawn;
+        });
+        while (open.length) {
+          const o = open.pop();
+          if (o.node) out.push(o.node);
+        }
+        if (groupNow != null) {
+          const foot = groupAdd(groupNow);
+          if (foot) out.push(foot);
+        }
+        if (group && groups) {
+          for (const g of groups) if (!withRows.has(g) && !drawnEmpty.has(g)) out.push(...emptyGroup(g));
+        }
+        return out;
+        function draw(r, rowAt) {
+          const id = rowId(r);
+          if (foldParents) {
+            const deep = depth?.(r) ?? 0;
+            if (hideBelow != null && deep > hideBelow) return null;
+            hideBelow = null;
           }
-        })(),
-        group && groups && (() => {
-          const seen = new Set(rows.map((r) => group(r)));
-          return groups.filter((g) => !seen.has(g)).flatMap((g) => {
-            const a = addToGroup?.(g);
-            return [
-              /* @__PURE__ */ jsx42("tr", { ...groupProps?.(g) ?? {}, className: "ad-table__group ad-table__group--empty", children: /* @__PURE__ */ jsx42("th", { scope: "colgroup", colSpan: span, children: g }) }, `group-empty-${g}`),
-              a ? /* @__PURE__ */ jsx42("tr", { className: "ad-table__add ad-table__add--group", children: /* @__PURE__ */ jsx42("th", { scope: "row", colSpan: span, className: "ad-table__name", children: /* @__PURE__ */ jsx42(AddRow, { label: a.label, onAdd: a.onAdd }) }) }, `group-add-${g}`) : null
-            ];
-          });
-        })()
-      ] }),
+          const on = picked?.has(id);
+          const g = group?.(r);
+          const head = g != null && g !== lastGroup ? g : null;
+          lastGroup = g;
+          const shut = !!foldGroups && g != null && folded.has(g);
+          const heading = head != null && /* @__PURE__ */ jsx42("tr", { ...groupProps?.(head) ?? {}, className: "ad-table__group", children: /* @__PURE__ */ jsx42("th", { scope: "colgroup", colSpan: span, children: foldGroups ? /* @__PURE__ */ jsxs39("button", { type: "button", className: "ad-table__fold", "aria-expanded": !shut, onClick: () => foldGroup(head), children: [
+            /* @__PURE__ */ jsx42(Icon, { name: "caret-down", size: "sm", className: cx("ad-table__chevron", shut && "ad-table__chevron--shut") }),
+            head
+          ] }) : head }) }, `group-${id}`);
+          const before = head != null ? emptiesBefore(head) : [];
+          if (shut) return heading ? [...before, heading] : null;
+          const d = depth?.(r) ?? 0;
+          const parent = !!foldParents && rowAt + 1 < rows.length && (depth?.(rows[rowAt + 1]) ?? 0) > d;
+          const rowShut = parent && rowsShut.has(id);
+          if (rowShut) hideBelow = d;
+          const { className: _c, style: _s, ...hooks } = rowProps?.(r) ?? {};
+          const tr = /* @__PURE__ */ jsxs39("tr", { ...hooks, "data-row-at": onInsertRow ? rowAt : void 0, "data-picked": on || void 0, "data-depth": d || void 0, className: cx(onOpen && "ad-table__row--opens", rowTone?.(r) && `ad-table__row--tone-${rowTone(r)}`, striped && stripe++ % 2 === 1 && !rowTone?.(r) && "ad-table__row--alt"), onClick: (e) => {
+            hooks.onClick?.(e);
+            if (onOpen && !e.target.closest("input,button,a")) onOpen(r);
+          }, children: [
+            onPickedChange && /* @__PURE__ */ jsx42("td", { className: "ad-table__pick", children: /* @__PURE__ */ jsx42(Checkbox, { "aria-label": pickLabel?.(r) ?? id, checked: !!on, onChange: (v) => onPickedChange(id, v) }) }),
+            columns.map((c, i) => {
+              const frozen = c.frozen && `ad-table__frozen--${c.frozen}`;
+              if (i !== nameAt) return /* @__PURE__ */ jsx42("td", { className: cx(c.numeric && "ad-num", c.mono && "ad-mono", frozen), style: c.frozen === "start" ? at(c) : void 0, children: c.cell(r) }, c.id);
+              const words = onOpen ? /* @__PURE__ */ jsx42("button", { type: "button", className: "ad-table__open", onClick: () => onOpen(r), children: c.cell(r) }) : c.cell(r);
+              const meta = c.meta?.(r);
+              return /* @__PURE__ */ jsxs39("th", { scope: "row", className: cx("ad-table__name", frozen, meta != null && "ad-table__name--two"), style: d || c.frozen === "start" ? { ...d ? { ["--ad-depth"]: d } : {}, ...at(c) } : void 0, children: [
+                grip?.(r) && /* @__PURE__ */ jsx42(Grip, {}),
+                d > 0 && /* @__PURE__ */ jsxs39(Fragment19, { children: [
+                  trunks(rowAt, d - 1),
+                  /* @__PURE__ */ jsx42("span", { className: cx("ad-table__elbow", runs(rowAt, d) && "ad-table__elbow--on"), "aria-hidden": "true" })
+                ] }),
+                parent && /* @__PURE__ */ jsx42("button", { type: "button", className: "ad-table__fold ad-table__fold--row", "aria-expanded": !rowShut, "aria-label": foldLabel?.(r) ?? "Fold", onClick: (e) => {
+                  e.stopPropagation();
+                  foldRow(id);
+                }, children: /* @__PURE__ */ jsx42(Icon, { name: "caret-down", size: "sm", className: cx("ad-table__chevron", rowShut && "ad-table__chevron--shut") }) }),
+                meta != null ? /* @__PURE__ */ jsxs39("span", { className: "ad-table__words", children: [
+                  words,
+                  /* @__PURE__ */ jsx42("span", { className: "ad-table__meta", children: meta })
+                ] }) : words
+              ] }, c.id);
+            })
+          ] }, id);
+          return heading ? [...before, heading, tr] : tr;
+        }
+      })() }),
       total && /* @__PURE__ */ jsx42("tfoot", { className: "ad-table__total", children: /* @__PURE__ */ jsxs39("tr", { children: [
         onPickedChange && /* @__PURE__ */ jsx42("td", { className: "ad-table__pick" }),
         columns.map((c, i) => {
