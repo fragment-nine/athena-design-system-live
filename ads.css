@@ -2570,12 +2570,16 @@ button.ad-row__name:focus-visible { outline: none; box-shadow: var(--ring-select
 .ad-table--fixed td { overflow: hidden; text-overflow: ellipsis; }
 /* The tick column keeps its own width under `fixed`: never cut to "☑…". */
 .ad-table--fixed .ad-table__pick { box-sizing: border-box; width: calc(var(--check-size) + 2 * var(--space-2)); overflow: visible; text-overflow: clip; }
-.ad-table th[scope="col"] { position: sticky; top: 0; z-index: 1; height: var(--h-btn); padding: 0 var(--space-2); text-align: left; white-space: nowrap; background: var(--ad-under); border-bottom: var(--border-w) solid var(--border); font: var(--type-heading); text-transform: uppercase; color: var(--text-secondary); letter-spacing: var(--track-caps); }
+.ad-table th[scope="col"] { position: sticky; top: 0; z-index: 1; height: calc(var(--h-strip) - var(--border-w)); padding: 0 var(--space-2); text-align: left; white-space: nowrap; background: var(--ad-under); border-bottom: var(--border-w) solid var(--border); font: var(--type-heading); text-transform: uppercase; color: var(--text-secondary); letter-spacing: var(--track-caps); }
 .ad-table th[aria-sort="ascending"], .ad-table th[aria-sort="descending"] { color: var(--text-primary); }
-.ad-table td, .ad-table th[scope="row"] { height: var(--h-row); padding: 0 var(--space-2); border-bottom: var(--border-w) solid var(--border); text-align: left; white-space: nowrap; }
+/* A table's row is a timeline's row, h-strip 30 with its hairline inside it (the same pitch), its heading and total rows too; what sits in a cell takes the row size (a field, a
+   select, a date box at h-btn-row; a button through the body's ButtonSizeScope), so nothing in a cell makes its row taller. */
+.ad-table td, .ad-table th[scope="row"] { --h-field: var(--h-btn-row); height: calc(var(--h-strip) - var(--border-w)); padding: 0 var(--space-2); border-bottom: var(--border-w) solid var(--border); text-align: left; white-space: nowrap; }
 /* The name cell is the Name rung, as a person or a name typed in place inside it already is: one weight for every name, never the
    bold a browser gives a row heading. */
 .ad-table th[scope="row"] { font: var(--type-name); }
+/* What sits in a cell is centred on the row, a face, a status, a box or a button alike, never on the words' baseline. */
+.ad-table :is(td, th[scope="row"]) > * { vertical-align: middle; }
 .ad-table .ad-mono { font: var(--type-data); font-size: var(--text-xs); color: var(--text-secondary); }
 .ad-table .ad-num { text-align: right; font: var(--type-data); font-size: var(--text-xs); color: var(--text-secondary); font-variant-numeric: tabular-nums; }
 .ad-table th[scope="col"].ad-num { text-align: right; font: var(--type-heading); text-transform: uppercase; letter-spacing: var(--track-caps); }

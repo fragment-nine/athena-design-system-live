@@ -5618,7 +5618,7 @@ function Table({ columns: named, rows, rowId, caption, sort, onSort, picked, onP
           ] }, c.id);
         })
       ] }) }),
-      /* @__PURE__ */ jsx42("tbody", { children: (() => {
+      /* @__PURE__ */ jsx42("tbody", { children: /* @__PURE__ */ jsx42(ButtonSizeScope, { size: "row", children: (() => {
         const open = [];
         const withRows = new Set(group ? rows.map((r) => group(r)) : []);
         const drawnEmpty = /* @__PURE__ */ new Set();
@@ -5748,7 +5748,7 @@ function Table({ columns: named, rows, rowId, caption, sort, onSort, picked, onP
           ] }, id);
           return heading ? [...before, heading, tr] : tr;
         }
-      })() }),
+      })() }) }),
       total && /* @__PURE__ */ jsx42("tfoot", { className: "ad-table__total", children: /* @__PURE__ */ jsxs39("tr", { children: [
         onPickedChange && /* @__PURE__ */ jsx42("td", { className: "ad-table__pick" }),
         columns.map((c, i) => {
