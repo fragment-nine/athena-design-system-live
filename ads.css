@@ -2574,7 +2574,12 @@ button.ad-row__name:focus-visible { outline: none; box-shadow: var(--ring-select
 .ad-table { border-collapse: collapse; width: 100%; font: var(--type-name); color: var(--text-primary); }
 /* `fixed`: columns keep their widths; a cell that fills clips with an ellipsis rather than widening its column. */
 .ad-table--fixed { table-layout: fixed; }
-.ad-table--fixed td { overflow: hidden; text-overflow: ellipsis; }
+.ad-table--fixed td, .ad-table--fixed th[scope="row"] { overflow: hidden; text-overflow: ellipsis; }
+/* A name longer than its column ends in "…" inside it, never painting over the next column (2026-11-13): the opening button and
+   each line of a two-line name clip the same way. */
+.ad-table--fixed .ad-table__open, .ad-table--fixed .ad-table__words { max-width: 100%; vertical-align: middle; }
+.ad-table--fixed .ad-table__open, .ad-table--fixed .ad-table__line, .ad-table--fixed .ad-table__meta { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.ad-table__line { min-width: 0; }
 /* The tick column keeps its own width under `fixed`: never cut to "☑…". */
 .ad-table--fixed .ad-table__pick { box-sizing: border-box; width: calc(var(--check-size) + 2 * var(--space-2)); overflow: visible; text-overflow: clip; }
 .ad-table th[scope="col"] { position: sticky; top: 0; z-index: 1; height: calc(var(--h-strip) - var(--border-w)); padding: 0 var(--space-2); text-align: left; white-space: nowrap; background: var(--ad-under); border-bottom: var(--border-w) solid var(--line-strong); font: var(--type-heading); text-transform: uppercase; color: var(--text-secondary); letter-spacing: var(--track-caps); }

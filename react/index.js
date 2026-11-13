@@ -6090,7 +6090,7 @@ function Table({ columns: named, rows, rowId, caption, sort, onSort, picked, onP
                   foldRow(id);
                 }, children: /* @__PURE__ */ jsx43(Icon, { name: "caret-down", size: "sm", className: cx("ad-table__chevron", rowShut && "ad-table__chevron--shut") }) }),
                 meta != null ? /* @__PURE__ */ jsxs40("span", { className: "ad-table__words", children: [
-                  words,
+                  /* @__PURE__ */ jsx43("span", { className: "ad-table__line", children: words }),
                   /* @__PURE__ */ jsx43("span", { className: "ad-table__meta", children: meta })
                 ] }) : words
               ] }, c.id);
