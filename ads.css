@@ -786,12 +786,12 @@
 /* A small data note that never wraps: a time, a count, an off-screen date. */
 .ad-note-data { font: var(--type-data); font-size: var(--text-xs); white-space: nowrap; }
 
-/* A list's last row (its add row, or a field row) at the end of a card's section, body or card, or of a section's body on the page,
-   draws no line under it: the next section's strong rule, or the foot's line, is the one divider (never two lines 16 apart). Up to two
-   wrappers deep, as an app's list sits in one. */
-:is(.ad-popover__section-body, .ad-popover__body, .ad-popover, .ad-section__body, .ad-list-section__body) > :is(.ad-row, .ad-add-row, .ad-field-row):last-child,
-:is(.ad-popover__section-body, .ad-popover__body, .ad-popover, .ad-section__body, .ad-list-section__body) > :last-child > :is(.ad-row, .ad-add-row, .ad-field-row):last-child,
-:is(.ad-popover__section-body, .ad-popover__body, .ad-popover, .ad-section__body, .ad-list-section__body) > :last-child > :last-child > :is(.ad-row, .ad-add-row, .ad-field-row):last-child { border-bottom: 0; }
+/* One line between two things, at any depth. A row (a list's row, its add row, a field row) with no row after it before the end of
+   the nearest card section, card body, card, page section's body, or one of a card body's children, draws no line under it: the next
+   section's line, the next child's line or the foot's line is the one divider, however many wrappers an app puts round its list. A
+   row placed straight in a card's section or body draws none of its own either: the next child's hairline splits them. */
+:is(.ad-popover__section-body, .ad-popover__body, .ad-popover, .ad-section__body, .ad-list-section__body, .ad-popover__section-body > *, .ad-popover__body > *) :is(.ad-row, .ad-add-row, .ad-field-row):not(:has(~ :is(.ad-row, .ad-add-row, .ad-field-row), ~ * :is(.ad-row, .ad-add-row, .ad-field-row))):not(:is(.ad-popover__section-body, .ad-popover__body, .ad-popover, .ad-section__body, .ad-list-section__body, .ad-popover__section-body > *, .ad-popover__body > *) :has(~ :is(.ad-row, .ad-add-row, .ad-field-row), ~ * :is(.ad-row, .ad-add-row, .ad-field-row)):not(:has(:is(.ad-popover__section-body, .ad-popover__body, .ad-popover, .ad-section__body, .ad-list-section__body, .ad-popover__section-body > *, .ad-popover__body > *))) *),
+:is(.ad-popover__section-body, .ad-popover__body) > :is(.ad-row, .ad-add-row, .ad-field-row) { border-bottom: 0; }
 
 /* Athena Design System — components.css: the look of every component, plain CSS. Generated from src/components; do not edit. Import order, once per app, all four: fonts.css, tokens.css, patterns.css, components.css. */
 
@@ -1499,7 +1499,9 @@ button.ad-card__name:focus-visible { outline: none; box-shadow: var(--ring-selec
    the fill, the on-colour ink), with its caret. */
 .ad-priority-pick { --ad-pick-ink: var(--priority-p4); height: var(--h-pill); padding: 0 calc(var(--space-2) + var(--icon-sm) + var(--space-1)) 0 var(--space-2); border-radius: var(--radius-pill); background: var(--ad-pick-ink); color: var(--on-accent); font: var(--type-data); font-size: var(--text-xs); font-variant-numeric: tabular-nums; }
 .ad-priority-pick:focus-within { background: var(--ad-pick-ink); }
-.ad-priority-pick .ad-select__native { height: var(--h-pill); line-height: var(--h-pill); }
+.ad-priority-pick .ad-select__native { height: var(--h-pill); line-height: var(--h-pill); field-sizing: content; }
+/* The pill is as wide as the priority it shows ("P1"), never as its longest choice ("No priority"); it never stretches in a row. */
+.ad-field-row .ad-field-row__control .ad-select.ad-priority-pick { flex: none; width: max-content; }
 .ad-priority-pick--p1 { --ad-pick-ink: var(--priority-p1); }
 .ad-priority-pick--p2 { --ad-pick-ink: var(--priority-p2); }
 .ad-priority-pick--p3 { --ad-pick-ink: var(--priority-p3); }
@@ -1865,7 +1867,8 @@ button.ad-contents__button:focus-visible { outline: none; box-shadow: var(--ring
    so the keyboard's active row keeps its tint and its ink. */
 .ad-menu__item[data-active] { background: var(--tint-hover); outline: none; }
 .ad-menu__item:hover, .ad-menu__item:hover .ad-menu__icon { color: var(--accent); }
-.ad-menu__item:focus-visible { box-shadow: var(--ring-select); }
+/* The keyboard's ring only: a menu opened with the pointer (a right-click) starts with no ring on its first row. */
+:where(:root:not([data-ad-pointer])) .ad-menu__item:focus-visible { box-shadow: var(--ring-select); }
 .ad-menu__item--danger, .ad-menu__item--danger .ad-menu__icon, .ad-menu__item--danger:hover, .ad-menu__item--danger:hover .ad-menu__icon,
 .ad-menu__item--danger[data-active], .ad-menu__item--danger[data-active] .ad-menu__icon { color: var(--status-error-ink); }
 .ad-menu__item[aria-disabled] { opacity: var(--opacity-disabled); cursor: default; }

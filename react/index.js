@@ -314,11 +314,11 @@ function usePlacement(open, anchor, floating, placement, within) {
       if (fromFoot) top = fh <= floor - edge - ceiling ? floor - edge - fh : ceiling;
       else if (fh <= below) top = down;
       else if (fh <= above) top = a.top - gap - fh;
-      else if (fh <= floor - edge - ceiling) top = floor - edge - fh;
       else top = below >= above ? down : ceiling;
     }
     const placedTop = Math.round(Math.max(ceiling, top));
-    const next = { top: placedTop, left: Math.round(Math.max(edge, left)), maxHeight: Math.max(0, Math.round(floor - placedTop - edge)), trigger: placement === "drop" && a ? Math.round(a.width) : 0 };
+    const roof = placement === "drop" && a && !fromFoot && placedTop < a.top ? a.top - gap : floor - edge;
+    const next = { top: placedTop, left: Math.round(Math.max(edge, left)), maxHeight: Math.max(0, Math.round(roof - placedTop)), trigger: placement === "drop" && a ? Math.round(a.width) : 0 };
     setPos((p) => p && p.top === next.top && p.left === next.left && p.maxHeight === next.maxHeight && p.trigger === next.trigger ? p : next);
   };
   const watched = useRef2(null);
@@ -4389,7 +4389,7 @@ function FieldPopover({ label, words, placeholder, icon, title, children, width 
 }
 
 // src/components/Pickers/DatePicker.tsx
-import { useEffect as useEffect12, useId as useId10, useMemo as useMemo2, useRef as useRef18, useState as useState17 } from "react";
+import { useContext as useContext10, useEffect as useEffect12, useId as useId10, useMemo as useMemo2, useRef as useRef18, useState as useState17 } from "react";
 import { jsx as jsx29, jsxs as jsxs26 } from "react/jsx-runtime";
 var EN = { today: "Today", tomorrow: "Tomorrow", nextWeek: "Next week", inTwoWeeks: "In two weeks", previousMonth: "Previous month", nextMonth: "Next month", previousYear: "Previous year", nextYear: "Next year", noDate: "No date", repeat: "Repeat" };
 function DroppedDatePicker({ open, anchor, onClose, repeatEditor, backLabel, ...picker }) {
@@ -4551,6 +4551,7 @@ function DateField({ onParsed, label, text: given, onText, format, icon, disable
     if (given === void 0) setOwn(value ? fmt(value) : "");
   }, [value?.getTime()]);
   const result = text && (!value || text !== fmt(value)) ? read2(text) : null;
+  const named = useContext10(RowLabel) != null;
   return /* @__PURE__ */ jsxs26("span", { ref: anchor, className: cx("ad-datefield", compact && "ad-datefield--compact", className), children: [
     /* @__PURE__ */ jsx29(
       TextField,
@@ -4559,7 +4560,7 @@ function DateField({ onParsed, label, text: given, onText, format, icon, disable
         className: value && text === fmt(value) ? cx(due && isLate(value, picker.today, { done }) && "ad-datefield__field--late") : void 0,
         icon,
         "aria-label": label,
-        placeholder: compact ? void 0 : label,
+        placeholder: compact ? void 0 : named ? "\u2014" : label,
         value: text,
         role: "combobox",
         "aria-haspopup": "dialog",
@@ -4679,7 +4680,7 @@ function TimeRange({ start, end, onChange, startLabel = "Starts", endLabel = "En
 }
 
 // src/components/Card/Card.tsx
-import { createContext as createContext9, forwardRef as forwardRef7, useContext as useContext10, useState as useState19 } from "react";
+import { createContext as createContext9, forwardRef as forwardRef7, useContext as useContext11, useState as useState19 } from "react";
 import { jsx as jsx31, jsxs as jsxs28 } from "react/jsx-runtime";
 var OpenCard = createContext9(void 0);
 var Card = forwardRef7(function Card2({ title, headerLayout = "row", density, end, onMore, moreLabel = "More", children, onOpen, selected, dragging, picking, size = "tile", showIndex = true, className, onClick, ...rest }, ref) {
@@ -4715,7 +4716,7 @@ var Card = forwardRef7(function Card2({ title, headerLayout = "row", density, en
   );
 });
 function CardName({ children, lead, onRename, renameLabel }) {
-  const open = useContext10(OpenCard);
+  const open = useContext11(OpenCard);
   const name = onRename ? /* @__PURE__ */ jsx31(InlineEdit, { value: String(children), onCommit: onRename, ariaLabel: renameLabel ?? "Name", className: "ad-card__name" }) : open ? /* @__PURE__ */ jsx31("button", { type: "button", className: "ad-card__name ad-open", onClick: (e) => {
     e.stopPropagation();
     open();
@@ -7314,7 +7315,7 @@ function Ground({ children, className, style }) {
 }
 
 // src/runtime/AdsProvider.tsx
-import { useContext as useContext11, useEffect as useEffect20, useMemo as useMemo4 } from "react";
+import { useContext as useContext12, useEffect as useEffect20, useMemo as useMemo4 } from "react";
 import { jsx as jsx54 } from "react/jsx-runtime";
 var MODE = typeof process !== "undefined" && process.env && process.env.NODE_ENV || "development";
 var pending = [];
@@ -7358,7 +7359,7 @@ function AdsProvider({ strict = false, show, children }) {
       document.removeEventListener("focusin", look, true);
     };
   }, [on]);
-  const outer = useContext11(HueSwitches);
+  const outer = useContext12(HueSwitches);
   const o = { ...SHOW_DEFAULTS, ...show ?? {} };
   const project = o.projectColours === true;
   const item = o.itemColours === true;
@@ -7369,7 +7370,7 @@ function AdsProvider({ strict = false, show, children }) {
   return /* @__PURE__ */ jsx54(HueSwitches.Provider, { value, children: /* @__PURE__ */ jsx54(Show.Provider, { value: options, children }) });
 }
 function AdsScope({ project, children }) {
-  const outer = useContext11(HueSwitches);
+  const outer = useContext12(HueSwitches);
   const value = useMemo4(() => ({ ...outer, inProject: true }), [outer]);
   return /* @__PURE__ */ jsx54(HueSwitches.Provider, { value, children: /* @__PURE__ */ jsx54("div", { "data-ads-project": project, style: { display: "contents" }, children }) });
 }
