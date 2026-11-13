@@ -2582,9 +2582,14 @@ button.ad-row__name:focus-visible { outline: none; box-shadow: var(--ring-select
 .ad-table--fixed td, .ad-table--fixed th[scope="row"] { overflow: hidden; text-overflow: ellipsis; }
 /* A name longer than its column ends in "…" inside it, never painting over the next column (2026-11-13): the opening button and
    each line of a two-line name clip the same way. */
-.ad-table--fixed .ad-table__open, .ad-table--fixed .ad-table__words { max-width: 100%; vertical-align: middle; }
-.ad-table--fixed .ad-table__open, .ad-table--fixed .ad-table__line, .ad-table--fixed .ad-table__meta { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.ad-table__line { min-width: 0; }
+/* The name's parts sit in one row (Table's name row): the grip, the fold chevron and the second line's column keep their size, and
+   the name takes what is left, shrinking to its own "…" (an app's name inside the open button too: its clamp line shrinks). */
+.ad-table--fixed .ad-table__name-row { display: flex; align-items: center; min-width: 0; }
+.ad-table--fixed .ad-table__name-row > :is(.ad-grip, .ad-table__fold) { flex: none; }
+.ad-table--fixed .ad-table__name-row > :not(.ad-grip, .ad-table__fold), .ad-table--fixed .ad-table__open > *, .ad-table--fixed .ad-table__line > * { min-width: 0; flex: 0 1 auto; }
+.ad-table--fixed .ad-table__open, .ad-table--fixed .ad-table__line { display: flex; align-items: center; min-width: 0; max-width: 100%; overflow: hidden; }
+.ad-table--fixed .ad-table__words { display: flex; min-width: 0; }
+.ad-table--fixed .ad-table__meta { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 /* The tick column keeps its own width under `fixed`: never cut to "☑…". */
 .ad-table--fixed .ad-table__pick { box-sizing: border-box; width: calc(var(--check-size) + 2 * var(--space-2)); overflow: visible; text-overflow: clip; }
 .ad-table th[scope="col"] { position: sticky; top: 0; z-index: 1; height: calc(var(--h-strip) - var(--border-w)); padding: 0 var(--space-2); text-align: left; white-space: nowrap; background: var(--ad-under); border-bottom: var(--border-w) solid var(--line-strong); font: var(--type-heading); text-transform: uppercase; color: var(--text-secondary); letter-spacing: var(--track-caps); }
@@ -2672,7 +2677,7 @@ button.ad-row__name:focus-visible { outline: none; box-shadow: var(--ring-select
 /* The totals row: held under the last row behind the one stronger line, its words white. */
 .ad-table .ad-table__total td, .ad-table .ad-table__total th[scope="row"] { position: sticky; bottom: 0; z-index: 1; border-top: var(--border-w-strong) solid var(--line-strong); border-bottom: 0; background: var(--ad-under); color: var(--text-primary); }
 /* A reorderable table row's grip, first in its name cell. */
-.ad-table__name > .ad-grip { margin-right: var(--space-2); vertical-align: middle; }
+.ad-table__name > .ad-grip, .ad-table__name-row > .ad-grip { margin-right: var(--space-2); vertical-align: middle; }
 /* Striped: every other row no priority washes takes the lanes' quiet alternate ground, painted as the wash is, so frozen cells keep it. */
 .ad-table .ad-table__row--alt > * { background-image: linear-gradient(var(--bg-surface), var(--bg-surface)); }
 /* Column lines: a hairline between columns, from the heading down, in the rows' line. */

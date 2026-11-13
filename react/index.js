@@ -5850,6 +5850,9 @@ function ChartKey({ items, ariaLabel = "Key" }) {
 import { Fragment as Fragment21, jsx as jsx43, jsxs as jsxs40 } from "react/jsx-runtime";
 var NEAR = 8;
 var Arrow = ({ up }) => /* @__PURE__ */ jsx43(SortGlyph, { direction: up ? "ascending" : "descending", size: "sm" });
+function NameRow({ on, children }) {
+  return on ? /* @__PURE__ */ jsx43("span", { className: "ad-table__name-row", children }) : /* @__PURE__ */ jsx43(Fragment21, { children });
+}
 function Table({ columns: named, rows, rowId, caption, sort, onSort, picked, onPickedChange, onPickAllChange, pickLabel, pickAllLabel = "Pick all", onOpen, opens, openLabel = "Open", rowProps, groupProps, grip, addRow, addToGroup, striped = true, columnLines, rowTone, group, groups, foldGroups, foldedGroups, onFoldGroup, depth, foldParents, foldedRows, onFoldRow, foldLabel, nameColumn, fixed, onInsertRow, onInsertColumn, insertRowLabel = "Insert a row here", insertColumnLabel = "Insert a column here", total, className }) {
   const columns = onOpen && !named.some((c) => c.id === "open") ? [...named, { id: "open", label: openLabel, labelHidden: true, frozen: "end", width: "var(--h-btn)", cell: (r) => opens?.(r) === false ? null : /* @__PURE__ */ jsx43(Icon, { job: "chevron-right", size: "sm", className: "ad-table__arrow ad-glyph-quiet" }) }] : named;
   const span = columns.length + (onPickedChange ? 1 : 0);
@@ -6077,22 +6080,26 @@ function Table({ columns: named, rows, rowId, caption, sort, onSort, picked, onP
             columns.map((c, i) => {
               const frozen = c.frozen && `ad-table__frozen--${c.frozen}`;
               if (i !== nameAt) return /* @__PURE__ */ jsx43("td", { className: cx(c.numeric && "ad-num", c.mono && "ad-mono", frozen), style: c.frozen === "start" ? at(c) : void 0, children: c.cell(r) }, c.id);
-              const words = opening ? /* @__PURE__ */ jsx43("button", { type: "button", className: "ad-table__open", onClick: () => opening(r), children: c.cell(r) }) : c.cell(r);
+              const said = c.cell(r);
+              const named2 = fixed && (typeof said === "string" || typeof said === "number") ? /* @__PURE__ */ jsx43("span", { className: "ad-clamp-line", children: said }) : said;
+              const words = opening ? /* @__PURE__ */ jsx43("button", { type: "button", className: "ad-table__open", onClick: () => opening(r), children: named2 }) : named2;
               const meta = c.meta?.(r);
               return /* @__PURE__ */ jsxs40("th", { scope: "row", className: cx("ad-table__name", frozen, meta != null && "ad-table__name--two"), style: d || c.frozen === "start" ? { ...d ? { ["--ad-depth"]: d } : {}, ...at(c) } : void 0, children: [
-                grip?.(r) && /* @__PURE__ */ jsx43(Grip, {}),
                 d > 0 && /* @__PURE__ */ jsxs40(Fragment21, { children: [
                   trunks(rowAt, d - 1),
                   /* @__PURE__ */ jsx43("span", { className: cx("ad-table__elbow", runs(rowAt, d) && "ad-table__elbow--on"), "aria-hidden": "true" })
                 ] }),
-                parent && /* @__PURE__ */ jsx43("button", { type: "button", className: "ad-table__fold ad-table__fold--row", "aria-expanded": !rowShut, "aria-label": foldLabel?.(r) ?? "Fold", onClick: (e) => {
-                  e.stopPropagation();
-                  foldRow(id);
-                }, children: /* @__PURE__ */ jsx43(Icon, { name: "caret-down", size: "sm", className: cx("ad-table__chevron", rowShut && "ad-table__chevron--shut") }) }),
-                meta != null ? /* @__PURE__ */ jsxs40("span", { className: "ad-table__words", children: [
-                  /* @__PURE__ */ jsx43("span", { className: "ad-table__line", children: words }),
-                  /* @__PURE__ */ jsx43("span", { className: "ad-table__meta", children: meta })
-                ] }) : words
+                /* @__PURE__ */ jsxs40(NameRow, { on: !!fixed, children: [
+                  grip?.(r) && /* @__PURE__ */ jsx43(Grip, {}),
+                  parent && /* @__PURE__ */ jsx43("button", { type: "button", className: "ad-table__fold ad-table__fold--row", "aria-expanded": !rowShut, "aria-label": foldLabel?.(r) ?? "Fold", onClick: (e) => {
+                    e.stopPropagation();
+                    foldRow(id);
+                  }, children: /* @__PURE__ */ jsx43(Icon, { name: "caret-down", size: "sm", className: cx("ad-table__chevron", rowShut && "ad-table__chevron--shut") }) }),
+                  meta != null ? /* @__PURE__ */ jsxs40("span", { className: "ad-table__words", children: [
+                    /* @__PURE__ */ jsx43("span", { className: "ad-table__line", children: words }),
+                    /* @__PURE__ */ jsx43("span", { className: "ad-table__meta", children: meta })
+                  ] }) : words
+                ] })
               ] }, c.id);
             })
           ] }, id);
