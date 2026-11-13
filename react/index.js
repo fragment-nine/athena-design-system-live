@@ -6277,10 +6277,11 @@ function YearCalendar({ year, today: todayIn, busy, onPressDay, weekStart = 1, l
     ] }, m);
   }) });
 }
-function Booking({ name, time, unconfirmed, color, style, onOpen, bookingProps, ends, actions, mark, labelOutside, meta, fit, narrow, dragging, creating }) {
+function Booking({ name, time, unconfirmed, color, stripe, style, onOpen, bookingProps, ends, actions, mark, labelOutside, meta, fit, narrow, dragging, creating }) {
   const asButton = !!onOpen && !ends && actions == null;
   const Tag2 = asButton ? "button" : "div";
   const hue = useHue(color);
+  const kind = useNamedColour(stripe);
   const hooks = hooksOf2(bookingProps);
   const grip = (side, h) => h && /* @__PURE__ */ jsx45("span", { role: h["aria-label"] ? "button" : void 0, "aria-hidden": h["aria-label"] ? void 0 : true, ...hooksOf2(h), className: `ad-booking__grip ad-booking__grip--${side}` });
   const inControl = (t) => !!t.closest(".ad-booking__grip, .ad-booking__actions");
@@ -6310,7 +6311,11 @@ function Booking({ name, time, unconfirmed, color, style, onOpen, bookingProps, 
       },
       className: cx("ad-booking", "ad-striped", unconfirmed && !creating && "ad-booking--unconfirmed", creating && "ad-booking--creating", !asButton && onOpen && "ad-booking--press", labelOutside && "ad-booking--outside", fit && "ad-booking--fit", narrow && "ad-booking--narrow", dragging && "ad-booking--dragging"),
       "data-dragging": dragging || void 0,
-      style: beside ? { ...barColour(color, hue) } : { ...style, ...barColour(color, hue) },
+      style: (() => {
+        const c = { ...barColour(color, hue), ...kind ? { "--ad-stripe": kind } : {} };
+        return beside ? c : { ...style, ...c };
+      })(),
+      "data-kind": kind ? stripe : void 0,
       children: [
         !beside && grip("start", ends?.start),
         /* @__PURE__ */ jsxs42("span", { className: "ad-booking__name", children: [
