@@ -1886,7 +1886,7 @@ function GroupHeading({ children, number, rule = "above", needsYou, lead, end, c
     collapsible && /* @__PURE__ */ jsx8(Icon, { name: "caret-down", className: "ad-group-heading__chevron" }),
     num != null && /* @__PURE__ */ jsx8("span", { className: "ad-group-heading__numeral", children: num }),
     lead && /* @__PURE__ */ jsx8("span", { className: "ad-group-heading__lead", children: lead }),
-    /* @__PURE__ */ jsx8("span", { className: "ad-group-heading__name", id, children })
+    /* @__PURE__ */ jsx8("span", { className: "ad-group-heading__name", id, title: typeof children === "string" ? children : void 0, children })
   ] });
   return /* @__PURE__ */ jsxs6("div", { className: cx("ad-group-heading", `ad-group-heading--rule-${rule}`, className), "data-needs-you": needsYou || void 0, "data-collapsed": collapsible ? String(collapsed) : void 0, children: [
     /* @__PURE__ */ jsx8(Tag2, { className: "ad-group-heading__title", children: collapsible ? /* @__PURE__ */ jsx8("button", { type: "button", className: "ad-group-heading__button", "aria-expanded": !collapsed, "aria-controls": controls, onClick: onToggle, children: inner }) : inner }),
