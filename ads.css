@@ -2457,10 +2457,10 @@ button.ad-row__name:focus-visible { outline: none; box-shadow: var(--ring-select
 .ad-card .ad-section > .ad-group-heading--rule-above, .ad-section .ad-section > .ad-group-heading--rule-above { border-top: 0; padding-top: 0; }
 /* The section label (ruled 2026-11-13): a section under its strong rule is named in the Title rung at the rows' size, in caps and
    white, a step louder than the caption voice; a Dashboard widget's title is the same label (.ad-section-label). Where the strong
-   rule drops (inside a card, under another section) the label stays the Heading rung. The numeral before the name is the same type as the name, in the quiet ink, so the pair read as one line (2026-11-13). */
+   rule drops (inside a card, under another section) the label stays the Heading rung. The numeral before the name is the same type and the same ink as the name, so the pair read as one line (2026-11-13). */
 .ad-section-label, .ad-section:not(.ad-card .ad-section, .ad-section .ad-section) > .ad-group-heading :is(.ad-group-heading__title, .ad-group-heading__button) { font: var(--type-title); font-size: var(--text-base); text-transform: uppercase; letter-spacing: normal; }
 .ad-section-label, .ad-section:not(.ad-card .ad-section, .ad-section .ad-section) > .ad-group-heading .ad-group-heading__title { color: var(--text-primary); }
-.ad-section:not(.ad-card .ad-section, .ad-section .ad-section) > .ad-group-heading .ad-group-heading__numeral { font: var(--type-title); font-size: var(--text-base); font-variant-numeric: tabular-nums; }
+.ad-section:not(.ad-card .ad-section, .ad-section .ad-section) > .ad-group-heading .ad-group-heading__numeral { font: var(--type-title); font-size: var(--text-base); font-variant-numeric: tabular-nums; color: inherit; }
 /* The body: the section's groups, 16 apart. */
 .ad-section__body { display: flex; flex-direction: column; gap: var(--space-4); min-width: 0; }
 .ad-section__body[hidden] { display: none; }
