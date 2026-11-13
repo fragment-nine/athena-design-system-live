@@ -2963,11 +2963,11 @@ button.ad-milestone:focus-visible { outline: none; box-shadow: var(--ring-select
 .ad-drag-band--lane { top: var(--space-1); bottom: var(--space-1); opacity: 1; }
 /* GroupBand: a group's heading row (a person, a project, a section) on the band plane (`bg-band`), a step above the rows and a
    step below a bar's ground, under a hairline, so where one group ends and the next starts reads at a glance and the band never
-   weighs what a bar weighs, on the page and in a card alike. Its name (GroupBandName) is Title at text-17 in the primary ink, its
+   weighs what a bar weighs, on the page and in a card alike. Its name (GroupBandName) is Title at text-base 14 in the primary ink, its rows' size in the Title's weight, its
    second line Detail. */
 .ad-group-band { background: var(--bg-band); border-top: var(--border-w) solid var(--border); }
 .ad-group-band__name { display: flex; flex-direction: column; justify-content: center; min-width: 0; }
-.ad-group-band__title { font: var(--type-title); font-size: var(--text-17); color: var(--text-primary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.ad-group-band__title { font: var(--type-title); font-size: var(--text-base); color: var(--text-primary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .ad-group-band__sub { font: var(--type-detail); color: var(--text-muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 /* Lanes and Lane: one row each, the name at the left in the side-menu width, every second lane washed
  bg-surface across the whole width; the marks (the today line, a wash) lie over the chart column of every lane. */
