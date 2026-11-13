@@ -4742,7 +4742,7 @@ var Card = forwardRef7(function Card2({ title, headerLayout = "row", density, en
       className: cx("ad-card", density === "compact" && "ad-card--compact", headerLayout === "inline" && "ad-card--inline-head", `ad-card--${size}`, size === "widget" && !showIndex && "ad-card--unindexed", onOpen && "ad-card--opens", className),
       children: [
         (title != null || end != null || onMore != null) && /* @__PURE__ */ jsxs28("div", { className: "ad-card__head", children: [
-          title != null && /* @__PURE__ */ jsx31("h3", { className: cx("ad-card__title ad-type-heading", headerLayout === "inline" && "ad-sr"), children: onOpen ? /* @__PURE__ */ jsx31("button", { type: "button", className: "ad-card__title-open", onClick: (e) => {
+          title != null && /* @__PURE__ */ jsx31("h3", { className: cx("ad-card__title", size === "widget" ? "ad-section-label" : "ad-type-heading", headerLayout === "inline" && "ad-sr"), children: onOpen ? /* @__PURE__ */ jsx31("button", { type: "button", className: "ad-card__title-open", onClick: (e) => {
             e.stopPropagation();
             onOpen();
           }, children: title }) : title }),
