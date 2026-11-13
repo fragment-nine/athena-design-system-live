@@ -1554,11 +1554,24 @@ button.ad-card__name:focus-visible { outline: none; box-shadow: var(--ring-selec
 /* A typed figure reads as the table's figures: mono, small, right, its right edge on the column's. */
 .ad-inline-edit--figure { width: calc(100% + var(--space-2) * 2); font: var(--type-data); font-size: var(--text-xs); line-height: var(--h-btn-row); text-align: right; color: var(--text-secondary); font-variant-numeric: tabular-nums; }
 .ad-inline-edit--title { font: var(--type-title); line-height: var(--lh-tight); padding-block: var(--space-1); }
+/* A typed code in a table reads as the table's codes: mono, small, grey. */
+.ad-inline-edit--mono { font: var(--type-data); font-size: var(--text-xs); line-height: var(--h-field); color: var(--text-secondary); }
 .ad-inline-edit:hover { background: var(--bg-raised); }
 .ad-inline-edit:focus { background: var(--bg-hover); }
 :where(:root:not([data-ad-pointer])) .ad-inline-edit:focus-visible { box-shadow: var(--ring-select); }
 .ad-inline-edit::placeholder { color: var(--text-muted); }
 .ad-inline-edit:disabled { background: transparent; cursor: default; }
+/* With buttons at its end: the words and the buttons share one fill, the buttons at the row's size. */
+.ad-inline-edit__box { display: flex; align-items: center; gap: var(--space-1); min-width: 0; margin: 0 calc(var(--space-2) * -1); padding-right: var(--space-1); border-radius: var(--radius-page); }
+.ad-inline-edit__box > .ad-inline-edit { flex: 1 1 auto; width: auto; margin: 0; }
+.ad-inline-edit__box > .ad-inline-edit:hover, .ad-inline-edit__box > .ad-inline-edit:focus { background: transparent; }
+.ad-inline-edit__box > .ad-inline-edit:focus-visible { box-shadow: none; }
+.ad-inline-edit__box:hover { background: var(--bg-raised); }
+.ad-inline-edit__box:focus-within { background: var(--bg-hover); }
+:where(:root:not([data-ad-pointer])) .ad-inline-edit__box:has(> .ad-inline-edit:focus-visible) { box-shadow: var(--ring-select); }
+.ad-inline-edit__end { display: inline-flex; align-items: center; flex: none; }
+/* Its refusal: the field's refusal line, close under the words. */
+.ad-inline-edit__error { display: block; margin-top: var(--space-1); }
 /* A canvas page's own title: the words alone, no fill, no ring. */
 .ad-inline-edit--page { font: var(--type-title); font-size: var(--text-28); line-height: var(--lh-tight); padding: var(--space-1) 0; margin: 0; border-radius: 0; }
 .ad-inline-edit--page:hover, .ad-inline-edit--page:focus { background: transparent; }
