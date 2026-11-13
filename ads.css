@@ -13,6 +13,7 @@
   --bg-inset: #050505;
   --bg-surface: rgba(255, 255, 255, 0.035);
   --bg-raised: rgba(255, 255, 255, 0.08);
+  --bg-band: rgba(255, 255, 255, 0.055);
   --bg-hover: rgba(255, 255, 255, 0.115);
   --bg-float: #121213;
   --bg-held: #19181a;
@@ -140,6 +141,7 @@
   --bg-inset: #e9e9e5;
   --bg-surface: rgba(255, 255, 255, 0.62);
   --bg-raised: rgba(0, 0, 0, 0.045);
+  --bg-band: rgba(0, 0, 0, 0.03);
   --bg-hover: rgba(0, 0, 0, 0.075);
   --bg-float: #ffffff;
   --bg-held: #fbfbfa;
@@ -2785,12 +2787,12 @@ button.ad-row__name:focus-visible { outline: none; box-shadow: var(--ring-select
 /* src/components/Timeline/Ruler.css */
 /* Ruler and ZoomCluster: a line-strong rule, months in white mono caps along the top, ticks from the rule (weeks taller than
  days), day numbers mono muted in the middle of their day, the ticks on the line where it starts. The zoom cluster sits in the chart's top-right corner. */
-.ad-ruler { --ad-day-w: 0px; position: relative; height: var(--h-row); border-bottom: var(--border-w) solid var(--line-strong); font: var(--type-data); font-size: var(--text-xs); color: var(--text-secondary); }
+.ad-ruler { --ad-day-w: 0px; --ad-hold-left: 0px; position: relative; height: var(--h-row); border-bottom: var(--border-w) solid var(--line-strong); font: var(--type-data); font-size: var(--text-xs); color: var(--text-secondary); }
 /* Day spacing is geometry, never rounded to a different scale or dropped with the ruler's labels. */
-/* A line down the chart where each day starts: the hairline itself, very faint and still seen. */
-.ad-day-lines { --ad-day-w: var(--space-6); position: absolute; top: 0; bottom: 0; left: 0; pointer-events: none; background-image: linear-gradient(to right, var(--border) var(--border-w), transparent var(--border-w)); background-size: var(--ad-day-w) 100%; background-repeat: repeat-x; }
 .ad-ruler__months { position: relative; height: var(--space-6); }
-.ad-ruler__month { position: absolute; top: 0; padding-left: var(--space-1); color: var(--text-primary); white-space: nowrap; }
+/* A month's span runs from its first day to the next month's; its name is held at the visible left inside it while it is in view. */
+.ad-ruler__span { position: absolute; top: 0; bottom: 0; }
+.ad-ruler__month { position: sticky; left: var(--ad-hold-left); display: inline-block; padding-left: var(--space-1); color: var(--text-primary); white-space: nowrap; }
 .ad-ruler__ticks { position: absolute; left: 0; right: 0; bottom: 0; height: var(--space-4); }
 .ad-ruler__tick { position: absolute; bottom: 0; width: var(--border-w); height: var(--space-1); background: var(--line-strong); }
 .ad-ruler__tick--major { height: var(--space-2); }
@@ -2959,11 +2961,16 @@ button.ad-milestone:focus-visible { outline: none; box-shadow: var(--ring-select
 /* What is being made is coral: a box down the whole timeline, a bar inside one lane (2026-11-07). */
 .ad-drag-band { position: absolute; top: 0; bottom: 0; box-sizing: border-box; border-radius: var(--radius-mark); background: var(--accent); opacity: var(--opacity-dim); pointer-events: none; z-index: 1; }
 .ad-drag-band--lane { top: var(--space-1); bottom: var(--space-1); opacity: 1; }
-/* GroupBand: a group's heading row (a project's name, a section) a visibly lighter grey than the rows (`bg-raised`), under a
-   hairline, so where one group ends and the next starts reads at a glance, on the page and in a card alike. */
-.ad-group-band { background: var(--bg-raised); border-top: var(--border-w) solid var(--border); }
+/* GroupBand: a group's heading row (a person, a project, a section) on the band plane (`bg-band`), a step above the rows and a
+   step below a bar's ground, under a hairline, so where one group ends and the next starts reads at a glance and the band never
+   weighs what a bar weighs, on the page and in a card alike. Its name (GroupBandName) is Title at text-17 in the primary ink, its
+   second line Detail. */
+.ad-group-band { background: var(--bg-band); border-top: var(--border-w) solid var(--border); }
+.ad-group-band__name { display: flex; flex-direction: column; justify-content: center; min-width: 0; }
+.ad-group-band__title { font: var(--type-title); font-size: var(--text-17); color: var(--text-primary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.ad-group-band__sub { font: var(--type-detail); color: var(--text-muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 /* Lanes and Lane: one row each, the name at the left in the side-menu width, every second lane washed
- bg-surface across the whole width; the marks (day lines, today line) lie over the chart column of every lane. */
+ bg-surface across the whole width; the marks (the today line, a wash) lie over the chart column of every lane. */
 .ad-lanes { position: relative; display: flex; flex-direction: column; }
 /* The ruler's lane keeps room above it for the TODAY word. */
 .ad-lanes--ruler { padding-top: var(--space-4); }

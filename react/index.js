@@ -6064,6 +6064,12 @@ function DragBand({ left, width, inLane }) {
 function GroupBand({ children, bandProps }) {
   return /* @__PURE__ */ jsx43("div", { ...strip4(bandProps), className: "ad-group-band", children });
 }
+function GroupBandName({ children, sub }) {
+  return /* @__PURE__ */ jsxs40("span", { className: "ad-group-band__name", children: [
+    /* @__PURE__ */ jsx43("span", { className: "ad-group-band__title", children }),
+    sub != null && /* @__PURE__ */ jsx43("span", { className: "ad-group-band__sub", children: sub })
+  ] });
+}
 function LaneWash({ left, width, colour, edge, label, unconfirmed }) {
   const drawn = useNamedColour(colour);
   return /* @__PURE__ */ jsx43(
@@ -6116,11 +6122,10 @@ function ChartKey({ items, ariaLabel = "Key" }) {
 // src/components/Timeline/Ruler.tsx
 import { useEffect as useEffect16, useRef as useRef29, useState as useState26 } from "react";
 import { jsx as jsx44, jsxs as jsxs41 } from "react/jsx-runtime";
-function DayLines({ days, dayWidth }) {
-  if (!Number.isFinite(days) || !Number.isFinite(dayWidth) || days <= 0 || dayWidth <= 0) return null;
-  return /* @__PURE__ */ jsx44("div", { "aria-hidden": "true", className: "ad-day-lines", style: { width: days * dayWidth, ["--ad-day-w"]: `${dayWidth}px` } });
+function DayLines(_) {
+  return null;
 }
-function Ruler({ start, days, dayWidth, locale = "en-US", pinned, end, marks, className }) {
+function Ruler({ start, days, dayWidth, locale = "en-US", pinned, holdLeft, end, marks, className }) {
   const root = useRef29(null);
   const corner = useRef29(null);
   const [under, setUnder] = useState26(null);
@@ -6195,8 +6200,11 @@ function Ruler({ start, days, dayWidth, locale = "en-US", pinned, end, marks, cl
       ticks.push({ x: i * dayWidth, major: true, label: shown && !covered(i * dayWidth) ? String(d.getDate()) : void 0 });
     } else if (monthStart) ticks.push({ x: i * dayWidth, major: true });
   }
-  return /* @__PURE__ */ jsxs41("div", { ref: root, className: cx("ad-ruler", pinned && "ad-ruler--pinned", className), style: { width: days * dayWidth, ["--ad-day-w"]: `${dayWidth}px` }, children: [
-    /* @__PURE__ */ jsx44("div", { className: "ad-ruler__months", "aria-hidden": "true", children: months.map((m) => /* @__PURE__ */ jsx44("span", { className: "ad-ruler__month", style: { left: m.x }, children: m.label }, m.x)) }),
+  months.forEach((m, n) => {
+    m.end = n + 1 < months.length ? months[n + 1].x : days * dayWidth;
+  });
+  return /* @__PURE__ */ jsxs41("div", { ref: root, className: cx("ad-ruler", pinned && "ad-ruler--pinned", className), style: { width: days * dayWidth, ["--ad-day-w"]: `${dayWidth}px`, ...holdLeft ? { ["--ad-hold-left"]: `${holdLeft}px` } : {} }, children: [
+    /* @__PURE__ */ jsx44("div", { className: "ad-ruler__months", "aria-hidden": "true", children: months.map((m) => /* @__PURE__ */ jsx44("span", { className: "ad-ruler__span", style: { left: m.x, width: (m.end ?? m.x) - m.x }, children: /* @__PURE__ */ jsx44("span", { className: "ad-ruler__month", children: m.label }) }, m.x)) }),
     end != null && /* @__PURE__ */ jsx44("div", { ref: corner, className: "ad-ruler__end", children: end }),
     /* @__PURE__ */ jsx44("div", { className: "ad-ruler__ticks", "aria-hidden": "true", children: ticks.map((t) => /* @__PURE__ */ jsx44("span", { className: cx("ad-ruler__tick", t.major && "ad-ruler__tick--major"), style: { left: t.x }, children: t.label && /* @__PURE__ */ jsx44("span", { className: "ad-ruler__day", children: t.label }) }, t.x)) }),
     dots.length > 0 && /* @__PURE__ */ jsx44("div", { className: "ad-ruler__marks", children: dots.map((m) => /* @__PURE__ */ jsx44(Tooltip, { text: m.label, children: /* @__PURE__ */ jsx44("span", { className: "ad-ruler__mark", role: "img", "aria-label": m.words, style: { left: m.x } }) }, m.x)) })
@@ -7488,6 +7496,7 @@ export {
   Grip,
   Ground,
   GroupBand,
+  GroupBandName,
   GroupHeading,
   HeaderActions,
   Health,
