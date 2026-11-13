@@ -5497,16 +5497,322 @@ function Columns({ main, side, sideWidth = "card", className }) {
 }
 
 // src/components/Table/Table.tsx
+import { useLayoutEffect as useLayoutEffect9, useRef as useRef28, useState as useState25 } from "react";
+
+// src/components/Timeline/Timeline.tsx
 import { useLayoutEffect as useLayoutEffect8, useRef as useRef27, useState as useState24 } from "react";
 import { Fragment as Fragment20, jsx as jsx42, jsxs as jsxs39 } from "react/jsx-runtime";
+var strip4 = (h) => {
+  if (!h) return {};
+  const { className: _c, style: _s, ...rest } = h;
+  return rest;
+};
+function Envelope({ side }) {
+  const curve = "M0 100 C 80 100, 20 0, 100 0";
+  return /* @__PURE__ */ jsxs39("svg", { className: `ad-bar__envelope ad-bar__envelope--${side}`, "data-travel-ramp": side, viewBox: "0 0 100 100", preserveAspectRatio: "none", "aria-hidden": "true", children: [
+    /* @__PURE__ */ jsx42("path", { className: "ad-bar__envelope-shade", d: `${curve} L0 0 Z` }),
+    /* @__PURE__ */ jsx42("path", { d: curve, vectorEffect: "non-scaling-stroke" })
+  ] });
+}
+function Bar({ code: code2, travel, dim, day: dayGiven, billing, label, unconfirmed, deal, backup, color, selected, startLabel, endLabel, lead, children, thin, labelOutside, onOpen, ends, barProps, labelInset, labelHidden, late, dense, fade, fadeStart, fadeEnd, onCramped, detail, suffix, className, style }) {
+  const asButton = !!onOpen && !ends;
+  const Tag2 = asButton ? "button" : "div";
+  const hue = useHue(color);
+  const hooks = strip4(barProps);
+  const paint = barColour(color, hue);
+  const plain = !thin && !code2;
+  const day = code2 ? dayGiven ?? (travel ? "travel" : dim ? "dark" : void 0) : void 0;
+  const root = useRef27(null);
+  const [cramped, setCramped] = useState24(false);
+  const [suffixFits, setSuffixFits] = useState24(true);
+  const [suffixText, setSuffixText] = useState24("");
+  const tell = useRef27(onCramped);
+  tell.current = onCramped;
+  useLayoutEffect8(() => {
+    const el = root.current;
+    if (!el) return;
+    const measure = () => {
+      const n = el.querySelector(".ad-bar__label > .ad-bar__name");
+      if (n) {
+        const c = n.scrollWidth > n.clientWidth + 1;
+        setCramped(c);
+        tell.current?.(c);
+      }
+      const lab2 = el.querySelector(".ad-bar__label");
+      const tail2 = lab2?.querySelector(".ad-bar__suffix");
+      if (lab2 && tail2) {
+        setSuffixText(tail2.textContent?.trim() ?? "");
+        const fixed = Array.from(lab2.children).filter((child) => !child.classList.contains("ad-bar__words") && !child.classList.contains("ad-bar__name") && child !== tail2);
+        const gap = parseFloat(getComputedStyle(lab2).columnGap) || 0;
+        const reserved = fixed.reduce((width, child) => width + child.getBoundingClientRect().width, 0) + gap * (fixed.length + 1);
+        setSuffixFits(tail2.scrollWidth + reserved <= lab2.clientWidth + 1);
+      }
+    };
+    measure();
+    document.fonts?.ready.then(measure).catch(() => {
+    });
+    const ro = typeof ResizeObserver === "undefined" ? null : new ResizeObserver(measure);
+    ro?.observe(el);
+    const lab = el.querySelector(".ad-bar__label");
+    if (lab) ro?.observe(lab);
+    const tail = el.querySelector(".ad-bar__suffix");
+    if (tail) ro?.observe(tail);
+    return () => ro?.disconnect();
+  }, [label, suffix]);
+  const clip = labelOutside === "clip";
+  const keepIn = !!code2 || labelOutside === "never" || clip;
+  const outside = !keepIn && (labelOutside === true || labelOutside === "before" || labelOutside === "after" || cramped);
+  const tip = clip && typeof label === "string" && !hooks.title ? [label, detail, suffixText].filter((x) => typeof x === "string" && x).join(" \xB7 ") : keepIn && cramped && typeof label === "string" && !hooks.title ? label : void 0;
+  const name = /* @__PURE__ */ jsx42("span", { className: "ad-bar__name", children: label });
+  const grip = (side, h) => h && /* @__PURE__ */ jsx42("span", { "aria-hidden": h["aria-label"] ? void 0 : true, ...strip4(h), className: `ad-bar__grip ad-bar__grip--${side}` });
+  return /* @__PURE__ */ jsxs39(
+    Tag2,
+    {
+      ref: root,
+      ...hooks,
+      type: asButton ? "button" : void 0,
+      role: onOpen && !asButton ? "button" : hooks.role,
+      tabIndex: onOpen && !asButton ? 0 : hooks.tabIndex,
+      onClick: (e) => {
+        hooks.onClick?.(e);
+        if (e.target.closest(".ad-bar__grip")) return;
+        onOpen?.();
+      },
+      onKeyDown: (e) => {
+        hooks.onKeyDown?.(e);
+        if (onOpen && !asButton && e.target === e.currentTarget && (e.key === "Enter" || e.key === " ")) {
+          e.preventDefault();
+          onOpen();
+        }
+      },
+      "aria-current": selected || void 0,
+      title: tip ?? hooks.title,
+      className: cx("ad-bar", "ad-striped", code2 && "ad-bar--code", code2 && travel && "ad-bar--travel", code2 && dim && !dayGiven && !billing && "ad-bar--dim", day && `ad-bar--day-${day}`, code2 && billing && billing !== "plain" && `ad-bar--bill-${billing}`, labelOutside === "never" && "ad-bar--keep-in", clip && "ad-bar--clip", labelOutside === "never" && cramped && "ad-bar--name-gone", labelOutside === "before" && "ad-bar--label-before", plain && !!paint["--ad-bar"] && "ad-bar--hued", plain && !unconfirmed && !deal && !backup && "ad-bar--confirmed", unconfirmed && "ad-bar--unconfirmed", deal && "ad-bar--deal", backup && "ad-bar--backup", thin && "ad-bar--thin", outside && "ad-bar--label-outside", selected && "ad-bar--selected", late && "ad-bar--late", dense && "ad-bar--dense", fade && `ad-bar--fade-${fade}`, labelHidden && "ad-bar--label-hidden", className),
+      style: { ...style, ...paint, ...labelInset ? { ["--ad-label-in"]: `${Math.max(0, labelInset)}px` } : {}, ...fade && fadeStart != null ? { ["--ad-fade-start"]: `${Math.max(0, fadeStart)}px` } : {}, ...fade && fadeEnd != null ? { ["--ad-fade-end"]: `${Math.max(0, fadeEnd)}px` } : {} },
+      children: [
+        fade && /* @__PURE__ */ jsx42("span", { className: "ad-bar__ground", "aria-hidden": "true" }),
+        (fade === "start" || fade === "both") && /* @__PURE__ */ jsx42(Envelope, { side: "start" }),
+        (fade === "end" || fade === "both") && /* @__PURE__ */ jsx42(Envelope, { side: "end" }),
+        grip("start", ends?.start),
+        startLabel && /* @__PURE__ */ jsx42("span", { className: "ad-bar__end ad-bar__end--start", children: startLabel }),
+        /* @__PURE__ */ jsxs39("span", { className: "ad-bar__label", children: [
+          /* @__PURE__ */ jsx42(DeptGlyph, { hue: color }),
+          lead,
+          clip ? /* @__PURE__ */ jsxs39("span", { className: "ad-bar__words", children: [
+            name,
+            detail != null && /* @__PURE__ */ jsx42("span", { className: "ad-bar__detail", children: detail })
+          ] }) : name,
+          suffix != null && /* @__PURE__ */ jsx42("span", { className: "ad-bar__suffix", "aria-hidden": suffixFits ? void 0 : true, children: suffix })
+        ] }),
+        children,
+        outside && /* @__PURE__ */ jsx42("span", { className: "ad-bar__outside", children: name }),
+        endLabel && /* @__PURE__ */ jsx42("span", { className: "ad-bar__end ad-bar__end--end", children: endLabel }),
+        grip("end", ends?.end)
+      ]
+    }
+  );
+}
+function BarMarker({ kind, at, due, today, done, labels: l = {} }) {
+  const late = kind === "review" && !done && due instanceof Date && today instanceof Date && daysBetween(today, due) < 0;
+  const word = kind === "review" ? l.review ?? "Review date" : l.deadline ?? "Due date";
+  const label = late ? `${word} ${l.passed ?? "passed"}` : word;
+  return /* @__PURE__ */ jsx42("span", { className: cx("ad-bar-marker", late && "ad-bar-marker--late"), style: { left: `clamp(calc(var(--icon-md) / 2), ${Math.max(0, Math.min(1, at)) * 100}%, calc(100% - var(--icon-md) / 2))` }, role: "img", "aria-label": label, title: label, children: /* @__PURE__ */ jsx42(Icon, { name: kind === "review" ? "eye" : "paper-plane-tilt", fill: true }) });
+}
+function DeliverableBar({ parts, ...props }) {
+  if (!parts) return /* @__PURE__ */ jsx42(DeliverableRow, { ...props });
+  const { expanded, label } = props;
+  const clamp = (n) => Math.max(0, Math.min(1, Number.isFinite(n) ? n : 0));
+  return /* @__PURE__ */ jsxs39("div", { className: "ad-deliverable-group", children: [
+    /* @__PURE__ */ jsx42(DeliverableRow, { ...props, expandable: true }),
+    expanded && /* @__PURE__ */ jsx42("div", { className: "ad-deliverable__parts", role: "list", "aria-label": typeof label === "string" ? label : void 0, children: parts.map((p) => {
+      const from = clamp(p.start);
+      const to = Math.max(from, clamp(p.end));
+      return /* @__PURE__ */ jsx42("div", { role: "listitem", className: "ad-deliverable__part", children: /* @__PURE__ */ jsx42("div", { className: "ad-deliverable__part-span", style: { marginLeft: `${from * 100}%`, width: `${(to - from) * 100}%` }, children: /* @__PURE__ */ jsx42(Bar, { thin: true, label: String(p.label), children: p.markers.map((m, i) => /* @__PURE__ */ jsx42(BarMarker, { ...m }, i)) }) }) }, p.id);
+    }) })
+  ] });
+}
+function DeliverableRow({ lead, status, showStatus, statusLabel, markers: given, expandable, expanded, onToggle, toggleLabel = "Show parts", className, ...bar }) {
+  const done = status === "good";
+  const row = useRef27(null);
+  const [marksOff, setMarksOff] = useState24(null);
+  const onCramped = (c) => {
+    const width = row.current?.clientWidth ?? 0;
+    if (c && marksOff === null && given.length) setMarksOff(width);
+  };
+  useLayoutEffect8(() => {
+    const el = row.current;
+    if (!el || marksOff === null || typeof ResizeObserver === "undefined") return;
+    const ro = new ResizeObserver(() => {
+      if (el.clientWidth > marksOff + 1) setMarksOff(null);
+    });
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, [marksOff]);
+  const markers = marksOff === null ? given : [];
+  const ats = markers.map((m) => Math.max(0, Math.min(1, m.at))).sort((a, b) => a - b);
+  const leading = ats.filter((a) => a < LEAD_AT).length;
+  const cap = ats.find((a) => a >= LEAD_AT);
+  const style = {
+    ...bar.style,
+    ...leading ? { ["--ad-label-in"]: `calc(var(--icon-md) * ${leading} + var(--space-2))` } : {},
+    ...cap !== void 0 ? { ["--ad-label-max"]: `calc(${(cap * 100).toFixed(2)}% - var(--icon-md) - var(--space-2) - var(--space-2) * 2)` } : {}
+  };
+  return /* @__PURE__ */ jsxs39("div", { ref: row, className: cx("ad-deliverable", expandable && "ad-deliverable--expandable", marksOff !== null && "ad-deliverable--no-marks", className), style, children: [
+    expandable && /* @__PURE__ */ jsx42("button", { type: "button", className: "ad-deliverable__caret", "aria-expanded": !!expanded, "aria-label": toggleLabel, onClick: onToggle, children: /* @__PURE__ */ jsx42(Icon, { name: "caret-right", size: "sm", className: cx("ad-deliverable__chevron", expanded && "ad-is-open") }) }),
+    /* @__PURE__ */ jsx42(Bar, { ...bar, style: void 0, onCramped, lead: /* @__PURE__ */ jsxs39(Fragment20, { children: [
+      showStatus ? /* @__PURE__ */ jsx42("span", { role: "img", "aria-label": statusLabel, className: "ad-deliverable__status", children: /* @__PURE__ */ jsx42(Dot, { tone: status }) }) : /* @__PURE__ */ jsx42("span", { className: "ad-sr", children: statusLabel }),
+      lead
+    ] }), children: markers.map((m, i) => /* @__PURE__ */ jsx42(BarMarker, { done, ...m }, i)) })
+  ] });
+}
+var LEAD_AT = 0.12;
+function Lanes({ children, marks, ariaLabel, nameWidth, className }) {
+  const box = useRef27(null);
+  const [fit, setFit] = useState24(null);
+  useLayoutEffect8(() => {
+    const el = box.current;
+    if (!el || nameWidth !== "fit") return;
+    const measure = () => {
+      let w = 0;
+      el.querySelectorAll(".ad-lane__name").forEach((n) => {
+        const pad = parseFloat(getComputedStyle(n).paddingRight) || 0;
+        const kid = n.firstElementChild;
+        w = Math.max(w, (kid ? kid.scrollWidth : n.scrollWidth - pad) + pad);
+      });
+      setFit((was) => was === Math.ceil(w) ? was : Math.ceil(w));
+    };
+    measure();
+    if (typeof ResizeObserver === "undefined") return;
+    const ro = new ResizeObserver(measure);
+    ro.observe(el);
+    return () => ro.disconnect();
+  });
+  return /* @__PURE__ */ jsxs39("div", { ref: box, className: cx("ad-lanes", className), role: ariaLabel ? "group" : void 0, "aria-label": ariaLabel, style: fit != null ? { ["--ad-lane-name"]: `${fit}px` } : void 0, children: [
+    children,
+    marks && /* @__PURE__ */ jsx42("div", { className: "ad-lanes__marks", "aria-hidden": "true", children: marks })
+  ] });
+}
+function Lane({ name, children, tall, laneProps }) {
+  const { className: _c, style: _s, ...hooks } = laneProps ?? {};
+  return /* @__PURE__ */ jsxs39("div", { ...hooks, className: cx("ad-lane", tall && "ad-lane--tall"), children: [
+    /* @__PURE__ */ jsx42("div", { className: "ad-lane__name", children: name }),
+    /* @__PURE__ */ jsx42("div", { className: "ad-lane__chart", children })
+  ] });
+}
+function Milestone({ label, past, unconfirmed, opening, ariaLabel, onOpen }) {
+  const Tag2 = onOpen ? "button" : "span";
+  return /* @__PURE__ */ jsxs39(Tag2, { type: onOpen ? "button" : void 0, onClick: onOpen, "aria-label": ariaLabel, className: cx("ad-milestone", past && "ad-milestone--past", unconfirmed && "ad-milestone--unconfirmed"), children: [
+    opening ? /* @__PURE__ */ jsx42("span", { className: "ad-milestone__burst", "aria-hidden": "true", children: "\u2733" }) : /* @__PURE__ */ jsx42("span", { className: "ad-milestone__diamond ad-diamond", "aria-hidden": "true" }),
+    /* @__PURE__ */ jsx42("span", { className: "ad-milestone__label", children: label })
+  ] });
+}
+function TodayLine({ cap = true, word, style, label = "Today" }) {
+  return /* @__PURE__ */ jsxs39("div", { className: "ad-today", style, role: "img", "aria-label": label, children: [
+    word && /* @__PURE__ */ jsx42("span", { className: "ad-today__word", "aria-hidden": "true", children: word }),
+    cap && /* @__PURE__ */ jsx42(RegMark, {})
+  ] });
+}
+function RegMark() {
+  return /* @__PURE__ */ jsxs39("svg", { className: "ad-regmark", viewBox: "0 0 16 16", "aria-hidden": "true", children: [
+    /* @__PURE__ */ jsx42("circle", { cx: "8", cy: "8", r: "5", fill: "none", stroke: "currentColor", strokeWidth: "1" }),
+    /* @__PURE__ */ jsx42("path", { d: "M8 0v16M0 8h16", stroke: "currentColor", strokeWidth: "1" })
+  ] });
+}
+function PastHatch({ style, away }) {
+  return /* @__PURE__ */ jsx42("div", { className: away ? "ad-past ad-past--away" : "ad-past", style, "aria-hidden": "true" });
+}
+function Clash({ children, className }) {
+  return /* @__PURE__ */ jsx42("div", { className: cx("ad-clash", className), children });
+}
+function OverMark({ left, width, amount, label, "aria-label": ariaLabel, markProps }) {
+  const hooks = strip4(markProps);
+  const read2 = ariaLabel ?? (typeof label === "string" ? label : void 0);
+  const shade = Number.isFinite(amount) ? Math.min(1, Math.max(0, amount)) : void 0;
+  return /* @__PURE__ */ jsx42(
+    "span",
+    {
+      role: read2 ? "img" : void 0,
+      "aria-hidden": read2 ? void 0 : true,
+      title: typeof label === "string" && label ? label : read2,
+      ...hooks,
+      "aria-label": read2,
+      className: "ad-over-mark",
+      style: { left: `${Number.isFinite(left) ? left : 0}px`, width: `${Math.max(1, Number.isFinite(width) ? width : 1)}px`, ...shade != null ? { ["--ad-over"]: shade } : {} }
+    }
+  );
+}
+var px = (n, min = 0) => `${Math.max(min, Number.isFinite(n) ? n : min)}px`;
+function DragBand({ left, width, inLane }) {
+  return /* @__PURE__ */ jsx42("span", { "aria-hidden": "true", className: cx("ad-drag-band", inLane && "ad-drag-band--lane"), style: { left: px(left), width: px(width, 1) } });
+}
+function GroupBand({ children, bandProps }) {
+  return /* @__PURE__ */ jsx42("div", { ...strip4(bandProps), className: "ad-group-band", children });
+}
+function GroupBandName({ children, sub }) {
+  return /* @__PURE__ */ jsxs39("span", { className: "ad-group-band__name", children: [
+    /* @__PURE__ */ jsx42("span", { className: "ad-group-band__title", children }),
+    sub != null && /* @__PURE__ */ jsx42("span", { className: "ad-group-band__sub", children: sub })
+  ] });
+}
+function LaneWash({ left, width, colour, edge, label, unconfirmed }) {
+  const drawn = useNamedColour(colour);
+  return /* @__PURE__ */ jsx42(
+    "span",
+    {
+      "aria-hidden": "true",
+      "data-coloured": drawn ? true : void 0,
+      className: cx("ad-lane-wash", edge && "ad-lane-wash--edge", edge && unconfirmed && "ad-lane-wash--unconfirmed"),
+      style: { left: px(left), width: px(width, 1), ...drawn ? { ["--ad-wash"]: drawn } : {} },
+      children: edge && label && /* @__PURE__ */ jsx42("span", { className: "ad-lane-wash__label", children: label })
+    }
+  );
+}
+function PresenceSwatch({ colour, away }) {
+  const c = useNamedColour(colour);
+  return /* @__PURE__ */ jsx42("span", { "aria-hidden": "true", className: cx("ad-chart-key__presence", away && "ad-chart-key__presence--away"), style: c ? { ["--ad-where"]: c } : void 0 });
+}
+function OffscreenStart({ date, side = "start" }) {
+  return side === "end" ? /* @__PURE__ */ jsxs39("span", { className: "ad-offscreen ad-note-data ad-offscreen--end", children: [
+    date,
+    " ",
+    /* @__PURE__ */ jsx42("span", { "aria-hidden": "true", children: ">" })
+  ] }) : /* @__PURE__ */ jsxs39("span", { className: "ad-offscreen ad-note-data", children: [
+    /* @__PURE__ */ jsx42("span", { "aria-hidden": "true", children: "<" }),
+    " ",
+    date
+  ] });
+}
+var KEY_MARKS = /* @__PURE__ */ new Set(["confirmed", "hatched", "deal", "backup", "clash", "moment"]);
+function ChartKey({ items, ariaLabel = "Key" }) {
+  return /* @__PURE__ */ jsx42("div", { className: "ad-chart-key", role: "group", "aria-label": ariaLabel, children: items.map((it, i) => {
+    const swatch = typeof it.mark === "string" && KEY_MARKS.has(it.mark) ? /* @__PURE__ */ jsx42("span", { "aria-hidden": "true", className: `ad-chart-key__swatch ad-chart-key__swatch--${it.mark}` }) : it.mark && typeof it.mark === "object" && "code" in it.mark ? (() => {
+      const m = it.mark;
+      return /* @__PURE__ */ jsx42("span", { "aria-hidden": "true", className: cx("ad-bar", "ad-bar--code", "ad-chart-key__code", m.day && `ad-bar--day-${m.day}`, m.day === "travel" && "ad-bar--travel", m.billing && m.billing !== "plain" && `ad-bar--bill-${m.billing}`), children: m.code });
+    })() : it.mark && typeof it.mark === "object" && "presence" in it.mark ? /* @__PURE__ */ jsx42(PresenceSwatch, { colour: it.mark.presence, away: it.mark.away }) : /* @__PURE__ */ jsx42("span", { "aria-hidden": "true", className: "ad-chart-key__mark", children: it.mark });
+    const { className: _c, style: _s, ...hooks } = it.itemProps ?? {};
+    return it.onPress ? /* @__PURE__ */ jsxs39("button", { type: "button", ...hooks, className: "ad-chart-key__item ad-chart-key__item--press", onClick: (e) => {
+      hooks.onClick?.(e);
+      it.onPress();
+    }, children: [
+      swatch,
+      it.label
+    ] }, i) : /* @__PURE__ */ jsxs39("span", { ...hooks, className: "ad-chart-key__item", children: [
+      swatch,
+      it.label
+    ] }, i);
+  }) });
+}
+
+// src/components/Table/Table.tsx
+import { Fragment as Fragment21, jsx as jsx43, jsxs as jsxs40 } from "react/jsx-runtime";
 var NEAR = 8;
-var Arrow = ({ up }) => /* @__PURE__ */ jsx42(SortGlyph, { direction: up ? "ascending" : "descending", size: "sm" });
+var Arrow = ({ up }) => /* @__PURE__ */ jsx43(SortGlyph, { direction: up ? "ascending" : "descending", size: "sm" });
 function Table({ columns: named, rows, rowId, caption, sort, onSort, picked, onPickedChange, onPickAllChange, pickLabel, pickAllLabel = "Pick all", onOpen, opens, openLabel = "Open", rowProps, groupProps, grip, addRow, addToGroup, striped = true, columnLines, rowTone, group, groups, foldGroups, foldedGroups, onFoldGroup, depth, foldParents, foldedRows, onFoldRow, foldLabel, nameColumn, fixed, onInsertRow, onInsertColumn, insertRowLabel = "Insert a row here", insertColumnLabel = "Insert a column here", total, className }) {
-  const columns = onOpen && !named.some((c) => c.id === "open") ? [...named, { id: "open", label: openLabel, labelHidden: true, frozen: "end", width: "var(--h-btn)", cell: (r) => opens?.(r) === false ? null : /* @__PURE__ */ jsx42(Icon, { job: "chevron-right", size: "sm", className: "ad-table__arrow ad-glyph-quiet" }) }] : named;
+  const columns = onOpen && !named.some((c) => c.id === "open") ? [...named, { id: "open", label: openLabel, labelHidden: true, frozen: "end", width: "var(--h-btn)", cell: (r) => opens?.(r) === false ? null : /* @__PURE__ */ jsx43(Icon, { job: "chevron-right", size: "sm", className: "ad-table__arrow ad-glyph-quiet" }) }] : named;
   const span = columns.length + (onPickedChange ? 1 : 0);
-  const [ownFolded, setOwnFolded] = useState24(() => /* @__PURE__ */ new Set());
+  const [ownFolded, setOwnFolded] = useState25(() => /* @__PURE__ */ new Set());
   const folded = foldedGroups ?? ownFolded;
-  const [ownRows, setOwnRows] = useState24(() => /* @__PURE__ */ new Set());
+  const [ownRows, setOwnRows] = useState25(() => /* @__PURE__ */ new Set());
   const rowsShut = foldedRows ?? ownRows;
   const foldRow = (id) => {
     const shut = !rowsShut.has(id);
@@ -5533,10 +5839,10 @@ function Table({ columns: named, rows, rowId, caption, sort, onSort, picked, onP
   let stripe = 0;
   const all = rows.length > 0 && rows.every((r) => picked?.has(rowId(r)));
   const nameAt = Math.max(0, nameColumn ? columns.findIndex((c) => c.id === nameColumn) : 0);
-  const headRow = useRef27(null);
-  const [held, setHeld] = useState24({});
+  const headRow = useRef28(null);
+  const [held, setHeld] = useState25({});
   const heldKey = columns.filter((c) => c.frozen === "start").map((c) => c.id).join(" ");
-  useLayoutEffect8(() => {
+  useLayoutEffect9(() => {
     const tr = headRow.current;
     if (!tr || heldKey.split(" ").length < 2) return;
     const measure = () => {
@@ -5554,10 +5860,10 @@ function Table({ columns: named, rows, rowId, caption, sort, onSort, picked, onP
     tr.querySelectorAll("th").forEach((th) => seen.observe(th));
     return () => seen.disconnect();
   }, [heldKey, onPickedChange]);
-  const wrap = useRef27(null);
+  const wrap = useRef28(null);
   useKeyScroll(wrap);
   const at = (c) => c.frozen === "start" && held[c.id] ? { ["--ad-held"]: `${held[c.id]}px` } : {};
-  const [near, setNear] = useState24(null);
+  const [near, setNear] = useState25(null);
   const inserts = !!(onInsertRow || onInsertColumn);
   const findNear = (e) => {
     const el = wrap.current;
@@ -5603,23 +5909,23 @@ function Table({ columns: named, rows, rowId, caption, sort, onSort, picked, onP
     const found = best;
     setNear((was) => was && found && was.kind === found.kind && was.at === found.at && was.x === found.x && was.y === found.y ? was : found);
   };
-  return /* @__PURE__ */ jsxs39("div", { ref: wrap, className: cx("ad-table-wrap", inserts && "ad-table-wrap--inserts", className), onPointerMove: inserts ? findNear : void 0, onPointerLeave: inserts ? () => setNear(null) : void 0, children: [
-    /* @__PURE__ */ jsxs39("table", { className: cx("ad-table", fixed && "ad-table--fixed", columnLines && "ad-table--column-lines"), children: [
-      /* @__PURE__ */ jsx42("caption", { className: "ad-sr", children: caption }),
-      /* @__PURE__ */ jsx42("thead", { children: /* @__PURE__ */ jsxs39("tr", { ref: headRow, children: [
-        onPickedChange && /* @__PURE__ */ jsx42("th", { scope: "col", className: "ad-table__pick", children: /* @__PURE__ */ jsx42(Checkbox, { "aria-label": pickAllLabel, checked: all, onChange: (on) => onPickAllChange?.(on) }) }),
+  return /* @__PURE__ */ jsxs40("div", { ref: wrap, className: cx("ad-table-wrap", inserts && "ad-table-wrap--inserts", className), onPointerMove: inserts ? findNear : void 0, onPointerLeave: inserts ? () => setNear(null) : void 0, children: [
+    /* @__PURE__ */ jsxs40("table", { className: cx("ad-table", fixed && "ad-table--fixed", columnLines && "ad-table--column-lines"), children: [
+      /* @__PURE__ */ jsx43("caption", { className: "ad-sr", children: caption }),
+      /* @__PURE__ */ jsx43("thead", { children: /* @__PURE__ */ jsxs40("tr", { ref: headRow, children: [
+        onPickedChange && /* @__PURE__ */ jsx43("th", { scope: "col", className: "ad-table__pick", children: /* @__PURE__ */ jsx43(Checkbox, { "aria-label": pickAllLabel, checked: all, onChange: (on) => onPickAllChange?.(on) }) }),
         columns.map((c) => {
           const sorted = sort?.id === c.id ? sort.direction : void 0;
-          return /* @__PURE__ */ jsxs39("th", { scope: "col", "data-col-at": onInsertColumn ? columns.indexOf(c) : void 0, "data-held": c.frozen === "start" ? c.id : void 0, "aria-sort": sorted ?? (c.sortable ? "none" : void 0), className: cx(c.numeric && "ad-num", c.frozen && `ad-table__frozen--${c.frozen}`), style: { ...c.width ? { width: c.width } : {}, ...c.minWidth ? { minWidth: c.minWidth } : {}, ...at(c) }, children: [
-            c.minWidth && /* @__PURE__ */ jsx42("span", { className: "ad-table__floor", "aria-hidden": "true", style: { width: c.minWidth } }),
-            c.labelHidden ? /* @__PURE__ */ jsx42("span", { className: "ad-sr", children: c.label }) : c.sortable && onSort ? /* @__PURE__ */ jsxs39("button", { type: "button", className: "ad-table__sort ad-sort-button", onClick: () => onSort(c.id), children: [
+          return /* @__PURE__ */ jsxs40("th", { scope: "col", "data-col-at": onInsertColumn ? columns.indexOf(c) : void 0, "data-held": c.frozen === "start" ? c.id : void 0, "aria-sort": sorted ?? (c.sortable ? "none" : void 0), className: cx(c.numeric && "ad-num", c.frozen && `ad-table__frozen--${c.frozen}`), style: { ...c.width ? { width: c.width } : {}, ...c.minWidth ? { minWidth: c.minWidth } : {}, ...at(c) }, children: [
+            c.minWidth && /* @__PURE__ */ jsx43("span", { className: "ad-table__floor", "aria-hidden": "true", style: { width: c.minWidth } }),
+            c.labelHidden ? /* @__PURE__ */ jsx43("span", { className: "ad-sr", children: c.label }) : c.sortable && onSort ? /* @__PURE__ */ jsxs40("button", { type: "button", className: "ad-table__sort ad-sort-button", onClick: () => onSort(c.id), children: [
               c.label,
-              sorted && /* @__PURE__ */ jsx42(Arrow, { up: sorted === "ascending" })
+              sorted && /* @__PURE__ */ jsx43(Arrow, { up: sorted === "ascending" })
             ] }) : c.label
           ] }, c.id);
         })
       ] }) }),
-      /* @__PURE__ */ jsx42("tbody", { children: /* @__PURE__ */ jsx42(ButtonSizeScope, { size: "row", children: (() => {
+      /* @__PURE__ */ jsx43("tbody", { children: /* @__PURE__ */ jsx43(ButtonSizeScope, { size: "row", children: (() => {
         const open = [];
         const withRows = new Set(group ? rows.map((r) => group(r)) : []);
         const drawnEmpty = /* @__PURE__ */ new Set();
@@ -5627,8 +5933,8 @@ function Table({ columns: named, rows, rowId, caption, sort, onSort, picked, onP
           drawnEmpty.add(g);
           const a = addToGroup?.(g);
           return [
-            /* @__PURE__ */ jsx42("tr", { ...groupProps?.(g) ?? {}, className: "ad-table__group ad-table__group--empty", children: /* @__PURE__ */ jsx42("th", { scope: "colgroup", colSpan: span, children: g }) }, `group-empty-${g}`),
-            a ? /* @__PURE__ */ jsx42("tr", { className: "ad-table__add ad-table__add--group", children: /* @__PURE__ */ jsx42("th", { scope: "row", colSpan: span, className: "ad-table__name", children: /* @__PURE__ */ jsx42(AddRow, { label: a.label, onAdd: a.onAdd }) }) }, `group-add-${g}`) : null
+            /* @__PURE__ */ jsx43("tr", { ...groupProps?.(g) ?? {}, className: "ad-table__group ad-table__group--empty", children: /* @__PURE__ */ jsx43("th", { scope: "colgroup", colSpan: span, children: /* @__PURE__ */ jsx43(GroupBandName, { children: g }) }) }, `group-empty-${g}`),
+            a ? /* @__PURE__ */ jsx43("tr", { className: "ad-table__add ad-table__add--group", children: /* @__PURE__ */ jsx43("th", { scope: "row", colSpan: span, className: "ad-table__name", children: /* @__PURE__ */ jsx43(AddRow, { label: a.label, onAdd: a.onAdd }) }) }, `group-add-${g}`) : null
           ];
         };
         const emptiesBefore = (g) => {
@@ -5648,19 +5954,19 @@ function Table({ columns: named, rows, rowId, caption, sort, onSort, picked, onP
         }
         const chain = [];
         const runs = (i, l) => !!more[i][l] || chain[l - 1] != null && !!addRow?.(chain[l - 1]);
-        const trunks = (i, upTo) => Array.from({ length: upTo }, (_, k) => k + 1).filter((l) => runs(i, l)).map((l) => /* @__PURE__ */ jsx42("span", { className: "ad-table__trunk", "aria-hidden": "true", style: { ["--ad-level"]: l } }, l));
+        const trunks = (i, upTo) => Array.from({ length: upTo }, (_, k) => k + 1).filter((l) => runs(i, l)).map((l) => /* @__PURE__ */ jsx43("span", { className: "ad-table__trunk", "aria-hidden": "true", style: { ["--ad-level"]: l } }, l));
         const groupAdd = (g) => {
           const a = addToGroup?.(g);
           if (!a || !!foldGroups && folded.has(g)) return null;
-          return /* @__PURE__ */ jsx42("tr", { className: "ad-table__add ad-table__add--group", children: /* @__PURE__ */ jsx42("th", { scope: "row", colSpan: span, className: "ad-table__name", children: /* @__PURE__ */ jsx42(AddRow, { label: a.label, onAdd: a.onAdd }) }) }, `group-add-${g}`);
+          return /* @__PURE__ */ jsx43("tr", { className: "ad-table__add ad-table__add--group", children: /* @__PURE__ */ jsx43("th", { scope: "row", colSpan: span, className: "ad-table__name", children: /* @__PURE__ */ jsx43(AddRow, { label: a.label, onAdd: a.onAdd }) }) }, `group-add-${g}`);
         };
         const addFor = (r, d, rowAt) => {
           const a = addRow?.(r);
           if (!a) return null;
-          return /* @__PURE__ */ jsx42("tr", { className: "ad-table__add", children: /* @__PURE__ */ jsxs39("th", { scope: "row", colSpan: span, className: "ad-table__name", style: { ["--ad-depth"]: d + 1 }, children: [
+          return /* @__PURE__ */ jsx43("tr", { className: "ad-table__add", children: /* @__PURE__ */ jsxs40("th", { scope: "row", colSpan: span, className: "ad-table__name", style: { ["--ad-depth"]: d + 1 }, children: [
             trunks(rowAt, d),
-            /* @__PURE__ */ jsx42("span", { className: "ad-table__elbow", "aria-hidden": "true" }),
-            /* @__PURE__ */ jsx42(AddRow, { label: a.label, onAdd: a.onAdd })
+            /* @__PURE__ */ jsx43("span", { className: "ad-table__elbow", "aria-hidden": "true" }),
+            /* @__PURE__ */ jsx43(AddRow, { label: a.label, onAdd: a.onAdd })
           ] }) }, `add-${rowId(r)}`);
         };
         let groupNow;
@@ -5708,10 +6014,10 @@ function Table({ columns: named, rows, rowId, caption, sort, onSort, picked, onP
           const head = g != null && g !== lastGroup ? g : null;
           lastGroup = g;
           const shut = !!foldGroups && g != null && folded.has(g);
-          const heading = head != null && /* @__PURE__ */ jsx42("tr", { ...groupProps?.(head) ?? {}, className: "ad-table__group", children: /* @__PURE__ */ jsx42("th", { scope: "colgroup", colSpan: span, children: foldGroups ? /* @__PURE__ */ jsxs39("button", { type: "button", className: "ad-table__fold", "aria-expanded": !shut, onClick: () => foldGroup(head), children: [
-            /* @__PURE__ */ jsx42(Icon, { name: "caret-down", size: "sm", className: cx("ad-table__chevron", shut && "ad-table__chevron--shut") }),
-            head
-          ] }) : head }) }, `group-${id}`);
+          const heading = head != null && /* @__PURE__ */ jsx43("tr", { ...groupProps?.(head) ?? {}, className: "ad-table__group", children: /* @__PURE__ */ jsx43("th", { scope: "colgroup", colSpan: span, children: foldGroups ? /* @__PURE__ */ jsxs40("button", { type: "button", className: "ad-table__fold", "aria-expanded": !shut, onClick: () => foldGroup(head), children: [
+            /* @__PURE__ */ jsx43(Icon, { name: "caret-down", size: "sm", className: cx("ad-table__chevron", shut && "ad-table__chevron--shut") }),
+            /* @__PURE__ */ jsx43(GroupBandName, { children: head })
+          ] }) : /* @__PURE__ */ jsx43(GroupBandName, { children: head }) }) }, `group-${id}`);
           const before = head != null ? emptiesBefore(head) : [];
           if (shut) return heading ? [...before, heading] : null;
           const d = depth?.(r) ?? 0;
@@ -5720,29 +6026,29 @@ function Table({ columns: named, rows, rowId, caption, sort, onSort, picked, onP
           if (rowShut) hideBelow = d;
           const { className: _c, style: _s, ...hooks } = rowProps?.(r) ?? {};
           const opening = onOpen && opens?.(r) !== false ? onOpen : void 0;
-          const tr = /* @__PURE__ */ jsxs39("tr", { ...hooks, "data-row-at": onInsertRow ? rowAt : void 0, "data-picked": on || void 0, "data-depth": d || void 0, className: cx(opening && "ad-table__row--opens", rowTone?.(r) && `ad-table__row--tone-${rowTone(r)}`, striped && stripe++ % 2 === 1 && !rowTone?.(r) && "ad-table__row--alt"), onClick: (e) => {
+          const tr = /* @__PURE__ */ jsxs40("tr", { ...hooks, "data-row-at": onInsertRow ? rowAt : void 0, "data-picked": on || void 0, "data-depth": d || void 0, className: cx(opening && "ad-table__row--opens", rowTone?.(r) && `ad-table__row--tone-${rowTone(r)}`, striped && stripe++ % 2 === 1 && !rowTone?.(r) && "ad-table__row--alt"), onClick: (e) => {
             hooks.onClick?.(e);
             if (opening && !e.target.closest("input,button,a")) opening(r);
           }, children: [
-            onPickedChange && /* @__PURE__ */ jsx42("td", { className: "ad-table__pick", children: /* @__PURE__ */ jsx42(Checkbox, { "aria-label": pickLabel?.(r) ?? id, checked: !!on, onChange: (v) => onPickedChange(id, v) }) }),
+            onPickedChange && /* @__PURE__ */ jsx43("td", { className: "ad-table__pick", children: /* @__PURE__ */ jsx43(Checkbox, { "aria-label": pickLabel?.(r) ?? id, checked: !!on, onChange: (v) => onPickedChange(id, v) }) }),
             columns.map((c, i) => {
               const frozen = c.frozen && `ad-table__frozen--${c.frozen}`;
-              if (i !== nameAt) return /* @__PURE__ */ jsx42("td", { className: cx(c.numeric && "ad-num", c.mono && "ad-mono", frozen), style: c.frozen === "start" ? at(c) : void 0, children: c.cell(r) }, c.id);
-              const words = opening ? /* @__PURE__ */ jsx42("button", { type: "button", className: "ad-table__open", onClick: () => opening(r), children: c.cell(r) }) : c.cell(r);
+              if (i !== nameAt) return /* @__PURE__ */ jsx43("td", { className: cx(c.numeric && "ad-num", c.mono && "ad-mono", frozen), style: c.frozen === "start" ? at(c) : void 0, children: c.cell(r) }, c.id);
+              const words = opening ? /* @__PURE__ */ jsx43("button", { type: "button", className: "ad-table__open", onClick: () => opening(r), children: c.cell(r) }) : c.cell(r);
               const meta = c.meta?.(r);
-              return /* @__PURE__ */ jsxs39("th", { scope: "row", className: cx("ad-table__name", frozen, meta != null && "ad-table__name--two"), style: d || c.frozen === "start" ? { ...d ? { ["--ad-depth"]: d } : {}, ...at(c) } : void 0, children: [
-                grip?.(r) && /* @__PURE__ */ jsx42(Grip, {}),
-                d > 0 && /* @__PURE__ */ jsxs39(Fragment20, { children: [
+              return /* @__PURE__ */ jsxs40("th", { scope: "row", className: cx("ad-table__name", frozen, meta != null && "ad-table__name--two"), style: d || c.frozen === "start" ? { ...d ? { ["--ad-depth"]: d } : {}, ...at(c) } : void 0, children: [
+                grip?.(r) && /* @__PURE__ */ jsx43(Grip, {}),
+                d > 0 && /* @__PURE__ */ jsxs40(Fragment21, { children: [
                   trunks(rowAt, d - 1),
-                  /* @__PURE__ */ jsx42("span", { className: cx("ad-table__elbow", runs(rowAt, d) && "ad-table__elbow--on"), "aria-hidden": "true" })
+                  /* @__PURE__ */ jsx43("span", { className: cx("ad-table__elbow", runs(rowAt, d) && "ad-table__elbow--on"), "aria-hidden": "true" })
                 ] }),
-                parent && /* @__PURE__ */ jsx42("button", { type: "button", className: "ad-table__fold ad-table__fold--row", "aria-expanded": !rowShut, "aria-label": foldLabel?.(r) ?? "Fold", onClick: (e) => {
+                parent && /* @__PURE__ */ jsx43("button", { type: "button", className: "ad-table__fold ad-table__fold--row", "aria-expanded": !rowShut, "aria-label": foldLabel?.(r) ?? "Fold", onClick: (e) => {
                   e.stopPropagation();
                   foldRow(id);
-                }, children: /* @__PURE__ */ jsx42(Icon, { name: "caret-down", size: "sm", className: cx("ad-table__chevron", rowShut && "ad-table__chevron--shut") }) }),
-                meta != null ? /* @__PURE__ */ jsxs39("span", { className: "ad-table__words", children: [
+                }, children: /* @__PURE__ */ jsx43(Icon, { name: "caret-down", size: "sm", className: cx("ad-table__chevron", rowShut && "ad-table__chevron--shut") }) }),
+                meta != null ? /* @__PURE__ */ jsxs40("span", { className: "ad-table__words", children: [
                   words,
-                  /* @__PURE__ */ jsx42("span", { className: "ad-table__meta", children: meta })
+                  /* @__PURE__ */ jsx43("span", { className: "ad-table__meta", children: meta })
                 ] }) : words
               ] }, c.id);
             })
@@ -5750,37 +6056,37 @@ function Table({ columns: named, rows, rowId, caption, sort, onSort, picked, onP
           return heading ? [...before, heading, tr] : tr;
         }
       })() }) }),
-      total && /* @__PURE__ */ jsx42("tfoot", { className: "ad-table__total", children: /* @__PURE__ */ jsxs39("tr", { children: [
-        onPickedChange && /* @__PURE__ */ jsx42("td", { className: "ad-table__pick" }),
+      total && /* @__PURE__ */ jsx43("tfoot", { className: "ad-table__total", children: /* @__PURE__ */ jsxs40("tr", { children: [
+        onPickedChange && /* @__PURE__ */ jsx43("td", { className: "ad-table__pick" }),
         columns.map((c, i) => {
           const frozen = c.frozen && `ad-table__frozen--${c.frozen}`;
-          return i === nameAt ? /* @__PURE__ */ jsx42("th", { scope: "row", className: cx("ad-table__name", frozen), style: c.frozen === "start" ? at(c) : void 0, children: total[c.id] }, c.id) : /* @__PURE__ */ jsx42("td", { className: cx(c.numeric && "ad-num", c.mono && "ad-mono", frozen), style: c.frozen === "start" ? at(c) : void 0, children: total[c.id] }, c.id);
+          return i === nameAt ? /* @__PURE__ */ jsx43("th", { scope: "row", className: cx("ad-table__name", frozen), style: c.frozen === "start" ? at(c) : void 0, children: total[c.id] }, c.id) : /* @__PURE__ */ jsx43("td", { className: cx(c.numeric && "ad-num", c.mono && "ad-mono", frozen), style: c.frozen === "start" ? at(c) : void 0, children: total[c.id] }, c.id);
         })
       ] }) })
     ] }),
-    near && /* @__PURE__ */ jsx42("div", { className: cx("ad-insert", `ad-insert--${near.kind}`), style: near.kind === "row" ? { left: near.x, top: near.y, width: near.length } : { left: near.x, top: near.y, height: near.length }, children: /* @__PURE__ */ jsx42("button", { type: "button", className: "ad-insert__mark", "aria-label": near.kind === "row" ? insertRowLabel : insertColumnLabel, onClick: () => {
+    near && /* @__PURE__ */ jsx43("div", { className: cx("ad-insert", `ad-insert--${near.kind}`), style: near.kind === "row" ? { left: near.x, top: near.y, width: near.length } : { left: near.x, top: near.y, height: near.length }, children: /* @__PURE__ */ jsx43("button", { type: "button", className: "ad-insert__mark", "aria-label": near.kind === "row" ? insertRowLabel : insertColumnLabel, onClick: () => {
       const n = near;
       setNear(null);
       if (n.kind === "row") onInsertRow?.(n.at);
       else onInsertColumn?.(n.at);
-    }, children: /* @__PURE__ */ jsx42(Icon, { name: "plus", size: "sm" }) }) })
+    }, children: /* @__PURE__ */ jsx43(Icon, { name: "plus", size: "sm" }) }) })
   ] });
 }
 function SelectionBar({ count, countLabel = (n) => `${n} selected`, actions, lead, onClear, clearLabel = "Clear", showAtZero, emptyLabel = "Nothing selected", onExit, exitLabel = "Exit", className }) {
-  const [open, setOpen] = useState24(null);
-  const anchor = useRef27(null);
+  const [open, setOpen] = useState25(null);
+  const anchor = useRef28(null);
   const ordered2 = [...actions.filter((a) => !a.danger), ...actions.filter((a) => a.danger)];
   if (count <= 0 && !showAtZero) return null;
   const zero = count <= 0;
   const shown = ordered2.find((a) => a.id === open && a.picker);
   const close = () => setOpen(null);
-  return /* @__PURE__ */ jsxs39(Portal, { children: [
-    /* @__PURE__ */ jsxs39("div", { className: cx("ad-float", "ad-selection-bar", className), role: "toolbar", "aria-label": zero ? emptyLabel : countLabel(count), children: [
-      /* @__PURE__ */ jsx42("span", { className: "ad-selection-bar__count", "aria-live": "polite", children: zero ? emptyLabel : countLabel(count) }),
-      lead != null && /* @__PURE__ */ jsx42("span", { className: "ad-selection-bar__lead", children: lead }),
-      /* @__PURE__ */ jsxs39(ButtonSizeScope, { size: "bar", children: [
+  return /* @__PURE__ */ jsxs40(Portal, { children: [
+    /* @__PURE__ */ jsxs40("div", { className: cx("ad-float", "ad-selection-bar", className), role: "toolbar", "aria-label": zero ? emptyLabel : countLabel(count), children: [
+      /* @__PURE__ */ jsx43("span", { className: "ad-selection-bar__count", "aria-live": "polite", children: zero ? emptyLabel : countLabel(count) }),
+      lead != null && /* @__PURE__ */ jsx43("span", { className: "ad-selection-bar__lead", children: lead }),
+      /* @__PURE__ */ jsxs40(ButtonSizeScope, { size: "bar", children: [
         !zero && ordered2.map((a) => {
-          const button = /* @__PURE__ */ jsxs39(
+          const button = /* @__PURE__ */ jsxs40(
             Button,
             {
               icon: a.icon,
@@ -5797,326 +6103,22 @@ function SelectionBar({ count, countLabel = (n) => `${n} selected`, actions, lea
               },
               children: [
                 a.label,
-                a.picker && /* @__PURE__ */ jsx42(Icon, { name: "caret-down", size: "sm" })
+                a.picker && /* @__PURE__ */ jsx43(Icon, { name: "caret-down", size: "sm" })
               ]
             },
             a.id
           );
-          return a.picker ? /* @__PURE__ */ jsx42("span", { className: "ad-selection-bar__slot", children: button }, a.id) : button;
+          return a.picker ? /* @__PURE__ */ jsx43("span", { className: "ad-selection-bar__slot", children: button }, a.id) : button;
         }),
-        !zero && onClear && /* @__PURE__ */ jsx42(Button, { onClick: onClear, children: clearLabel }),
-        onExit && /* @__PURE__ */ jsx42(Button, { onClick: onExit, children: exitLabel })
+        !zero && onClear && /* @__PURE__ */ jsx43(Button, { onClick: onClear, children: clearLabel }),
+        onExit && /* @__PURE__ */ jsx43(Button, { onClick: onExit, children: exitLabel })
       ] })
     ] }),
-    shown && /* @__PURE__ */ jsx42(Popover, { open: true, onClose: close, anchor, width: shown.pickerWidth ?? "menu", noClose: true, ariaLabel: shown.label, children: shown.picker(close) })
+    shown && /* @__PURE__ */ jsx43(Popover, { open: true, onClose: close, anchor, width: shown.pickerWidth ?? "menu", noClose: true, ariaLabel: shown.label, children: shown.picker(close) })
   ] });
 }
 function SelectionBarRoom() {
-  return /* @__PURE__ */ jsx42("div", { className: "ad-selection-bar-room", "aria-hidden": "true" });
-}
-
-// src/components/Timeline/Timeline.tsx
-import { useLayoutEffect as useLayoutEffect9, useRef as useRef28, useState as useState25 } from "react";
-import { Fragment as Fragment21, jsx as jsx43, jsxs as jsxs40 } from "react/jsx-runtime";
-var strip4 = (h) => {
-  if (!h) return {};
-  const { className: _c, style: _s, ...rest } = h;
-  return rest;
-};
-function Envelope({ side }) {
-  const curve = "M0 100 C 80 100, 20 0, 100 0";
-  return /* @__PURE__ */ jsxs40("svg", { className: `ad-bar__envelope ad-bar__envelope--${side}`, "data-travel-ramp": side, viewBox: "0 0 100 100", preserveAspectRatio: "none", "aria-hidden": "true", children: [
-    /* @__PURE__ */ jsx43("path", { className: "ad-bar__envelope-shade", d: `${curve} L0 0 Z` }),
-    /* @__PURE__ */ jsx43("path", { d: curve, vectorEffect: "non-scaling-stroke" })
-  ] });
-}
-function Bar({ code: code2, travel, dim, day: dayGiven, billing, label, unconfirmed, deal, backup, color, selected, startLabel, endLabel, lead, children, thin, labelOutside, onOpen, ends, barProps, labelInset, labelHidden, late, dense, fade, fadeStart, fadeEnd, onCramped, detail, suffix, className, style }) {
-  const asButton = !!onOpen && !ends;
-  const Tag2 = asButton ? "button" : "div";
-  const hue = useHue(color);
-  const hooks = strip4(barProps);
-  const paint = barColour(color, hue);
-  const plain = !thin && !code2;
-  const day = code2 ? dayGiven ?? (travel ? "travel" : dim ? "dark" : void 0) : void 0;
-  const root = useRef28(null);
-  const [cramped, setCramped] = useState25(false);
-  const [suffixFits, setSuffixFits] = useState25(true);
-  const [suffixText, setSuffixText] = useState25("");
-  const tell = useRef28(onCramped);
-  tell.current = onCramped;
-  useLayoutEffect9(() => {
-    const el = root.current;
-    if (!el) return;
-    const measure = () => {
-      const n = el.querySelector(".ad-bar__label > .ad-bar__name");
-      if (n) {
-        const c = n.scrollWidth > n.clientWidth + 1;
-        setCramped(c);
-        tell.current?.(c);
-      }
-      const lab2 = el.querySelector(".ad-bar__label");
-      const tail2 = lab2?.querySelector(".ad-bar__suffix");
-      if (lab2 && tail2) {
-        setSuffixText(tail2.textContent?.trim() ?? "");
-        const fixed = Array.from(lab2.children).filter((child) => !child.classList.contains("ad-bar__words") && !child.classList.contains("ad-bar__name") && child !== tail2);
-        const gap = parseFloat(getComputedStyle(lab2).columnGap) || 0;
-        const reserved = fixed.reduce((width, child) => width + child.getBoundingClientRect().width, 0) + gap * (fixed.length + 1);
-        setSuffixFits(tail2.scrollWidth + reserved <= lab2.clientWidth + 1);
-      }
-    };
-    measure();
-    document.fonts?.ready.then(measure).catch(() => {
-    });
-    const ro = typeof ResizeObserver === "undefined" ? null : new ResizeObserver(measure);
-    ro?.observe(el);
-    const lab = el.querySelector(".ad-bar__label");
-    if (lab) ro?.observe(lab);
-    const tail = el.querySelector(".ad-bar__suffix");
-    if (tail) ro?.observe(tail);
-    return () => ro?.disconnect();
-  }, [label, suffix]);
-  const clip = labelOutside === "clip";
-  const keepIn = !!code2 || labelOutside === "never" || clip;
-  const outside = !keepIn && (labelOutside === true || labelOutside === "before" || labelOutside === "after" || cramped);
-  const tip = clip && typeof label === "string" && !hooks.title ? [label, detail, suffixText].filter((x) => typeof x === "string" && x).join(" \xB7 ") : keepIn && cramped && typeof label === "string" && !hooks.title ? label : void 0;
-  const name = /* @__PURE__ */ jsx43("span", { className: "ad-bar__name", children: label });
-  const grip = (side, h) => h && /* @__PURE__ */ jsx43("span", { "aria-hidden": h["aria-label"] ? void 0 : true, ...strip4(h), className: `ad-bar__grip ad-bar__grip--${side}` });
-  return /* @__PURE__ */ jsxs40(
-    Tag2,
-    {
-      ref: root,
-      ...hooks,
-      type: asButton ? "button" : void 0,
-      role: onOpen && !asButton ? "button" : hooks.role,
-      tabIndex: onOpen && !asButton ? 0 : hooks.tabIndex,
-      onClick: (e) => {
-        hooks.onClick?.(e);
-        if (e.target.closest(".ad-bar__grip")) return;
-        onOpen?.();
-      },
-      onKeyDown: (e) => {
-        hooks.onKeyDown?.(e);
-        if (onOpen && !asButton && e.target === e.currentTarget && (e.key === "Enter" || e.key === " ")) {
-          e.preventDefault();
-          onOpen();
-        }
-      },
-      "aria-current": selected || void 0,
-      title: tip ?? hooks.title,
-      className: cx("ad-bar", "ad-striped", code2 && "ad-bar--code", code2 && travel && "ad-bar--travel", code2 && dim && !dayGiven && !billing && "ad-bar--dim", day && `ad-bar--day-${day}`, code2 && billing && billing !== "plain" && `ad-bar--bill-${billing}`, labelOutside === "never" && "ad-bar--keep-in", clip && "ad-bar--clip", labelOutside === "never" && cramped && "ad-bar--name-gone", labelOutside === "before" && "ad-bar--label-before", plain && !!paint["--ad-bar"] && "ad-bar--hued", plain && !unconfirmed && !deal && !backup && "ad-bar--confirmed", unconfirmed && "ad-bar--unconfirmed", deal && "ad-bar--deal", backup && "ad-bar--backup", thin && "ad-bar--thin", outside && "ad-bar--label-outside", selected && "ad-bar--selected", late && "ad-bar--late", dense && "ad-bar--dense", fade && `ad-bar--fade-${fade}`, labelHidden && "ad-bar--label-hidden", className),
-      style: { ...style, ...paint, ...labelInset ? { ["--ad-label-in"]: `${Math.max(0, labelInset)}px` } : {}, ...fade && fadeStart != null ? { ["--ad-fade-start"]: `${Math.max(0, fadeStart)}px` } : {}, ...fade && fadeEnd != null ? { ["--ad-fade-end"]: `${Math.max(0, fadeEnd)}px` } : {} },
-      children: [
-        fade && /* @__PURE__ */ jsx43("span", { className: "ad-bar__ground", "aria-hidden": "true" }),
-        (fade === "start" || fade === "both") && /* @__PURE__ */ jsx43(Envelope, { side: "start" }),
-        (fade === "end" || fade === "both") && /* @__PURE__ */ jsx43(Envelope, { side: "end" }),
-        grip("start", ends?.start),
-        startLabel && /* @__PURE__ */ jsx43("span", { className: "ad-bar__end ad-bar__end--start", children: startLabel }),
-        /* @__PURE__ */ jsxs40("span", { className: "ad-bar__label", children: [
-          /* @__PURE__ */ jsx43(DeptGlyph, { hue: color }),
-          lead,
-          clip ? /* @__PURE__ */ jsxs40("span", { className: "ad-bar__words", children: [
-            name,
-            detail != null && /* @__PURE__ */ jsx43("span", { className: "ad-bar__detail", children: detail })
-          ] }) : name,
-          suffix != null && /* @__PURE__ */ jsx43("span", { className: "ad-bar__suffix", "aria-hidden": suffixFits ? void 0 : true, children: suffix })
-        ] }),
-        children,
-        outside && /* @__PURE__ */ jsx43("span", { className: "ad-bar__outside", children: name }),
-        endLabel && /* @__PURE__ */ jsx43("span", { className: "ad-bar__end ad-bar__end--end", children: endLabel }),
-        grip("end", ends?.end)
-      ]
-    }
-  );
-}
-function BarMarker({ kind, at, due, today, done, labels: l = {} }) {
-  const late = kind === "review" && !done && due instanceof Date && today instanceof Date && daysBetween(today, due) < 0;
-  const word = kind === "review" ? l.review ?? "Review date" : l.deadline ?? "Due date";
-  const label = late ? `${word} ${l.passed ?? "passed"}` : word;
-  return /* @__PURE__ */ jsx43("span", { className: cx("ad-bar-marker", late && "ad-bar-marker--late"), style: { left: `clamp(calc(var(--icon-md) / 2), ${Math.max(0, Math.min(1, at)) * 100}%, calc(100% - var(--icon-md) / 2))` }, role: "img", "aria-label": label, title: label, children: /* @__PURE__ */ jsx43(Icon, { name: kind === "review" ? "eye" : "paper-plane-tilt", fill: true }) });
-}
-function DeliverableBar({ parts, ...props }) {
-  if (!parts) return /* @__PURE__ */ jsx43(DeliverableRow, { ...props });
-  const { expanded, label } = props;
-  const clamp = (n) => Math.max(0, Math.min(1, Number.isFinite(n) ? n : 0));
-  return /* @__PURE__ */ jsxs40("div", { className: "ad-deliverable-group", children: [
-    /* @__PURE__ */ jsx43(DeliverableRow, { ...props, expandable: true }),
-    expanded && /* @__PURE__ */ jsx43("div", { className: "ad-deliverable__parts", role: "list", "aria-label": typeof label === "string" ? label : void 0, children: parts.map((p) => {
-      const from = clamp(p.start);
-      const to = Math.max(from, clamp(p.end));
-      return /* @__PURE__ */ jsx43("div", { role: "listitem", className: "ad-deliverable__part", children: /* @__PURE__ */ jsx43("div", { className: "ad-deliverable__part-span", style: { marginLeft: `${from * 100}%`, width: `${(to - from) * 100}%` }, children: /* @__PURE__ */ jsx43(Bar, { thin: true, label: String(p.label), children: p.markers.map((m, i) => /* @__PURE__ */ jsx43(BarMarker, { ...m }, i)) }) }) }, p.id);
-    }) })
-  ] });
-}
-function DeliverableRow({ lead, status, showStatus, statusLabel, markers: given, expandable, expanded, onToggle, toggleLabel = "Show parts", className, ...bar }) {
-  const done = status === "good";
-  const row = useRef28(null);
-  const [marksOff, setMarksOff] = useState25(null);
-  const onCramped = (c) => {
-    const width = row.current?.clientWidth ?? 0;
-    if (c && marksOff === null && given.length) setMarksOff(width);
-  };
-  useLayoutEffect9(() => {
-    const el = row.current;
-    if (!el || marksOff === null || typeof ResizeObserver === "undefined") return;
-    const ro = new ResizeObserver(() => {
-      if (el.clientWidth > marksOff + 1) setMarksOff(null);
-    });
-    ro.observe(el);
-    return () => ro.disconnect();
-  }, [marksOff]);
-  const markers = marksOff === null ? given : [];
-  const ats = markers.map((m) => Math.max(0, Math.min(1, m.at))).sort((a, b) => a - b);
-  const leading = ats.filter((a) => a < LEAD_AT).length;
-  const cap = ats.find((a) => a >= LEAD_AT);
-  const style = {
-    ...bar.style,
-    ...leading ? { ["--ad-label-in"]: `calc(var(--icon-md) * ${leading} + var(--space-2))` } : {},
-    ...cap !== void 0 ? { ["--ad-label-max"]: `calc(${(cap * 100).toFixed(2)}% - var(--icon-md) - var(--space-2) - var(--space-2) * 2)` } : {}
-  };
-  return /* @__PURE__ */ jsxs40("div", { ref: row, className: cx("ad-deliverable", expandable && "ad-deliverable--expandable", marksOff !== null && "ad-deliverable--no-marks", className), style, children: [
-    expandable && /* @__PURE__ */ jsx43("button", { type: "button", className: "ad-deliverable__caret", "aria-expanded": !!expanded, "aria-label": toggleLabel, onClick: onToggle, children: /* @__PURE__ */ jsx43(Icon, { name: "caret-right", size: "sm", className: cx("ad-deliverable__chevron", expanded && "ad-is-open") }) }),
-    /* @__PURE__ */ jsx43(Bar, { ...bar, style: void 0, onCramped, lead: /* @__PURE__ */ jsxs40(Fragment21, { children: [
-      showStatus ? /* @__PURE__ */ jsx43("span", { role: "img", "aria-label": statusLabel, className: "ad-deliverable__status", children: /* @__PURE__ */ jsx43(Dot, { tone: status }) }) : /* @__PURE__ */ jsx43("span", { className: "ad-sr", children: statusLabel }),
-      lead
-    ] }), children: markers.map((m, i) => /* @__PURE__ */ jsx43(BarMarker, { done, ...m }, i)) })
-  ] });
-}
-var LEAD_AT = 0.12;
-function Lanes({ children, marks, ariaLabel, nameWidth, className }) {
-  const box = useRef28(null);
-  const [fit, setFit] = useState25(null);
-  useLayoutEffect9(() => {
-    const el = box.current;
-    if (!el || nameWidth !== "fit") return;
-    const measure = () => {
-      let w = 0;
-      el.querySelectorAll(".ad-lane__name").forEach((n) => {
-        const pad = parseFloat(getComputedStyle(n).paddingRight) || 0;
-        const kid = n.firstElementChild;
-        w = Math.max(w, (kid ? kid.scrollWidth : n.scrollWidth - pad) + pad);
-      });
-      setFit((was) => was === Math.ceil(w) ? was : Math.ceil(w));
-    };
-    measure();
-    if (typeof ResizeObserver === "undefined") return;
-    const ro = new ResizeObserver(measure);
-    ro.observe(el);
-    return () => ro.disconnect();
-  });
-  return /* @__PURE__ */ jsxs40("div", { ref: box, className: cx("ad-lanes", className), role: ariaLabel ? "group" : void 0, "aria-label": ariaLabel, style: fit != null ? { ["--ad-lane-name"]: `${fit}px` } : void 0, children: [
-    children,
-    marks && /* @__PURE__ */ jsx43("div", { className: "ad-lanes__marks", "aria-hidden": "true", children: marks })
-  ] });
-}
-function Lane({ name, children, tall, laneProps }) {
-  const { className: _c, style: _s, ...hooks } = laneProps ?? {};
-  return /* @__PURE__ */ jsxs40("div", { ...hooks, className: cx("ad-lane", tall && "ad-lane--tall"), children: [
-    /* @__PURE__ */ jsx43("div", { className: "ad-lane__name", children: name }),
-    /* @__PURE__ */ jsx43("div", { className: "ad-lane__chart", children })
-  ] });
-}
-function Milestone({ label, past, unconfirmed, opening, ariaLabel, onOpen }) {
-  const Tag2 = onOpen ? "button" : "span";
-  return /* @__PURE__ */ jsxs40(Tag2, { type: onOpen ? "button" : void 0, onClick: onOpen, "aria-label": ariaLabel, className: cx("ad-milestone", past && "ad-milestone--past", unconfirmed && "ad-milestone--unconfirmed"), children: [
-    opening ? /* @__PURE__ */ jsx43("span", { className: "ad-milestone__burst", "aria-hidden": "true", children: "\u2733" }) : /* @__PURE__ */ jsx43("span", { className: "ad-milestone__diamond ad-diamond", "aria-hidden": "true" }),
-    /* @__PURE__ */ jsx43("span", { className: "ad-milestone__label", children: label })
-  ] });
-}
-function TodayLine({ cap = true, word, style, label = "Today" }) {
-  return /* @__PURE__ */ jsxs40("div", { className: "ad-today", style, role: "img", "aria-label": label, children: [
-    word && /* @__PURE__ */ jsx43("span", { className: "ad-today__word", "aria-hidden": "true", children: word }),
-    cap && /* @__PURE__ */ jsx43(RegMark, {})
-  ] });
-}
-function RegMark() {
-  return /* @__PURE__ */ jsxs40("svg", { className: "ad-regmark", viewBox: "0 0 16 16", "aria-hidden": "true", children: [
-    /* @__PURE__ */ jsx43("circle", { cx: "8", cy: "8", r: "5", fill: "none", stroke: "currentColor", strokeWidth: "1" }),
-    /* @__PURE__ */ jsx43("path", { d: "M8 0v16M0 8h16", stroke: "currentColor", strokeWidth: "1" })
-  ] });
-}
-function PastHatch({ style, away }) {
-  return /* @__PURE__ */ jsx43("div", { className: away ? "ad-past ad-past--away" : "ad-past", style, "aria-hidden": "true" });
-}
-function Clash({ children, className }) {
-  return /* @__PURE__ */ jsx43("div", { className: cx("ad-clash", className), children });
-}
-function OverMark({ left, width, amount, label, "aria-label": ariaLabel, markProps }) {
-  const hooks = strip4(markProps);
-  const read2 = ariaLabel ?? (typeof label === "string" ? label : void 0);
-  const shade = Number.isFinite(amount) ? Math.min(1, Math.max(0, amount)) : void 0;
-  return /* @__PURE__ */ jsx43(
-    "span",
-    {
-      role: read2 ? "img" : void 0,
-      "aria-hidden": read2 ? void 0 : true,
-      title: typeof label === "string" && label ? label : read2,
-      ...hooks,
-      "aria-label": read2,
-      className: "ad-over-mark",
-      style: { left: `${Number.isFinite(left) ? left : 0}px`, width: `${Math.max(1, Number.isFinite(width) ? width : 1)}px`, ...shade != null ? { ["--ad-over"]: shade } : {} }
-    }
-  );
-}
-var px = (n, min = 0) => `${Math.max(min, Number.isFinite(n) ? n : min)}px`;
-function DragBand({ left, width, inLane }) {
-  return /* @__PURE__ */ jsx43("span", { "aria-hidden": "true", className: cx("ad-drag-band", inLane && "ad-drag-band--lane"), style: { left: px(left), width: px(width, 1) } });
-}
-function GroupBand({ children, bandProps }) {
-  return /* @__PURE__ */ jsx43("div", { ...strip4(bandProps), className: "ad-group-band", children });
-}
-function GroupBandName({ children, sub }) {
-  return /* @__PURE__ */ jsxs40("span", { className: "ad-group-band__name", children: [
-    /* @__PURE__ */ jsx43("span", { className: "ad-group-band__title", children }),
-    sub != null && /* @__PURE__ */ jsx43("span", { className: "ad-group-band__sub", children: sub })
-  ] });
-}
-function LaneWash({ left, width, colour, edge, label, unconfirmed }) {
-  const drawn = useNamedColour(colour);
-  return /* @__PURE__ */ jsx43(
-    "span",
-    {
-      "aria-hidden": "true",
-      "data-coloured": drawn ? true : void 0,
-      className: cx("ad-lane-wash", edge && "ad-lane-wash--edge", edge && unconfirmed && "ad-lane-wash--unconfirmed"),
-      style: { left: px(left), width: px(width, 1), ...drawn ? { ["--ad-wash"]: drawn } : {} },
-      children: edge && label && /* @__PURE__ */ jsx43("span", { className: "ad-lane-wash__label", children: label })
-    }
-  );
-}
-function PresenceSwatch({ colour, away }) {
-  const c = useNamedColour(colour);
-  return /* @__PURE__ */ jsx43("span", { "aria-hidden": "true", className: cx("ad-chart-key__presence", away && "ad-chart-key__presence--away"), style: c ? { ["--ad-where"]: c } : void 0 });
-}
-function OffscreenStart({ date, side = "start" }) {
-  return side === "end" ? /* @__PURE__ */ jsxs40("span", { className: "ad-offscreen ad-note-data ad-offscreen--end", children: [
-    date,
-    " ",
-    /* @__PURE__ */ jsx43("span", { "aria-hidden": "true", children: ">" })
-  ] }) : /* @__PURE__ */ jsxs40("span", { className: "ad-offscreen ad-note-data", children: [
-    /* @__PURE__ */ jsx43("span", { "aria-hidden": "true", children: "<" }),
-    " ",
-    date
-  ] });
-}
-var KEY_MARKS = /* @__PURE__ */ new Set(["confirmed", "hatched", "deal", "backup", "clash", "moment"]);
-function ChartKey({ items, ariaLabel = "Key" }) {
-  return /* @__PURE__ */ jsx43("div", { className: "ad-chart-key", role: "group", "aria-label": ariaLabel, children: items.map((it, i) => {
-    const swatch = typeof it.mark === "string" && KEY_MARKS.has(it.mark) ? /* @__PURE__ */ jsx43("span", { "aria-hidden": "true", className: `ad-chart-key__swatch ad-chart-key__swatch--${it.mark}` }) : it.mark && typeof it.mark === "object" && "code" in it.mark ? (() => {
-      const m = it.mark;
-      return /* @__PURE__ */ jsx43("span", { "aria-hidden": "true", className: cx("ad-bar", "ad-bar--code", "ad-chart-key__code", m.day && `ad-bar--day-${m.day}`, m.day === "travel" && "ad-bar--travel", m.billing && m.billing !== "plain" && `ad-bar--bill-${m.billing}`), children: m.code });
-    })() : it.mark && typeof it.mark === "object" && "presence" in it.mark ? /* @__PURE__ */ jsx43(PresenceSwatch, { colour: it.mark.presence, away: it.mark.away }) : /* @__PURE__ */ jsx43("span", { "aria-hidden": "true", className: "ad-chart-key__mark", children: it.mark });
-    const { className: _c, style: _s, ...hooks } = it.itemProps ?? {};
-    return it.onPress ? /* @__PURE__ */ jsxs40("button", { type: "button", ...hooks, className: "ad-chart-key__item ad-chart-key__item--press", onClick: (e) => {
-      hooks.onClick?.(e);
-      it.onPress();
-    }, children: [
-      swatch,
-      it.label
-    ] }, i) : /* @__PURE__ */ jsxs40("span", { ...hooks, className: "ad-chart-key__item", children: [
-      swatch,
-      it.label
-    ] }, i);
-  }) });
+  return /* @__PURE__ */ jsx43("div", { className: "ad-selection-bar-room", "aria-hidden": "true" });
 }
 
 // src/components/Timeline/Ruler.tsx

@@ -2575,7 +2575,7 @@ button.ad-row__name:focus-visible { outline: none; box-shadow: var(--ring-select
 .ad-table--fixed td { overflow: hidden; text-overflow: ellipsis; }
 /* The tick column keeps its own width under `fixed`: never cut to "☑…". */
 .ad-table--fixed .ad-table__pick { box-sizing: border-box; width: calc(var(--check-size) + 2 * var(--space-2)); overflow: visible; text-overflow: clip; }
-.ad-table th[scope="col"] { position: sticky; top: 0; z-index: 1; height: calc(var(--h-strip) - var(--border-w)); padding: 0 var(--space-2); text-align: left; white-space: nowrap; background: var(--ad-under); border-bottom: var(--border-w) solid var(--border); font: var(--type-heading); text-transform: uppercase; color: var(--text-secondary); letter-spacing: var(--track-caps); }
+.ad-table th[scope="col"] { position: sticky; top: 0; z-index: 1; height: calc(var(--h-strip) - var(--border-w)); padding: 0 var(--space-2); text-align: left; white-space: nowrap; background: var(--ad-under); border-bottom: var(--border-w) solid var(--line-strong); font: var(--type-heading); text-transform: uppercase; color: var(--text-secondary); letter-spacing: var(--track-caps); }
 .ad-table th[aria-sort="ascending"], .ad-table th[aria-sort="descending"] { color: var(--text-primary); }
 /* A table's row is a timeline's row, h-strip 30 with its hairline inside it (the same pitch), its heading and total rows too; what sits in a cell takes the row size (a field, a
    select, a date box at h-btn-row; a button through the body's ButtonSizeScope), so nothing in a cell makes its row taller. */
@@ -2618,13 +2618,14 @@ button.ad-row__name:focus-visible { outline: none; box-shadow: var(--ring-select
 .ad-table__frozen--start { --ad-held: 0px; left: var(--ad-held); }
 .ad-table__frozen--end { right: 0; }
 .ad-table th[scope="col"].ad-table__frozen--start, .ad-table th[scope="col"].ad-table__frozen--end { z-index: 2; }
-/* A group heading row: the section-label look, one hairline under. */
-.ad-table__fold { display: inline-flex; align-items: center; gap: var(--space-2); margin: 0; padding: 0; border: 0; background: transparent; font: var(--type-heading); text-transform: uppercase; color: var(--text-secondary); cursor: pointer; letter-spacing: var(--track-caps); }
-.ad-table__fold:hover { color: var(--accent); }
+/* A group heading row is the timeline's band (Grids, 2026-11-13): the band plane (bg-band) a row tall, its name GroupBandName
+   (Title at text-base 14 in the primary ink), its rows' hairline under it. The fold is the name itself with a chevron before it. */
+.ad-table__fold { display: inline-flex; align-items: center; gap: var(--space-2); min-width: 0; margin: 0; padding: 0; border: 0; background: transparent; font: inherit; color: var(--text-primary); cursor: pointer; }
 .ad-table__fold:focus-visible { outline: none; box-shadow: var(--ring-select); border-radius: var(--radius-page); }
 .ad-table__chevron--shut { transform: rotate(-90deg); }
 .ad-table__fold--row { margin-right: var(--space-2); vertical-align: middle; }
-.ad-table__group th { height: var(--h-btn); padding: var(--space-4) var(--space-2) 0; text-align: left; border-bottom: var(--border-w) solid var(--border); font: var(--type-heading); text-transform: uppercase; color: var(--text-secondary); letter-spacing: var(--track-caps); }
+.ad-table__group th { height: calc(var(--h-strip) - var(--border-w)); padding: 0 var(--space-2); text-align: left; background: var(--bg-band); border-bottom: var(--border-w) solid var(--border); color: var(--text-primary); }
+.ad-table__fold:hover .ad-group-band__title { color: var(--accent); }
 /* A child row: indented one step per level, hung on the list's own elbow (one elbow build-wide): one trunk down the parent's
    children, a 16 arm into each, its turn rounded, the trunk ending at the last child. */
 .ad-table th.ad-table__name { --ad-depth: 0; padding-left: calc(var(--space-2) + var(--ad-depth) * var(--space-8)); }
