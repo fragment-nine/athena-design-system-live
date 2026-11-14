@@ -1205,7 +1205,7 @@ button.ad-year__day:focus-visible { outline: none; box-shadow: var(--ring-select
 .ad-card--tile { padding: var(--space-2) var(--space-3) var(--space-3); }
 /* A dashboard widget is a section, a place, not a thing (ruled 2026-11-09): on the section's light fill, 12 above its heading and 16
    round the rest, with no edge, no glass and no lift; what is held inside paints the fill laid solid. */
-.ad-card.ad-card--widget { --ad-under: var(--bg-section-solid); --ad-inset: var(--bg-section); padding: var(--space-2) var(--space-4) var(--space-4); border: 0; border-top: var(--border-w) solid var(--line-strong); border-radius: 0; background: var(--bg-section); box-shadow: none; counter-increment: widget; }
+.ad-card.ad-card--widget { --ad-under: var(--bg-section-solid); --ad-inset: var(--bg-section); padding: var(--space-2) var(--space-4) var(--space-4); border: 0; border-top: var(--border-w) solid var(--border); border-radius: 0; background: var(--bg-section); box-shadow: none; counter-increment: widget; }
 .ad-card.ad-card--widget::before { display: none; }
 .ad-card.ad-card--widget.ad-card--opens:hover { background: var(--bg-section); }
 /* The site's small index on each piece of work: 01.01, bottom right of a widget, in the quiet ink. */
@@ -2447,22 +2447,22 @@ button.ad-row__name:focus-visible { outline: none; box-shadow: var(--ring-select
 
 /* src/components/Section/Section.css */
 /* Section and SectionFrame: the one region every screen is built from. The look of a section (a quiet grey square behind it,
-   under one strong rule) lives here and nowhere else; ListSection and FormSection carry .ad-section too. */
+   under one hairline) lives here and nowhere else; ListSection and FormSection carry .ad-section too. */
 /* The frame: a screen's sections, one gap apart (gap-section), the page's whole width. */
 .ad-section-frame { display: flex; flex-direction: column; gap: var(--gap-section); min-width: 0; }
 /* The section: a place, not a thing. Every section of a frame, and every section laid straight in the page's work, sits on a
-   quiet grey lift (bg-section), darker than a card's glass, square-cornered, the strong rule along its top edge, with no other
+   quiet grey lift (bg-section), darker than a card's glass, square-cornered, a hairline along its top edge (the brightness of every other hairline on the screen), with no other
    edge and no shadow, so it shows where it starts and ends and never reads as a card. What is held inside (a table's heading row,
    a pinned ruler, an opaque names column) paints the lift laid solid (bg-section-solid), so it reads as the lift, never as a
    lighter or darker bar; a tile inside is a tone lighter. A section inside a card or another section takes no lift
    (the card's hairline between its sections is the card's). */
 .ad-section { display: flex; flex-direction: column; min-width: 0; box-sizing: border-box; position: relative; }
-:is(.ad-section-frame, .ad-frame__work) .ad-section:not(.ad-card .ad-section, .ad-section .ad-section) { --ad-under: var(--bg-section-solid); --ad-inset: var(--bg-section); padding: var(--ad-section-top) var(--space-4) var(--space-4); border-top: var(--border-w) solid var(--line-strong); background: var(--bg-section); }
+:is(.ad-section-frame, .ad-frame__work) .ad-section:not(.ad-card .ad-section, .ad-section .ad-section) { --ad-under: var(--bg-section-solid); --ad-inset: var(--bg-section); padding: var(--ad-section-top) var(--space-4) var(--space-4); border-top: var(--border-w) solid var(--border); background: var(--bg-section); }
 /* 8 between the rule and a heading; a section with no heading (one table, one timeline, a whole screen's work) has 16 all round. */
 .ad-section { --ad-section-top: var(--space-2); }
 .ad-section[data-section="bare"] { --ad-section-top: var(--space-4); }
 :is(.ad-section-frame, .ad-frame__work) .ad-section .ad-card:not(.ad-card--widget) { background: var(--bg-raised); }
-/* A labelled group outside the page's work and any frame (a form's own in a pop-over or a pane) has no lift to stand on: the strong rule sits over its heading. On a lift the rule is the lift's own top edge, so the heading draws none. */
+/* A labelled group outside the page's work and any frame (a form's own in a pop-over or a pane) has no lift to stand on: the strong rule sits over its heading. On a lift the line is the lift's own top edge, a hairline, so the heading draws none. */
 .ad-section > .ad-group-heading--rule-above { border-top: var(--border-w) solid var(--line-strong); padding-top: var(--space-2); }
 :is(.ad-section-frame, .ad-frame__work) .ad-section > .ad-group-heading--rule-above, .ad-card .ad-section > .ad-group-heading--rule-above, .ad-section .ad-section > .ad-group-heading--rule-above { border-top: 0; padding-top: 0; }
 /* The section label: a section on its lift is named in the Title rung at the rows' size, in caps and white, a step louder than
