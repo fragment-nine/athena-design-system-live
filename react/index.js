@@ -2809,7 +2809,7 @@ function FilterTag({ axis, value, icon, face, onRemove, removeLabel = "Remove fi
   return /* @__PURE__ */ jsxs13("span", { className: cx("ad-filter-tag", size === "row" && "ad-filter-tag--row", className), children: [
     (face || icon != null) && /* @__PURE__ */ jsx16("span", { className: "ad-filter-tag__icon", "aria-hidden": "true", children: face ? /* @__PURE__ */ jsx16(Avatar, { name: face.name, src: face.src, size: "sm", decorative: true }) : slotIcon(icon, { size: "sm" }) }),
     axis != null && /* @__PURE__ */ jsx16("span", { className: "ad-filter-tag__axis", children: axis }),
-    /* @__PURE__ */ jsx16("span", { className: "ad-filter-tag__value", children: value }),
+    /* @__PURE__ */ jsx16("span", { className: "ad-filter-tag__value ad-clamp-line", title: typeof value === "string" ? value : void 0, children: value }),
     /* @__PURE__ */ jsx16(ButtonSizeScope, { size: "row", children: /* @__PURE__ */ jsx16(IconButton, { className: "ad-filter-tag__remove", label: removeLabel, onClick: onRemove, children: /* @__PURE__ */ jsx16(Icon, { job: "x", size: "sm" }) }) })
   ] });
 }

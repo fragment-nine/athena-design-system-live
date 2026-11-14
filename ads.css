@@ -2405,11 +2405,11 @@ button.ad-row__name:focus-visible { outline: none; box-shadow: var(--ring-select
 /* The date line's other facts: repeat, the past-deadline flag, the role, the deliverable. */
 .ad-row__fact { display: inline-flex; align-items: center; gap: var(--space-1); white-space: nowrap; color: var(--text-secondary); }
 /* A detail line too long for the row: the date and department stay whole; the role and the deliverable shrink and end in "…" (their
- whole words in the hover), so nothing runs under the faces. Two dates too wide for the row, plain or pressable: the due date drops under the review date, never cut. */
+ whole words in the hover), so nothing runs under the faces: they give way first, and all the way, before a date moves. Two dates still too wide for the row, plain or pressable: the due date drops under the review date, never cut, and the pair is never narrower than its wider date, so a date never lies over what follows it. */
 .ad-row__meta { overflow: hidden; }
 .ad-row__meta > * { flex-shrink: 0; }
-.ad-row__meta > .ad-row__fact--cut, .ad-row__meta > .ad-row__press:has(.ad-row__fact--cut) { flex-shrink: 1; min-width: 0; }
-.ad-row__meta > :is(.ad-item-dates, :has(.ad-item-dates)), .ad-row__meta .ad-item-dates { flex-shrink: 1; min-width: 0; }
+.ad-row__meta > .ad-row__fact--cut, .ad-row__meta > .ad-row__press:has(.ad-row__fact--cut) { flex-shrink: 1000; min-width: 0; }
+.ad-row__meta > :is(.ad-item-dates, :has(.ad-item-dates)), .ad-row__meta .ad-item-dates { flex-shrink: 1; min-width: min-content; }
 .ad-row__meta .ad-item-dates { flex-wrap: wrap; row-gap: var(--space-hair); }
 .ad-row__press:has(.ad-row__fact--cut) { overflow: hidden; }
 .ad-row__fact--cut { min-width: 0; max-width: 100%; }
@@ -2703,7 +2703,9 @@ button.ad-row__name:focus-visible { outline: none; box-shadow: var(--ring-select
 .ad-tag { display: inline-flex; align-items: center; justify-content: center; box-sizing: border-box; height: var(--icon-lg); padding: 0 var(--space-1); border-radius: var(--radius-mark); box-shadow: inset 0 0 0 var(--border-w) var(--line-strong); font: var(--type-data); font-size: var(--text-xs); line-height: var(--lh-none); text-transform: uppercase; color: var(--text-secondary); white-space: nowrap; }
 
 /* An active filter (the Labels card): filled one tone lighter, 28 tall; the axis grey, the value white, its x at the end. */
-.ad-filter-tag { display: inline-flex; align-items: center; gap: var(--space-2); box-sizing: border-box; height: var(--h-btn-bar); padding: 0 var(--space-2) 0 var(--space-3); border-radius: var(--radius-page); background: var(--bg-raised); font: var(--type-name); color: var(--text-primary); white-space: nowrap; }
+.ad-filter-tag { display: inline-flex; align-items: center; gap: var(--space-2); box-sizing: border-box; height: var(--h-btn-bar); padding: 0 var(--space-2) 0 var(--space-3); border-radius: var(--radius-page); background: var(--bg-raised); font: var(--type-name); color: var(--text-primary); white-space: nowrap; min-width: 0; max-width: 100%; }
+/* A value too long for its line ends in an ellipsis before the x (the value wears ad-clamp-line), its whole words on hover; the icon, the axis and the x keep their size. */
+.ad-filter-tag > :not(.ad-filter-tag__value) { flex: none; }
 /* The small form: the resolved row under the todo box (the Writing card), 24 tall, 12 type. */
 .ad-filter-tag--row { height: var(--h-btn-row); gap: var(--space-1); padding: 0 var(--space-1) 0 var(--space-2); }
 .ad-filter-tag__icon { display: inline-flex; color: var(--text-muted); }
@@ -2712,7 +2714,7 @@ button.ad-row__name:focus-visible { outline: none; box-shadow: var(--ring-select
 
 /* Unread: a small white dot after the word ("Notes ·"), never a count. */
 .ad-unread { display: inline-block; width: var(--dot-size); height: var(--dot-size); margin-left: var(--space-2); border-radius: var(--radius-round); background: var(--text-primary); vertical-align: middle; }
-.ad-active-filters { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-3); }
+.ad-active-filters { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-3); min-width: 0; max-width: 100%; }
 
 /* A note tag: words, not a code. */
 .ad-tag--note { font: var(--type-detail); color: var(--text-muted); }
