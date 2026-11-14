@@ -3654,7 +3654,7 @@ function useSectionFrame() {
   const f = useContext8(Ctx);
   return f ? { level: f.level, numbering: f.numbering } : null;
 }
-function SectionFrame({ children, level, numbering, filled, className, ...rest }) {
+function SectionFrame({ children, level, numbering, filled: _filled, className, ...rest }) {
   const parent = useContext8(Ctx);
   const frameId = useId7();
   const value = {
@@ -3662,7 +3662,7 @@ function SectionFrame({ children, level, numbering, filled, className, ...rest }
     numbering: numbering ?? (parent ? "letters" : "numbers"),
     frameId
   };
-  return /* @__PURE__ */ jsx24(Ctx.Provider, { value, children: /* @__PURE__ */ jsx24("div", { ...rest, "data-section-frame": frameId, className: cx("ad-section-frame", filled && "ad-section-frame--filled", className), children }) });
+  return /* @__PURE__ */ jsx24(Ctx.Provider, { value, children: /* @__PURE__ */ jsx24("div", { ...rest, "data-section-frame": frameId, className: cx("ad-section-frame", className), children }) });
 }
 var Section = forwardRef6(function Section2({ title, day, beside, children, className, bodyId, rule, needsYou, lead, end, help, collapsible, collapsed, onToggle, onMore, moreLabel = "More", ...rest }, ref) {
   const frame = useContext8(Ctx);
