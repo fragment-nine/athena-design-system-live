@@ -278,6 +278,7 @@
   --h-btn-row: 24px;
   --h-btn-bar: 28px;
   --pad-header-actions: 3px;
+  --gap-section: 16px;
   --h-btn: 32px;
   --h-field: var(--h-btn);
   --icon-sm: 14px;
@@ -1646,7 +1647,7 @@ button.ad-contents__button:focus-visible { outline: none; box-shadow: var(--ring
 .ad-frame__page { --ad-page-top: var(--space-2); --ad-page-end: var(--space-8); --ad-page-start: var(--space-6); flex: 1; min-width: 0; display: flex; flex-direction: column; gap: var(--space-2); padding: var(--ad-page-top) var(--ad-page-end) var(--space-8) var(--ad-page-start); }
 .ad-frame__page > .ad-toolbar { margin-bottom: var(--space-2); }
 /* A ground inside a card or a section (a names column that scrolls sideways needs an opaque cell) is the tone of what it sits on, not the page's black. */
-.ad-card .ad-ground, .ad-section-frame .ad-section .ad-ground { background-color: var(--ad-under); background-image: none; }
+.ad-card .ad-ground, :is(.ad-section-frame, .ad-frame__work) .ad-section .ad-ground { background-color: var(--ad-under); background-image: none; }
 /* The slots. The toolbar row, h-row tall, 16 over the work (the page's 8 and its own 8), only while the screen has something for it;
  with no row the work starts 16 under the header. The work fills what is left, the page's whole width. */
 .ad-frame__toolbar { display: flex; align-items: center; flex: none; min-height: var(--h-row); margin-bottom: var(--space-2); }
@@ -1771,7 +1772,7 @@ button.ad-contents__button:focus-visible { outline: none; box-shadow: var(--ring
 
 /* src/components/List/List.css */
 /* List, ListSection, DayHeading, AddRow */
-.ad-list { display: flex; flex-direction: column; gap: var(--space-8); }
+.ad-list { display: flex; flex-direction: column; gap: var(--gap-section); }
 .ad-list-section { display: flex; flex-direction: column; }
 /* One hairline, never two: a section's last row draws none, so the next label's line stands alone. */
 .ad-list-section__body > .ad-row:last-child, .ad-list-section__body > .ad-add-row:last-child { border-bottom: 0; }
@@ -2443,19 +2444,22 @@ button.ad-row__name:focus-visible { outline: none; box-shadow: var(--ring-select
 /* src/components/Section/Section.css */
 /* Section and SectionFrame: the one region every screen is built from. The look of a section (a light fill behind it, with no
    rule, edge or shadow) lives here and nowhere else; ListSection and FormSection carry .ad-section too. */
-/* The frame: a screen's sections, 32 apart, the page's whole width. */
-.ad-section-frame { display: flex; flex-direction: column; gap: var(--space-8); min-width: 0; }
-/* The section: a place, not a thing. Every section of a frame sits on a light fill, the plane a card's glass is made of, with no
+/* The frame: a screen's sections, one gap apart (gap-section), the page's whole width. */
+.ad-section-frame { display: flex; flex-direction: column; gap: var(--gap-section); min-width: 0; }
+/* The section: a place, not a thing. Every section of a frame, and every section laid straight in the page's work, sits on a light fill, the plane a card's glass is made of, with no
    edge and no shadow, so it shows where it ends as well as where it starts and is still not a card. What is held inside (a table's
    heading row, a pinned ruler, an opaque names column) paints the fill laid solid (bg-float), so it reads as the fill, never as a
    lighter or darker bar; a tile inside is one tone lighter than the fill. A section inside a card or another section takes no fill
    (the card's hairline between its sections is the card's). */
 .ad-section { display: flex; flex-direction: column; min-width: 0; box-sizing: border-box; position: relative; }
-.ad-section-frame .ad-section:not(.ad-card .ad-section, .ad-section .ad-section) { --ad-under: var(--bg-float); --ad-inset: var(--bg-surface); padding: var(--space-3) var(--space-4) var(--space-4); border-radius: var(--radius-page); background: var(--bg-surface); }
-.ad-section-frame .ad-section .ad-card:not(.ad-card--widget) { background: var(--bg-raised); }
-/* A labelled group outside any frame (a list's or a form's own) has no fill to stand on: its heading keeps a strong rule over it. */
+:is(.ad-section-frame, .ad-frame__work) .ad-section:not(.ad-card .ad-section, .ad-section .ad-section) { --ad-under: var(--bg-float); --ad-inset: var(--bg-surface); padding: var(--ad-section-top) var(--space-4) var(--space-4); border-radius: var(--radius-page); background: var(--bg-surface); }
+/* 12 above a heading; a section with no heading (one table, one timeline, a whole screen's work) has 16 all round. */
+.ad-section { --ad-section-top: var(--space-3); }
+.ad-section[data-section="bare"] { --ad-section-top: var(--space-4); }
+:is(.ad-section-frame, .ad-frame__work) .ad-section .ad-card:not(.ad-card--widget) { background: var(--bg-raised); }
+/* A labelled group outside the page's work and any frame (a form's own in a pop-over or a pane) has no fill to stand on: its heading keeps a strong rule over it. */
 .ad-section > .ad-group-heading--rule-above { border-top: var(--border-w) solid var(--line-strong); padding-top: var(--space-2); }
-.ad-section-frame .ad-section > .ad-group-heading--rule-above, .ad-card .ad-section > .ad-group-heading--rule-above, .ad-section .ad-section > .ad-group-heading--rule-above { border-top: 0; padding-top: 0; }
+:is(.ad-section-frame, .ad-frame__work) .ad-section > .ad-group-heading--rule-above, .ad-card .ad-section > .ad-group-heading--rule-above, .ad-section .ad-section > .ad-group-heading--rule-above { border-top: 0; padding-top: 0; }
 /* The section label: a section on its fill is named in the caption voice a size up, Plex Mono caps, tracked, at the rows' size
    and white; a Dashboard widget's title is the same label (.ad-section-label). Inside a card or under another section the label
    stays the Heading rung at 12. The numeral before the name is the same type and the same ink as the name, so the pair read as one line. */

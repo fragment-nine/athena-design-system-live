@@ -3682,10 +3682,11 @@ var Section = forwardRef6(function Section2({ title, day, beside, children, clas
     if (!el) return;
     const wrap = el.closest("[data-section-frame]");
     if (!wrap || wrap.getAttribute("data-section-frame") !== frame.frameId) return;
-    const all = Array.from(wrap.querySelectorAll("[data-section]")).filter((s) => s.closest("[data-section-frame]") === wrap && s.getAttribute("data-section") !== "day");
+    const all = Array.from(wrap.querySelectorAll("[data-section]")).filter((s) => s.closest("[data-section-frame]") === wrap && s.getAttribute("data-section") === "");
     const next = all.indexOf(el);
     if (next !== index) setIndex(next);
   });
+  const bare = !day && title == null && lead == null && end == null && !onMore && !collapsible;
   const number = day ? void 0 : frame.numbering === "numbers" ? index + 1 : frame.numbering === "letters" ? String.fromCharCode(65 + index) : void 0;
   return /* @__PURE__ */ jsxs21(
     "section",
@@ -3696,7 +3697,7 @@ var Section = forwardRef6(function Section2({ title, day, beside, children, clas
         if (typeof ref === "function") ref(el);
         else if (ref) ref.current = el;
       },
-      "data-section": day ? "day" : "",
+      "data-section": day ? "day" : bare ? "bare" : "",
       "data-collapsed": collapsible ? String(shut) : void 0,
       className: cx("ad-section", className),
       children: [
@@ -3704,7 +3705,7 @@ var Section = forwardRef6(function Section2({ title, day, beside, children, clas
           /* @__PURE__ */ jsx24(DayHeading, { day: day.day, today: day.today, level: frame.level === 2 ? 2 : frame.level === 3 ? 3 : 4 }),
           beside,
           end != null && /* @__PURE__ */ jsx24("span", { className: "ad-section__day-end", children: end })
-        ] }) : /* @__PURE__ */ jsx24(GroupHeading, { number, level: frame.level, controls: collapsible ? body : void 0, rule, needsYou, lead, end: onMore ? /* @__PURE__ */ jsxs21(Fragment11, { children: [
+        ] }) : bare ? null : /* @__PURE__ */ jsx24(GroupHeading, { number, level: frame.level, controls: collapsible ? body : void 0, rule, needsYou, lead, end: onMore ? /* @__PURE__ */ jsxs21(Fragment11, { children: [
           end,
           /* @__PURE__ */ jsx24("button", { type: "button", className: "ad-card__more", onClick: onMore, children: moreLabel })
         ] }) : end, help, collapsible, collapsed: shut, onToggle: toggle, children: title }),
