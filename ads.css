@@ -2461,6 +2461,13 @@ button.ad-row__name:focus-visible { outline: none; box-shadow: var(--ring-select
 .ad-section-label, .ad-section:not(.ad-card .ad-section, .ad-section .ad-section) > .ad-group-heading :is(.ad-group-heading__title, .ad-group-heading__button) { font: var(--type-title); font-size: var(--text-base); text-transform: uppercase; letter-spacing: normal; }
 .ad-section-label, .ad-section:not(.ad-card .ad-section, .ad-section .ad-section) > .ad-group-heading .ad-group-heading__title { color: var(--text-primary); }
 .ad-section:not(.ad-card .ad-section, .ad-section .ad-section) > .ad-group-heading .ad-group-heading__numeral { font: var(--type-title); font-size: var(--text-base); font-variant-numeric: tabular-nums; color: inherit; }
+/* The filled section, on trial on one screen (2026-11-14): a frame with `filled` draws each of its sections on a light fill, the
+   plane a card's glass is made of, with no edge and no shadow: still a place, not a thing. The fill stands in for the strong rule,
+   so the section shows where it ends as well as where it starts. What is held inside paints the fill laid solid; a tile inside is
+   one tone lighter than the fill. */
+.ad-section-frame--filled .ad-section:not(.ad-card .ad-section, .ad-section .ad-section) { --ad-under: var(--bg-held); --ad-inset: var(--bg-surface); padding: var(--space-3) var(--space-4) var(--space-4); border-radius: var(--radius-page); background: var(--bg-surface); }
+.ad-section-frame--filled .ad-section:not(.ad-card .ad-section, .ad-section .ad-section) > .ad-group-heading--rule-above { border-top: 0; padding-top: 0; }
+.ad-section-frame--filled .ad-section .ad-card:not(.ad-card--widget) { background: var(--bg-raised); }
 /* The body: the section's groups, 16 apart. */
 .ad-section__body { display: flex; flex-direction: column; gap: var(--space-4); min-width: 0; }
 .ad-section__body[hidden] { display: none; }
