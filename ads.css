@@ -36,7 +36,7 @@
   --on-accent: #0d0d0d;
   --status-error: #cf5340;
   --status-error-ink: #fd7266;
-  --word-pill: #702624;
+  --word-pill: #672b28;
   --word-pill-ink: #ffffff;
   --status-warn: #fa9a1b;
   --status-good: #3cba55;
@@ -1587,8 +1587,8 @@ button.ad-card__name:focus-visible { outline: none; box-shadow: var(--ring-selec
 .ad-overlay-text__mirror { display: block; color: var(--text-primary); pointer-events: none; white-space: pre-wrap; overflow-wrap: anywhere; }
 .ad-overlay-text__placeholder { color: var(--text-muted); }
 .ad-overlay-text__field { position: absolute; inset: 0; box-sizing: border-box; width: 100%; height: 100%; min-width: 0; margin: 0; padding: 0; border: none; outline: none; background: transparent; color: transparent; caret-color: var(--text-primary); resize: none; overflow: hidden; font: inherit; white-space: pre-wrap; overflow-wrap: anywhere; }
-/* A piece drawn in the copy keeps the words' own width (the understood-word pill in place, as in TokenInput), so the caret stays on its letter. */
-.ad-overlay-text__mirror .ad-token { margin: 0; padding: 0; line-height: inherit; }
+/* A piece drawn in the copy keeps the words' own width (the understood-word pill gives up the room at its sides), so the caret stays on its letter. */
+.ad-overlay-text__mirror .ad-token { padding: 0; }
 
 .ad-form-actions__extras { display: inline-flex; align-items: center; gap: var(--space-2); }
 
@@ -3207,24 +3207,15 @@ button.ad-notification:focus-visible { outline: none; box-shadow: var(--ring-sel
 .ad-token-input__field:hover, .ad-token-input__field:focus-within { background: var(--bg-float); }
 :where(:root:not([data-ad-pointer])) .ad-token-input__field:has(.ad-token-input__box:focus-visible) { box-shadow: var(--ring-select); }
 .ad-token-input__lead { display: inline-flex; align-items: center; flex: none; }
-.ad-token-input__box { flex: 1; min-width: 0; box-sizing: border-box; padding: calc((var(--h-field) - var(--text-base) * var(--lh-tight)) / 2) 0; font: var(--type-name); line-height: var(--lh-tight); color: var(--text-primary); white-space: pre-wrap; outline: none; }
-.ad-token-input--query .ad-token-input__box { font: var(--type-data); font-size: var(--text-xs); color: var(--text-secondary); }
+/* The box's line is the body line (lh-normal), so a lit word's box is a whole line tall and one line is still the field's 32. The filter line is the same box in the same face. */
+.ad-token-input__box { flex: 1; min-width: 0; box-sizing: border-box; padding: calc((var(--h-field) - var(--text-base) * var(--lh-normal)) / 2) 0; font: var(--type-name); line-height: var(--lh-normal); color: var(--text-primary); white-space: pre-wrap; outline: none; }
 .ad-token-input__box[data-empty]::before { content: attr(data-placeholder); color: var(--text-muted); pointer-events: none; }
-/* In the box the pill is drawn in place behind the letters: no padding and no margin, so the
- words keep their place and neighbours keep a clear gap. */
-.ad-token-input__box .ad-token { margin: 0; padding: 0; line-height: var(--lh-tight); }
 /* The filter box's suggestions span the box. */
 .ad-token-input--query .ad-picklist { width: 100%; }
 .ad-token-input__resolved { display: flex; flex-wrap: wrap; gap: var(--space-2); }
-/* The understood-word pill, Athena's: word-pill crimson behind word-pill-ink letters, drawn as background layers
- (a full-height middle from word-pill-edge, a band word-pill-inset in from each side, four round corners) so nothing is clipped. */
-.ad-token { display: inline-block; padding: 0 var(--space-2); border-radius: 0; color: var(--word-pill-ink); font: inherit; line-height: var(--lh-normal); white-space: nowrap; background:
-    linear-gradient(var(--word-pill), var(--word-pill)) var(--word-pill-edge) 0 / calc(100% - 2 * var(--word-pill-edge)) 100% no-repeat,
-    linear-gradient(var(--word-pill), var(--word-pill)) var(--word-pill-inset) var(--word-pill-corner) / calc(100% - 2 * var(--word-pill-inset)) calc(100% - 2 * var(--word-pill-corner)) no-repeat,
-    radial-gradient(circle at 100% 100%, var(--word-pill) var(--word-pill-r), transparent var(--word-pill-corner)) var(--word-pill-inset) 0 / var(--word-pill-corner) var(--word-pill-corner) no-repeat,
-    radial-gradient(circle at 0 100%, var(--word-pill) var(--word-pill-r), transparent var(--word-pill-corner)) calc(100% - var(--word-pill-inset)) 0 / var(--word-pill-corner) var(--word-pill-corner) no-repeat,
-    radial-gradient(circle at 100% 0, var(--word-pill) var(--word-pill-r), transparent var(--word-pill-corner)) var(--word-pill-inset) 100% / var(--word-pill-corner) var(--word-pill-corner) no-repeat,
-    radial-gradient(circle at 0 0, var(--word-pill) var(--word-pill-r), transparent var(--word-pill-corner)) calc(100% - var(--word-pill-inset)) 100% / var(--word-pill-corner) var(--word-pill-corner) no-repeat; }
+/* The understood-word pill, Todoist's: a deep red box (word-pill) as tall as the line it is on, corners 4, 4 of room each side of
+ the word, the word in word-pill-ink. One look in the todo box, a todo's title and the filter line. */
+.ad-token { display: inline-block; padding: 0 var(--space-1); border-radius: var(--word-pill-corner); background: var(--word-pill); color: var(--word-pill-ink); font: inherit; white-space: nowrap; }
 .ad-note-label { margin: 0 0 var(--space-2); font: var(--type-heading); text-transform: uppercase; color: var(--text-secondary); letter-spacing: var(--track-caps); }
 .ad-note-box { display: block; box-sizing: border-box; width: 100%; min-height: calc(var(--h-row) * 1.5); margin: 0; padding: var(--space-3) var(--space-3); border: 0; border-radius: var(--radius-page); background: var(--bg-raised); color: var(--text-secondary); font: var(--type-body); line-height: var(--lh-normal); resize: none; overflow: hidden; }
 .ad-note-box::placeholder { color: var(--text-muted); }
