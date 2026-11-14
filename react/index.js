@@ -6694,7 +6694,7 @@ function TimeGrid({ headerEnd, startHour, endHour, bookings = [], columns, now, 
     /* @__PURE__ */ jsx45("div", { className: "ad-time-grid__corner ad-time-grid__corner--pinned", children: headerEnd })
   ] });
 }
-function DayCell({ day, today, where, whereLabel, away, travel, letter, ground, label, compact, dayProps }) {
+function DayCell({ day, today, where, whereLabel, away, travel, letter, ground, label, compact, picked, dayProps }) {
   const colour = useNamedColour(where);
   const wash = useNamedColour(ground === "none" ? void 0 : ground);
   const n = daysBetween(today, day);
@@ -6706,7 +6706,8 @@ function DayCell({ day, today, where, whereLabel, away, travel, letter, ground, 
       ...hooks,
       role: "group",
       "aria-label": [day.toDateString(), typeof label === "string" ? label : "", whereLabel, away ? "away" : "", travel ? "travelling" : ""].filter(Boolean).join(", "),
-      className: cx("ad-day-cell", n < 0 && "ad-day-cell--past", n === 0 && "ad-day-cell--today", weekend && "ad-day-cell--weekend", away && "ad-day-cell--away", wash && "ad-day-cell--ground", compact && "ad-day-cell--compact"),
+      className: cx("ad-day-cell", n < 0 && "ad-day-cell--past", n === 0 && "ad-day-cell--today", weekend && "ad-day-cell--weekend", away && "ad-day-cell--away", wash && "ad-day-cell--ground", compact && "ad-day-cell--compact", picked && "ad-day-cell--picked"),
+      "data-picked": picked ? "" : void 0,
       style: wash ? { ["--ad-ground"]: wash } : void 0,
       children: [
         /* @__PURE__ */ jsx45("span", { className: "ad-day-cell__letter ad-type-heading", "aria-hidden": "true", children: letter ?? ENGLISH.weekdayLetters[day.getDay()] }),

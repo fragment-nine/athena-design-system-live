@@ -1099,6 +1099,11 @@ button.ad-year__day:focus-visible { outline: none; box-shadow: var(--ring-select
 .ad-day-cell__label { align-self: stretch; box-sizing: border-box; width: 0; min-width: 100%; padding: 0 var(--space-1) var(--space-1); font: var(--type-detail); color: var(--text-muted); text-align: center; overflow-wrap: normal; word-break: normal; hyphens: none; }
 .ad-day-cell__travel { position: absolute; top: var(--space-1); right: var(--space-1); color: var(--text-secondary); }
 /* Compact, a row of days over a calendar: half as tall. Letter and number on one line, the name under on at most two lines. */
+/* The picked day: the selected ground over whatever the cell already wears (today's, a kind's wash), under its words; nothing moves. */
+.ad-day-cell--picked { isolation: isolate; }
+.ad-day-cell--picked::before { content: ''; position: absolute; inset: 0; z-index: -1; border-radius: inherit; background: var(--tint-selected); pointer-events: none; }
+/* A name typed in place keeps the plain name's box: no field padding or pull-out margin inside a day. */
+.ad-day-cell__label .ad-inline-edit { margin: 0; padding: 0; text-align: inherit; }
 .ad-day-cell--compact { flex-flow: row wrap; align-content: flex-start; align-items: baseline; justify-content: center; gap: var(--space-hair) var(--space-1); padding-top: var(--space-1); }
 .ad-day-cell--compact .ad-day-cell__number { width: auto; height: auto; }
 .ad-day-cell--compact .ad-day-cell__where { flex: 0 0 100%; }
