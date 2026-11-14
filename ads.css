@@ -2789,12 +2789,15 @@ button.ad-row__name:focus-visible { outline: none; box-shadow: var(--ring-select
 .ad-figures--readings.ad-figures--dense .ad-figures__value { min-width: 0; }
 .ad-figures--readings.ad-figures--dense .ad-button--row { padding: 0; }
 
-/* Every chosen clock occupies one peer cell in the same horizontal row. */
-.ad-figures--clocks { grid-template-columns: none; grid-auto-flow: column; grid-auto-columns: minmax(max-content, 1fr); gap: var(--space-2); }
+/* Every chosen clock occupies one peer cell, each as wide as the widest clock. Side by side is how the row is read (Figures measures it so);
+   once read, the cells wrap onto the next row when they do not all fit, and no clock is narrower than its words. */
+.ad-figures--clocks { --ad-clock-cell: 100%; --ad-clock-row: 100%; grid-template-columns: none; grid-auto-flow: column; grid-auto-columns: minmax(max-content, 1fr); gap: var(--space-2); }
+.ad-figures--clocks[data-cells] { grid-auto-flow: row; grid-auto-columns: auto; grid-template-columns: repeat(auto-fit, minmax(min(100%, var(--ad-clock-cell)), 1fr)); }
 .ad-figures--clocks .ad-figures__item { align-items: stretch; }
 
-/* A measurable natural track never inherits an expanded app grid cell's width. */
+/* A measurable natural track never inherits an expanded app grid cell's width, and is never wider than what holds it. */
 .ad-figures--clocks.ad-figures--intrinsic { width: max-content; }
+.ad-figures--clocks.ad-figures--intrinsic[data-cells] { width: min(100%, var(--ad-clock-row)); }
 
 .ad-figures--rail.ad-figures--intrinsic { width: max-content; grid-auto-columns: max-content; }
 /* A figure's move since its last reading: an arrow and the change, grey either way, beside the value. */

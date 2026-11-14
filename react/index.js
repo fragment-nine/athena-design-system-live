@@ -5490,7 +5490,7 @@ function Splitter({ main, side, size, onResize, min = 0, max = Number.POSITIVE_I
 }
 
 // src/components/Text/Text.tsx
-import { useLayoutEffect as useLayoutEffect7, useRef as useRef26 } from "react";
+import { useCallback as useCallback4, useLayoutEffect as useLayoutEffect7, useRef as useRef26 } from "react";
 import { jsx as jsx40, jsxs as jsxs37 } from "react/jsx-runtime";
 function DataText({ children, dim, small, size, estimate, className }) {
   return /* @__PURE__ */ jsx40("span", { className: cx("ad-type-data", "ad-data-text", small && "ad-data-text--small", size === "large" && !small && "ad-data-text--large", dim && "ad-data-text--dim", estimate && "ad-figure-estimate", className), children });
@@ -5501,17 +5501,40 @@ function Hint({ children, className }) {
 function Figures({ items, ariaLabel, layout = "strip", density, face = "data", onIntrinsicWidth, className }) {
   const shown = face === "display" && layout === "rail";
   const track = useRef26(null);
-  const intrinsic = (layout === "clocks" || layout === "rail") && onIntrinsicWidth != null;
+  const clocks = layout === "clocks";
+  const intrinsic = (clocks || layout === "rail") && onIntrinsicWidth != null;
+  const told = useRef26(null);
+  const measure = useCallback4(() => {
+    const el = track.current;
+    if (!el) return;
+    let width;
+    if (clocks) {
+      el.removeAttribute("data-cells");
+      el.style.width = "max-content";
+      width = Math.ceil(el.getBoundingClientRect().width);
+      const cell = Math.max(0, ...Array.from(el.children, (c) => c.getBoundingClientRect().width));
+      el.style.width = "";
+      el.style.setProperty("--ad-clock-cell", `${cell}px`);
+      el.style.setProperty("--ad-clock-row", `${width}px`);
+      el.setAttribute("data-cells", "");
+    } else width = Math.ceil(el.getBoundingClientRect().width);
+    if (!onIntrinsicWidth || told.current?.to === onIntrinsicWidth && told.current.width === width) return;
+    told.current = { to: onIntrinsicWidth, width };
+    onIntrinsicWidth(width);
+  }, [clocks, onIntrinsicWidth]);
   useLayoutEffect7(() => {
     const el = track.current;
-    if (!intrinsic || !el || !onIntrinsicWidth) return;
-    const measure = () => onIntrinsicWidth(Math.ceil(el.getBoundingClientRect().width));
+    if (!(clocks || intrinsic) || !el) return;
     measure();
+    if (typeof document !== "undefined" && document.fonts) void document.fonts.ready.then(measure);
     if (typeof ResizeObserver === "undefined") return;
     const observer = new ResizeObserver(measure);
     observer.observe(el);
     return () => observer.disconnect();
-  }, [intrinsic, onIntrinsicWidth]);
+  }, [clocks, intrinsic, measure]);
+  useLayoutEffect7(() => {
+    if (clocks) measure();
+  });
   return /* @__PURE__ */ jsx40("dl", { ref: track, className: cx("ad-figures", density === "compact" && "ad-figures--dense", layout !== "strip" && "ad-figures--grid", layout === "compact" && "ad-figures--compact", layout === "rail" && "ad-figures--rail", layout === "readings" && "ad-figures--readings", layout === "clocks" && "ad-figures--clocks", face === "display" && "ad-figures--display", intrinsic && "ad-figures--intrinsic", className), "aria-label": ariaLabel, children: (layout !== "strip" ? items : items.slice(0, 4)).map((f) => /* @__PURE__ */ jsxs37("div", { className: "ad-figures__item", title: !shown && (layout === "rail" || layout === "readings") && typeof f.note === "string" ? f.note : void 0, children: [
     /* @__PURE__ */ jsx40("dt", { className: cx("ad-figures__label ad-type-heading", layout === "clocks" && "ad-sr"), children: f.label }),
     /* @__PURE__ */ jsxs37("dd", { className: cx("ad-figures__value", !shown && (layout === "rail" || layout === "clocks") && f.graphic != null && "ad-sr"), children: [
