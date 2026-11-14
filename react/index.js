@@ -3654,7 +3654,7 @@ function useSectionFrame() {
   const f = useContext8(Ctx);
   return f ? { level: f.level, numbering: f.numbering } : null;
 }
-function SectionFrame({ children, level, numbering, filled: _filled, className, ...rest }) {
+function SectionFrame({ children, level, numbering, className, ...rest }) {
   const parent = useContext8(Ctx);
   const frameId = useId7();
   const value = {
