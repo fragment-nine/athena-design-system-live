@@ -12,6 +12,8 @@
   --bg-side: rgba(255, 255, 255, 0.025);
   --bg-inset: #050505;
   --bg-surface: rgba(255, 255, 255, 0.035);
+  --bg-section: rgba(255, 255, 255, 0.025);
+  --bg-section-solid: #0f0f11;
   --bg-raised: rgba(255, 255, 255, 0.08);
   --bg-band: rgba(255, 255, 255, 0.055);
   --bg-hover: rgba(255, 255, 255, 0.115);
@@ -140,6 +142,8 @@
   --bg-side: rgba(0, 0, 0, 0.025);
   --bg-inset: #e9e9e5;
   --bg-surface: rgba(255, 255, 255, 0.62);
+  --bg-section: rgba(255, 255, 255, 0.35);
+  --bg-section-solid: #f8f8f6;
   --bg-raised: rgba(0, 0, 0, 0.045);
   --bg-band: rgba(0, 0, 0, 0.03);
   --bg-hover: rgba(0, 0, 0, 0.075);
@@ -1201,9 +1205,9 @@ button.ad-year__day:focus-visible { outline: none; box-shadow: var(--ring-select
 .ad-card--tile { padding: var(--space-2) var(--space-3) var(--space-3); }
 /* A dashboard widget is a section, a place, not a thing (ruled 2026-11-09): on the section's light fill, 12 above its heading and 16
    round the rest, with no edge, no glass and no lift; what is held inside paints the fill laid solid. */
-.ad-card.ad-card--widget { --ad-under: var(--bg-float); --ad-inset: var(--bg-surface); padding: var(--space-3) var(--space-4) var(--space-4); border: 0; box-shadow: none; counter-increment: widget; }
+.ad-card.ad-card--widget { --ad-under: var(--bg-section-solid); --ad-inset: var(--bg-section); padding: var(--space-2) var(--space-4) var(--space-4); border: 0; border-top: var(--border-w) solid var(--line-strong); border-radius: 0; background: var(--bg-section); box-shadow: none; counter-increment: widget; }
 .ad-card.ad-card--widget::before { display: none; }
-.ad-card.ad-card--widget.ad-card--opens:hover { background: var(--bg-surface); }
+.ad-card.ad-card--widget.ad-card--opens:hover { background: var(--bg-section); }
 /* The site's small index on each piece of work: 01.01, bottom right of a widget, in the quiet ink. */
 .ad-card--widget::after { content: "0" counter(widget) ".01"; position: absolute; right: var(--space-4); bottom: var(--space-1); font: var(--type-data); font-size: var(--text-xs); color: var(--text-muted); opacity: var(--opacity-dim); pointer-events: none; }
 .ad-card--unindexed { counter-increment: none; }
@@ -2442,30 +2446,31 @@ button.ad-row__name:focus-visible { outline: none; box-shadow: var(--ring-select
 .ad-search .ad-picklist__option:hover .ad-picklist__lead { color: var(--accent); }
 
 /* src/components/Section/Section.css */
-/* Section and SectionFrame: the one region every screen is built from. The look of a section (a light fill behind it, with no
-   rule, edge or shadow) lives here and nowhere else; ListSection and FormSection carry .ad-section too. */
+/* Section and SectionFrame: the one region every screen is built from. The look of a section (a quiet grey square behind it,
+   under one strong rule) lives here and nowhere else; ListSection and FormSection carry .ad-section too. */
 /* The frame: a screen's sections, one gap apart (gap-section), the page's whole width. */
 .ad-section-frame { display: flex; flex-direction: column; gap: var(--gap-section); min-width: 0; }
-/* The section: a place, not a thing. Every section of a frame, and every section laid straight in the page's work, sits on a light fill, the plane a card's glass is made of, with no
-   edge and no shadow, so it shows where it ends as well as where it starts and is still not a card. What is held inside (a table's
-   heading row, a pinned ruler, an opaque names column) paints the fill laid solid (bg-float), so it reads as the fill, never as a
-   lighter or darker bar; a tile inside is one tone lighter than the fill. A section inside a card or another section takes no fill
+/* The section: a place, not a thing. Every section of a frame, and every section laid straight in the page's work, sits on a
+   quiet grey lift (bg-section), darker than a card's glass, square-cornered, the strong rule along its top edge, with no other
+   edge and no shadow, so it shows where it starts and ends and never reads as a card. What is held inside (a table's heading row,
+   a pinned ruler, an opaque names column) paints the lift laid solid (bg-section-solid), so it reads as the lift, never as a
+   lighter or darker bar; a tile inside is a tone lighter. A section inside a card or another section takes no lift
    (the card's hairline between its sections is the card's). */
 .ad-section { display: flex; flex-direction: column; min-width: 0; box-sizing: border-box; position: relative; }
-:is(.ad-section-frame, .ad-frame__work) .ad-section:not(.ad-card .ad-section, .ad-section .ad-section) { --ad-under: var(--bg-float); --ad-inset: var(--bg-surface); padding: var(--ad-section-top) var(--space-4) var(--space-4); border-radius: var(--radius-page); background: var(--bg-surface); }
-/* 12 above a heading; a section with no heading (one table, one timeline, a whole screen's work) has 16 all round. */
-.ad-section { --ad-section-top: var(--space-3); }
+:is(.ad-section-frame, .ad-frame__work) .ad-section:not(.ad-card .ad-section, .ad-section .ad-section) { --ad-under: var(--bg-section-solid); --ad-inset: var(--bg-section); padding: var(--ad-section-top) var(--space-4) var(--space-4); border-top: var(--border-w) solid var(--line-strong); background: var(--bg-section); }
+/* 8 between the rule and a heading; a section with no heading (one table, one timeline, a whole screen's work) has 16 all round. */
+.ad-section { --ad-section-top: var(--space-2); }
 .ad-section[data-section="bare"] { --ad-section-top: var(--space-4); }
 :is(.ad-section-frame, .ad-frame__work) .ad-section .ad-card:not(.ad-card--widget) { background: var(--bg-raised); }
-/* A labelled group outside the page's work and any frame (a form's own in a pop-over or a pane) has no fill to stand on: its heading keeps a strong rule over it. */
+/* A labelled group outside the page's work and any frame (a form's own in a pop-over or a pane) has no lift to stand on: the strong rule sits over its heading. On a lift the rule is the lift's own top edge, so the heading draws none. */
 .ad-section > .ad-group-heading--rule-above { border-top: var(--border-w) solid var(--line-strong); padding-top: var(--space-2); }
 :is(.ad-section-frame, .ad-frame__work) .ad-section > .ad-group-heading--rule-above, .ad-card .ad-section > .ad-group-heading--rule-above, .ad-section .ad-section > .ad-group-heading--rule-above { border-top: 0; padding-top: 0; }
-/* The section label: a section on its fill is named in the caption voice a size up, Plex Mono caps, tracked, at the rows' size
-   and white; a Dashboard widget's title is the same label (.ad-section-label). Inside a card or under another section the label
-   stays the Heading rung at 12. The numeral before the name is the same type and the same ink as the name, so the pair read as one line. */
-.ad-section-label, .ad-section:not(.ad-card .ad-section, .ad-section .ad-section) > .ad-group-heading :is(.ad-group-heading__title, .ad-group-heading__button, .ad-group-heading__numeral) { font: var(--type-heading); font-size: var(--text-base); text-transform: uppercase; letter-spacing: var(--track-caps); }
+/* The section label: a section on its lift is named in the Title rung at the rows' size, in caps and white, a step louder than
+   the caption voice; a Dashboard widget's title is the same label (.ad-section-label). Inside a card or under another section the
+   label stays the Heading rung. The numeral before the name is the same type and the same ink as the name, so the pair read as one line. */
+.ad-section-label, .ad-section:not(.ad-card .ad-section, .ad-section .ad-section) > .ad-group-heading :is(.ad-group-heading__title, .ad-group-heading__button) { font: var(--type-title); font-size: var(--text-base); text-transform: uppercase; letter-spacing: normal; }
 .ad-section-label, .ad-section:not(.ad-card .ad-section, .ad-section .ad-section) > .ad-group-heading .ad-group-heading__title { color: var(--text-primary); }
-.ad-section:not(.ad-card .ad-section, .ad-section .ad-section) > .ad-group-heading .ad-group-heading__numeral { font-variant-numeric: tabular-nums; color: inherit; }
+.ad-section:not(.ad-card .ad-section, .ad-section .ad-section) > .ad-group-heading .ad-group-heading__numeral { font: var(--type-title); font-size: var(--text-base); font-variant-numeric: tabular-nums; color: inherit; }
 /* The body: the section's groups, 16 apart. */
 .ad-section__body { display: flex; flex-direction: column; gap: var(--space-4); min-width: 0; }
 .ad-section__body[hidden] { display: none; }
