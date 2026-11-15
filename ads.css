@@ -2204,6 +2204,13 @@ button.ad-steps__press:focus-visible { outline: none; box-shadow: var(--ring-sel
 .ad-pick-field:focus-visible { outline: none; box-shadow: var(--ring-select); }
 /* A pick list grows to its longest row (a role's whole name), up to a card's width, never narrower than a menu or its field. */
 .ad-pick-field__list { width: max-content; min-width: max(var(--w-menu), var(--ad-trigger-w)); max-width: var(--w-card); padding: var(--space-2); overflow-y: auto; }
+/* A drop with less room than its list: the list gives up height and scrolls; its head, its search and its footer stay whole inside
+   the drop, the footer under the list, never cut off past the drop's edge. */
+.ad-pick-field__list { display: flex; flex-direction: column; }
+.ad-pick-field__list > * { flex: none; }
+.ad-pick-field__list > .ad-picklist { flex: 0 1 auto; min-height: 0; display: flex; flex-direction: column; }
+.ad-pick-field__list > .ad-picklist > * { flex: none; }
+.ad-pick-field__list > .ad-picklist > .ad-picklist__list { flex: 0 1 auto; min-height: var(--h-btn); }
 /* The picker's Repeat line under the month: the quick picks' look, its current words in mono at the right. */
 .ad-datepicker__repeat { display: flex; align-items: center; gap: var(--space-2); width: 100%; height: var(--h-btn); margin-top: var(--space-2); padding: 0 var(--space-2); border: 0; border-top: var(--border-w) solid var(--border); border-radius: 0; background: transparent; font: var(--type-name); color: var(--text-primary); cursor: pointer; text-align: left; }
 .ad-datepicker__repeat .ad-datepicker__pick-date { margin-left: auto; }
