@@ -5413,14 +5413,12 @@ function AlertRow({ priority, priorityLabel = `Priority ${priority}`, sentence, 
     ] }),
     /* @__PURE__ */ jsx37("span", { className: "ad-alert__actions", children: /* @__PURE__ */ jsxs34(ButtonSizeScope, { size: "row", children: [
       actions,
-      go && /* @__PURE__ */ jsxs34(Button, { ...strip3(go.hooks), title: go.tip, onClick: go.onSelect, children: [
-        go.label,
-        !go.fixes && /* @__PURE__ */ jsx37(Icon, { job: "chevron-right", size: "sm" })
-      ] })
+      go && /* @__PURE__ */ jsx37(Button, { ...strip3(go.hooks), title: go.tip, onClick: go.onSelect, children: go.label })
     ] }) }),
     /* @__PURE__ */ jsx37("span", { className: "ad-alert__snooze", children: onSnooze && /* @__PURE__ */ jsx37(ButtonSizeScope, { size: "row", children: /* @__PURE__ */ jsx37(IconButton, { label: snoozeLabel, onClick: onSnooze, children: /* @__PURE__ */ jsx37(Icon, { job: "snooze" }) }) }) }),
     /* @__PURE__ */ jsx37("span", { className: "ad-alert__dismiss", children: onDismiss && /* @__PURE__ */ jsx37(ButtonSizeScope, { size: "row", children: /* @__PURE__ */ jsx37(IconButton, { label: dismissLabel, onClick: onDismiss, children: /* @__PURE__ */ jsx37(Icon, { job: "x", size: "sm" }) }) }) }),
-    /* @__PURE__ */ jsx37("span", { className: "ad-alert__end", children: end != null && /* @__PURE__ */ jsx37(ButtonSizeScope, { size: "row", children: end }) })
+    /* @__PURE__ */ jsx37("span", { className: "ad-alert__end", children: end != null && /* @__PURE__ */ jsx37(ButtonSizeScope, { size: "row", children: end }) }),
+    /* @__PURE__ */ jsx37("span", { className: "ad-alert__go", children: go && !go.fixes && /* @__PURE__ */ jsx37("span", { "aria-hidden": "true", className: "ad-alert__go-mark", onClick: go.onSelect, children: /* @__PURE__ */ jsx37(Icon, { job: "chevron-right", size: "sm" }) }) })
   ] });
   const look = cx("ad-alert", muted && "ad-alert--muted");
   if (children == null || children === false) return /* @__PURE__ */ jsx37("div", { ...strip3(rowProps), role: "listitem", className: look, children: line });

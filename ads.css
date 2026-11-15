@@ -3299,14 +3299,14 @@ button.ad-milestone:focus-visible { outline: none; }
 .ad-count-pill--p3 { background: var(--priority-p3); }
 .ad-count-pill--p4 { background: var(--priority-p4); }
 /* One alert, in fixed columns: the pill, the sentence (taking the room), the number and the details' i, the action, Snooze, Dismiss,
-   the app's mark. In a list every row shares the list's columns (subgrid), so each column starts at the same x on every row; an empty
+   the app's mark, then the chevron of where its action goes, at the row's right end. In a list every row shares the list's columns (subgrid), so each column starts at the same x on every row; an empty
    column takes no room and no gap (a cell's gap is its own left margin, only while it holds something). */
-.ad-alert { display: grid; grid-template-columns: auto minmax(0, 1fr) auto minmax(var(--w-alert-action), auto) auto auto minmax(var(--w-col-sm), auto); align-items: center; min-height: var(--h-row); padding: 0 var(--space-3); border-top: var(--border-w) solid var(--border); }
+.ad-alert { display: grid; grid-template-columns: auto minmax(0, 1fr) auto minmax(var(--w-alert-action), auto) auto auto minmax(var(--w-col-sm), auto) auto; align-items: center; min-height: var(--h-row); padding: 0 var(--space-3); border-top: var(--border-w) solid var(--border); }
 .ad-alert > * + *:not(:empty) { margin-left: var(--space-3); }
 .ad-alert > :is(.ad-alert__snooze, .ad-alert__dismiss):not(:empty) { margin-left: var(--space-1); }
 .ad-alert__info, .ad-alert__actions, .ad-alert__snooze, .ad-alert__dismiss { display: flex; align-items: center; gap: var(--space-2); justify-self: start; }
 .ad-alert__actions .ad-button { gap: var(--space-1); }
-.ad-alert-list { display: grid; grid-template-columns: auto minmax(0, 1fr) auto minmax(var(--w-alert-action), auto) auto auto minmax(var(--w-col-sm), auto); }
+.ad-alert-list { display: grid; grid-template-columns: auto minmax(0, 1fr) auto minmax(var(--w-alert-action), auto) auto auto minmax(var(--w-col-sm), auto) auto; }
 .ad-alert-list > :is(.ad-alert, .ad-alert-item), .ad-alert-item > .ad-alert, .ad-alert-item > .ad-alert__under { grid-column: 1 / -1; }
 .ad-alert-list > .ad-alert, .ad-alert-list > .ad-alert-item, .ad-alert-list > .ad-alert-item > .ad-alert { display: grid; grid-template-columns: subgrid; }
 .ad-alert__sentence { min-width: 0; line-height: var(--lh-tight); color: var(--text-primary); }
@@ -3330,6 +3330,9 @@ button.ad-notification:focus-visible { outline: none; }
 .ad-notification__unread { background: var(--text-primary); }
 /* The alert bar's pieces: the row's end (the app's project mark, its dismiss) and what opens under a row, lined up with the sentence. */
 .ad-alert__end { display: flex; align-items: center; gap: var(--space-2); justify-self: end; }
+.ad-alert__go { display: flex; align-items: center; justify-self: end; }
+.ad-alert__go-mark { display: inline-flex; align-items: center; justify-content: center; width: var(--h-btn-row); height: var(--h-btn-row); color: var(--text-secondary); cursor: pointer; }
+.ad-alert:hover .ad-alert__go-mark { color: var(--accent); }
 .ad-alert__under { padding: 0 var(--space-3) var(--space-2) calc(var(--space-3) * 2 + var(--space-8)); }
 /* A snoozed alert, dimmed: the pill, the sentence and the number in the muted ink; its buttons are untouched and
  stay pressable (an opacity would make them read as off). */
