@@ -1448,6 +1448,12 @@ button.ad-card__name:focus-visible { outline: none; }
 .ad-clock-face__period { display: flex; align-items: center; font: var(--type-detail); line-height: var(--lh-none); color: var(--text-muted); }
 .ad-clock-face__period [data-active] { color: var(--text-primary); }
 .ad-clock-face__segments { display: block; width: auto; height: var(--text-20); }
+/* Compact: the same face smaller, so four sit two by two in a top-row cell: the digits at text-base in a bezel a row button tall,
+   the city, its sun or moon and the period kept. */
+.ad-clock-face--compact { gap: var(--space-hair); }
+.ad-clock-face--compact .ad-clock-face__bezel { min-height: var(--h-btn-row); padding: 0 var(--space-1); }
+.ad-clock-face--compact .ad-clock-face__digits { font: var(--type-data); font-size: var(--text-base); line-height: var(--lh-none); }
+.ad-clock-face--compact .ad-clock-face__segments { height: var(--text-base); }
 .ad-clock-face:hover .ad-clock-face__label { color: var(--accent); }
 .ad-clock-face:focus-visible { outline: none; }
 :where(:root:not([data-ad-pointer])) .ad-clock-face:focus-visible { box-shadow: var(--ring-select); }
