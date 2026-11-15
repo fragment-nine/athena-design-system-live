@@ -1881,7 +1881,7 @@ import { Fragment as Fragment4, jsx as jsx8, jsxs as jsxs6 } from "react/jsx-run
 function GroupHeading({ children, number, rule = "above", needsYou, lead, end, collapsible, collapsed = false, onToggle, controls, level = 3, help, className }) {
   const id = useId2();
   const Tag2 = `h${level}`;
-  const num = number == null ? null : typeof number === "number" ? String(number).padStart(2, "0") : number;
+  const num = number == null ? null : typeof number === "number" ? String(number).padStart(3, "0") : number;
   const inner = /* @__PURE__ */ jsxs6(Fragment4, { children: [
     collapsible && /* @__PURE__ */ jsx8(Icon, { name: "caret-down", className: "ad-group-heading__chevron" }),
     num != null && /* @__PURE__ */ jsx8("span", { className: "ad-group-heading__numeral", children: num }),
@@ -2371,7 +2371,7 @@ function FieldRow({ label, children, help, beside, nameFits, controlWidth, htmlF
 }
 function FormSection({ number, title, children, error, className, done, summary, onChange, changeLabel = "Change", doneLabel = "done" }) {
   const errorId = useId4();
-  const num = String(number).padStart(2, "0");
+  const num = String(number).padStart(3, "0");
   if (done) return /* @__PURE__ */ jsx10("section", { role: "group", "aria-label": `${num} ${title}, ${doneLabel}`, className: cx("ad-section ad-form-section ad-form-section--done", className), children: /* @__PURE__ */ jsxs8("div", { className: "ad-form-section__done", children: [
     /* @__PURE__ */ jsx10("span", { className: "ad-form-section__tick", "aria-hidden": "true", children: /* @__PURE__ */ jsx10(Icon, { job: "check", size: "sm" }) }),
     /* @__PURE__ */ jsx10("span", { className: "ad-form-section__name", children: title }),

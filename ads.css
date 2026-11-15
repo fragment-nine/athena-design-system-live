@@ -2486,12 +2486,13 @@ button.ad-row__name:focus-visible { outline: none; box-shadow: var(--ring-select
 /* A labelled group outside the page's work and any frame (a form's own in a pop-over or a pane) has no fill to stand on: its heading keeps a strong rule over it. */
 .ad-section > .ad-group-heading--rule-above { border-top: var(--border-w) solid var(--line-strong); padding-top: var(--space-2); }
 :is(.ad-section-frame, .ad-frame__work) .ad-section > .ad-group-heading--rule-above, .ad-card .ad-section > .ad-group-heading--rule-above, .ad-section .ad-section > .ad-group-heading--rule-above { border-top: 0; padding-top: 0; }
-/* The section label: a section on its fill is named in the Title rung at the rows' size, in caps and white, a step louder than
-   the caption voice; a Dashboard widget's title is the same label (.ad-section-label). Inside a card or under another section the
-   label stays the Heading rung. The numeral before the name is the same type and the same ink as the name, so the pair read as one line. */
-.ad-section-label, .ad-section:not(.ad-card .ad-section, .ad-section .ad-section) > .ad-group-heading :is(.ad-group-heading__title, .ad-group-heading__button) { font: var(--type-title); font-size: var(--text-base); text-transform: uppercase; letter-spacing: normal; }
+/* The section label: a section on its fill is named in the caption voice, the Heading rung (Plex Mono caps, tracked, at 12), in
+   white; a Dashboard widget's title is the same label (.ad-section-label). The numeral before the name, three digits (001), is the
+   same type and the same ink as the name, so the pair read as one line. Inside a card or under another section the label is the
+   Heading in its own grey, its numeral Data. */
+.ad-section-label, .ad-section:not(.ad-card .ad-section, .ad-section .ad-section) > .ad-group-heading :is(.ad-group-heading__title, .ad-group-heading__button, .ad-group-heading__numeral) { font: var(--type-heading); text-transform: uppercase; letter-spacing: var(--track-caps); }
 .ad-section-label, .ad-section:not(.ad-card .ad-section, .ad-section .ad-section) > .ad-group-heading .ad-group-heading__title { color: var(--text-primary); }
-.ad-section:not(.ad-card .ad-section, .ad-section .ad-section) > .ad-group-heading .ad-group-heading__numeral { font: var(--type-title); font-size: var(--text-base); font-variant-numeric: tabular-nums; color: inherit; }
+.ad-section:not(.ad-card .ad-section, .ad-section .ad-section) > .ad-group-heading .ad-group-heading__numeral { font-variant-numeric: tabular-nums; color: inherit; }
 /* The body: the section's groups, 16 apart. */
 .ad-section__body { display: flex; flex-direction: column; gap: var(--space-4); min-width: 0; }
 .ad-section__body[hidden] { display: none; }
