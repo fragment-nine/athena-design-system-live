@@ -1665,6 +1665,18 @@ button.ad-card__name:focus-visible { outline: none; }
 .ad-footer { position: relative; }
 .ad-footer__undo { position: absolute; left: 50%; top: 0; height: 100%; transform: translateX(-50%); display: inline-flex; align-items: center; gap: var(--space-2); max-width: 50%; font: var(--type-body); color: var(--text-secondary); white-space: nowrap; }
 .ad-footer__undo-words { overflow: hidden; text-overflow: ellipsis; }
+/* While an undo is live its words take their own room, whole and never over the cells beside them: the venue keeps its words while
+   there is room, the message sits in the middle of what is left, and when room runs out the venue shortens with "…" first, and only
+   past that do the words wrap onto a second line inside the footer. The venue's shrink outweighs the message's so far that the message
+   loses not a sliver (any would wrap its last word) until the venue is down to its "…". */
+.ad-footer:has(.ad-footer__undo-words) { display: flex; }
+.ad-footer:has(.ad-footer__undo-words) > .ad-footer__code, .ad-footer:has(.ad-footer__undo-words) > .ad-footer__page { flex: none; }
+.ad-footer:has(.ad-footer__undo-words) > .ad-footer__venue { flex: 0 1000000 auto; display: block; align-content: center; min-width: calc(var(--space-4) * 2 + var(--border-w) + 1ch); text-overflow: ellipsis; }
+.ad-footer:has(.ad-footer__undo-words) > .ad-footer__run { display: none; }
+.ad-footer:has(.ad-footer__undo-words) > .ad-footer__undo { order: 0; flex: 0 1 auto; position: static; transform: none; height: auto; max-width: none; min-width: 0; margin-inline: auto; padding: 0 var(--space-4); white-space: normal; }
+.ad-footer:has(.ad-footer__undo-words) > .ad-footer__page { margin-left: 0; }
+.ad-footer:has(.ad-footer__undo-words) .ad-footer__undo-words { overflow: visible; text-overflow: clip; line-height: var(--lh-tight); }
+.ad-footer:has(.ad-footer__undo-words) .ad-footer__undo > .ad-button { flex: none; }
 /* One size across the footer, the larger one. */
 .ad-footer__page { justify-content: flex-end; gap: var(--space-2); border-right: 0; }
 .ad-contents { margin: 0; padding: 0; list-style: none; border-top: var(--border-w) solid var(--border); }
