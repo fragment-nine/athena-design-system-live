@@ -3,6 +3,7 @@ import {
   addDays,
   addMonthsClamped,
   countdown,
+  dateWhen,
   dayHeading,
   dayOf,
   daysBetween,
@@ -10,7 +11,6 @@ import {
   formatISO,
   formatTimeOfDay,
   initials,
-  isLate,
   keyChord,
   monoDate,
   nextWeekday,
@@ -21,7 +21,7 @@ import {
   sameDay,
   searchRank,
   weekStartOf
-} from "../chunk-QLN6EA5L.js";
+} from "../chunk-ZZ6PEXND.js";
 import {
   describeViolations,
   scanIn
@@ -2128,12 +2128,13 @@ var TextArea = forwardRef2(function TextArea2({ className, value, onInput, ...re
   }, "aria-labelledby": labelledBy, className: cx("ad-note-box", className) });
 });
 var hooksOf = (rest) => Object.fromEntries(Object.entries(rest).filter(([k]) => k.startsWith("data-")));
-function inlineFrame(box, end, error, errorId) {
+function inlineFrame(box, end, error, errorId, empty = false) {
   return /* @__PURE__ */ jsxs8(Fragment6, { children: [
     end != null ? /* @__PURE__ */ jsxs8("span", { className: "ad-inline-edit__box", children: [
       box,
       /* @__PURE__ */ jsx10("span", { className: "ad-inline-edit__end", children: /* @__PURE__ */ jsx10(ButtonSizeScope, { size: "row", children: end }) })
     ] }) : box,
+    empty && end == null && /* @__PURE__ */ jsx10(Icon, { job: "plus", size: "sm", className: "ad-field__add" }),
     error != null && /* @__PURE__ */ jsx10("span", { id: errorId, className: "ad-field__error ad-inline-edit__error", role: "alert", children: error })
   ] });
 }
@@ -2191,9 +2192,9 @@ var InlineWords = forwardRef2(function InlineWords2({ value, onCommit, ariaLabel
         e.currentTarget.blur();
       }
     },
-    className: cx("ad-inline-edit", `ad-inline-edit--${size}`, mono && "ad-inline-edit--mono", className, wrap && "ad-inline-edit--wrap")
+    className: cx("ad-inline-edit", `ad-inline-edit--${size}`, mono && "ad-inline-edit--mono", !draft && !placeholder && "ad-inline-edit--empty", className, wrap && "ad-inline-edit--wrap")
   };
-  return inlineFrame(wrap ? /* @__PURE__ */ jsx10("textarea", { ref, rows: 1, ...shared }) : /* @__PURE__ */ jsx10("input", { ref, ...shared }), end, error, errorId);
+  return inlineFrame(wrap ? /* @__PURE__ */ jsx10("textarea", { ref, rows: 1, ...shared }) : /* @__PURE__ */ jsx10("input", { ref, ...shared }), end, error, errorId, !draft && !placeholder);
 });
 var figureWords = (n, unit = "") => n == null ? "" : `${n.toLocaleString("en-US", { maximumFractionDigits: 2 })}${unit}`;
 var moneyWords = (minor) => minor == null ? "" : `${minor < 0 ? "-" : ""}$${(Math.abs(minor) / 100).toLocaleString("en-US", { minimumFractionDigits: minor % 100 ? 2 : 0, maximumFractionDigits: 2 })}`;
@@ -2264,15 +2265,16 @@ var InlineFigure = forwardRef2(function InlineFigure2({ value, onCommit, unit, m
             e.currentTarget.blur();
           }
         },
-        className: cx("ad-inline-edit", "ad-inline-edit--figure", className)
+        className: cx("ad-inline-edit", "ad-inline-edit--figure", (draft ?? typedNow) === "" && !placeholder && "ad-inline-edit--empty", className)
       }
     ),
     end,
     error,
-    errorId
+    errorId,
+    (draft ?? typedNow) === "" && !placeholder
   );
 });
-var Select = forwardRef2(function Select2({ options, placeholder, quiet, fill, className, value, defaultValue, onMouseDown, onKeyDown: onKeyDown2, ...rest }, ref) {
+var Select = forwardRef2(function Select2({ options, placeholder, quiet, fill, lead, className, value, defaultValue, onMouseDown, onKeyDown: onKeyDown2, ...rest }, ref) {
   const labelledBy = useRowLabel(rest);
   const own = useRef6(null);
   const wrap = useRef6(null);
@@ -2308,6 +2310,7 @@ var Select = forwardRef2(function Select2({ options, placeholder, quiet, fill, c
     el.focus({ preventScroll: true });
   };
   return /* @__PURE__ */ jsxs8("span", { ref: wrap, className: cx("ad-field", "ad-select", fill && "ad-field--fill", rest.disabled && "ad-field--disabled", className), children: [
+    lead,
     /* @__PURE__ */ jsxs8(
       "select",
       {
@@ -2356,7 +2359,8 @@ function PriorityPicker({ value, onChange, label = "Priority", words: words2 = [
       disabled,
       onChange: (e) => onChange(Number(e.target.value)),
       options: [...none != null ? [{ value: "0", label: none }] : [], ...words2.map((w, i) => ({ value: String(i + 1), label: w }))],
-      className: cx("ad-priority-pick", `ad-priority-pick--p${value}`, className)
+      className: cx("ad-priority-pick", `ad-priority-pick--p${value}`, className),
+      lead: /* @__PURE__ */ jsx10("span", { className: "ad-fact-sign ad-fact-sign--priority", "aria-hidden": "true", children: "P" })
     }
   );
 }
@@ -2389,8 +2393,8 @@ var isTools = (x) => Array.isArray(x) && x.length > 0 && x.every((t) => t != nul
 var destroyIcon = (d) => d.icon ?? (/delete|remove|forever|bin|trash/i.test(d.label) ? "trash" : "archive");
 function FormActions({ main, onCancel, cancelLabel = "Cancel", destroy, extras }) {
   return /* @__PURE__ */ jsxs8("div", { className: "ad-form-actions", children: [
-    destroy && /* @__PURE__ */ jsx10("span", { className: "ad-form-actions__destroy", children: /* @__PURE__ */ jsx10(IconButton, { label: destroy.label, onClick: destroy.onSelect, children: slotIcon(destroyIcon(destroy), { size: "md" }) }) }),
     isTools(extras) ? /* @__PURE__ */ jsx10("span", { className: "ad-form-actions__extras", children: extras.map((t) => /* @__PURE__ */ jsx10(IconButton, { label: t.label, onClick: t.onSelect, children: slotIcon(t.icon, { size: "md" }) }, t.label)) }) : extras != null && extras !== false && /* @__PURE__ */ jsx10("span", { className: "ad-form-actions__extras", children: extras }),
+    destroy && /* @__PURE__ */ jsx10("span", { className: "ad-form-actions__destroy", children: /* @__PURE__ */ jsx10(IconButton, { label: destroy.label, onClick: destroy.onSelect, children: slotIcon(destroyIcon(destroy), { size: "md" }) }) }),
     onCancel && /* @__PURE__ */ jsx10(Button, { onClick: onCancel, children: cancelLabel }),
     main && /* @__PURE__ */ jsx10(Button, { ...main.attrs, variant: "main", type: main.onSelect ? "button" : "submit", onClick: main.onSelect, unavailable: main.unavailable, children: String(main.label) })
   ] });
@@ -3345,11 +3349,10 @@ function RowDate({ due, today, until, done, milestone, what, icon, countdown: co
   const first = dueLabel(due, today);
   if (!first.label) return null;
   const last = until ? dueLabel(until, today) : null;
-  const late = !milestone && isLate(due, today, { until, done });
-  const isDueToday = !late && !done && !until && !!due && daysBetween(today, due) === 0;
+  const when = milestone ? null : dateWhen(due, today, { until, done, repeats: !!repeat });
   const words2 = last ? `${first.label} \u2013 ${last.label}` : first.label;
   const title = last ? `${first.title} \u2013 ${last.title}` : first.title;
-  return /* @__PURE__ */ jsxs18("span", { className: cx("ad-row-date", late && "ad-row-date--late", isDueToday && "ad-row-date--today"), title: repeat ? `${title} \xB7 ${repeat}` : title, children: [
+  return /* @__PURE__ */ jsxs18("span", { className: cx("ad-row-date", when && `ad-row-date--${when}`), title: repeat ? `${title} \xB7 ${repeat}` : title, children: [
     icon && /* @__PURE__ */ jsx21("span", { "aria-hidden": "true", className: "ad-row-date__icon", children: slotIcon(icon, { size: "sm" }) }),
     what && /* @__PURE__ */ jsxs18("span", { className: "ad-sr", children: [
       what,
@@ -4053,7 +4056,7 @@ function Fact({ icon, label, children, full }) {
     /* @__PURE__ */ jsx26(ButtonSizeScope, { size: "row", children })
   ] });
 }
-function PopoverSection({ label, children, end, collapsible, collapsed, onToggle }) {
+function PopoverSection({ label, children, end, collapsible, collapsed, onToggle, mark }) {
   const [own, setOwn] = useState15(false);
   const shut = collapsed ?? own;
   const bodyId = useId8();
@@ -4065,7 +4068,7 @@ function PopoverSection({ label, children, end, collapsible, collapsed, onToggle
   const headed = label != null || end != null || collapsible;
   return /* @__PURE__ */ jsxs23("section", { className: "ad-popover__section", children: [
     headed && /* @__PURE__ */ jsxs23("div", { className: "ad-popover__section-head", children: [
-      collapsible && /* @__PURE__ */ jsx26("button", { type: "button", className: "ad-popover__section-fold", "aria-expanded": !shut, "aria-controls": bodyId, "aria-label": label != null ? String(label) : "Section", onClick: toggle, children: /* @__PURE__ */ jsx26(Icon, { job: shut ? "chevron-right" : "chevron-down", size: "sm" }) }),
+      collapsible && /* @__PURE__ */ jsx26("button", { type: "button", className: `ad-popover__section-fold${mark === "add" ? " ad-popover__section-fold--add" : ""}`, "aria-expanded": !shut, "aria-controls": bodyId, "aria-label": label != null ? String(label) : "Section", onClick: toggle, children: /* @__PURE__ */ jsx26(Icon, { job: shut ? mark === "add" ? "plus" : "chevron-right" : "chevron-down", size: "sm" }) }),
       label != null && /* @__PURE__ */ jsx26("h3", { className: "ad-popover__section-label ad-type-heading", children: label }),
       end != null && /* @__PURE__ */ jsx26("div", { className: "ad-popover__section-end", children: end })
     ] }),
@@ -4214,7 +4217,7 @@ function StatusPicker({ statuses, noSearch = true, open, anchor, onClose, header
   }), anchor, ariaLabel: rest.searchLabel, items: statuses.map((s) => ({ id: s.id, label: s.label, dot: s.tone ?? "neutral", checked: s.id === rest.value, onSelect: () => rest.onPick(s.id) })) });
   return /* @__PURE__ */ jsx28(PickList, { ...rest, noSearch, options: statuses.map((s) => ({ id: s.id, label: s.label, lead: /* @__PURE__ */ jsx28(Dot, { tone: s.tone }), hint: s.hint })) });
 }
-function PickField({ options: given, value, onPick: pickGiven, label, header, icon, disabled, className, trigger, marks, footer, typed, onTyped, compact, fill, onAdd, addLabel, onClear, clearLabel, fallback }) {
+function PickField({ options: given, value, onPick: pickGiven, label, header, icon, disabled, className, trigger, marks, footer, typed, onTyped, compact, fill, onAdd, addLabel, onClear, clearLabel, sign, readOnly, fallback }) {
   const clearing = !!onClear && !Array.isArray(value);
   const options = clearing ? [{ id: CLEAR_ROW, label: clearLabel ?? `No ${label.toLowerCase()}` }, ...given] : given;
   const listValue = clearing && value == null ? CLEAR_ROW : value;
@@ -4289,7 +4292,7 @@ function PickField({ options: given, value, onPick: pickGiven, label, header, ic
         /* @__PURE__ */ jsx28(
           "input",
           {
-            className: "ad-field__input",
+            className: cx("ad-field__input", !words22 && !(fallback ?? emptyWords) && "ad-pick-field__input--empty"),
             role: "combobox",
             "aria-label": label,
             "aria-haspopup": "listbox",
@@ -4371,10 +4374,11 @@ function PickField({ options: given, value, onPick: pickGiven, label, header, ic
         ref: anchor,
         type: "button",
         "aria-label": label,
-        "aria-haspopup": "listbox",
-        "aria-expanded": open,
+        "aria-haspopup": readOnly ? void 0 : "listbox",
+        "aria-expanded": readOnly ? void 0 : open,
+        "aria-disabled": readOnly || void 0,
         disabled,
-        onClick: quiet ? () => {
+        onClick: readOnly ? void 0 : quiet ? () => {
           setEditing(true);
           setOpen(true);
         } : () => setOpen((o) => !o),
@@ -4392,10 +4396,11 @@ function PickField({ options: given, value, onPick: pickGiven, label, header, ic
             setOpen(true);
           }
         } : void 0,
-        className: cx("ad-field", "ad-pick-field", compact && "ad-pick-field--compact", fill && "ad-field--fill", disabled && "ad-field--disabled", className),
+        className: cx("ad-field", "ad-pick-field", compact && "ad-pick-field--compact", fill && "ad-field--fill", disabled && "ad-field--disabled", readOnly && "ad-pick-field--read", className),
         title: compact && words2 ? words2 : void 0,
         children: [
           icon && /* @__PURE__ */ jsx28(Icon, { job: icon, size: "md", className: "ad-pick-field__icon" }),
+          sign && /* @__PURE__ */ jsx28("span", { className: `ad-fact-sign ad-fact-sign--${sign}`, "aria-hidden": "true", children: sign === "project" ? "#" : "+" }),
           face?.lead != null && /* @__PURE__ */ jsx28("span", { className: "ad-pick-field__lead", "aria-hidden": "true", children: face.lead }),
           compact && picked.length > 0 && (asMarks || picked.every((o) => o.lead != null)) ? picked.length > 1 ? /* @__PURE__ */ jsxs25("span", { className: "ad-pick-field__marks", "aria-hidden": "true", children: [
             picked.slice(0, cap || 3).map((o) => /* @__PURE__ */ jsx28("span", { className: "ad-pick-field__mark", children: o.lead ?? /* @__PURE__ */ jsx28(Dot, {}) }, o.id)),
@@ -4449,7 +4454,7 @@ function FieldPopover({ label, words: words2, placeholder, icon, title, children
 
 // src/components/Pickers/DatePicker.tsx
 import { useContext as useContext11, useEffect as useEffect12, useId as useId10, useMemo as useMemo2, useRef as useRef18, useState as useState17 } from "react";
-import { jsx as jsx29, jsxs as jsxs26 } from "react/jsx-runtime";
+import { Fragment as Fragment15, jsx as jsx29, jsxs as jsxs26 } from "react/jsx-runtime";
 var EN = { today: "Today", tomorrow: "Tomorrow", nextWeek: "Next week", inTwoWeeks: "In two weeks", previousMonth: "Previous month", nextMonth: "Next month", previousYear: "Previous year", nextYear: "Next year", noDate: "No date", repeat: "Repeat" };
 function DroppedDatePicker({ open, anchor, onClose, repeatEditor, backLabel, ...picker }) {
   const [repeating, setRepeating] = useState17(false);
@@ -4611,11 +4616,13 @@ function DateField({ onParsed, label, error, text: given, onText, format, icon, 
   }, [value?.getTime()]);
   const result = text && (!value || text !== fmt(value)) ? read2(text) : null;
   const named = useContext11(RowLabel) != null;
+  const when = due && value && text === fmt(value) ? dateWhen(value, picker.today, { done, repeats: !!picker.repeat?.on }) : null;
+  const signed = !icon && !compact;
   return /* @__PURE__ */ jsxs26(
     "span",
     {
       ref: anchor,
-      className: cx("ad-datefield", compact && "ad-datefield--compact", className),
+      className: cx("ad-datefield", compact && "ad-datefield--compact", signed && "ad-datefield--signed", className),
       onClick: (e) => {
         const t = e.target;
         if (disabled || open || t === input.current || drop.current?.contains(t) || !e.target.closest?.(".ad-field")) return;
@@ -4627,8 +4634,8 @@ function DateField({ onParsed, label, error, text: given, onText, format, icon, 
           TextField,
           {
             ref: input,
-            className: value && text === fmt(value) ? cx(due && isLate(value, picker.today, { done }) && "ad-datefield__field--late") : void 0,
-            icon,
+            className: when ? `ad-datefield__field--${when}` : void 0,
+            icon: icon ?? (signed ? "calendar" : void 0),
             "aria-label": label,
             placeholder: compact ? void 0 : named ? "\u2014" : label,
             value: text,
@@ -4637,7 +4644,10 @@ function DateField({ onParsed, label, error, text: given, onText, format, icon, 
             "aria-expanded": open,
             "aria-controls": open ? dropId : void 0,
             parsed: result ? result.readback : void 0,
-            end: compact ? void 0 : /* @__PURE__ */ jsx29(Icon, { job: "plus", size: "sm", className: "ad-field__add" }),
+            end: compact ? void 0 : /* @__PURE__ */ jsxs26(Fragment15, { children: [
+              picker.repeat?.on && /* @__PURE__ */ jsx29(Icon, { job: "repeat", size: "sm", label: picker.repeat.words, className: "ad-datefield__repeat" }),
+              /* @__PURE__ */ jsx29(Icon, { job: "plus", size: "sm", className: "ad-field__add" })
+            ] }),
             disabled,
             error,
             onChange: (e) => setText(e.target.value),
@@ -4852,7 +4862,7 @@ function Picture({ src, alt, ...rest }) {
 }
 
 // src/components/PageHeader/PageHeader.tsx
-import { Fragment as Fragment16, useId as useId12, useRef as useRef22, useState as useState21 } from "react";
+import { Fragment as Fragment17, useId as useId12, useRef as useRef22, useState as useState21 } from "react";
 
 // src/components/ShowOptions/ShowOptions.tsx
 import { useRef as useRef21, useState as useState20 } from "react";
@@ -4908,7 +4918,7 @@ function AccessRow({ face, name, className, ...rest }) {
 }
 
 // src/components/ShowOptions/ShowOptions.tsx
-import { Fragment as Fragment15, jsx as jsx33, jsxs as jsxs30 } from "react/jsx-runtime";
+import { Fragment as Fragment16, jsx as jsx33, jsxs as jsxs30 } from "react/jsx-runtime";
 var showOrder = ["compactRows", "projectColours", "itemColours", "departmentColours", "lightMode", "weekendShading", "people", "archive"];
 var WORDS = {
   compactRows: "Compact rows",
@@ -4926,14 +4936,14 @@ function ShowOptionsGear({ value, onChange, options = [...showOrder], labels: l 
   const now = { ...SHOW_DEFAULTS, ...value };
   const shown = showOrder.filter((o) => options.includes(o));
   const gearLabel = l.gear ?? "Show options";
-  return /* @__PURE__ */ jsxs30(Fragment15, { children: [
+  return /* @__PURE__ */ jsxs30(Fragment16, { children: [
     /* @__PURE__ */ jsx33(IconButton, { ref: gear, label: gearLabel, active: open, "aria-expanded": open, "aria-haspopup": "dialog", onClick: () => setOpen(!open), children: /* @__PURE__ */ jsx33(Icon, { job: "settings" }) }),
     /* @__PURE__ */ jsx33(Popover, { open, onClose: () => setOpen(false), anchor: gear, width: "menu", ariaLabel: gearLabel, children: /* @__PURE__ */ jsx33(PopoverSection, { label: gearLabel, children: shown.map((o) => /* @__PURE__ */ jsx33(SettingRow, { label: l[o] ?? WORDS[o], children: /* @__PURE__ */ jsx33(Switch, { checked: now[o], "aria-label": l[o] ?? WORDS[o], onChange: (on) => onChange({ ...now, [o]: on }) }) }, o)) }) })
   ] });
 }
 
 // src/components/PageHeader/PageHeader.tsx
-import { Fragment as Fragment17, jsx as jsx34, jsxs as jsxs31 } from "react/jsx-runtime";
+import { Fragment as Fragment18, jsx as jsx34, jsxs as jsxs31 } from "react/jsx-runtime";
 var STATES = /* @__PURE__ */ new Set(["Deal", "Active", "Close out", "Cancelled", "Archived"]);
 function countdownWords(c) {
   const n = daysBetween(c.today, c.to);
@@ -4950,7 +4960,7 @@ function PageHeader({ title, icon, stamp, back, trail, description, countdown: g
       /* @__PURE__ */ jsxs31("div", { className: "ad-page-header__titled", children: [
         back && !trail?.length && /* @__PURE__ */ jsx34("button", { type: "button", className: "ad-page-header__back", "aria-label": back.label, title: back.label, onClick: back.onBack, children: /* @__PURE__ */ jsx34(Icon, { job: "chevron-left", size: "lg" }) }),
         /* @__PURE__ */ jsxs31("h1", { className: cx("ad-page-header__title", !!trail?.length && "ad-page-header__title--trail"), children: [
-          trail?.map((step, i) => /* @__PURE__ */ jsxs31(Fragment16, { children: [
+          trail?.map((step, i) => /* @__PURE__ */ jsxs31(Fragment17, { children: [
             /* @__PURE__ */ jsx34("span", { role: "button", tabIndex: 0, className: "ad-page-header__step", title: step.label, onClick: step.onPress, onKeyDown: (e) => {
               if (e.key === "Enter" || e.key === " ") {
                 e.preventDefault();
@@ -5000,7 +5010,7 @@ var strip2 = (h) => {
   return rest;
 };
 function HeaderActions({ children, groupProps, pickerMenu, connection, connectionLabels }) {
-  return /* @__PURE__ */ jsxs31(Fragment17, { children: [
+  return /* @__PURE__ */ jsxs31(Fragment18, { children: [
     connection && /* @__PURE__ */ jsx34(ConnectionMark, { state: connection, labels: connectionLabels }),
     /* @__PURE__ */ jsx34("div", { role: "group", ...strip2(groupProps), className: "ad-header-actions", children: /* @__PURE__ */ jsxs31(ButtonSizeScope, { size: "bar", children: [
       pickerMenu && /* @__PURE__ */ jsx34(HeaderPick, { ...pickerMenu }),
@@ -5114,7 +5124,7 @@ var RuleValue = forwardRef8(function RuleValue2({ icon, end, mono, className, ty
 });
 
 // src/components/Toolbar/Toolbar.tsx
-import { Fragment as Fragment18, jsx as jsx36, jsxs as jsxs33 } from "react/jsx-runtime";
+import { Fragment as Fragment19, jsx as jsx36, jsxs as jsxs33 } from "react/jsx-runtime";
 function Toolbar({ children, end, ariaLabel, className }) {
   return /* @__PURE__ */ jsx36("div", { className: cx("ad-toolbar", className), role: "group", "aria-label": ariaLabel, children: /* @__PURE__ */ jsxs33(ButtonSizeScope, { size: "bar", children: [
     children,
@@ -5353,7 +5363,7 @@ function ShowSwitch({ setting: s }) {
   useEffect15(() => {
     if (!locked) setSaid(false);
   }, [locked]);
-  return /* @__PURE__ */ jsxs33(Fragment18, { children: [
+  return /* @__PURE__ */ jsxs33(Fragment19, { children: [
     /* @__PURE__ */ jsx36(SettingRow, { label: s.label, children: /* @__PURE__ */ jsx36(Switch, { checked: s.on, "aria-label": s.label, onChange: (on) => {
       if (locked && !on) {
         setSaid(true);
@@ -5367,7 +5377,7 @@ function ShowSwitch({ setting: s }) {
 
 // src/components/Warnings/Warnings.tsx
 import { forwardRef as forwardRef10, useId as useId13, useRef as useRef25, useState as useState23 } from "react";
-import { Fragment as Fragment19, jsx as jsx37, jsxs as jsxs34 } from "react/jsx-runtime";
+import { Fragment as Fragment20, jsx as jsx37, jsxs as jsxs34 } from "react/jsx-runtime";
 function AlertsFloat({ open, onClose, anchor, ariaLabel = "Alerts", id, children }) {
   return /* @__PURE__ */ jsx37(Popover, { open, onClose, anchor, placement: "drop", width: "wide", ariaLabel, noClose: true, id, className: "ad-alerts-float", children: /* @__PURE__ */ jsx37("div", { role: "list", "aria-label": ariaLabel, className: "ad-alert-list", children }) });
 }
@@ -5416,7 +5426,7 @@ function AlertList({ children, id, hidden, ariaLabel, listProps }) {
   return /* @__PURE__ */ jsx37("div", { ...strip3(listProps), id, hidden, role: "list", "aria-label": ariaLabel, className: "ad-alert-list", children });
 }
 function AlertRow({ priority, priorityLabel = `Priority ${priority}`, sentence, number, actions, go, onSnooze, snoozeLabel = "Snooze", onDismiss, dismissLabel = "Dismiss", end, details, children, rowProps, muted }) {
-  const line = /* @__PURE__ */ jsxs34(Fragment19, { children: [
+  const line = /* @__PURE__ */ jsxs34(Fragment20, { children: [
     /* @__PURE__ */ jsx37(CountPill, { priority, label: priorityLabel }),
     /* @__PURE__ */ jsx37("span", { className: "ad-alert__sentence", children: sentence }),
     /* @__PURE__ */ jsxs34("span", { className: "ad-alert__info", children: [
@@ -5459,7 +5469,7 @@ function NotificationList({ days, unreadLabel = "Unread" }) {
       /* @__PURE__ */ jsx37("span", { className: "ad-notifications__date", children: d.date })
     ] }),
     d.items.map((n) => {
-      const body = /* @__PURE__ */ jsxs34(Fragment19, { children: [
+      const body = /* @__PURE__ */ jsxs34(Fragment20, { children: [
         n.unread ? /* @__PURE__ */ jsx37(UnreadDot, { className: "ad-notification__unread", label: unreadLabel }) : /* @__PURE__ */ jsx37("span", { className: "ad-notification__read" }),
         n.face && /* @__PURE__ */ jsx37("span", { className: "ad-notification__face", children: n.face }),
         /* @__PURE__ */ jsx37("span", { className: "ad-notification__sentence", children: n.sentence }),
@@ -5504,7 +5514,7 @@ function DropLine() {
 
 // src/components/Splitter/Splitter.tsx
 import { useRef as useRef26 } from "react";
-import { Fragment as Fragment20, jsx as jsx39, jsxs as jsxs36 } from "react/jsx-runtime";
+import { Fragment as Fragment21, jsx as jsx39, jsxs as jsxs36 } from "react/jsx-runtime";
 function Splitter({ main, side, size, onResize, min = 0, max = Number.POSITIVE_INFINITY, at = "end", scrollPanes = true, label, className }) {
   const box = useRef26(null);
   const clamp = (n) => Math.max(min, Math.min(max, Math.round(n)));
@@ -5558,12 +5568,12 @@ function Splitter({ main, side, size, onResize, min = 0, max = Number.POSITIVE_I
     }
   );
   return /* @__PURE__ */ jsxs36("div", { ref: box, className: cx("ad-splitter", `ad-splitter--${at}`, !scrollPanes && "ad-splitter--page-scroll", className), style: { ["--ad-split"]: `${size}px` }, children: [
-    at === "start" && /* @__PURE__ */ jsxs36(Fragment20, { children: [
+    at === "start" && /* @__PURE__ */ jsxs36(Fragment21, { children: [
       /* @__PURE__ */ jsx39("div", { className: "ad-splitter__side", children: side }),
       divider
     ] }),
     /* @__PURE__ */ jsx39("div", { className: "ad-splitter__main", children: main }),
-    at === "end" && /* @__PURE__ */ jsxs36(Fragment20, { children: [
+    at === "end" && /* @__PURE__ */ jsxs36(Fragment21, { children: [
       divider,
       /* @__PURE__ */ jsx39("div", { className: "ad-splitter__side", children: side })
     ] })
@@ -5716,7 +5726,7 @@ import { useLayoutEffect as useLayoutEffect10, useRef as useRef29, useState as u
 
 // src/components/Timeline/Timeline.tsx
 import { useLayoutEffect as useLayoutEffect9, useRef as useRef28, useState as useState24 } from "react";
-import { Fragment as Fragment21, jsx as jsx42, jsxs as jsxs39 } from "react/jsx-runtime";
+import { Fragment as Fragment22, jsx as jsx42, jsxs as jsxs39 } from "react/jsx-runtime";
 var strip4 = (h) => {
   if (!h) return {};
   const { className: _c, style: _s, ...rest } = h;
@@ -5881,7 +5891,7 @@ function DeliverableRow({ lead, status, showStatus, statusLabel, markers: given,
   };
   return /* @__PURE__ */ jsxs39("div", { ref: row, className: cx("ad-deliverable", expandable && "ad-deliverable--expandable", marksOff !== null && "ad-deliverable--no-marks", className), style, children: [
     expandable && /* @__PURE__ */ jsx42("button", { type: "button", className: "ad-deliverable__caret", "aria-expanded": !!expanded, "aria-label": toggleLabel, onClick: onToggle, children: /* @__PURE__ */ jsx42(Icon, { name: "caret-right", size: "sm", className: cx("ad-deliverable__chevron", expanded && "ad-is-open") }) }),
-    /* @__PURE__ */ jsx42(Bar, { ...bar, style: void 0, onCramped, lead: /* @__PURE__ */ jsxs39(Fragment21, { children: [
+    /* @__PURE__ */ jsx42(Bar, { ...bar, style: void 0, onCramped, lead: /* @__PURE__ */ jsxs39(Fragment22, { children: [
       showStatus ? /* @__PURE__ */ jsx42("span", { role: "img", "aria-label": statusLabel, className: "ad-deliverable__status", children: /* @__PURE__ */ jsx42(Dot, { tone: status }) }) : /* @__PURE__ */ jsx42("span", { className: "ad-sr", children: statusLabel }),
       lead
     ] }), children: markers.map((m, i) => /* @__PURE__ */ jsx42(BarMarker, { done, ...m }, i)) })
@@ -6026,11 +6036,11 @@ function ChartKey({ items, ariaLabel = "Key" }) {
 }
 
 // src/components/Table/Table.tsx
-import { Fragment as Fragment22, jsx as jsx43, jsxs as jsxs40 } from "react/jsx-runtime";
+import { Fragment as Fragment23, jsx as jsx43, jsxs as jsxs40 } from "react/jsx-runtime";
 var NEAR = 8;
 var Arrow = ({ up }) => /* @__PURE__ */ jsx43(SortGlyph, { direction: up ? "ascending" : "descending", size: "sm" });
 function NameRow({ on, children }) {
-  return on ? /* @__PURE__ */ jsx43("span", { className: "ad-table__name-row", children }) : /* @__PURE__ */ jsx43(Fragment22, { children });
+  return on ? /* @__PURE__ */ jsx43("span", { className: "ad-table__name-row", children }) : /* @__PURE__ */ jsx43(Fragment23, { children });
 }
 function Table({ columns: named, rows: given, rowId, caption, sort, onSort, picked, onPickedChange, onPickAllChange, pickLabel, pickAllLabel = "Pick all", onOpen, opens, openLabel = "Open", rowProps, groupProps, grip, addRow, addToGroup, striped = true, columnLines, rowTone, group, groups, foldGroups, foldedGroups, onFoldGroup, depth, foldParents, foldedRows, onFoldRow, foldLabel, nameColumn, fixed, onInsertRow, onInsertColumn, insertRowLabel = "Insert a row here", insertColumnLabel = "Insert a column here", total, className }) {
   const columns = onOpen && !named.some((c) => c.id === "open") ? [...named, { id: "open", label: openLabel, labelHidden: true, frozen: "end", width: "var(--h-btn)", cell: (r) => opens?.(r) === false ? null : /* @__PURE__ */ jsx43(Icon, { job: "chevron-right", size: "sm", className: "ad-table__arrow ad-glyph-quiet" }) }] : named;
@@ -6284,7 +6294,7 @@ function Table({ columns: named, rows: given, rowId, caption, sort, onSort, pick
               const words2 = opening ? /* @__PURE__ */ jsx43("button", { type: "button", className: "ad-table__open", onClick: () => opening(r), children: named2 }) : named2;
               const meta = c.meta?.(r);
               return /* @__PURE__ */ jsxs40("th", { scope: "row", className: cx("ad-table__name", frozen, meta != null && "ad-table__name--two"), style: d || c.frozen === "start" ? { ...d ? { ["--ad-depth"]: d } : {}, ...at(c) } : void 0, children: [
-                d > 0 && /* @__PURE__ */ jsxs40(Fragment22, { children: [
+                d > 0 && /* @__PURE__ */ jsxs40(Fragment23, { children: [
                   trunks(rowAt, d - 1),
                   /* @__PURE__ */ jsx43("span", { className: cx("ad-table__elbow", runs(rowAt, d) && "ad-table__elbow--on"), "aria-hidden": "true" })
                 ] }),
@@ -6500,7 +6510,7 @@ function ZoomCluster({
 
 // src/components/Calendar/Calendar.tsx
 import { useEffect as useEffect17, useLayoutEffect as useLayoutEffect11, useRef as useRef31, useState as useState27 } from "react";
-import { Fragment as Fragment23, jsx as jsx45, jsxs as jsxs42 } from "react/jsx-runtime";
+import { Fragment as Fragment24, jsx as jsx45, jsxs as jsxs42 } from "react/jsx-runtime";
 var code = (it) => it.code ? /* @__PURE__ */ jsx45(ProjectPill, { code: it.code, color: it.color?.startsWith("project-") ? it.color : void 0 }) : null;
 var hooksOf3 = (h) => {
   if (!h) return {};
@@ -6597,7 +6607,7 @@ function Booking({ name, time, unconfirmed, color, stripe, style, onOpen, bookin
   const grip = (side, h) => h && /* @__PURE__ */ jsx45("span", { role: h["aria-label"] ? "button" : void 0, "aria-hidden": h["aria-label"] ? void 0 : true, ...hooksOf3(h), className: `ad-booking__grip ad-booking__grip--${side}` });
   const inControl = (t) => !!t.closest(".ad-booking__grip, .ad-booking__actions");
   const beside = !!onOpen && !asButton;
-  const controls = /* @__PURE__ */ jsxs42(Fragment23, { children: [
+  const controls = /* @__PURE__ */ jsxs42(Fragment24, { children: [
     grip("start", ends?.start),
     actions != null && /* @__PURE__ */ jsx45("span", { className: "ad-booking__actions", children: /* @__PURE__ */ jsx45(ButtonSizeScope, { size: "row", children: actions }) }),
     grip("end", ends?.end)
@@ -6846,7 +6856,7 @@ function TimeGrid({ headerEnd, startHour, endHour, bookings = [], columns, now, 
         }),
         c.aside && /* @__PURE__ */ jsx45("div", { className: "ad-time-grid__aside", children: [...c.aside].sort((x, y) => x.at - y.at).map((m, i) => {
           const words2 = [m.time, m.title].filter(Boolean).join(" ");
-          const inner = m.node ?? (asideWidth === "narrow" ? /* @__PURE__ */ jsx45("span", { className: "ad-time-grid__moment-mark", "aria-label": m.onPress ? void 0 : words2, role: m.onPress ? void 0 : "img" }) : /* @__PURE__ */ jsxs42(Fragment23, { children: [
+          const inner = m.node ?? (asideWidth === "narrow" ? /* @__PURE__ */ jsx45("span", { className: "ad-time-grid__moment-mark", "aria-label": m.onPress ? void 0 : words2, role: m.onPress ? void 0 : "img" }) : /* @__PURE__ */ jsxs42(Fragment24, { children: [
             m.time && /* @__PURE__ */ jsx45("span", { className: "ad-time-grid__moment-time", children: m.time }),
             m.title && /* @__PURE__ */ jsx45("span", { className: "ad-time-grid__moment-title", title: m.title, children: m.title })
           ] }));
@@ -7056,7 +7066,7 @@ function MapNightDot() {
 }
 
 // src/components/Charts/Charts.tsx
-import { Fragment as Fragment24, jsx as jsx47, jsxs as jsxs44 } from "react/jsx-runtime";
+import { Fragment as Fragment25, jsx as jsx47, jsxs as jsxs44 } from "react/jsx-runtime";
 function AmountBars({ items, max, ariaLabel, className }) {
   const top = max ?? Math.max(1, ...items.map((i) => i.value));
   return /* @__PURE__ */ jsx47("div", { className: cx("ad-amounts", className), role: "list", "aria-label": ariaLabel, children: items.map((i) => /* @__PURE__ */ jsxs44("div", { className: "ad-amounts__row", role: "listitem", children: [
@@ -7075,7 +7085,7 @@ function BudgetBar({ fraction, figure, note = "worked", remainder, end, ariaLabe
       /* @__PURE__ */ jsx47("span", { children: note }),
       /* @__PURE__ */ jsxs44("span", { children: [
         remainder,
-        end && /* @__PURE__ */ jsxs44(Fragment24, { children: [
+        end && /* @__PURE__ */ jsxs44(Fragment25, { children: [
           " \xB7 ",
           end
         ] })
@@ -7151,7 +7161,7 @@ function Dial({ fraction, label, size, value, valueText, half, target, targetLab
         past > 0 && /* @__PURE__ */ jsx47("circle", { className: "ad-dial__past", cx: "35", cy: "35", r, strokeDasharray: `${c * past} ${c}`, transform: "rotate(-90 35 35)" }),
         gauge && scale && Array.from({ length: 11 }, (_, i) => /* @__PURE__ */ jsx47("line", { className: "ad-dial__tick", ...line(i / 10, r + 4.5, i % 5 === 0 ? r + 8 : r + 6.5) }, i)),
         t != null && /* @__PURE__ */ jsx47("line", { className: "ad-dial__target", ...line(t, r - 5, r + 5) }),
-        pointer && /* @__PURE__ */ jsxs44(Fragment24, { children: [
+        pointer && /* @__PURE__ */ jsxs44(Fragment25, { children: [
           /* @__PURE__ */ jsx47("line", { className: "ad-dial__needle", ...line(f, 0, r - 1) }),
           /* @__PURE__ */ jsx47("circle", { className: "ad-dial__hub", cx: "35", cy: "35", r: "2.5" })
         ] })
@@ -7249,7 +7259,7 @@ function Tracker({ periods, ariaLabel, className }) {
 }
 
 // src/components/Path/Path.tsx
-import { Fragment as Fragment25, jsx as jsx49, jsxs as jsxs46 } from "react/jsx-runtime";
+import { Fragment as Fragment26, jsx as jsx49, jsxs as jsxs46 } from "react/jsx-runtime";
 function Steps({ steps, current, onPress, ariaLabel, compact, late, complete, className }) {
   const finished = useNamedColour(complete);
   const at = finished ? steps.length : Math.max(0, steps.findIndex((s) => s.id === current));
@@ -7261,7 +7271,7 @@ function Steps({ steps, current, onPress, ariaLabel, compact, late, complete, cl
       style: { gridTemplateColumns: `repeat(${Math.max(1, steps.length)}, minmax(0, 1fr))`, ...finished ? { ["--ad-steps-complete"]: finished } : {} },
       children: steps.map((s, i) => {
         const state = i < at ? "done" : i === at ? "current" : "next";
-        const words2 = /* @__PURE__ */ jsxs46(Fragment25, { children: [
+        const words2 = /* @__PURE__ */ jsxs46(Fragment26, { children: [
           /* @__PURE__ */ jsx49("span", { className: cx("ad-steps__bar", `ad-steps__bar--${state}`, state === "current" && late && "ad-steps__bar--late"), "aria-hidden": "true" }),
           /* @__PURE__ */ jsx49("span", { className: compact ? "ad-sr" : "ad-steps__name ad-clamp-line", children: s.label }),
           s.note && !compact && /* @__PURE__ */ jsx49("span", { className: "ad-steps__note ad-clamp-line", children: s.note }),
@@ -7376,7 +7386,7 @@ function CommandSearch({ open, onClose, query, onQuery, results, onPick, label =
 
 // src/components/Guidance/Guidance.tsx
 import { useEffect as useEffect19, useLayoutEffect as useLayoutEffect12, useRef as useRef35, useState as useState29 } from "react";
-import { Fragment as Fragment26, jsx as jsx52, jsxs as jsxs48 } from "react/jsx-runtime";
+import { Fragment as Fragment27, jsx as jsx52, jsxs as jsxs48 } from "react/jsx-runtime";
 var useIsoLayoutEffect3 = typeof window === "undefined" ? useEffect19 : useLayoutEffect12;
 function TourStep({ open, anchor, step, total, title, children, onBack, onNext, onExit, backLabel = "Back", nextLabel = "Next", progressLabel = (s, t) => `${s} of ${t}`, placement, side: older, onClose, closeLabel }) {
   const card = useRef35(null);
@@ -7473,7 +7483,7 @@ function PixxBrief({ open, face, greeting, children, onSnooze, onGotIt, snoozeLa
 function PixxFigure({ onPress, open, unread = 0, tip = "Pixx", motion, body, tail, hooks, className }) {
   const { triggerProps, node } = useTooltip(tip, { describes: false });
   const data = hooks ? Object.fromEntries(Object.entries(hooks).filter(([k]) => k.startsWith("data-"))) : {};
-  return /* @__PURE__ */ jsxs48(Fragment26, { children: [
+  return /* @__PURE__ */ jsxs48(Fragment27, { children: [
     /* @__PURE__ */ jsxs48(
       "button",
       {
@@ -7496,7 +7506,7 @@ function PixxFigure({ onPress, open, unread = 0, tip = "Pixx", motion, body, tai
 }
 
 // src/components/Furniture/Furniture.tsx
-import { Fragment as Fragment27, jsx as jsx53, jsxs as jsxs49 } from "react/jsx-runtime";
+import { Fragment as Fragment28, jsx as jsx53, jsxs as jsxs49 } from "react/jsx-runtime";
 function Footer({ code: code2, number, venue, description, countdown: countdown2, page, undo, news }) {
   return /* @__PURE__ */ jsxs49("footer", { className: "ad-footer", children: [
     /* @__PURE__ */ jsxs49("span", { className: "ad-footer__cell ad-footer__code", children: [
@@ -7509,7 +7519,7 @@ function Footer({ code: code2, number, venue, description, countdown: countdown2
       description != null && !undo && /* @__PURE__ */ jsx53("span", { className: "ad-footer__description", title: typeof description === "string" ? description : void 0, children: description })
     ] }),
     /* @__PURE__ */ jsx53("span", { className: "ad-footer__cell ad-footer__run", children: !undo && countdown2 }),
-    /* @__PURE__ */ jsx53("span", { className: "ad-footer__undo", "data-ad-layer": "", role: "status", "aria-live": "polite", children: undo && /* @__PURE__ */ jsxs49(Fragment27, { children: [
+    /* @__PURE__ */ jsx53("span", { className: "ad-footer__undo", "data-ad-layer": "", role: "status", "aria-live": "polite", children: undo && /* @__PURE__ */ jsxs49(Fragment28, { children: [
       /* @__PURE__ */ jsx53("span", { className: "ad-footer__undo-words", children: undo.message }),
       undo.onUndo && /* @__PURE__ */ jsx53(ButtonSizeScope, { size: "row", children: /* @__PURE__ */ jsx53(Button, { onClick: undo.onUndo, children: undo.label ?? "Undo" }) })
     ] }) }),
@@ -7518,7 +7528,7 @@ function Footer({ code: code2, number, venue, description, countdown: countdown2
 }
 function Contents({ entries, ariaLabel = "Contents" }) {
   return /* @__PURE__ */ jsx53("ol", { className: "ad-contents", "aria-label": ariaLabel, children: entries.map((e, i) => {
-    const inner = /* @__PURE__ */ jsxs49(Fragment27, { children: [
+    const inner = /* @__PURE__ */ jsxs49(Fragment28, { children: [
       /* @__PURE__ */ jsx53("span", { className: "ad-contents__numeral", children: e.numeral ?? String(i + 1).padStart(2, "0") }),
       /* @__PURE__ */ jsxs49("span", { className: "ad-contents__body", children: [
         /* @__PURE__ */ jsx53("span", { className: "ad-contents__name", children: e.name }),
@@ -7551,7 +7561,7 @@ function Frame({ rail, pages, corner, header, toolbar, key, footer, children, cl
   return /* @__PURE__ */ jsxs49("div", { className: cx("ad-frame", corner != null && "ad-frame--corner", className), children: [
     rail,
     pages,
-    /* @__PURE__ */ jsx53("div", { className: "ad-frame__page", children: slots ? /* @__PURE__ */ jsxs49(Fragment27, { children: [
+    /* @__PURE__ */ jsx53("div", { className: "ad-frame__page", children: slots ? /* @__PURE__ */ jsxs49(Fragment28, { children: [
       header,
       toolbar != null && /* @__PURE__ */ jsx53(FrameToolbar, { children: toolbar }),
       key != null && /* @__PURE__ */ jsx53(FrameKey, { children: key }),
@@ -7640,7 +7650,7 @@ function AdsScope({ project, children }) {
 
 // src/components/ClockFace/ClockFace.tsx
 import { forwardRef as forwardRef11 } from "react";
-import { Fragment as Fragment28, jsx as jsx55, jsxs as jsxs50 } from "react/jsx-runtime";
+import { Fragment as Fragment29, jsx as jsx55, jsxs as jsxs50 } from "react/jsx-runtime";
 var ClockFace = forwardRef11(function ClockFace2({ label, time: given, period, daytime, detail, className, ...props }, ref) {
   const time = period ? given.replace(/^0(?=\d:)/, "") : given;
   return /* @__PURE__ */ jsxs50("button", { type: "button", ...props, ref, title: detail, "aria-label": props["aria-label"] ?? `Options for ${label}, ${time}${period ? ` ${period}` : ""}${detail ? `, ${detail}` : ""}`, className: cx("ad-clock-face", className), children: [
@@ -7657,12 +7667,12 @@ var ClockFace = forwardRef11(function ClockFace2({ label, time: given, period, d
 var segments = { 0: "abcdef", 1: "bc", 2: "abged", 3: "abgcd", 4: "fgbc", 5: "afgcd", 6: "afgecd", 7: "abc", 8: "abcdefg", 9: "abfgcd" };
 var bars = { a: [1.5, 0, 6, 2], g: [1.5, 9, 6, 2], d: [1.5, 18, 6, 2], b: [7, 2, 2, 7], f: [0, 2, 2, 7], c: [7, 11, 2, 7], e: [0, 11, 2, 7] };
 function ClockDigits({ time }) {
-  if (!/^\d{1,2}:\d{2}$/.test(time)) return /* @__PURE__ */ jsx55(Fragment28, { children: time });
+  if (!/^\d{1,2}:\d{2}$/.test(time)) return /* @__PURE__ */ jsx55(Fragment29, { children: time });
   let x = 0;
   const marks = time.split("").map((char, i) => {
     const left = x;
     x += (char === ":" ? 4 : 9) + 2;
-    return /* @__PURE__ */ jsx55("g", { transform: `translate(${left} 0)`, children: char === ":" ? /* @__PURE__ */ jsxs50(Fragment28, { children: [
+    return /* @__PURE__ */ jsx55("g", { transform: `translate(${left} 0)`, children: char === ":" ? /* @__PURE__ */ jsxs50(Fragment29, { children: [
       /* @__PURE__ */ jsx55("circle", { cx: 2, cy: 6, r: 1 }),
       /* @__PURE__ */ jsx55("circle", { cx: 2, cy: 14, r: 1 })
     ] }) : segments[char].split("").map((name) => {
@@ -7671,7 +7681,7 @@ function ClockDigits({ time }) {
     }) }, i);
   });
   const width = x - 2;
-  return /* @__PURE__ */ jsxs50(Fragment28, { children: [
+  return /* @__PURE__ */ jsxs50(Fragment29, { children: [
     /* @__PURE__ */ jsx55("span", { className: "ad-sr", children: time }),
     /* @__PURE__ */ jsx55("svg", { className: "ad-clock-face__segments", viewBox: `0 0 ${width} 20`, width, height: 20, "aria-hidden": "true", fill: "currentColor", children: marks })
   ] });

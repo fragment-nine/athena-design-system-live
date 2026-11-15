@@ -457,6 +457,13 @@ function isLate(due, today, opts = {}) {
   if (opts.done || !due) return false;
   return dueLabel(opts.until ?? due, today).late;
 }
+function dateWhen(due, today, opts = {}) {
+  if (!due || opts.done) return null;
+  if (isLate(due, today, opts)) return "late";
+  if (opts.until) return null;
+  const d = daysBetween(today, due);
+  return d === 0 ? "today" : d === 1 ? "tomorrow" : opts.repeats ? "repeats" : "later";
+}
 function dayHeading(day, today, w = ENGLISH) {
   const d = daysBetween(today, day);
   const named = d === 0 ? w.today : d === 1 ? w.tomorrow : d === -1 ? w.yesterday : null;
@@ -1884,6 +1891,7 @@ export {
   weekdayDate,
   dueLabel,
   isLate,
+  dateWhen,
   dayHeading,
   relative,
   isToday,
@@ -1942,4 +1950,4 @@ export {
   parseDurationHours,
   formatDurationHours
 };
-//# sourceMappingURL=chunk-QLN6EA5L.js.map
+//# sourceMappingURL=chunk-ZZ6PEXND.js.map

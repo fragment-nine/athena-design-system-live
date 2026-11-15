@@ -30,6 +30,7 @@ import {
   countLabel,
   countWorkingDays,
   countdown,
+  dateWhen,
   dayHeading,
   dayLoad,
   dayOf,
@@ -120,7 +121,7 @@ import {
   zoneAbbr,
   zoneHint,
   zonedWeekdayHour
-} from "../chunk-QLN6EA5L.js";
+} from "../chunk-ZZ6PEXND.js";
 
 // src/language/queryAssist.ts
 function recognizeQuery(text, vocab = {}) {
@@ -221,6 +222,7 @@ export {
   countLabel,
   countWorkingDays,
   countdown,
+  dateWhen,
   dayHeading,
   dayLoad,
   dayOf,

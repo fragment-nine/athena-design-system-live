@@ -2244,6 +2244,9 @@ button.ad-steps__press:focus-visible { outline: none; }
 .ad-datefield--compact .ad-field__input { min-width: calc(var(--check-size) * 4); }
 .ad-datefield .ad-field__input { field-sizing: content; min-width: var(--w-col-sm); padding-inline-end: var(--space-hair); }
 .ad-datefield__field--late .ad-field__input { color: var(--status-error-ink); }
+/* The repeat mark after a repeating date's words, in the date's own ink (red with a late date). */
+.ad-field__end:has(> .ad-datefield__repeat) { color: inherit; }
+.ad-datefield__field--late .ad-datefield__repeat { color: var(--status-error-ink); }
 .ad-datefield__drop.ad-popover { width: auto; padding: var(--space-2); }
 /* What is picked shows: one pick carries a check at the right; picking several draws the tick box before each row. Never coral. */
 .ad-picklist__check { display: inline-flex; margin-left: auto; color: var(--text-secondary); }
@@ -2259,6 +2262,9 @@ button.ad-steps__press:focus-visible { outline: none; }
 .ad-pick-field__icon { flex: none; color: var(--text-muted); }
 .ad-pick-field__words { flex: 1; }
 .ad-pick-field__words--empty, .ad-pick-field__words--fallback { color: var(--text-muted); }
+/* Read, not picked: the filled look, no hover, no caret, no +; it never opens. */
+.ad-field.ad-pick-field--read { cursor: default; }
+.ad-pick-field.ad-pick-field--read:has(> .ad-pick-field__words) > :is(.ad-pick-field__caret, .ad-icon.ad-field__add) { display: none; }
 /* Empty is blank: the + where the caret was, never prompt words; in a table cell only under the pointer. */
 .ad-pick-field:has(> .ad-pick-field__words--empty) > .ad-pick-field__caret { display: none; }
 .ad-pick-field:has(> .ad-pick-field__words--empty) > .ad-icon.ad-field__add { display: inline-flex; flex: none; margin-left: auto; color: var(--text-secondary); }
@@ -2314,9 +2320,11 @@ button.ad-steps__press:focus-visible { outline: none; }
 
 /* src/components/Popover/Popover.css */
 /* Popover and its pieces */
-/* A card starts at its named width, its sentences wrapping there, and grows for anything that cannot wrap: no maximum, never a sideways bar. */
+/* A pop-over starts at its named width, its sentences wrapping there, and grows for anything that cannot wrap: no maximum, never a sideways bar.
+   A card is its named width whatever its rows hold: a row is laid at the card's width, so its long name shortens with its ellipsis. */
 .ad-popover { min-width: min-content; padding: var(--space-4) var(--space-4) var(--space-4); max-height: calc(100vh - var(--space-4)); overflow-x: hidden; overflow-y: auto; }
 .ad-popover--card { width: var(--w-card); }
+.ad-popover--card .ad-row { contain: inline-size; }
 .ad-popover--wide { width: var(--w-wide); }
 .ad-popover--menu { width: var(--w-menu); }
 .ad-popover--menu[style*="--ad-trigger-w"] { min-width: var(--ad-trigger-w); }
@@ -2338,6 +2346,12 @@ button.ad-steps__press:focus-visible { outline: none; }
 .ad-popover__chip { margin-top: var(--space-1); display: flex; }
 .ad-popover__title-row { display: flex; align-items: center; gap: var(--space-3); margin-top: var(--space-1); }
 .ad-popover__title { margin: 0; }
+/* A title that cannot be renamed stands as tall as one that can (the box's own room over and under its words), so every card's header,
+   and all under it, starts at one place. */
+.ad-popover__title:not(:has(.ad-inline-edit, .ad-popover__title-read)) { padding-block: var(--space-1); }
+/* A value typed in place in a card is as wide as its words, never narrower than a short figure, so what follows it on its line sits
+   beside it as beside a value read only ("40h · 9h worked"); its words are its floor, whatever holds it, so nothing cuts it ("OUTP1"). */
+.ad-popover--framed .ad-inline-edit--body:not(.ad-inline-edit--wrap) { field-sizing: content; flex: none; width: auto; min-width: 4ch; max-width: none; }
 .ad-popover__description { margin: var(--space-1) 0 0; font: var(--type-body); color: var(--text-secondary); }
 .ad-facts { display: flex; flex-wrap: wrap; margin: var(--space-3) 0; border-top: var(--border-w) solid var(--border); border-bottom: var(--border-w) solid var(--border); }
 .ad-facts__cell { flex: auto; display: flex; align-items: center; gap: var(--space-2); padding: var(--space-2) var(--space-3); border-right: var(--border-w) solid var(--border); white-space: nowrap; }
@@ -2370,6 +2384,8 @@ button.ad-steps__press:focus-visible { outline: none; }
 .ad-popover__body { flex: 1; min-height: 0; overflow-x: hidden; overflow-y: auto; scrollbar-gutter: stable; margin-right: calc(var(--space-4) * -1); padding-right: var(--space-2); margin-left: calc(var(--space-2) * -1); padding-left: var(--space-2); }
 .ad-popover__cols > .ad-popover__body { margin-right: 0; margin-left: 0; }
 .ad-popover__foot { flex: none; display: flex; align-items: center; gap: var(--space-2); margin: var(--space-3) calc(var(--space-4) * -1) 0; padding: var(--space-3) var(--space-4); border-top: var(--border-w) solid var(--border); }
+/* A card's foot acts sit at its right: the card's other acts, then Archive at the far right (FormActions). */
+.ad-popover__foot > .ad-form-actions { flex: 1 1 auto; margin-top: 0; }
 .ad-popover__action { margin-left: auto; display: inline-flex; }
 /* PopoverCard: a pinned header, then one scrolling body, or two columns (the rail at the right, a hairline between) each
    scrolling on its own. A phone's sheet fills the screen. */
@@ -2397,6 +2413,8 @@ button.ad-steps__press:focus-visible { outline: none; }
 .ad-popover__title-read .ad-token-input__field:focus-within { background: var(--bg-hover); box-shadow: none; }
 /* A todo's title is the todo's own words, typed in place: the row's Name rung, as its row draws it, never the card title's. */
 .ad-popover__title:has(.ad-popover__title-read) { font: var(--type-name); }
+/* Every card's title in a row's Name rung, plain or typed in place, as the todo's (2026-11-14, Jeremy: "make all popovers the same" · "yes, fiz all of them"). */
+.ad-popover--framed .ad-popover__title, .ad-popover--framed .ad-popover__title .ad-inline-edit--title { font: var(--type-name); line-height: var(--lh-tight); }
 .ad-popover__title-read .ad-token-input__box { padding: var(--space-1) 0; font: var(--type-name); line-height: var(--lh-tight); overflow-wrap: anywhere; }
 
 /* A list inside a card grows to its rows: the card's body is the one scroll area. */
@@ -2411,37 +2429,111 @@ button.ad-steps__press:focus-visible { outline: none; }
 /* A list's last row at the end of a card's or a section's body draws no line under it: patterns.css (one rule for both). */
 
 /* A card's facts (2026-11-14, Jeremy: "1. How a card's facts look: B, Todoist-like facts"): in a card, a field's name sits over its
-   value in the body face, semibold and grey; a pick's value is plain words with its mark, no box and no caret at rest. Under the pointer
+   value in the body face, quiet (muted, regular), so the value is the loud thing; a pick's value is plain words with its mark, no box and no caret at rest. Under the pointer
    and while its picker is open, the pick is a coral bar across the card (`tint-field-bar`), its caret at the right, the picker dropping
    under it. An empty pick is the name alone on its line with a + at its right; the whole line opens the picker. Typed boxes (a note,
    a text field) keep their box. */
-.ad-popover--framed .ad-field-row--beside:not(.ad-setting) { flex-direction: column; align-items: stretch; gap: var(--space-1); max-width: none; min-height: 0; padding-block: var(--space-1); }
-.ad-popover--framed .ad-field-row--beside:not(.ad-setting) > .ad-field-row__label { width: auto; font: var(--type-body); font-weight: 600; line-height: var(--lh-tight); color: var(--text-secondary); white-space: normal; }
+.ad-popover--framed .ad-field-row--beside:not(.ad-setting) { flex-direction: column; align-items: stretch; gap: var(--space-1); max-width: none; min-height: 0; }
+.ad-popover--framed .ad-field-row--beside:not(.ad-setting) > .ad-field-row__label { width: auto; font: var(--type-body); line-height: var(--lh-tight); color: var(--text-muted); white-space: normal; }
 .ad-popover--framed .ad-field-row--beside:not(.ad-setting) > .ad-field-row__control { flex: none; justify-content: flex-start; width: 100%; }
 /* Only a pick stretches into the bar across the card (itself, or the app's wrapper around one); a switch, a button, a typed box keep their own size. */
 .ad-popover--framed .ad-field-row--beside:not(.ad-setting) > .ad-field-row__control > :is(.ad-pick-field, .ad-select, .ad-datefield, :has(.ad-pick-field, .ad-select, .ad-datefield)) { flex: 1 1 auto; }
 .ad-popover--framed .ad-field-row--beside:not(.ad-setting) :is(.ad-datefield, .ad-datefield > .ad-field-wrap) { display: flex; flex: 1 1 auto; width: auto; }
-.ad-popover--framed .ad-field-row--beside:not(.ad-setting) :is(.ad-pick-field, .ad-select, .ad-datefield .ad-field) { position: relative; flex: 1 1 auto; width: auto; max-width: none; height: var(--h-field); margin-left: calc(var(--space-2) * -1); padding: 0 calc(var(--space-2) + var(--icon-sm) + var(--space-2)) 0 var(--space-2); border-radius: var(--radius-page); background: transparent; color: var(--text-primary); font: var(--type-name); line-height: var(--lh-tight); }
-.ad-popover--framed .ad-field-row--beside:not(.ad-setting) :is(.ad-pick-field, .ad-select, .ad-datefield .ad-field):is(:hover, :focus-within, [aria-expanded="true"], :has([aria-expanded="true"])) { background: color-mix(in srgb, var(--accent) var(--tint-field-bar), transparent); }
+.ad-popover--framed .ad-field-row--beside:not(.ad-setting) :is(.ad-pick-field, .ad-select, .ad-datefield .ad-field, .ad-timefield .ad-field) { position: relative; flex: 1 1 auto; width: auto; max-width: none; height: var(--h-field); margin-left: calc(var(--space-2) * -1); padding: 0 calc(var(--space-2) + var(--icon-sm) + var(--space-2)) 0 var(--space-2); border-radius: var(--radius-page); background: transparent; color: var(--text-primary); font: var(--type-name); line-height: var(--lh-tight); }
+.ad-popover--framed .ad-field-row--beside:not(.ad-setting) :is(.ad-pick-field, .ad-select, .ad-datefield .ad-field, .ad-timefield .ad-field):is(:hover, :focus-within, [aria-expanded="true"], :has([aria-expanded="true"])) { background: color-mix(in srgb, var(--accent) var(--tint-field-bar), transparent); }
 .ad-popover--framed .ad-field-row--beside:not(.ad-setting) :is(.ad-pick-field__caret, .ad-select__caret) { position: absolute; right: var(--space-2); visibility: hidden; color: var(--text-secondary); }
 .ad-popover--framed .ad-field-row--beside:not(.ad-setting) :is(.ad-pick-field, .ad-select):is(:hover, :focus-within, [aria-expanded="true"], :has([aria-expanded="true"])) :is(.ad-pick-field__caret, .ad-select__caret) { visibility: visible; color: var(--accent); }
 .ad-popover--framed .ad-field-row--beside:not(.ad-setting) .ad-pick-field__words { flex: 1 1 auto; }
 .ad-popover--framed .ad-field-row--beside:not(.ad-setting) .ad-select__native { height: var(--h-field); line-height: var(--h-field); }
-/* The priority: its words with its colour as a small square before them, never a pill. */
+/* The priority: its words with its colour as a small round dot before them, never a pill. */
 .ad-popover--framed .ad-field-row--beside:not(.ad-setting) .ad-select.ad-priority-pick { gap: var(--space-2); font-variant-numeric: normal; }
-.ad-popover--framed .ad-field-row--beside:not(.ad-setting) .ad-priority-pick::before { content: ''; flex: none; width: var(--space-3); height: var(--space-3); border-radius: var(--radius-control); background: var(--ad-pick-ink); }
+.ad-popover--framed .ad-field-row--beside:not(.ad-setting) .ad-priority-pick::before { content: ''; flex: none; width: var(--space-3); height: var(--space-3); border-radius: var(--radius-round); background: var(--ad-pick-ink); }
+/* A fact's sign before its value, Todoist's way: # a project, + a person, P a priority, the calendar a date; in the name's ink, the
+   date's in the date's. Only in a card. */
+.ad-fact-sign, .ad-datefield--signed .ad-field__icon { display: none; }
+.ad-popover--framed .ad-field-row--beside:not(.ad-setting) :is(.ad-fact-sign, .ad-datefield--signed .ad-field__icon) { display: inline-flex; flex: none; align-items: center; justify-content: center; }
+.ad-popover--framed .ad-field-row--beside:not(.ad-setting) :is(.ad-fact-sign, .ad-datefield--signed .ad-field__icon) { width: var(--icon-sm); color: var(--text-muted); font: var(--type-body); line-height: var(--lh-tight); }
+.ad-popover--framed .ad-field-row--beside:not(.ad-setting) .ad-datefield--signed .ad-field__icon svg { width: var(--icon-sm); height: var(--icon-sm); }
+.ad-popover--framed .ad-field-row--beside:not(.ad-setting) .ad-fact-sign--priority { order: -1; }
+/* A range has one calendar, before its first date. */
+.ad-popover--framed .ad-field-row--beside:not(.ad-setting) .ad-daterange > .ad-datefield ~ .ad-datefield.ad-datefield--signed .ad-field__icon { display: none; }
+/* A pick read, not picked: no bar under the pointer, and its words in a filled pick's ink. */
+.ad-popover--framed .ad-field-row--beside:not(.ad-setting) .ad-field.ad-pick-field.ad-pick-field--read:is(:hover, :focus-within) { background: transparent; }
+/* A date that can be late, by when it is (Todoist's colours): today green, tomorrow orange, a repeat purple, late red, later grey. */
+.ad-popover--framed .ad-field-row--beside:not(.ad-setting) .ad-datefield__field--today :is(.ad-field__input, .ad-field__icon, .ad-datefield__repeat) { color: var(--status-good); }
+.ad-popover--framed .ad-field-row--beside:not(.ad-setting) .ad-datefield__field--tomorrow :is(.ad-field__input, .ad-field__icon, .ad-datefield__repeat) { color: var(--status-warn); }
+.ad-popover--framed .ad-field-row--beside:not(.ad-setting) .ad-datefield__field--repeats :is(.ad-field__input, .ad-field__icon, .ad-datefield__repeat) { color: var(--pick-purple); }
+.ad-popover--framed .ad-field-row--beside:not(.ad-setting) .ad-datefield__field--late :is(.ad-field__input, .ad-field__icon, .ad-datefield__repeat) { color: var(--status-error-ink); }
+.ad-popover--framed .ad-field-row--beside:not(.ad-setting) .ad-datefield__field--later :is(.ad-field__input, .ad-field__icon, .ad-datefield__repeat) { color: var(--text-secondary); }
 /* Empty: the name alone on its line, a + at the right; the pick lies under the whole line, so pressing anywhere on it opens the
    picker. A typed date opens out to its box while it is typed in. */
-.ad-popover--framed .ad-field-row--beside:not(.ad-setting):has(:is(.ad-pick-field__words--empty, .ad-priority-pick--p0, .ad-datefield .ad-field__input:placeholder-shown)):not(:has(.ad-datefield .ad-field__input:focus)) { display: grid; grid-template: "fact" var(--h-field) / minmax(0, 1fr); padding-block: var(--space-1); }
-.ad-popover--framed .ad-field-row--beside:not(.ad-setting):has(:is(.ad-pick-field__words--empty, .ad-priority-pick--p0, .ad-datefield .ad-field__input:placeholder-shown)):not(:has(.ad-datefield .ad-field__input:focus)) > * { grid-area: fact; }
-.ad-popover--framed .ad-field-row--beside:not(.ad-setting):has(:is(.ad-pick-field__words--empty, .ad-priority-pick--p0, .ad-datefield .ad-field__input:placeholder-shown)):not(:has(.ad-datefield .ad-field__input:focus)) > .ad-field-row__label { position: relative; z-index: 1; align-self: center; pointer-events: none; }
-.ad-popover--framed .ad-field-row--beside:not(.ad-setting):has(:is(.ad-pick-field__words--empty, .ad-priority-pick--p0, .ad-datefield .ad-field__input:placeholder-shown)):not(:has(.ad-datefield .ad-field__input:focus)) :is(.ad-pick-field, .ad-select, .ad-datefield .ad-field) { color: transparent; }
-.ad-popover--framed .ad-field-row--beside:not(.ad-setting):has(:is(.ad-pick-field__words--empty, .ad-priority-pick--p0, .ad-datefield .ad-field__input:placeholder-shown)):not(:has(.ad-datefield .ad-field__input:focus)) :is(.ad-pick-field__words, .ad-pick-field__lead, .ad-pick-field__icon, .ad-select__native, .ad-field__input) { color: transparent; }
-.ad-popover--framed .ad-field-row--beside:not(.ad-setting):has(:is(.ad-pick-field__words--empty, .ad-priority-pick--p0, .ad-datefield .ad-field__input:placeholder-shown)):not(:has(.ad-datefield .ad-field__input:focus)) .ad-field__input::placeholder { color: transparent; }
-.ad-popover--framed .ad-field-row--beside:not(.ad-setting):has(:is(.ad-pick-field__words--empty, .ad-priority-pick--p0, .ad-datefield .ad-field__input:placeholder-shown)):not(:has(.ad-datefield .ad-field__input:focus)) :is(.ad-pick-field__caret, .ad-select__caret), .ad-popover--framed .ad-field-row--beside:not(.ad-setting):has(:is(.ad-pick-field__words--empty, .ad-priority-pick--p0, .ad-datefield .ad-field__input:placeholder-shown)):not(:has(.ad-datefield .ad-field__input:focus)) .ad-priority-pick::before { display: none; }
-.ad-popover--framed .ad-field-row--beside:not(.ad-setting):has(:is(.ad-pick-field__words--empty, .ad-priority-pick--p0, .ad-datefield .ad-field__input:placeholder-shown)):not(:has(.ad-datefield .ad-field__input:focus)) .ad-field__add { display: inline-flex; color: var(--text-secondary); }
-.ad-popover--framed .ad-field-row--beside:not(.ad-setting):has(:is(.ad-pick-field__words--empty, .ad-priority-pick--p0, .ad-datefield .ad-field__input:placeholder-shown)):not(:has(.ad-datefield .ad-field__input:focus)) :is(.ad-pick-field, .ad-select) > .ad-field__add, .ad-popover--framed .ad-field-row--beside:not(.ad-setting):has(:is(.ad-pick-field__words--empty, .ad-priority-pick--p0, .ad-datefield .ad-field__input:placeholder-shown)):not(:has(.ad-datefield .ad-field__input:focus)) .ad-field__end:has(> .ad-field__add:only-child) { display: inline-flex; position: absolute; right: var(--space-2); top: 50%; translate: 0 -50%; pointer-events: none; }
-.ad-popover--framed .ad-field-row--beside:not(.ad-setting):has(:is(.ad-pick-field__words--empty, .ad-priority-pick--p0, .ad-datefield .ad-field__input:placeholder-shown)):not(:has(.ad-datefield .ad-field__input:focus)) :is(.ad-pick-field, .ad-select, .ad-datefield .ad-field):hover .ad-field__add { color: var(--accent); }
+.ad-popover--framed .ad-field-row--beside:not(.ad-setting):has(:is(.ad-pick-field__words--empty, .ad-priority-pick--p0, .ad-datefield .ad-field__input:placeholder-shown), > .ad-field-row__control .ad-inline-edit--empty, > .ad-field-row__control .ad-pick-field__input--empty):not(:has(.ad-datefield .ad-field__input:focus, .ad-inline-edit:focus, .ad-pick-field--typed .ad-field__input:focus)) { display: grid; grid-template: "fact" var(--h-field) / minmax(0, 1fr); }
+.ad-popover--framed .ad-field-row--beside:not(.ad-setting):has(:is(.ad-pick-field__words--empty, .ad-priority-pick--p0, .ad-datefield .ad-field__input:placeholder-shown), > .ad-field-row__control .ad-inline-edit--empty, > .ad-field-row__control .ad-pick-field__input--empty):not(:has(.ad-datefield .ad-field__input:focus, .ad-inline-edit:focus, .ad-pick-field--typed .ad-field__input:focus)) > * { grid-area: fact; }
+.ad-popover--framed .ad-field-row--beside:not(.ad-setting):has(:is(.ad-pick-field__words--empty, .ad-priority-pick--p0, .ad-datefield .ad-field__input:placeholder-shown), > .ad-field-row__control .ad-inline-edit--empty, > .ad-field-row__control .ad-pick-field__input--empty):not(:has(.ad-datefield .ad-field__input:focus, .ad-inline-edit:focus, .ad-pick-field--typed .ad-field__input:focus)) > .ad-field-row__label { position: relative; z-index: 1; align-self: center; pointer-events: none; }
+.ad-popover--framed .ad-field-row--beside:not(.ad-setting):has(:is(.ad-pick-field__words--empty, .ad-priority-pick--p0, .ad-datefield .ad-field__input:placeholder-shown), > .ad-field-row__control .ad-inline-edit--empty, > .ad-field-row__control .ad-pick-field__input--empty):not(:has(.ad-datefield .ad-field__input:focus, .ad-inline-edit:focus, .ad-pick-field--typed .ad-field__input:focus)) :is(.ad-pick-field, .ad-select, .ad-datefield .ad-field) { color: transparent; }
+.ad-popover--framed .ad-field-row--beside:not(.ad-setting):has(:is(.ad-pick-field__words--empty, .ad-priority-pick--p0, .ad-datefield .ad-field__input:placeholder-shown), > .ad-field-row__control .ad-inline-edit--empty, > .ad-field-row__control .ad-pick-field__input--empty):not(:has(.ad-datefield .ad-field__input:focus, .ad-inline-edit:focus, .ad-pick-field--typed .ad-field__input:focus)) :is(.ad-pick-field__words, .ad-pick-field__lead, .ad-pick-field__icon, .ad-select__native, .ad-field__input) { color: transparent; }
+.ad-popover--framed .ad-field-row--beside:not(.ad-setting):has(:is(.ad-pick-field__words--empty, .ad-priority-pick--p0, .ad-datefield .ad-field__input:placeholder-shown), > .ad-field-row__control .ad-inline-edit--empty, > .ad-field-row__control .ad-pick-field__input--empty):not(:has(.ad-datefield .ad-field__input:focus, .ad-inline-edit:focus, .ad-pick-field--typed .ad-field__input:focus)) .ad-field__input::placeholder { color: transparent; }
+.ad-popover--framed .ad-field-row--beside:not(.ad-setting):has(:is(.ad-pick-field__words--empty, .ad-priority-pick--p0, .ad-datefield .ad-field__input:placeholder-shown), > .ad-field-row__control .ad-inline-edit--empty, > .ad-field-row__control .ad-pick-field__input--empty):not(:has(.ad-datefield .ad-field__input:focus, .ad-inline-edit:focus, .ad-pick-field--typed .ad-field__input:focus)) :is(.ad-pick-field__caret, .ad-select__caret), .ad-popover--framed .ad-field-row--beside:not(.ad-setting):has(:is(.ad-pick-field__words--empty, .ad-priority-pick--p0, .ad-datefield .ad-field__input:placeholder-shown), > .ad-field-row__control .ad-inline-edit--empty, > .ad-field-row__control .ad-pick-field__input--empty):not(:has(.ad-datefield .ad-field__input:focus, .ad-inline-edit:focus, .ad-pick-field--typed .ad-field__input:focus)) .ad-priority-pick::before { display: none; }
+.ad-popover--framed .ad-field-row--beside:not(.ad-setting):has(:is(.ad-pick-field__words--empty, .ad-priority-pick--p0, .ad-datefield .ad-field__input:placeholder-shown), > .ad-field-row__control .ad-inline-edit--empty, > .ad-field-row__control .ad-pick-field__input--empty):not(:has(.ad-datefield .ad-field__input:focus, .ad-inline-edit:focus, .ad-pick-field--typed .ad-field__input:focus)) .ad-field__add { display: inline-flex; color: var(--text-secondary); }
+.ad-popover--framed .ad-field-row--beside:not(.ad-setting):has(:is(.ad-pick-field__words--empty, .ad-priority-pick--p0, .ad-datefield .ad-field__input:placeholder-shown), > .ad-field-row__control .ad-inline-edit--empty, > .ad-field-row__control .ad-pick-field__input--empty):not(:has(.ad-datefield .ad-field__input:focus, .ad-inline-edit:focus, .ad-pick-field--typed .ad-field__input:focus)) :is(.ad-pick-field, .ad-select) > .ad-field__add, .ad-popover--framed .ad-field-row--beside:not(.ad-setting):has(:is(.ad-pick-field__words--empty, .ad-priority-pick--p0, .ad-datefield .ad-field__input:placeholder-shown), > .ad-field-row__control .ad-inline-edit--empty, > .ad-field-row__control .ad-pick-field__input--empty):not(:has(.ad-datefield .ad-field__input:focus, .ad-inline-edit:focus, .ad-pick-field--typed .ad-field__input:focus)) .ad-field__end:has(> .ad-field__add) { display: inline-flex; position: absolute; right: var(--space-2); top: 50%; translate: 0 -50%; pointer-events: none; }
+.ad-popover--framed .ad-field-row--beside:not(.ad-setting):has(:is(.ad-pick-field__words--empty, .ad-priority-pick--p0, .ad-datefield .ad-field__input:placeholder-shown), > .ad-field-row__control .ad-inline-edit--empty, > .ad-field-row__control .ad-pick-field__input--empty):not(:has(.ad-datefield .ad-field__input:focus, .ad-inline-edit:focus, .ad-pick-field--typed .ad-field__input:focus)) :is(.ad-pick-field, .ad-select, .ad-datefield .ad-field):hover .ad-field__add { color: var(--accent); }
+.ad-popover--framed .ad-field-row--beside:not(.ad-setting):has(:is(.ad-pick-field__words--empty, .ad-priority-pick--p0, .ad-datefield .ad-field__input:placeholder-shown), > .ad-field-row__control .ad-inline-edit--empty, > .ad-field-row__control .ad-pick-field__input--empty):not(:has(.ad-datefield .ad-field__input:focus, .ad-inline-edit:focus, .ad-pick-field--typed .ad-field__input:focus)) .ad-datefield__repeat, .ad-popover--framed .ad-field-row--beside:not(.ad-setting):has(:is(.ad-pick-field__words--empty, .ad-priority-pick--p0, .ad-datefield .ad-field__input:placeholder-shown), > .ad-field-row__control .ad-inline-edit--empty, > .ad-field-row__control .ad-pick-field__input--empty):not(:has(.ad-datefield .ad-field__input:focus, .ad-inline-edit:focus, .ad-pick-field--typed .ad-field__input:focus)) .ad-fact-sign, .ad-popover--framed .ad-field-row--beside:not(.ad-setting):has(:is(.ad-pick-field__words--empty, .ad-priority-pick--p0, .ad-datefield .ad-field__input:placeholder-shown), > .ad-field-row__control .ad-inline-edit--empty, > .ad-field-row__control .ad-pick-field__input--empty):not(:has(.ad-datefield .ad-field__input:focus, .ad-inline-edit:focus, .ad-pick-field--typed .ad-field__input:focus)) .ad-datefield--signed .ad-field__icon { display: none; }
+
+/* An empty typed fact (words or a figure, with no grey stand-in) is an empty pick's line too: its box lies under the whole line, so
+   pressing anywhere on it types in it, the + at the right of its own row; typed in, the row opens out to its box. A fact with a grey
+   stand-in ("name@f9.live", "100%") reads as a filled one, its name over the stand-in. */
+.ad-popover--framed .ad-field-row--beside:not(.ad-setting):has(:is(.ad-pick-field__words--empty, .ad-priority-pick--p0, .ad-datefield .ad-field__input:placeholder-shown), > .ad-field-row__control .ad-inline-edit--empty, > .ad-field-row__control .ad-pick-field__input--empty):not(:has(.ad-datefield .ad-field__input:focus, .ad-inline-edit:focus, .ad-pick-field--typed .ad-field__input:focus)) { position: relative; }
+.ad-popover--framed .ad-field-row--beside:not(.ad-setting):has(:is(.ad-pick-field__words--empty, .ad-priority-pick--p0, .ad-datefield .ad-field__input:placeholder-shown), > .ad-field-row__control .ad-inline-edit--empty, > .ad-field-row__control .ad-pick-field__input--empty):not(:has(.ad-datefield .ad-field__input:focus, .ad-inline-edit:focus, .ad-pick-field--typed .ad-field__input:focus)) .ad-inline-edit--empty { field-sizing: fixed; width: 100%; max-width: none; height: var(--h-field); margin-left: calc(var(--space-2) * -1); padding-inline: var(--space-2); }
+.ad-popover--framed .ad-field-row--beside:not(.ad-setting):has(:is(.ad-pick-field__words--empty, .ad-priority-pick--p0, .ad-datefield .ad-field__input:placeholder-shown), > .ad-field-row__control .ad-inline-edit--empty, > .ad-field-row__control .ad-pick-field__input--empty):not(:has(.ad-datefield .ad-field__input:focus, .ad-inline-edit:focus, .ad-pick-field--typed .ad-field__input:focus)) .ad-inline-edit--empty ~ .ad-field__add { position: absolute; right: var(--space-2); top: 50%; translate: 0 -50%; pointer-events: none; }
+.ad-popover--framed .ad-field-row--beside:not(.ad-setting):has(:is(.ad-pick-field__words--empty, .ad-priority-pick--p0, .ad-datefield .ad-field__input:placeholder-shown), > .ad-field-row__control .ad-inline-edit--empty, > .ad-field-row__control .ad-pick-field__input--empty):not(:has(.ad-datefield .ad-field__input:focus, .ad-inline-edit:focus, .ad-pick-field--typed .ad-field__input:focus)) .ad-inline-edit--empty:hover ~ .ad-field__add { color: var(--accent); }
+
+/* 2026-11-14, Jeremy, of the todo card: "Fix teh labels being louder." · "fix fepeat" · "Fix reminders." · "The lines are fine, but the
+   spacing should be consistentn between items." · "note background shouldn't be anythign unless hovered over, same with the title".
+   One rhythm in a card's body: the words of every item (the note, a fact filled or empty, a fold, a person) stand the same room, 12,
+   above and below the hairline between it and the next, on one left edge, in whatever section it sits; a section is no extra gap,
+   only the hairline. A value, an empty fact's name, a fold's name and the note's words sit inside a field's height (their bar shows
+   under the pointer), so those items give that inner room back from their own top. */
+.ad-popover--framed .ad-popover__section { margin-top: 0; }
+.ad-popover--framed .ad-popover__section + .ad-popover__section, .ad-popover--framed .ad-popover__section + .ad-popover__section:not(:has(> .ad-popover__section-head)) { margin-top: 0; padding-top: 0; border-top: var(--border-w) solid var(--border); }
+.ad-popover--framed .ad-popover__section-body { gap: 0; }
+.ad-popover--framed .ad-popover__section-body > * { padding-block: var(--space-3) var(--space-1); }
+.ad-popover--framed .ad-popover__section-body > * + *:not(.ad-view__reason, .ad-view-or, .ad-view-or + *) { padding-top: var(--space-3); }
+.ad-popover--framed .ad-field-row--beside:not(.ad-setting) > .ad-field-row__control { min-height: var(--h-field); align-items: center; }
+.ad-popover--framed .ad-popover__section-body > :has(.ad-pick-field__words--empty, .ad-priority-pick--p0, .ad-datefield .ad-field__input:placeholder-shown, > .ad-field-row__control .ad-inline-edit--empty, > .ad-field-row__control .ad-pick-field__input--empty):not(:has(.ad-datefield .ad-field__input:focus, .ad-inline-edit:focus, .ad-pick-field--typed .ad-field__input:focus)) { padding-top: var(--space-1); }
+/* A fold's head is an item too, read as a fact's name: the body face, quiet, flush with the facts, a fact's height; its mark at the
+   right where an empty fact's + sits, and the whole line folds it, lit as a fact's bar under the pointer. */
+.ad-popover--framed .ad-popover__section-head:has(> .ad-popover__section-fold) { position: relative; min-height: var(--h-field); margin: var(--space-1) 0 var(--space-1) calc(var(--space-2) * -1); padding: 0 var(--space-2); border-radius: var(--radius-page); }
+.ad-popover--framed .ad-popover__section-head:has(> .ad-popover__section-fold):hover { background: color-mix(in srgb, var(--accent) var(--tint-field-bar), transparent); }
+.ad-popover--framed .ad-popover__section-head > .ad-popover__section-fold { order: 2; width: auto; height: auto; margin-left: auto; color: var(--text-secondary); }
+.ad-popover--framed .ad-popover__section-head > .ad-popover__section-fold::after { content: ''; position: absolute; inset: 0; }
+.ad-popover--framed .ad-popover__section-head:hover > .ad-popover__section-fold { color: var(--accent); }
+.ad-popover--framed .ad-popover__section-head:has(> .ad-popover__section-fold) > .ad-popover__section-label { font: var(--type-body); line-height: var(--lh-tight); text-transform: none; letter-spacing: normal; color: var(--text-muted); }
+.ad-popover--framed .ad-popover__section-head:has(> .ad-popover__section-fold) + .ad-popover__section-body > :first-child { padding-top: 0; }
+/* A section laid as an item inside another's body (a fold among the facts) is no item of its own: its head carries the room. */
+.ad-popover--framed .ad-popover__section-body > .ad-popover__section, .ad-popover--framed .ad-popover__section-body > * + .ad-popover__section { padding-block: 0; }
+/* A section's plain label (no fold) stands the same 12 under the hairline over it, and its first item the same 12 under it. */
+.ad-popover--framed .ad-popover__section-head:not(:has(> .ad-popover__section-fold)) { margin: 0; padding-top: var(--space-3); }
+/* The title stands the same room over the first item as any line: the item's own 12, no header gap on top of it. */
+.ad-popover--framed > .ad-popover__head { padding-bottom: 0; }
+.ad-popover--framed > .ad-popover__head > .ad-popover__header { margin-bottom: 0; }
+/* The note and a todo's title wear no fill at rest, only under the pointer; their words sit on the facts' left edge, the fill standing
+   out past them as a fact's bar does. */
+.ad-popover--framed .ad-note-box { margin: calc(var(--space-2) * -1) calc(var(--space-2) * -1) 0; width: calc(100% + var(--space-2) * 2); padding: var(--space-2); background: transparent; }
+/* A note box laid straight in a section's body is its own item: its fill keeps its corners and stands 4 off the item's edges, so its
+   words still sit 12 from the title or the hairline. */
+.ad-popover--framed .ad-popover__section-body > .ad-note-box { margin-block: var(--space-1); padding-block: var(--space-2); }
+.ad-popover--framed .ad-note-box:focus { background: transparent; }
+.ad-popover--framed .ad-note-box:hover { background: var(--bg-raised); }
+.ad-popover--framed .ad-token-input__field { padding-inline: var(--space-2); margin-inline: calc(var(--space-2) * -1); background: transparent; box-shadow: none; }
+.ad-popover--framed .ad-token-input__field:focus-within { background: transparent; }
+.ad-popover--framed .ad-token-input__field:hover { background: var(--bg-raised); }
+/* The rules' "Match all of these rules" pick reads as its sentence: no fill at rest, only under the pointer, as the filter box over it. */
+.ad-popover--framed .ad-rules__match .ad-select, .ad-popover--framed .ad-rules__match .ad-select:focus-within { background: transparent; }
+.ad-popover--framed .ad-rules__match .ad-select:hover { background: var(--bg-raised); }
+.ad-popover--framed .ad-popover__title-read .ad-token-input__field:focus-within { background: transparent; }
+.ad-popover--framed .ad-popover__title-read .ad-token-input__field:hover { background: var(--bg-raised); }
+/* Repeat: a todo that repeats shows the small repeat mark right after its date's words, inside the bar, in the date's ink. */
+.ad-popover--framed .ad-field-row--beside:not(.ad-setting) .ad-datefield .ad-field__input { flex: none; min-width: 0; }
 
 /* src/components/Row/Row.css */
 /* Row, RowDate, TodoCheck */
@@ -2482,16 +2574,19 @@ button.ad-row__name:focus-visible { outline: none; }
 :not(.ad-row__meta) > * + .ad-item-dates, :not(.ad-row__meta) > .ad-item-dates + * { margin-left: var(--space-2); }
 .ad-row-date { display: inline-flex; align-items: baseline; gap: var(--space-1); font: var(--type-detail); color: var(--text-muted); white-space: nowrap; }
 .ad-row-date--late { color: var(--status-error-ink); }
-/* Today green, late red, the glyphs in the date's colour. */
+/* By when it is, Todoist's way (dateWhen): today green, tomorrow orange, a repeat purple, late red, later grey; the glyphs in the date's colour. */
 .ad-row-date--today { color: var(--status-good); }
+.ad-row-date--tomorrow { color: var(--status-warn); }
+.ad-row-date--repeats { color: var(--pick-purple); }
+.ad-row-date--later { color: var(--text-secondary); }
 .ad-row-date__repeat { margin-left: calc(var(--space-1) * -0.5); }
 /* A figure that is only a number with its unit or zone is mono; one with a word stays the body face. */
 .ad-row-figure--number { font: var(--type-data); }
 /* The countdown: body face, regular, text-secondary; red once passed. */
 .ad-row-date--countdown { font: var(--type-name); }
 .ad-row-date__icon { display: inline-flex; align-self: center; }
-/* The date's glyphs take the date's colour: green today, red late. */
-.ad-row__meta .ad-row-date--late svg, .ad-row__meta .ad-row-date--today svg, .ad-row-date--late svg, .ad-row-date--today svg { color: currentColor; }
+/* The date's glyphs take the date's colour. */
+.ad-row__meta .ad-row-date:is(.ad-row-date--late, .ad-row-date--today, .ad-row-date--tomorrow, .ad-row-date--repeats, .ad-row-date--later) svg, .ad-row-date:is(.ad-row-date--late, .ad-row-date--today, .ad-row-date--tomorrow, .ad-row-date--repeats, .ad-row-date--later) svg { color: currentColor; }
 .ad-row-date__icon svg { width: var(--icon-sm); height: var(--icon-sm); }
 
 .ad-todo-check {
