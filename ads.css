@@ -2541,7 +2541,8 @@ button.ad-row__name:focus-visible { outline: none; box-shadow: var(--ring-select
 .ad-splitter__main { flex: 1; min-width: 0; min-height: 0; overflow: auto; }
 .ad-splitter__side { flex: none; width: var(--ad-split); min-width: 0; min-height: 0; overflow: auto; }
 .ad-splitter--page-scroll > .ad-splitter__main, .ad-splitter--page-scroll > .ad-splitter__side { overflow: visible; }
-.ad-splitter__divider { flex: none; position: relative; width: var(--space-2); cursor: col-resize; touch-action: none; }
+/* The divider is the one gap between sections (gap-section), so a pane's sections sit as far from the other pane's as from each other; its hairline is the handle, in the middle. */
+.ad-splitter__divider { flex: none; position: relative; width: var(--gap-section); cursor: col-resize; touch-action: none; }
 .ad-splitter__divider::after { content: ''; position: absolute; top: 0; bottom: 0; left: 50%; width: var(--border-w); transform: translateX(-50%); background: var(--border); }
 .ad-splitter__divider:hover::after, .ad-splitter__divider:focus-visible::after { background: var(--accent); }
 .ad-splitter__divider:focus-visible { outline: none; }
