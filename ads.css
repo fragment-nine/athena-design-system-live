@@ -784,7 +784,8 @@
    caps and the tracking of the heading it sits in unless it says them), so a heading that sorts reads exactly as one that does not. */
 .ad-sort-button { display: inline-flex; align-items: center; gap: var(--space-1); margin: 0; padding: 0; border: 0; background: transparent; font: var(--type-heading); text-transform: uppercase; letter-spacing: var(--track-caps); color: inherit; cursor: pointer; }
 .ad-sort-button:hover { color: var(--accent); }
-.ad-sort-button:focus-visible { outline: none; box-shadow: var(--ring-select); border-radius: var(--radius-page); }
+.ad-sort-button:focus-visible { outline: none; }
+:where(:root:not([data-ad-pointer])) .ad-sort-button:focus-visible { box-shadow: var(--ring-select); border-radius: var(--radius-page); }
 /* A small data note that never wraps: a time, a count, an off-screen date. */
 .ad-note-data { font: var(--type-data); font-size: var(--text-xs); white-space: nowrap; }
 
@@ -850,7 +851,8 @@ tr[data-ad-drop="after"] > :is(td, th) { box-shadow: inset 0 calc(var(--bw-selec
   background: url('assets/logos/loudbox-x.png') center / contain no-repeat;
 }
 .ad-close:hover::before { opacity: 1; }
-.ad-close:focus-visible { outline: none; box-shadow: var(--ring-select); }
+.ad-close:focus-visible { outline: none; }
+:where(:root:not([data-ad-pointer])) .ad-close:focus-visible { box-shadow: var(--ring-select); }
 /* A card that scrolls whole keeps its glass: a soft fade of the glass pinned at its foot while there is more below. */
 .ad-popover[data-more-below]::after { content: ""; position: sticky; bottom: calc(var(--space-4) * -1); display: block; height: var(--space-6); margin: calc(var(--space-6) * -1) calc(var(--space-4) * -1) 0; background: linear-gradient(to bottom, transparent, var(--glass-bg)); pointer-events: none; }
 
@@ -895,7 +897,8 @@ tr[data-ad-drop="after"] > :is(td, th) { box-shadow: inset 0 calc(var(--bw-selec
 /* A lane heading you can press; a card's marks and project code. */
 .ad-board-lane__name--press { margin: 0; padding: 0; border: 0; background: transparent; font: inherit; color: inherit; cursor: pointer; border-radius: var(--radius-page); }
 .ad-board-lane__name--press:hover { color: var(--accent); }
-.ad-board-lane__name--press:focus-visible { outline: none; box-shadow: var(--ring-select); }
+.ad-board-lane__name--press:focus-visible { outline: none; }
+:where(:root:not([data-ad-pointer])) .ad-board-lane__name--press:focus-visible { box-shadow: var(--ring-select); }
 .ad-board-lane__card-marks, .ad-board-lane__card-code { display: inline-flex; align-items: center; gap: var(--space-1); }
 .ad-board-lane__card-meta > .ad-board-lane__card-fact--cut { flex-shrink: 1; min-width: 0; max-width: 100%; }
 .ad-board-lane__card-fact-word { overflow: hidden; text-overflow: ellipsis; min-width: 0; }
@@ -909,9 +912,10 @@ tr[data-ad-drop="after"] > :is(td, th) { box-shadow: inset 0 calc(var(--bw-selec
 .ad-button--row { height: var(--h-btn-row); padding: 0 var(--space-2); background: transparent; border-width: 0; }
 .ad-button--row:hover { background: var(--bg-raised); }
 .ad-button:hover { color: var(--accent); }
-.ad-button:focus-visible, .ad-icon-button:focus-visible { outline: none; box-shadow: var(--ring-select); }
+.ad-button:focus-visible, .ad-icon-button:focus-visible { outline: none; }
+:where(:root:not([data-ad-pointer])) .ad-button:focus-visible, :where(:root:not([data-ad-pointer])) .ad-icon-button:focus-visible { box-shadow: var(--ring-select); }
 /* The ring has to read against the coral, where the white ring does not. */
-.ad-button--main:focus-visible { box-shadow: inset 0 0 0 var(--border-w-strong) var(--on-accent); }
+:where(:root:not([data-ad-pointer])) .ad-button--main:focus-visible { box-shadow: inset 0 0 0 var(--border-w-strong) var(--on-accent); }
 .ad-button--main { background: var(--accent); border-color: var(--accent); color: var(--on-accent); font-weight: 600; box-shadow: var(--glow-hover); }
 .ad-button--main:hover { background: var(--accent-hover); color: var(--on-accent); }
 .ad-button--danger { color: var(--status-error-ink); }
@@ -980,21 +984,19 @@ a.ad-icon-button { text-decoration: none; }
 button.ad-booking { cursor: pointer; }
 .ad-booking { position: relative; }
 .ad-booking--press { cursor: pointer; }
-.ad-booking--press:hover { box-shadow: var(--glow-hover); }
-.ad-booking--press:focus-visible { outline: none; box-shadow: var(--ring-select); }
-/* Grab handles: a short white tick inside the top and bottom edges, shown on hover or focus; the cursor says it resizes. */
+.ad-booking--press:focus-visible { outline: none; }
+:where(:root:not([data-ad-pointer])) .ad-booking--press:focus-visible { box-shadow: var(--ring-select); }
+/* Grab handles: no mark (2026-11-14, Jeremy: "remove the weird little glass hints top and bottom of each draggged card"); an unseen strip
+   inside the top and bottom edges, the cursor saying it resizes. A block never glows under the pointer ("the coral glow on hoveer"). */
 /* A block that presses holds no control (Booking): it fills a holder, and its grips and buttons sit beside it, over its edges. */
 .ad-booking-hold { position: relative; display: flex; flex-direction: column; }
 .ad-booking-hold > .ad-booking { flex: 1; min-height: 0; }
-.ad-booking-hold:hover > .ad-booking--press { box-shadow: var(--glow-hover); }
-.ad-booking-hold:hover > .ad-booking__grip::after { opacity: 1; }
-.ad-booking-hold > .ad-booking--press:focus-visible { box-shadow: var(--ring-select); }
+:where(:root:not([data-ad-pointer])) .ad-booking-hold > .ad-booking--press:focus-visible { box-shadow: var(--ring-select); }
 .ad-booking__grip { position: absolute; left: 0; right: 0; height: var(--space-2); cursor: ns-resize; z-index: 1; }
 .ad-booking__grip--start { top: 0; }
 .ad-booking__grip--end { bottom: 0; }
-.ad-booking__grip::after { content: ""; position: absolute; left: 25%; right: 25%; top: 50%; height: var(--border-w-strong); transform: translateY(-50%); border-radius: var(--radius-round); background: var(--text-primary); opacity: 0; transition: opacity var(--dur-fast) var(--ease-out); }
-.ad-booking:hover .ad-booking__grip::after, .ad-booking__grip:focus-visible::after { opacity: 1; }
-.ad-booking__grip:focus-visible { outline: none; box-shadow: var(--ring-select); }
+.ad-booking__grip:focus-visible { outline: none; }
+:where(:root:not([data-ad-pointer])) .ad-booking__grip:focus-visible { box-shadow: var(--ring-select); }
 .ad-booking__actions { position: absolute; top: var(--space-1); right: var(--space-1); z-index: 2; display: inline-flex; gap: var(--space-hair); opacity: 0; transition: opacity var(--dur-fast) var(--ease-out); }
 /* A block's actions show under the cursor or on focus, never over its words at rest. */
 .ad-booking:hover .ad-booking__actions, .ad-booking:focus-within .ad-booking__actions { opacity: 1; }
@@ -1003,10 +1005,9 @@ button.ad-booking { cursor: pointer; }
 .ad-booking:has(> .ad-booking__mark) > .ad-booking__name { padding-right: calc(var(--icon-sm) + var(--space-1)); }
 .ad-booking:has(> .ad-booking__actions):hover > .ad-booking__mark, .ad-booking:has(> .ad-booking__actions):focus-within > .ad-booking__mark, .ad-booking-hold:has(> .ad-booking__actions):hover > .ad-booking > .ad-booking__mark, .ad-booking-hold:has(> .ad-booking__actions):focus-within > .ad-booking > .ad-booking__mark { visibility: hidden; }
 @media (prefers-reduced-motion: reduce) { .ad-booking__actions { transition: none; } }
-@media (prefers-reduced-motion: reduce) { .ad-booking__grip::after { transition: none; } }
-button.ad-booking:hover { box-shadow: var(--glow-hover); }
 button.ad-booking:hover .ad-booking__name { color: var(--accent); }
-button.ad-booking:focus-visible { outline: none; box-shadow: var(--ring-select); }
+button.ad-booking:focus-visible { outline: none; }
+:where(:root:not([data-ad-pointer])) button.ad-booking:focus-visible { box-shadow: var(--ring-select); }
 .ad-booking--unconfirmed { background: transparent; background-image: var(--hatch); box-shadow: inset 0 0 0 var(--border-w) var(--line-strong); }
 .ad-booking--unconfirmed .ad-booking__name { align-self: flex-start; background: var(--ad-under); padding: 0 var(--space-1); border-radius: var(--radius-page); }
 .ad-booking__time { font: var(--type-data); font-size: var(--text-xs); color: var(--text-secondary); }
@@ -1047,7 +1048,8 @@ button.ad-booking:focus-visible { outline: none; box-shadow: var(--ring-select);
 .ad-year__day[data-today] { box-shadow: var(--ring-today); }
 button.ad-year__day { cursor: pointer; }
 button.ad-year__day:hover { color: var(--accent); }
-button.ad-year__day:focus-visible { outline: none; box-shadow: var(--ring-select); }
+button.ad-year__day:focus-visible { outline: none; }
+:where(:root:not([data-ad-pointer])) button.ad-year__day:focus-visible { box-shadow: var(--ring-select); }
 /* A block too short for its name: the name lifts just above it, never clipped. */
 .ad-booking--outside { overflow: visible; }
 .ad-booking--outside .ad-booking__name { position: absolute; left: 0; bottom: 100%; max-width: 100%; padding-bottom: var(--space-hair); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; pointer-events: none; }
@@ -1147,7 +1149,8 @@ button.ad-year__day:focus-visible { outline: none; box-shadow: var(--ring-select
 .ad-time-grid__moment { --ad-stripe: transparent; }
 .ad-time-grid__moment--press { margin: 0; border: 0; background: transparent; font: inherit; color: inherit; text-align: left; cursor: pointer; border-radius: var(--radius-page); }
 .ad-time-grid__moment--press:hover .ad-time-grid__moment-title { color: var(--accent); }
-.ad-time-grid__moment--press:focus-visible { outline: none; box-shadow: var(--ring-select); }
+.ad-time-grid__moment--press:focus-visible { outline: none; }
+:where(:root:not([data-ad-pointer])) .ad-time-grid__moment--press:focus-visible { box-shadow: var(--ring-select); }
 .ad-time-grid__moment--unconfirmed { background-image: var(--hatch); }
 .ad-time-grid__moment--hued { box-shadow: inset var(--w-stripe) 0 0 var(--ad-stripe); }
 
@@ -1222,11 +1225,13 @@ button.ad-year__day:focus-visible { outline: none; box-shadow: var(--ring-select
 .ad-card--opens:hover .ad-card__name { color: var(--accent); }
 .ad-card[data-selected] { box-shadow: var(--ring-select); }
 button.ad-card__name { display: block; width: 100%; padding: 0; border: 0; background: transparent; font: inherit; color: inherit; text-align: left; cursor: pointer; }
-button.ad-card__name:focus-visible { outline: none; box-shadow: var(--ring-select); border-radius: var(--radius-page); }
+button.ad-card__name:focus-visible { outline: none; }
+:where(:root:not([data-ad-pointer])) button.ad-card__name:focus-visible { box-shadow: var(--ring-select); border-radius: var(--radius-page); }
 .ad-card[data-dragging] { background: var(--glass-bg); backdrop-filter: var(--blur-glass); -webkit-backdrop-filter: var(--blur-glass); box-shadow: var(--elev-float); }
 .ad-card__head { display: flex; align-items: center; gap: var(--space-2); margin-bottom: var(--space-2); }
 .ad-card__title-open { padding: 0; border: 0; background: transparent; font: inherit; color: inherit; cursor: pointer; }
-.ad-card__title-open:focus-visible { outline: none; box-shadow: var(--ring-select); border-radius: var(--radius-page); }
+.ad-card__title-open:focus-visible { outline: none; }
+:where(:root:not([data-ad-pointer])) .ad-card__title-open:focus-visible { box-shadow: var(--ring-select); border-radius: var(--radius-page); }
 .ad-card--opens:hover .ad-card__title-open { color: var(--accent); }
 .ad-card__title { margin: 0; }
 .ad-card__end { margin-left: auto; display: inline-flex; align-items: center; gap: var(--space-2); flex: none; }
@@ -1245,7 +1250,8 @@ button.ad-card__name:focus-visible { outline: none; box-shadow: var(--ring-selec
 /* Its words, read aloud, are held inside the line: at a widget's right edge they would otherwise poke 1px past it and scroll the widget. */
 .ad-card__more--line > .ad-sr { left: 0; top: 0; }
 .ad-card__more:hover { color: var(--accent-hover); }
-.ad-card__more:focus-visible { outline: none; box-shadow: var(--ring-select); border-radius: var(--radius-page); }
+.ad-card__more:focus-visible { outline: none; }
+:where(:root:not([data-ad-pointer])) .ad-card__more:focus-visible { box-shadow: var(--ring-select); border-radius: var(--radius-page); }
 .ad-card__name { line-height: var(--lh-tight); margin-bottom: var(--space-2); }
 /* A widget's dials: three across, as the Dashboard card lays them. */
 /* Built 2026-10-25 for Athena: a picked card is one tone lighter, its tick box at the top left; a name may carry a lead (the todo's ring). */
@@ -1414,7 +1420,7 @@ button.ad-card__name:focus-visible { outline: none; box-shadow: var(--ring-selec
 }
 .ad-checkbox__box[data-state="on"], .ad-checkbox__box[data-state="mixed"] { background: var(--bg-hover); box-shadow: inset 0 0 0 var(--border-w-strong) var(--text-secondary); }
 .ad-checkbox__box svg { width: var(--icon-sm); height: var(--icon-sm); }
-.ad-checkbox__input:focus-visible + .ad-checkbox__box { box-shadow: var(--ring-select); }
+:where(:root:not([data-ad-pointer])) .ad-checkbox__input:focus-visible + .ad-checkbox__box { box-shadow: var(--ring-select); }
 
 /* src/components/ClockFace/ClockFace.css */
 .ad-clock-face { display: flex; flex-direction: column; align-items: stretch; gap: var(--space-1); min-width: 0; margin: 0; padding: 0; border: 0; background: transparent; color: var(--text-primary); text-align: left; cursor: pointer; border-radius: var(--radius-page); }
@@ -1425,7 +1431,8 @@ button.ad-card__name:focus-visible { outline: none; box-shadow: var(--ring-selec
 .ad-clock-face__period [data-active] { color: var(--text-primary); }
 .ad-clock-face__segments { display: block; width: auto; height: var(--text-20); }
 .ad-clock-face:hover .ad-clock-face__label { color: var(--accent); }
-.ad-clock-face:focus-visible { outline: none; box-shadow: var(--ring-select); }
+.ad-clock-face:focus-visible { outline: none; }
+:where(:root:not([data-ad-pointer])) .ad-clock-face:focus-visible { box-shadow: var(--ring-select); }
 .ad-clock-face:disabled { cursor: default; opacity: var(--opacity-disabled); }
 
 /* src/components/Columns/Columns.css */
@@ -1444,7 +1451,8 @@ button.ad-card__name:focus-visible { outline: none; box-shadow: var(--ring-selec
 /* Pressed to narrow the view: the same look, coral under the cursor. */
 .ad-dept--press { margin: 0; padding: 0; border: 0; background: transparent; font: inherit; cursor: pointer; border-radius: var(--radius-page); }
 .ad-dept--press:hover, .ad-dept--press:hover svg { color: var(--accent); }
-.ad-dept--press:focus-visible { outline: none; box-shadow: var(--ring-select); }
+.ad-dept--press:focus-visible { outline: none; }
+:where(:root:not([data-ad-pointer])) .ad-dept--press:focus-visible { box-shadow: var(--ring-select); }
 
 /* src/components/Dialog/Dialog.css */
 /* Dialog */
@@ -1545,7 +1553,8 @@ button.ad-card__name:focus-visible { outline: none; box-shadow: var(--ring-selec
 .ad-field-row--name-fits.ad-field-row--beside .ad-field-row__label { width: auto; white-space: nowrap; }
 .ad-field-row__help { display: inline-flex; align-items: center; justify-content: center; width: var(--target-min); height: var(--target-min); margin: 0; padding: 0; border: 0; border-radius: var(--radius-page); background: transparent; color: var(--text-muted); cursor: help; }
 .ad-field-row__help:hover { color: var(--accent); }
-.ad-field-row__help:focus-visible { outline: none; box-shadow: var(--ring-select); }
+.ad-field-row__help:focus-visible { outline: none; }
+:where(:root:not([data-ad-pointer])) .ad-field-row__help:focus-visible { box-shadow: var(--ring-select); }
 /* A field holding a plain number (a rate, a count) is mono; a date or a time in a field is Roboto, as the rest of the card is. */
 .ad-field__input--mono { font: var(--type-data); font-size: var(--text-xs); }
 /* A chosen option that means "nothing" reads grey. */
@@ -1621,7 +1630,8 @@ button.ad-card__name:focus-visible { outline: none; box-shadow: var(--ring-selec
 .ad-footer__news { display: inline-flex; align-items: center; justify-content: center; width: var(--h-btn-row); height: var(--h-btn-row); margin: 0; padding: 0; border: 0; border-radius: var(--radius-page); background: transparent; cursor: pointer; }
 .ad-footer__news .ad-unread { margin-left: 0; }
 .ad-footer__news:hover .ad-unread { background: var(--accent); }
-.ad-footer__news:focus-visible { outline: none; box-shadow: var(--ring-select); }
+.ad-footer__news:focus-visible { outline: none; }
+:where(:root:not([data-ad-pointer])) .ad-footer__news:focus-visible { box-shadow: var(--ring-select); }
 .ad-footer__number { color: var(--text-secondary); }
 .ad-footer__venue { gap: var(--space-4); overflow: hidden; white-space: nowrap; }
 /* The description is the footer's words like the rest: its mono caps, tracked, one size; cut at its cell, its words on hover. */
@@ -1641,7 +1651,8 @@ button.ad-card__name:focus-visible { outline: none; box-shadow: var(--ring-selec
 button.ad-contents__button { cursor: pointer; }
 button.ad-contents__button:hover { background: var(--tint-hover); }
 button.ad-contents__button:hover .ad-contents__name { color: var(--accent); }
-button.ad-contents__button:focus-visible { outline: none; box-shadow: var(--ring-select); border-radius: var(--radius-page); }
+button.ad-contents__button:focus-visible { outline: none; }
+:where(:root:not([data-ad-pointer])) button.ad-contents__button:focus-visible { box-shadow: var(--ring-select); border-radius: var(--radius-page); }
 .ad-contents__numeral { width: calc(var(--numeral-contents) * 1.6); flex: none; font: var(--type-data); font-size: var(--numeral-contents); line-height: var(--lh-none); color: var(--text-muted); }
 .ad-contents__entry[data-needs-you] .ad-contents__numeral { color: var(--text-primary); }
 .ad-contents__body { display: flex; flex-direction: column; gap: var(--space-1); min-width: 0; }
@@ -1705,7 +1716,8 @@ button.ad-contents__button:focus-visible { outline: none; box-shadow: var(--ring
 .ad-group-heading__title { display: flex; align-items: center; margin: 0; min-width: 0; font: var(--type-heading); text-transform: uppercase; letter-spacing: var(--track-caps); line-height: var(--lh-tight); color: inherit; }
 .ad-group-heading__button { display: inline-flex; align-items: center; gap: var(--space-2); margin: 0; padding: 0; border: 0; background: transparent; font: var(--type-heading); text-transform: uppercase; letter-spacing: var(--track-caps); color: inherit; cursor: pointer; border-radius: var(--radius-control); }
 .ad-group-heading__button:hover { color: var(--accent); }
-.ad-group-heading__button:focus-visible { outline: none; box-shadow: var(--ring-select); }
+.ad-group-heading__button:focus-visible { outline: none; }
+:where(:root:not([data-ad-pointer])) .ad-group-heading__button:focus-visible { box-shadow: var(--ring-select); }
 .ad-group-heading__title > *, .ad-group-heading__button > * { flex: none; }
 .ad-group-heading__title { gap: var(--space-2); }
 .ad-group-heading__numeral { font: var(--type-data); font-size: var(--text-xs); color: var(--text-muted); }
@@ -1757,7 +1769,8 @@ button.ad-contents__button:focus-visible { outline: none; box-shadow: var(--ring
 .ad-pixx { position: relative; display: grid; place-items: end center; width: calc(var(--h-btn) + var(--h-btn-row)); height: calc(var(--h-btn) + var(--h-btn-row)); margin: 0; padding: 0; border: 0; background: transparent; cursor: pointer; filter: var(--shadow-pixx); transition: transform var(--dur-fast) var(--ease-out); }
 .ad-pixx--open { filter: var(--shadow-pixx-open); }
 .ad-pixx:active { transform: scale(0.94); }
-.ad-pixx:focus-visible { outline: none; box-shadow: var(--ring-select); border-radius: var(--radius-page); }
+.ad-pixx:focus-visible { outline: none; }
+:where(:root:not([data-ad-pointer])) .ad-pixx:focus-visible { box-shadow: var(--ring-select); border-radius: var(--radius-page); }
 /* The art is pinned inside the box, fitted whole and standing on its floor: the dog never spills past the box. */
 .ad-pixx__tail, .ad-pixx__body { position: absolute; inset: 0; width: 100%; height: 100%; max-height: 100%; object-fit: contain; object-position: center bottom; pointer-events: none; }
 .ad-pixx__tail { transform-origin: 71.3% 79.4%; } /* the tail's pivot in the art, from Athena's cut-out */
@@ -1798,7 +1811,8 @@ button.ad-contents__button:focus-visible { outline: none; box-shadow: var(--ring
 .ad-day-heading__date { font: var(--type-data); font-size: var(--text-xs); color: var(--text-muted); }
 .ad-add-row { display: flex; align-items: center; gap: var(--space-3); box-sizing: border-box; width: 100%; height: var(--h-row); margin: 0; padding: 0 var(--space-2); border: 0; border-bottom: var(--border-w) solid var(--border); background: transparent; font: var(--type-name); color: var(--text-muted); text-align: left; cursor: text; }
 .ad-add-row:hover { color: var(--accent); }
-.ad-add-row:focus-visible { outline: none; box-shadow: var(--ring-select); border-radius: var(--radius-page); }
+.ad-add-row:focus-visible { outline: none; }
+:where(:root:not([data-ad-pointer])) .ad-add-row:focus-visible { box-shadow: var(--ring-select); border-radius: var(--radius-page); }
 .ad-add-row__icon { display: inline-flex; width: var(--check-size); justify-content: center; }
 .ad-add-row__icon svg { width: var(--icon-md); height: var(--icon-md); }
 /* LoadingRows, LoadError */
@@ -1813,7 +1827,8 @@ button.ad-contents__button:focus-visible { outline: none; box-shadow: var(--ring
 /* With a second line, the chevron stays level with the name. */
 .ad-list-section__bar:has(> .ad-row--two) > .ad-list-section__fold { align-self: flex-start; margin-top: var(--space-1); }
 .ad-list-section__fold:hover { color: var(--accent); }
-.ad-list-section__fold:focus-visible { outline: none; box-shadow: var(--ring-select); }
+.ad-list-section__fold:focus-visible { outline: none; }
+:where(:root:not([data-ad-pointer])) .ad-list-section__fold:focus-visible { box-shadow: var(--ring-select); }
 /* Under a deliverable, always the tree: each child continues the trunk, the last ends at its elbow. The parent joins at its lead. */
 .ad-list-section--tree { --ad-branch-offset: calc(var(--space-2) + var(--icon-sm) / 2); }
 .ad-list-section--tree:has(> .ad-list-section__bar > .ad-list-section__fold) { --ad-branch-offset: calc(var(--h-btn-row) + var(--space-1) + var(--space-2) + var(--icon-sm) / 2); }
@@ -1862,7 +1877,7 @@ button.ad-contents__button:focus-visible { outline: none; box-shadow: var(--ring
 .ad-world-map__pin { --ad-pin: var(--status-neutral); }
 .ad-world-map__pin--press { cursor: pointer; }
 .ad-world-map__pin:focus-visible { outline: none; }
-.ad-world-map__pin:focus-visible .ad-world-map__dot { stroke: var(--text-secondary); stroke-width: var(--bw-select); }
+:where(:root:not([data-ad-pointer])) .ad-world-map__pin:focus-visible .ad-world-map__dot { stroke: var(--text-secondary); stroke-width: var(--bw-select); }
 .ad-world-map__halo { fill: var(--ad-pin); r: var(--map-halo-r); opacity: var(--map-op-halo); }
 .ad-world-map__pin--on .ad-world-map__halo { r: var(--map-halo-r-on); }
 .ad-world-map__dot { fill: var(--ad-pin); stroke: var(--bg-surface); r: var(--map-pin-r); stroke-width: var(--map-pin-line); }
@@ -2046,7 +2061,8 @@ button:hover > .ad-project-pill:not(.ad-project-pill--current) { color: var(--ac
 .ad-connection { display: inline-flex; flex: none; align-items: center; justify-content: center; width: var(--h-btn-bar); height: var(--h-btn-bar); border-radius: var(--radius-control); color: var(--text-primary); cursor: default; }
 .ad-connection svg { width: var(--icon-md); height: var(--icon-md); }
 .ad-connection--refused { color: var(--status-warn); }
-.ad-connection:focus-visible { outline: none; box-shadow: var(--ring-select); }
+.ad-connection:focus-visible { outline: none; }
+:where(:root:not([data-ad-pointer])) .ad-connection:focus-visible { box-shadow: var(--ring-select); }
 .ad-page-header__row > .ad-connection { margin-left: auto; }
 .ad-page-header__row > .ad-connection + .ad-header-actions { margin-left: calc(var(--space-2) - var(--space-6)); }
 .ad-page-header__alerts ~ .ad-connection, .ad-page-header__stamp ~ .ad-connection { margin-left: 0; }
@@ -2068,7 +2084,8 @@ button:hover > .ad-project-pill:not(.ad-project-pill--current) { color: var(--ac
 .ad-tab { display: inline-flex; align-items: baseline; gap: var(--space-2); margin: 0; padding: 0 0 var(--space-2); border: 0; border-bottom: var(--border-w) solid transparent; background: transparent; cursor: pointer; font: var(--type-heading); text-transform: uppercase; letter-spacing: var(--track-caps); color: var(--text-secondary); }
 .ad-tab:not([aria-selected="true"]) { color: var(--text-secondary); }
 .ad-tab:hover { color: var(--accent); }
-.ad-tab:focus-visible { outline: none; box-shadow: var(--ring-select); border-radius: var(--radius-control); }
+.ad-tab:focus-visible { outline: none; }
+:where(:root:not([data-ad-pointer])) .ad-tab:focus-visible { box-shadow: var(--ring-select); border-radius: var(--radius-control); }
 /* The current tab is coral, as THE WORK goes coral on the site when you are in it (ruled 2026-10-29). */
 .ad-tab[aria-selected="true"] { color: var(--accent); border-bottom-color: var(--accent); }
 .ad-tab__numeral { font: var(--type-data); color: var(--text-muted); }
@@ -2080,7 +2097,8 @@ button:hover > .ad-project-pill:not(.ad-project-pill--current) { color: var(--ac
 .ad-page-header__titled { display: flex; align-items: center; gap: var(--space-2); flex: none; min-width: 0; }
 .ad-page-header__back { display: inline-flex; align-items: center; justify-content: center; flex: none; margin: 0; padding: 0; border: 0; background: transparent; color: var(--text-secondary); cursor: pointer; }
 .ad-page-header__back:hover { color: var(--accent); }
-.ad-page-header__back:focus-visible { outline: none; box-shadow: var(--ring-select); border-radius: var(--radius-page); }
+.ad-page-header__back:focus-visible { outline: none; }
+:where(:root:not([data-ad-pointer])) .ad-page-header__back:focus-visible { box-shadow: var(--ring-select); border-radius: var(--radius-page); }
 /* A screen's own menu before the gear; the small white dot says your board differs from the default. */
 .ad-page-header__menu { position: relative; display: inline-flex; }
 .ad-page-header__mark { position: absolute; top: var(--space-1); right: var(--space-1); width: var(--space-2); height: var(--space-2); border-radius: var(--radius-round); background: var(--text-primary); pointer-events: none; }
@@ -2091,7 +2109,8 @@ button:hover > .ad-project-pill:not(.ad-project-pill--current) { color: var(--ac
 .ad-page-header__pick { display: inline-flex; align-items: center; gap: var(--space-1); height: var(--h-btn-bar); margin: 0; padding: 0 var(--space-2); border: 0; border-radius: var(--radius-control); background: transparent; font: var(--type-name); white-space: nowrap; color: var(--text-primary); cursor: pointer; }
 .ad-page-header__pick:hover { color: var(--accent); background: var(--tint-hover); }
 .ad-page-header__pick--open { background: var(--bg-raised); }
-.ad-page-header__pick:focus-visible { outline: none; box-shadow: var(--ring-select); }
+.ad-page-header__pick:focus-visible { outline: none; }
+:where(:root:not([data-ad-pointer])) .ad-page-header__pick:focus-visible { box-shadow: var(--ring-select); }
 .ad-page-header__pick svg { width: var(--icon-sm); height: var(--icon-sm); color: var(--text-muted); }
 
 /* src/components/Path/Path.css */
@@ -2101,7 +2120,8 @@ button:hover > .ad-project-pill:not(.ad-project-pill--current) { color: var(--ac
 .ad-steps__press { display: flex; flex-direction: column; gap: var(--space-1); width: 100%; margin: 0; padding: 0; border: 0; background: none; color: inherit; font: inherit; text-align: left; }
 button.ad-steps__press { cursor: pointer; }
 button.ad-steps__press:hover .ad-steps__name { color: var(--accent); }
-button.ad-steps__press:focus-visible { outline: none; box-shadow: var(--ring-select); border-radius: var(--radius-mark); }
+button.ad-steps__press:focus-visible { outline: none; }
+:where(:root:not([data-ad-pointer])) button.ad-steps__press:focus-visible { box-shadow: var(--ring-select); border-radius: var(--radius-mark); }
 .ad-steps__bar { display: block; height: var(--space-1); margin-bottom: var(--space-1); background: var(--bitrate-grey); }
 .ad-steps__step:first-child .ad-steps__bar { border-radius: var(--radius-mark) 0 0 var(--radius-mark); }
 .ad-steps__step:last-child .ad-steps__bar { border-radius: 0 var(--radius-mark) var(--radius-mark) 0; }
@@ -2133,7 +2153,7 @@ button.ad-steps__press:focus-visible { outline: none; box-shadow: var(--ring-sel
 /* A list shows eight rows and scrolls inside past that, wherever it is (a card, a pop-over, the page). */
 .ad-picklist__list { position: relative; max-height: calc(var(--h-btn) * 8); overflow-y: auto; outline: none; }
 .ad-picklist__box { outline: none; }
-.ad-picklist__list:has(> .ad-picklist__box:focus-visible) { box-shadow: var(--ring-select); border-radius: var(--radius-page); }
+:where(:root:not([data-ad-pointer])) .ad-picklist__list:has(> .ad-picklist__box:focus-visible) { box-shadow: var(--ring-select); border-radius: var(--radius-page); }
 /* A row's buttons, beside the listbox (a listbox holds choices only), each placed over its row by PickList. */
 .ad-picklist__layer > * { position: absolute; left: 0; right: 0; }
 .ad-picklist__over { pointer-events: none; }
@@ -2158,7 +2178,8 @@ button.ad-steps__press:focus-visible { outline: none; box-shadow: var(--ring-sel
 /* A quick pick is a menu row: the row height, the current one marked by the check alone (in a fixed column at the end), no band. */
 .ad-datepicker__pick { display: flex; align-items: center; gap: var(--space-2); box-sizing: border-box; width: 100%; height: var(--h-btn); margin: 0; padding: 0 var(--space-2); border: 0; border-radius: var(--radius-page); background: transparent; font: var(--type-name); color: var(--text-primary); text-align: left; cursor: pointer; }
 .ad-datepicker__pick:hover { background: var(--tint-hover); color: var(--accent); }
-.ad-datepicker__pick:focus-visible { outline: none; box-shadow: var(--ring-select); }
+.ad-datepicker__pick:focus-visible { outline: none; }
+:where(:root:not([data-ad-pointer])) .ad-datepicker__pick:focus-visible { box-shadow: var(--ring-select); }
 .ad-datepicker__pick-date { margin-left: auto; font: var(--type-data); font-size: var(--text-xs); color: var(--text-muted); }
 .ad-datepicker__month { display: flex; align-items: center; justify-content: space-between; padding: var(--space-1) var(--space-2) var(--space-2); }
 .ad-datepicker__navs { display: inline-flex; align-items: center; }
@@ -2167,7 +2188,8 @@ button.ad-steps__press:focus-visible { outline: none; box-shadow: var(--ring-sel
 .ad-datepicker__dow { height: var(--space-6); display: flex; align-items: center; justify-content: center; font: var(--type-data); font-size: var(--text-xs); color: var(--text-muted); }
 .ad-datepicker__day { position: relative; display: flex; align-items: center; justify-content: center; width: var(--day-cell); height: var(--h-btn-bar); margin: 0; padding: 0; border: 0; border-radius: var(--radius-page); background: transparent; font: var(--type-data); font-size: var(--text-xs); color: var(--text-secondary); cursor: pointer; }
 .ad-datepicker__day:hover { color: var(--accent); background: var(--tint-hover); }
-.ad-datepicker__day:focus-visible { outline: none; box-shadow: var(--ring-select); }
+.ad-datepicker__day:focus-visible { outline: none; }
+:where(:root:not([data-ad-pointer])) .ad-datepicker__day:focus-visible { box-shadow: var(--ring-select); }
 .ad-datepicker__day[data-weekend] { color: var(--text-muted); }
 /* Days of the next or last month are dimmed well below the weekend grey, so the month reads at once. */
 .ad-datepicker__day[data-outside] { color: var(--text-muted); opacity: var(--opacity-faint); }
@@ -2212,7 +2234,8 @@ button.ad-steps__press:focus-visible { outline: none; box-shadow: var(--ring-sel
 .ad-pick-field--compact:has(> .ad-pick-field__words--empty):not(:hover, :focus-visible, [aria-expanded="true"]) > .ad-icon.ad-field__add { visibility: hidden; }
 .ad-pick-field:hover .ad-pick-field__caret { color: var(--accent); }
 .ad-pick-field[aria-expanded="true"] { background: var(--bg-hover); }
-.ad-pick-field:focus-visible { outline: none; box-shadow: var(--ring-select); }
+.ad-pick-field:focus-visible { outline: none; }
+:where(:root:not([data-ad-pointer])) .ad-pick-field:focus-visible { box-shadow: var(--ring-select); }
 /* A pick list grows to its longest row (a role's whole name), up to a card's width, never narrower than a menu or its field. */
 .ad-pick-field__list { width: max-content; min-width: max(var(--w-menu), var(--ad-trigger-w)); max-width: var(--w-card); padding: var(--space-2); overflow-y: auto; }
 /* A drop with less room than its list: the list gives up height and scrolls; its head, its search and its footer stay whole inside
@@ -2226,7 +2249,8 @@ button.ad-steps__press:focus-visible { outline: none; box-shadow: var(--ring-sel
 .ad-datepicker__repeat { display: flex; align-items: center; gap: var(--space-2); width: 100%; height: var(--h-btn); margin-top: var(--space-2); padding: 0 var(--space-2); border: 0; border-top: var(--border-w) solid var(--border); border-radius: 0; background: transparent; font: var(--type-name); color: var(--text-primary); cursor: pointer; text-align: left; }
 .ad-datepicker__repeat .ad-datepicker__pick-date { margin-left: auto; }
 .ad-datepicker__repeat:hover { color: var(--accent); }
-.ad-datepicker__repeat:focus-visible { outline: none; box-shadow: var(--ring-select); }
+.ad-datepicker__repeat:focus-visible { outline: none; }
+:where(:root:not([data-ad-pointer])) .ad-datepicker__repeat:focus-visible { box-shadow: var(--ring-select); }
 /* TimeField: the field, and the half-hour list dropping from it. */
 .ad-timefield { display: inline-flex; flex-direction: column; }
 .ad-popover.ad-timefield__drop { padding: var(--space-2); }
@@ -2329,7 +2353,8 @@ button.ad-steps__press:focus-visible { outline: none; box-shadow: var(--ring-sel
 /* A section that folds: the chevron before its label. */
 .ad-popover__section-fold { display: inline-flex; align-items: center; justify-content: center; width: var(--h-btn-row); height: var(--h-btn-row); margin: 0; padding: 0; border: 0; background: transparent; color: var(--text-muted); cursor: pointer; }
 .ad-popover__section-fold:hover { color: var(--accent); }
-.ad-popover__section-fold:focus-visible { outline: none; box-shadow: var(--ring-select); border-radius: var(--radius-page); }
+.ad-popover__section-fold:focus-visible { outline: none; }
+:where(:root:not([data-ad-pointer])) .ad-popover__section-fold:focus-visible { box-shadow: var(--ring-select); border-radius: var(--radius-page); }
 
 /* A title renamed through the writing box is the title itself, as InlineEdit's is: Work Sans 600 at 20, no edge, the raised fill under
    the cursor and the hover fill while typing; it wraps to as many lines as it needs, never cut. */
@@ -2401,7 +2426,8 @@ button.ad-steps__press:focus-visible { outline: none; box-shadow: var(--ring-sel
 .ad-row--opens:hover .ad-row__name { color: var(--accent); }
 .ad-row[data-selected] { box-shadow: var(--ring-select); border-radius: var(--radius-page); }
 button.ad-row__name { margin: 0; padding: 0; border: 0; background: transparent; font: inherit; line-height: var(--lh-tight); color: inherit; text-align: left; cursor: pointer; }
-button.ad-row__name:focus-visible { outline: none; box-shadow: var(--ring-select); border-radius: var(--radius-page); }
+button.ad-row__name:focus-visible { outline: none; }
+:where(:root:not([data-ad-pointer])) button.ad-row__name:focus-visible { box-shadow: var(--ring-select); border-radius: var(--radius-page); }
 .ad-row[data-picked] { background: var(--tint-selected); }
 .ad-row__lead { display: inline-flex; align-items: center; flex: none; }
 .ad-row__body { flex: 1; min-width: 0; display: flex; flex-direction: column; }
@@ -2449,7 +2475,8 @@ button.ad-row__name:focus-visible { outline: none; box-shadow: var(--ring-select
 .ad-todo-check svg { width: var(--icon-sm); height: var(--icon-sm); }
 .ad-todo-check:hover { color: var(--ad-ring); }
 .ad-todo-check[aria-checked="true"] { background: var(--text-muted); box-shadow: none; color: var(--bg-base); }
-.ad-todo-check:focus-visible { outline: none; box-shadow: inset 0 0 0 var(--border-w-strong) var(--ad-ring), var(--ring-select); }
+.ad-todo-check:focus-visible { outline: none; }
+:where(:root:not([data-ad-pointer])) .ad-todo-check:focus-visible { box-shadow: inset 0 0 0 var(--border-w-strong) var(--ad-ring), var(--ring-select); }
 .ad-todo-check:disabled { opacity: var(--opacity-disabled); cursor: default; }
 /* The celebrate pop the moment a todo is ticked off: it swells and the green glow ring flares and fades. */
 @keyframes ad-check-pop {
@@ -2490,7 +2517,8 @@ button.ad-row__name:focus-visible { outline: none; box-shadow: var(--ring-select
 /* A fact you press to change it: it looks the same; coral under the cursor. */
 .ad-row__press { display: inline-flex; align-items: center; margin: 0; padding: 0; border: 0; background: transparent; font: inherit; color: inherit; cursor: pointer; border-radius: var(--radius-page); }
 .ad-row__press:hover, .ad-row__press:hover .ad-row-date, .ad-row__press:hover .ad-row__fact { color: var(--accent); }
-.ad-row__press:focus-visible { outline: none; box-shadow: var(--ring-select); }
+.ad-row__press:focus-visible { outline: none; }
+:where(:root:not([data-ad-pointer])) .ad-row__press:focus-visible { box-shadow: var(--ring-select); }
 /* A button repeated on every row is never filled (rules/design-rules.md, Controls): words only, coral under the cursor. */
 .ad-row__trail .ad-button--quiet { background: transparent; }
 .ad-row .ad-inline-edit.ad-row__name { margin: 0; padding: 0 var(--space-1); }
@@ -2560,7 +2588,8 @@ button.ad-row__name:focus-visible { outline: none; box-shadow: var(--ring-select
 .ad-segmented__option:hover { color: var(--accent); }
 .ad-segmented__option:not([aria-checked="true"]) { color: var(--text-secondary); }
 .ad-segmented__option[aria-checked="true"] { background: var(--bg-raised); box-shadow: var(--elev-raised); color: var(--text-primary); }
-.ad-segmented__option:focus-visible { outline: none; box-shadow: var(--ring-select); }
+.ad-segmented__option:focus-visible { outline: none; }
+:where(:root:not([data-ad-pointer])) .ad-segmented__option:focus-visible { box-shadow: var(--ring-select); }
 .ad-segmented__option:disabled { opacity: var(--opacity-disabled); cursor: default; color: var(--text-secondary); }
 .ad-segmented__option svg { width: var(--icon-md); height: var(--icon-md); }
 
@@ -2590,7 +2619,8 @@ button.ad-row__name:focus-visible { outline: none; box-shadow: var(--ring-select
 .ad-slider__set { position: absolute; top: 0; bottom: 0; border-radius: var(--radius-mark); background: var(--bitrate-grey); }
 .ad-slider__knob { position: absolute; top: 50%; width: var(--knob-size); height: var(--knob-size); border-radius: var(--radius-round); background: var(--text-primary); transform: translate(-50%, -50%); }
 .ad-slider__knob:hover { box-shadow: var(--glow-hover); }
-.ad-slider__knob:focus-visible { outline: none; box-shadow: var(--ring-select); }
+.ad-slider__knob:focus-visible { outline: none; }
+:where(:root:not([data-ad-pointer])) .ad-slider__knob:focus-visible { box-shadow: var(--ring-select); }
 .ad-slider__value { min-width: var(--w-col-xs); font: var(--type-data); font-size: var(--text-xs); color: var(--text-primary); text-align: right; white-space: nowrap; font-variant-numeric: tabular-nums; }
 .ad-slider--disabled { opacity: var(--opacity-disabled); }
 .ad-slider--disabled .ad-slider__track { cursor: default; }
@@ -2604,7 +2634,8 @@ button.ad-row__name:focus-visible { outline: none; box-shadow: var(--ring-select
 /* The divider is the one gap between sections (gap-section), so a pane's sections sit as far from the other pane's as from each other; its hairline is the handle, in the middle. */
 .ad-splitter__divider { flex: none; position: relative; width: var(--gap-section); cursor: col-resize; touch-action: none; }
 .ad-splitter__divider::after { content: ''; position: absolute; top: 0; bottom: 0; left: 50%; width: var(--border-w); transform: translateX(-50%); background: var(--border); }
-.ad-splitter__divider:hover::after, .ad-splitter__divider:focus-visible::after { background: var(--accent); }
+.ad-splitter__divider:hover::after { background: var(--accent); }
+:where(:root:not([data-ad-pointer])) .ad-splitter__divider:focus-visible::after { background: var(--accent); }
 .ad-splitter__divider:focus-visible { outline: none; }
 
 /* src/components/Status/Status.css */
@@ -2652,7 +2683,8 @@ button.ad-row__name:focus-visible { outline: none; box-shadow: var(--ring-select
 /* On: the coral fill, the knob in the ink that reads on coral (the main button's label), at the right. */
 .ad-switch[aria-checked="true"] { background: var(--accent); }
 .ad-switch[aria-checked="true"]::after { transform: translateX(calc(var(--switch-w) - var(--switch-h))); background: var(--on-accent); }
-.ad-switch:focus-visible { outline: none; box-shadow: var(--ring-select); }
+.ad-switch:focus-visible { outline: none; }
+:where(:root:not([data-ad-pointer])) .ad-switch:focus-visible { box-shadow: var(--ring-select); }
 .ad-switch:disabled { opacity: var(--opacity-disabled); cursor: default; }
 .ad-switch-label { display: inline-flex; align-items: center; gap: var(--space-2); color: var(--text-primary); cursor: pointer; }
 .ad-switch-label--disabled { cursor: default; }
@@ -2701,7 +2733,8 @@ button.ad-row__name:focus-visible { outline: none; box-shadow: var(--ring-select
 .ad-table__row--tone-p3 { --ad-row-wash: color-mix(in srgb, var(--priority-p3) var(--tint-lane-wash), transparent); }
 .ad-table [class*="ad-table__row--tone-"] > * { background-image: linear-gradient(var(--ad-row-wash), var(--ad-row-wash)); }
 .ad-table__open { margin: 0; padding: 0; border: 0; background: transparent; font: inherit; color: inherit; cursor: pointer; text-align: left; }
-.ad-table__open:focus-visible { outline: none; box-shadow: var(--ring-select); border-radius: var(--radius-page); }
+.ad-table__open:focus-visible { outline: none; }
+:where(:root:not([data-ad-pointer])) .ad-table__open:focus-visible { box-shadow: var(--ring-select); border-radius: var(--radius-page); }
 .ad-table__pick { width: var(--h-btn); }
 .ad-selection-bar {
   position: fixed; left: 50%; bottom: calc(var(--space-6) + env(safe-area-inset-bottom, 0px)); transform: translateX(-50%); z-index: var(--z-toast);
@@ -2721,7 +2754,8 @@ button.ad-row__name:focus-visible { outline: none; box-shadow: var(--ring-select
 /* A group heading row is the timeline's band (Grids, 2026-11-13): the band plane (bg-band) a row tall, its name GroupBandName
    (Title at text-base 14 in the primary ink), its rows' hairline under it. The fold is the name itself with a chevron before it. */
 .ad-table__fold { display: inline-flex; align-items: center; gap: var(--space-2); min-width: 0; margin: 0; padding: 0; border: 0; background: transparent; font: inherit; color: var(--text-primary); cursor: pointer; }
-.ad-table__fold:focus-visible { outline: none; box-shadow: var(--ring-select); border-radius: var(--radius-page); }
+.ad-table__fold:focus-visible { outline: none; }
+:where(:root:not([data-ad-pointer])) .ad-table__fold:focus-visible { box-shadow: var(--ring-select); border-radius: var(--radius-page); }
 .ad-table__chevron--shut { transform: rotate(-90deg); }
 .ad-table__fold--row { margin-right: var(--space-2); vertical-align: middle; }
 .ad-table__group th { height: calc(var(--h-strip) - var(--border-w)); padding: 0 var(--space-2); text-align: left; background: var(--bg-band); border-bottom: var(--border-w) solid var(--border); color: var(--text-primary); }
@@ -2756,7 +2790,8 @@ button.ad-row__name:focus-visible { outline: none; box-shadow: var(--ring-select
 }
 .ad-insert--row .ad-insert__mark { left: 0; top: 50%; transform: translateY(-50%); }
 .ad-insert--column .ad-insert__mark { top: 0; left: 50%; transform: translateX(-50%); }
-.ad-insert__mark:focus-visible { outline: none; box-shadow: var(--ring-select); }
+.ad-insert__mark:focus-visible { outline: none; }
+:where(:root:not([data-ad-pointer])) .ad-insert__mark:focus-visible { box-shadow: var(--ring-select); }
 /* The totals row: held under the last row behind the one stronger line, its words white. */
 .ad-table .ad-table__total td, .ad-table .ad-table__total th[scope="row"] { position: sticky; bottom: 0; z-index: 1; border-top: var(--border-w-strong) solid var(--line-strong); border-bottom: 0; background: var(--ad-under); color: var(--text-primary); }
 /* A reorderable table row's grip, first in its name cell. */
@@ -2825,7 +2860,8 @@ button.ad-row__name:focus-visible { outline: none; box-shadow: var(--ring-select
 /* A count that opens what it counts: the value is the button, plain until pointed at, then coral; never a box. */
 .ad-figures__open { margin: 0; padding: 0; border: 0; background: transparent; font: inherit; color: inherit; cursor: pointer; }
 .ad-figures__open:hover, .ad-figures__open[aria-expanded="true"] { color: var(--accent); }
-.ad-figures__open:focus-visible { outline: none; box-shadow: var(--ring-select); border-radius: var(--radius-control); }
+.ad-figures__open:focus-visible { outline: none; }
+:where(:root:not([data-ad-pointer])) .ad-figures__open:focus-visible { box-shadow: var(--ring-select); border-radius: var(--radius-control); }
 .ad-figures__note { margin: 0; font: var(--type-detail); line-height: var(--lh-normal); color: var(--text-muted); }
 .ad-figures--grid { grid-template-columns: repeat(auto-fit, minmax(min(100%, var(--card-min-sm)), 1fr)); gap: var(--space-4); border: 0; }
 .ad-figures--grid .ad-figures__item { padding: 0; border: 0; gap: var(--space-1); }
@@ -2907,7 +2943,8 @@ button.ad-row__name:focus-visible { outline: none; box-shadow: var(--ring-select
 .ad-zoom { font: var(--type-data); font-size: var(--text-xs); line-height: var(--lh-none); color: var(--text-muted); }
 .ad-zoom__btn { display: inline-flex; align-items: center; justify-content: center; width: var(--h-btn); height: var(--h-seg); margin: 0; padding: 0; border: 0; border-radius: var(--radius-page); background: transparent; color: var(--text-muted); cursor: pointer; }
 .ad-zoom__btn:hover { color: var(--accent); }
-.ad-zoom__btn:focus-visible { outline: none; box-shadow: var(--ring-select); }
+.ad-zoom__btn:focus-visible { outline: none; }
+:where(:root:not([data-ad-pointer])) .ad-zoom__btn:focus-visible { box-shadow: var(--ring-select); }
 .ad-zoom__btn:disabled { color: var(--text-muted); cursor: default; }
 /* Pinned: held at the top of the scroller, above the lanes, on the plane it sits on, so a row passing under its dates is covered. */
 .ad-ruler--pinned { position: sticky; top: 0; z-index: 2; background: var(--ad-under); }
@@ -2945,8 +2982,10 @@ button.ad-bar { cursor: pointer; }
 .ad-bar__grip--start { left: 0; }
 .ad-bar__grip--end { right: 0; }
 .ad-bar__grip::after { content: ""; position: absolute; top: 25%; bottom: 25%; left: 50%; width: var(--border-w-strong); transform: translateX(-50%); border-radius: var(--radius-round); background: var(--text-primary); opacity: 0; transition: opacity var(--dur-fast) var(--ease-out); }
-.ad-bar:hover .ad-bar__grip::after, .ad-bar__grip:focus-visible::after { opacity: 1; }
-.ad-bar__grip:focus-visible { outline: none; box-shadow: var(--ring-select); border-radius: var(--radius-page); }
+.ad-bar:hover .ad-bar__grip::after { opacity: 1; }
+:where(:root:not([data-ad-pointer])) .ad-bar__grip:focus-visible::after { opacity: 1; }
+.ad-bar__grip:focus-visible { outline: none; }
+:where(:root:not([data-ad-pointer])) .ad-bar__grip:focus-visible { box-shadow: var(--ring-select); border-radius: var(--radius-page); }
 @media (prefers-reduced-motion: reduce) { .ad-bar__grip::after { transition: none; } }
 /* A part line: outlined only, no fill, the name text-secondary at the small size. */
 /* Project colours on: the colour on the left stripe and the edge, and a very faint fill of it, never a solid fill (Jeremy, 2026-10-14). */
@@ -2966,11 +3005,16 @@ button.ad-bar { cursor: pointer; }
 .ad-bar:hover { box-shadow: var(--glow-hover); }
 .ad-bar--unconfirmed:hover, .ad-bar--thin:hover { box-shadow: inset 0 0 0 var(--border-w) var(--line-strong), var(--glow-hover); }
 .ad-bar:hover .ad-bar__name { color: var(--accent); }
-.ad-bar--selected, .ad-bar:focus-visible { outline: none; box-shadow: var(--ring-select); }
+.ad-bar--selected { outline: none; box-shadow: var(--ring-select); }
+.ad-bar:focus-visible { outline: none; }
+:where(:root:not([data-ad-pointer])) .ad-bar:focus-visible { box-shadow: var(--ring-select); }
 /* Selected or focused, a bar keeps its edge: the ring is the selection, the edge is still what it is. */
-.ad-bar--confirmed.ad-bar--selected, .ad-bar--confirmed:focus-visible { outline: var(--border-w) solid var(--ad-edge-ink); }
-.ad-bar--deal.ad-bar--selected, .ad-bar--deal:focus-visible { outline: var(--border-w) dashed var(--ad-edge-ink); }
-.ad-bar--backup.ad-bar--selected, .ad-bar--backup:focus-visible { outline: var(--border-w) dotted var(--ad-edge-ink); }
+.ad-bar--confirmed.ad-bar--selected { outline: var(--border-w) solid var(--ad-edge-ink); }
+:where(:root:not([data-ad-pointer])) .ad-bar--confirmed:focus-visible { outline: var(--border-w) solid var(--ad-edge-ink); }
+.ad-bar--deal.ad-bar--selected { outline: var(--border-w) dashed var(--ad-edge-ink); }
+:where(:root:not([data-ad-pointer])) .ad-bar--deal:focus-visible { outline: var(--border-w) dashed var(--ad-edge-ink); }
+.ad-bar--backup.ad-bar--selected { outline: var(--border-w) dotted var(--ad-edge-ink); }
+:where(:root:not([data-ad-pointer])) .ad-bar--backup:focus-visible { outline: var(--border-w) dotted var(--ad-edge-ink); }
 .ad-bar__label { position: relative; z-index: 1; display: inline-flex; align-items: center; gap: var(--space-2); min-width: 0; margin-left: var(--ad-label-in); }
 .ad-bar--label-hidden .ad-bar__label, .ad-bar--label-hidden .ad-bar__outside { opacity: 0; }
 .ad-bar--dense { height: var(--h-bar-dense); padding: 0 var(--space-1); }
@@ -3014,7 +3058,8 @@ button.ad-bar { cursor: pointer; }
 .ad-deliverable__chevron { transition: transform var(--dur-fast) var(--ease-out); }
 .ad-deliverable__chevron.ad-is-open { transform: rotate(90deg); }
 .ad-deliverable__caret:hover { color: var(--accent); }
-.ad-deliverable__caret:focus-visible { outline: none; box-shadow: var(--ring-select); }
+.ad-deliverable__caret:focus-visible { outline: none; }
+:where(:root:not([data-ad-pointer])) .ad-deliverable__caret:focus-visible { box-shadow: var(--ring-select); }
 /* The status mark on a deliverable bar: the ring or dot at icon-sm, a strong hairline when empty. */
 .ad-deliverable__status { display: inline-flex; }
 .ad-deliverable-group { display: flex; flex-direction: column; width: 100%; }
@@ -3030,7 +3075,8 @@ button.ad-milestone:hover .ad-milestone__label { color: var(--accent); }
 /* A milestone sits on its lane's ground (each has its own row, as a phase does); the hovered one rises over anything beside it. */
 .ad-milestone { background: var(--ad-lane-ground, transparent); padding-right: var(--space-1); }
 .ad-milestone:hover { position: relative; z-index: 2; }
-button.ad-milestone:focus-visible { outline: none; box-shadow: var(--ring-select); border-radius: var(--radius-page); }
+button.ad-milestone:focus-visible { outline: none; }
+:where(:root:not([data-ad-pointer])) button.ad-milestone:focus-visible { box-shadow: var(--ring-select); border-radius: var(--radius-page); }
 /* One diamond size: the row glyph's. A 0.6 square
  turned 45° spans 0.85 of the icon box, as the milestone glyph does; the margin keeps the box icon-sm, so nothing beside it moves. */
 .ad-milestone--past { color: var(--text-secondary); }
@@ -3056,7 +3102,8 @@ button.ad-milestone:focus-visible { outline: none; box-shadow: var(--ring-select
 .ad-chart-key__item { display: inline-flex; align-items: center; gap: var(--space-2); }
 .ad-chart-key__item--press { padding: 0; border: 0; background: none; color: inherit; font: inherit; cursor: pointer; }
 .ad-chart-key__item--press:hover { color: var(--accent); }
-.ad-chart-key__item--press:focus-visible { outline: none; box-shadow: var(--ring-select); border-radius: var(--radius-page); }
+.ad-chart-key__item--press:focus-visible { outline: none; }
+:where(:root:not([data-ad-pointer])) .ad-chart-key__item--press:focus-visible { box-shadow: var(--ring-select); border-radius: var(--radius-page); }
 .ad-chart-key__mark { display: inline-flex; align-items: center; }
 .ad-chart-key__swatch { flex: none; width: var(--space-6); height: var(--space-3); border-radius: var(--radius-control); background: var(--bg-hover); }
 .ad-chart-key__swatch--confirmed { box-shadow: inset 0 0 0 var(--border-w) var(--text-muted); }
@@ -3220,7 +3267,8 @@ button.ad-milestone:focus-visible { outline: none; box-shadow: var(--ring-select
   margin: 0; padding: 0 var(--space-3); border: 0; border-radius: var(--radius-page); background: transparent; color: var(--text-secondary); cursor: pointer; text-align: left;
 }
 .ad-alert-bar__head:hover .ad-alert-bar__word, .ad-alert-bar__head:hover .ad-alert-bar__caret { color: var(--accent); }
-.ad-alert-bar__head:focus-visible { outline: none; box-shadow: var(--ring-select); }
+.ad-alert-bar__head:focus-visible { outline: none; }
+:where(:root:not([data-ad-pointer])) .ad-alert-bar__head:focus-visible { box-shadow: var(--ring-select); }
 .ad-alert-bar__caret { width: var(--icon-sm); height: var(--icon-sm); color: var(--text-muted); }
 .ad-alert-bar__word { margin-right: var(--space-1); font: var(--type-heading); text-transform: uppercase; letter-spacing: var(--track-caps); }
 .ad-count-pill { display: inline-flex; align-items: center; justify-content: center; box-sizing: border-box; height: var(--h-pill); min-width: var(--space-8); padding: 0 var(--space-2); border-radius: var(--radius-pill); font: var(--type-data); font-size: var(--text-xs); color: var(--on-accent); font-variant-numeric: tabular-nums; }
@@ -3251,7 +3299,8 @@ button.ad-milestone:focus-visible { outline: none; box-shadow: var(--ring-select
 .ad-notification:last-child { border-bottom: 0; }
 button.ad-notification { cursor: pointer; }
 button.ad-notification:hover .ad-notification__sentence { color: var(--accent); }
-button.ad-notification:focus-visible { outline: none; box-shadow: var(--ring-select); border-radius: var(--radius-page); }
+button.ad-notification:focus-visible { outline: none; }
+:where(:root:not([data-ad-pointer])) button.ad-notification:focus-visible { box-shadow: var(--ring-select); border-radius: var(--radius-page); }
 .ad-notification__face { flex: none; }
 .ad-notification__sentence { flex: 1; min-width: 0; }
 .ad-notification__time { flex: none; color: var(--text-muted); }
@@ -3317,7 +3366,8 @@ button.ad-notification:focus-visible { outline: none; box-shadow: var(--ring-sel
 /* A line about a thing the person can open: the sentence is the press, set left in the same rung and ink, coral under the pointer. */
 .ad-thread__sentence--open { margin: 0; padding: 0; border: 0; background: transparent; font: inherit; text-align: left; cursor: pointer; }
 .ad-thread__sentence--open:hover { color: var(--accent); }
-.ad-thread__sentence--open:focus-visible { outline: none; box-shadow: var(--ring-select); border-radius: var(--radius-control); }
+.ad-thread__sentence--open:focus-visible { outline: none; }
+:where(:root:not([data-ad-pointer])) .ad-thread__sentence--open:focus-visible { box-shadow: var(--ring-select); border-radius: var(--radius-control); }
 .ad-thread__time { flex: none; color: var(--text-muted); }
 .ad-rules { display: flex; flex-direction: column; gap: var(--space-2); }
 .ad-rules__match { display: flex; align-items: center; gap: var(--space-2); font: var(--type-body); line-height: var(--lh-tight); color: var(--text-secondary); }
@@ -3334,7 +3384,8 @@ button.ad-notification:focus-visible { outline: none; box-shadow: var(--ring-sel
 .ad-rule-value__icon svg, .ad-rule-value__end svg { width: var(--icon-sm); height: var(--icon-sm); }
 .ad-rule-value__words { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; }
 .ad-rule-value:hover, .ad-rule-value:hover .ad-rule-value__icon, .ad-rule-value:hover .ad-rule-value__end { color: var(--accent); }
-.ad-rule-value:focus-visible { outline: none; box-shadow: var(--ring-select); }
+.ad-rule-value:focus-visible { outline: none; }
+:where(:root:not([data-ad-pointer])) .ad-rule-value:focus-visible { box-shadow: var(--ring-select); }
 
 .ad-rules__note { margin: 0; font: var(--type-detail); color: var(--text-muted); }
 .ad-rules__add { display: flex; align-items: center; gap: var(--space-2); }
