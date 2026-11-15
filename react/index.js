@@ -2341,6 +2341,7 @@ var Select = forwardRef2(function Select2({ options, placeholder, quiet, fill, c
       }
     ),
     /* @__PURE__ */ jsx10(Icon, { name: "caret-down", size: "sm", className: "ad-select__caret" }),
+    /* @__PURE__ */ jsx10(Icon, { job: "plus", size: "sm", className: "ad-field__add" }),
     open != null && /* @__PURE__ */ jsx10(Portal, { children: /* @__PURE__ */ jsx10("div", { ref: box, style: { ...style, zIndex: z }, className: "ad-float ad-pick-field__list", children: /* @__PURE__ */ jsx10(PickList, { options: options.map((o) => ({ id: o.value, label: o.label, disabled: o.disabled })), value: open, searchLabel: String(rest["aria-label"] ?? placeholder ?? ""), onPick: pick }) }) })
   ] });
 });
@@ -4317,7 +4318,8 @@ function PickField({ options, value, onPick, label, placeholder, header, icon, s
             }
           }
         ),
-        /* @__PURE__ */ jsx28(Icon, { name: "caret-down", size: "sm", className: "ad-pick-field__caret ad-glyph-quiet" })
+        /* @__PURE__ */ jsx28(Icon, { name: "caret-down", size: "sm", className: "ad-pick-field__caret ad-glyph-quiet" }),
+        /* @__PURE__ */ jsx28(Icon, { job: "plus", size: "sm", className: "ad-field__add" })
       ] }),
       open && narrowed.length > 0 && /* @__PURE__ */ jsx28(Portal, { children: /* @__PURE__ */ jsx28("div", { ref: box, style: { ...style, zIndex: z }, className: "ad-float ad-pick-field__list", onPointerDownCapture: () => {
         holding.current = true;
@@ -4391,7 +4393,8 @@ function PickField({ options, value, onPick, label, placeholder, header, icon, s
             picked.slice(0, cap).map((o) => /* @__PURE__ */ jsx28("span", { className: "ad-pick-field__mark", children: o.lead ?? /* @__PURE__ */ jsx28(Dot, {}) }, o.id)),
             picked.length > cap && /* @__PURE__ */ jsx28("span", { className: "ad-pick-field__more", children: "\u2026" })
           ] }) }) : /* @__PURE__ */ jsx28("span", { className: cx("ad-pick-field__words", "ad-clamp-line", picked.length === 0 && "ad-pick-field__words--empty"), children: picked.length ? words : placeholder ?? label }),
-          /* @__PURE__ */ jsx28(Icon, { name: "caret-down", size: "sm", className: "ad-pick-field__caret ad-glyph-quiet" })
+          /* @__PURE__ */ jsx28(Icon, { name: "caret-down", size: "sm", className: "ad-pick-field__caret ad-glyph-quiet" }),
+          /* @__PURE__ */ jsx28(Icon, { job: "plus", size: "sm", className: "ad-field__add" })
         ]
       }
     ),
@@ -4421,7 +4424,8 @@ function FieldPopover({ label, words, placeholder, icon, title, children, width 
         children: [
           icon && /* @__PURE__ */ jsx28(Icon, { job: icon, size: "md", className: "ad-pick-field__icon" }),
           /* @__PURE__ */ jsx28("span", { className: cx("ad-pick-field__words", "ad-clamp-line", empty && "ad-pick-field__words--empty"), children: empty ? placeholder ?? label : words }),
-          /* @__PURE__ */ jsx28(Icon, { name: "caret-down", size: "sm", className: "ad-pick-field__caret ad-glyph-quiet" })
+          /* @__PURE__ */ jsx28(Icon, { name: "caret-down", size: "sm", className: "ad-pick-field__caret ad-glyph-quiet" }),
+          /* @__PURE__ */ jsx28(Icon, { job: "plus", size: "sm", className: "ad-field__add" })
         ]
       }
     ),
@@ -4611,6 +4615,7 @@ function DateField({ onParsed, label, text: given, onText, format, icon, disable
         "aria-expanded": open,
         "aria-controls": open ? dropId : void 0,
         parsed: result ? result.readback : void 0,
+        end: compact ? void 0 : /* @__PURE__ */ jsx29(Icon, { job: "plus", size: "sm", className: "ad-field__add" }),
         disabled,
         onChange: (e) => setText(e.target.value),
         onClick: () => {

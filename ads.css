@@ -609,6 +609,7 @@
   --tint-over-min: 25%;
   --tint-over-max: 85%;
   --tint-presence-wash: 18%;
+  --tint-field-bar: 22%;
   --tint-lane-wash: 8%;
   --tint-day-fill: 24%;
   --tint-bar-edge: 50%;
@@ -1494,6 +1495,8 @@ button.ad-card__name:focus-visible { outline: none; box-shadow: var(--ring-selec
 .ad-field__input, .ad-select__native { all: unset; box-sizing: border-box; flex: 1; min-width: 0; height: 100%; font: inherit; color: inherit; }
 .ad-field__input::placeholder { color: var(--text-muted); }
 .ad-field__icon, .ad-field__end { display: inline-flex; color: var(--text-muted); }
+/* The + an empty fact shows in a card (Popover.css); hidden everywhere else. */
+.ad-field__add, .ad-field__end:has(> .ad-field__add:only-child) { display: none; }
 .ad-field__icon svg { width: var(--icon-md); height: var(--icon-md); }
 .ad-field__parsed { margin-top: var(--space-2); font: var(--type-data); font-size: var(--text-xs); text-transform: lowercase; color: var(--text-secondary); }
 .ad-select { position: relative; cursor: pointer; padding-right: var(--space-8); }
@@ -2298,9 +2301,10 @@ button.ad-steps__press:focus-visible { outline: none; box-shadow: var(--ring-sel
    and carries the card's bottom padding itself; with none, the body keeps the card's 16 under its last row. */
 .ad-popover--framed { display: flex; flex-direction: column; overflow: hidden; }
 .ad-popover--with-foot { padding-bottom: 0; }
-/* The body's scroll bar sits at the card's right edge, in the card's own padding, and the rows stop a step (8) short of it, never against it. */
-.ad-popover__body { flex: 1; min-height: 0; overflow-x: hidden; overflow-y: auto; scrollbar-gutter: stable; margin-right: calc(var(--space-4) * -1); padding-right: var(--space-2); }
-.ad-popover__cols > .ad-popover__body { margin-right: 0; }
+/* The body's scroll bar sits at the card's right edge, in the card's own padding, and the rows stop a step (8) short of it, never against it.
+   The body reaches 8 into the card's left padding too, so a fact's bar (below) can stand 8 out past its words, never clipped. */
+.ad-popover__body { flex: 1; min-height: 0; overflow-x: hidden; overflow-y: auto; scrollbar-gutter: stable; margin-right: calc(var(--space-4) * -1); padding-right: var(--space-2); margin-left: calc(var(--space-2) * -1); padding-left: var(--space-2); }
+.ad-popover__cols > .ad-popover__body { margin-right: 0; margin-left: 0; }
 .ad-popover__foot { flex: none; display: flex; align-items: center; gap: var(--space-2); margin: var(--space-3) calc(var(--space-4) * -1) 0; padding: var(--space-3) var(--space-4); border-top: var(--border-w) solid var(--border); }
 .ad-popover__action { margin-left: auto; display: inline-flex; }
 /* PopoverCard: a pinned header, then one scrolling body, or two columns (the rail at the right, a hairline between) each
@@ -2340,6 +2344,38 @@ button.ad-steps__press:focus-visible { outline: none; box-shadow: var(--ring-sel
 .ad-popover__section-body > * + *:not(.ad-view__reason, .ad-view-or, .ad-view-or + *), .ad-popover > .ad-field-row + .ad-field-row, .ad-popover__body > .ad-field-row + .ad-field-row { border-top: var(--border-w) solid var(--border); padding-top: var(--space-2); }
 
 /* A list's last row at the end of a card's or a section's body draws no line under it: patterns.css (one rule for both). */
+
+/* A card's facts (2026-11-14, Jeremy: "1. How a card's facts look: B, Todoist-like facts"): in a card, a field's name sits over its
+   value in the body face, semibold and grey; a pick's value is plain words with its mark, no box and no caret at rest. Under the pointer
+   and while its picker is open, the pick is a coral bar across the card (`tint-field-bar`), its caret at the right, the picker dropping
+   under it. An empty pick is the name alone on its line with a + at its right; the whole line opens the picker. Typed boxes (a note,
+   a text field) keep their box. */
+.ad-popover--framed .ad-field-row--beside:not(.ad-setting) { flex-direction: column; align-items: stretch; gap: var(--space-1); max-width: none; min-height: 0; padding-block: var(--space-1); }
+.ad-popover--framed .ad-field-row--beside:not(.ad-setting) > .ad-field-row__label { width: auto; font: var(--type-body); font-weight: 600; line-height: var(--lh-tight); color: var(--text-secondary); white-space: normal; }
+.ad-popover--framed .ad-field-row--beside:not(.ad-setting) > .ad-field-row__control { flex: none; justify-content: flex-start; width: 100%; }
+.ad-popover--framed .ad-field-row--beside:not(.ad-setting) > .ad-field-row__control > :not(.ad-button, .ad-icon-button, .ad-segmented) { flex: 1 1 auto; }
+.ad-popover--framed .ad-field-row--beside:not(.ad-setting) :is(.ad-datefield, .ad-datefield > .ad-field-wrap) { display: flex; flex: 1 1 auto; width: auto; }
+.ad-popover--framed .ad-field-row--beside:not(.ad-setting) :is(.ad-pick-field, .ad-select, .ad-datefield .ad-field) { position: relative; flex: 1 1 auto; width: auto; max-width: none; height: var(--h-field); margin-left: calc(var(--space-2) * -1); padding: 0 calc(var(--space-2) + var(--icon-sm) + var(--space-2)) 0 var(--space-2); border-radius: var(--radius-page); background: transparent; color: var(--text-primary); font: var(--type-name); line-height: var(--lh-tight); }
+.ad-popover--framed .ad-field-row--beside:not(.ad-setting) :is(.ad-pick-field, .ad-select, .ad-datefield .ad-field):is(:hover, :focus-within, [aria-expanded="true"], :has([aria-expanded="true"])) { background: color-mix(in srgb, var(--accent) var(--tint-field-bar), transparent); }
+.ad-popover--framed .ad-field-row--beside:not(.ad-setting) :is(.ad-pick-field__caret, .ad-select__caret) { position: absolute; right: var(--space-2); visibility: hidden; color: var(--text-secondary); }
+.ad-popover--framed .ad-field-row--beside:not(.ad-setting) :is(.ad-pick-field, .ad-select):is(:hover, :focus-within, [aria-expanded="true"], :has([aria-expanded="true"])) :is(.ad-pick-field__caret, .ad-select__caret) { visibility: visible; color: var(--accent); }
+.ad-popover--framed .ad-field-row--beside:not(.ad-setting) .ad-pick-field__words { flex: 1 1 auto; }
+.ad-popover--framed .ad-field-row--beside:not(.ad-setting) .ad-select__native { height: var(--h-field); line-height: var(--h-field); }
+/* The priority: its words with its colour as a small square before them, never a pill. */
+.ad-popover--framed .ad-field-row--beside:not(.ad-setting) .ad-select.ad-priority-pick { gap: var(--space-2); font-variant-numeric: normal; }
+.ad-popover--framed .ad-field-row--beside:not(.ad-setting) .ad-priority-pick::before { content: ''; flex: none; width: var(--space-3); height: var(--space-3); border-radius: var(--radius-control); background: var(--ad-pick-ink); }
+/* Empty: the name alone on its line, a + at the right; the pick lies under the whole line, so pressing anywhere on it opens the
+   picker. A typed date opens out to its box while it is typed in. */
+.ad-popover--framed .ad-field-row--beside:not(.ad-setting):has(:is(.ad-pick-field__words--empty, .ad-priority-pick--p0, .ad-datefield .ad-field__input:placeholder-shown)):not(:has(.ad-datefield .ad-field__input:focus)) { display: grid; grid-template: "fact" var(--h-field) / minmax(0, 1fr); padding-block: var(--space-1); }
+.ad-popover--framed .ad-field-row--beside:not(.ad-setting):has(:is(.ad-pick-field__words--empty, .ad-priority-pick--p0, .ad-datefield .ad-field__input:placeholder-shown)):not(:has(.ad-datefield .ad-field__input:focus)) > * { grid-area: fact; }
+.ad-popover--framed .ad-field-row--beside:not(.ad-setting):has(:is(.ad-pick-field__words--empty, .ad-priority-pick--p0, .ad-datefield .ad-field__input:placeholder-shown)):not(:has(.ad-datefield .ad-field__input:focus)) > .ad-field-row__label { position: relative; z-index: 1; align-self: center; pointer-events: none; }
+.ad-popover--framed .ad-field-row--beside:not(.ad-setting):has(:is(.ad-pick-field__words--empty, .ad-priority-pick--p0, .ad-datefield .ad-field__input:placeholder-shown)):not(:has(.ad-datefield .ad-field__input:focus)) :is(.ad-pick-field, .ad-select, .ad-datefield .ad-field) { color: transparent; }
+.ad-popover--framed .ad-field-row--beside:not(.ad-setting):has(:is(.ad-pick-field__words--empty, .ad-priority-pick--p0, .ad-datefield .ad-field__input:placeholder-shown)):not(:has(.ad-datefield .ad-field__input:focus)) :is(.ad-pick-field__words, .ad-pick-field__lead, .ad-pick-field__icon, .ad-select__native, .ad-field__input) { color: transparent; }
+.ad-popover--framed .ad-field-row--beside:not(.ad-setting):has(:is(.ad-pick-field__words--empty, .ad-priority-pick--p0, .ad-datefield .ad-field__input:placeholder-shown)):not(:has(.ad-datefield .ad-field__input:focus)) .ad-field__input::placeholder { color: transparent; }
+.ad-popover--framed .ad-field-row--beside:not(.ad-setting):has(:is(.ad-pick-field__words--empty, .ad-priority-pick--p0, .ad-datefield .ad-field__input:placeholder-shown)):not(:has(.ad-datefield .ad-field__input:focus)) :is(.ad-pick-field__caret, .ad-select__caret), .ad-popover--framed .ad-field-row--beside:not(.ad-setting):has(:is(.ad-pick-field__words--empty, .ad-priority-pick--p0, .ad-datefield .ad-field__input:placeholder-shown)):not(:has(.ad-datefield .ad-field__input:focus)) .ad-priority-pick::before { display: none; }
+.ad-popover--framed .ad-field-row--beside:not(.ad-setting):has(:is(.ad-pick-field__words--empty, .ad-priority-pick--p0, .ad-datefield .ad-field__input:placeholder-shown)):not(:has(.ad-datefield .ad-field__input:focus)) .ad-field__add { display: inline-flex; color: var(--text-secondary); }
+.ad-popover--framed .ad-field-row--beside:not(.ad-setting):has(:is(.ad-pick-field__words--empty, .ad-priority-pick--p0, .ad-datefield .ad-field__input:placeholder-shown)):not(:has(.ad-datefield .ad-field__input:focus)) :is(.ad-pick-field, .ad-select) > .ad-field__add, .ad-popover--framed .ad-field-row--beside:not(.ad-setting):has(:is(.ad-pick-field__words--empty, .ad-priority-pick--p0, .ad-datefield .ad-field__input:placeholder-shown)):not(:has(.ad-datefield .ad-field__input:focus)) .ad-field__end:has(> .ad-field__add:only-child) { display: inline-flex; position: absolute; right: var(--space-2); top: 50%; translate: 0 -50%; pointer-events: none; }
+.ad-popover--framed .ad-field-row--beside:not(.ad-setting):has(:is(.ad-pick-field__words--empty, .ad-priority-pick--p0, .ad-datefield .ad-field__input:placeholder-shown)):not(:has(.ad-datefield .ad-field__input:focus)) :is(.ad-pick-field, .ad-select, .ad-datefield .ad-field):hover .ad-field__add { color: var(--accent); }
 
 /* src/components/Row/Row.css */
 /* Row, RowDate, TodoCheck */
