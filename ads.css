@@ -1495,8 +1495,9 @@ button.ad-card__name:focus-visible { outline: none; box-shadow: var(--ring-selec
 .ad-field__input, .ad-select__native { all: unset; box-sizing: border-box; flex: 1; min-width: 0; height: 100%; font: inherit; color: inherit; }
 .ad-field__input::placeholder { color: var(--text-muted); }
 .ad-field__icon, .ad-field__end { display: inline-flex; color: var(--text-muted); }
-/* The + an empty fact shows in a card (Popover.css); hidden everywhere else. */
-.ad-field__add, .ad-field__end:has(> .ad-field__add:only-child) { display: none; }
+/* The + an empty fact shows in a card (Popover.css); hidden everywhere else. It is an icon, so the hiding names both classes and
+   outranks the icon's own display in whatever order a bundle puts the files. */
+.ad-icon.ad-field__add, .ad-field__end:has(> .ad-field__add:only-child) { display: none; }
 .ad-field__icon svg { width: var(--icon-md); height: var(--icon-md); }
 .ad-field__parsed { margin-top: var(--space-2); font: var(--type-data); font-size: var(--text-xs); text-transform: lowercase; color: var(--text-secondary); }
 .ad-select { position: relative; cursor: pointer; padding-right: var(--space-8); }
