@@ -4078,7 +4078,7 @@ function PopoverSection({ label, children, end, collapsible, collapsed, onToggle
   return /* @__PURE__ */ jsxs23("section", { className: "ad-popover__section", children: [
     headed && /* @__PURE__ */ jsxs23("div", { className: "ad-popover__section-head", children: [
       collapsible && /* @__PURE__ */ jsx26("button", { type: "button", className: `ad-popover__section-fold${mark === "add" ? " ad-popover__section-fold--add" : ""}`, "aria-expanded": !shut, "aria-controls": bodyId, "aria-label": label != null ? String(label) : "Section", onClick: toggle, children: /* @__PURE__ */ jsx26(Icon, { job: shut ? mark === "add" ? "plus" : "chevron-right" : "chevron-down", size: "sm" }) }),
-      label != null && /* @__PURE__ */ jsx26("h3", { className: "ad-popover__section-label ad-type-heading", children: label }),
+      label != null && /* @__PURE__ */ jsx26("h3", { className: cx("ad-popover__section-label ad-type-heading", collapsible && "ad-popover__section-label--fold"), onClick: collapsible ? toggle : void 0, children: label }),
       end != null && /* @__PURE__ */ jsx26("div", { className: "ad-popover__section-end", children: end })
     ] }),
     /* @__PURE__ */ jsx26("div", { id: bodyId, className: "ad-popover__section-body", hidden: collapsible ? shut : void 0, children })

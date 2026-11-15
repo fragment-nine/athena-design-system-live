@@ -2404,6 +2404,8 @@ button.ad-steps__press:focus-visible { outline: none; }
 /* A section that folds: the chevron before its label. */
 .ad-popover__section-fold { display: inline-flex; align-items: center; justify-content: center; width: var(--h-btn-row); height: var(--h-btn-row); margin: 0; padding: 0; border: 0; background: transparent; color: var(--text-muted); cursor: pointer; }
 .ad-popover__section-fold:hover { color: var(--accent); }
+.ad-popover__section-label--fold { cursor: pointer; }
+.ad-popover__section-head:has(> .ad-popover__section-label--fold:hover) > .ad-popover__section-fold { color: var(--accent); }
 .ad-popover__section-fold:focus-visible { outline: none; }
 :where(:root:not([data-ad-pointer])) .ad-popover__section-fold:focus-visible { box-shadow: var(--ring-select); border-radius: var(--radius-page); }
 
