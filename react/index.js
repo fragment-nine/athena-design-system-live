@@ -4611,59 +4611,72 @@ function DateField({ onParsed, label, text: given, onText, format, icon, disable
   }, [value?.getTime()]);
   const result = text && (!value || text !== fmt(value)) ? read2(text) : null;
   const named = useContext11(RowLabel) != null;
-  return /* @__PURE__ */ jsxs26("span", { ref: anchor, className: cx("ad-datefield", compact && "ad-datefield--compact", className), children: [
-    /* @__PURE__ */ jsx29(
-      TextField,
-      {
-        ref: input,
-        className: value && text === fmt(value) ? cx(due && isLate(value, picker.today, { done }) && "ad-datefield__field--late") : void 0,
-        icon,
-        "aria-label": label,
-        placeholder: compact ? void 0 : named ? "\u2014" : label,
-        value: text,
-        role: "combobox",
-        "aria-haspopup": "dialog",
-        "aria-expanded": open,
-        "aria-controls": open ? dropId : void 0,
-        parsed: result ? result.readback : void 0,
-        end: compact ? void 0 : /* @__PURE__ */ jsx29(Icon, { job: "plus", size: "sm", className: "ad-field__add" }),
-        disabled,
-        onChange: (e) => setText(e.target.value),
-        onClick: () => {
-          if (!disabled) setOpen(true);
-        },
-        onFocus: compact ? () => {
-          if (!disabled) setOpen(true);
-        } : void 0,
-        onKeyDown: (e) => {
-          if (e.key === "ArrowDown") {
-            e.preventDefault();
-            setOpen(true);
-            requestAnimationFrame(() => requestAnimationFrame(() => drop.current?.querySelector(".ad-datepicker__pick")?.focus()));
+  return /* @__PURE__ */ jsxs26(
+    "span",
+    {
+      ref: anchor,
+      className: cx("ad-datefield", compact && "ad-datefield--compact", className),
+      onClick: (e) => {
+        const t = e.target;
+        if (disabled || open || t === input.current || drop.current?.contains(t) || !e.target.closest?.(".ad-field")) return;
+        setOpen(true);
+        input.current?.focus({ preventScroll: true });
+      },
+      children: [
+        /* @__PURE__ */ jsx29(
+          TextField,
+          {
+            ref: input,
+            className: value && text === fmt(value) ? cx(due && isLate(value, picker.today, { done }) && "ad-datefield__field--late") : void 0,
+            icon,
+            "aria-label": label,
+            placeholder: compact ? void 0 : named ? "\u2014" : label,
+            value: text,
+            role: "combobox",
+            "aria-haspopup": "dialog",
+            "aria-expanded": open,
+            "aria-controls": open ? dropId : void 0,
+            parsed: result ? result.readback : void 0,
+            end: compact ? void 0 : /* @__PURE__ */ jsx29(Icon, { job: "plus", size: "sm", className: "ad-field__add" }),
+            disabled,
+            onChange: (e) => setText(e.target.value),
+            onClick: () => {
+              if (!disabled) setOpen(true);
+            },
+            onFocus: compact ? () => {
+              if (!disabled) setOpen(true);
+            } : void 0,
+            onKeyDown: (e) => {
+              if (e.key === "ArrowDown") {
+                e.preventDefault();
+                setOpen(true);
+                requestAnimationFrame(() => requestAnimationFrame(() => drop.current?.querySelector(".ad-datepicker__pick")?.focus()));
+              }
+              if (e.key === "Enter" && result) {
+                e.preventDefault();
+                onParsed?.(result);
+                if (result.date) say(result.date);
+                setOpen(false);
+              }
+            }
           }
-          if (e.key === "Enter" && result) {
-            e.preventDefault();
-            onParsed?.(result);
-            if (result.date) say(result.date);
-            setOpen(false);
-          }
-        }
-      }
-    ),
-    /* @__PURE__ */ jsx29(Popover, { open: open && !disabled, onClose: () => {
-      const d = input.current?.ownerDocument ?? document;
-      const a = d.activeElement;
-      if (!a || a === d.body || drop.current?.contains(a)) input.current?.focus({ preventScroll: true });
-      setOpen(false);
-    }, anchor, noClose: true, keepFocus: true, ariaLabel: label, id: dropId, className: "ad-datefield__drop", children: /* @__PURE__ */ jsx29("div", { ref: drop, children: /* @__PURE__ */ jsx29(DatePicker, { ...picker, repeat: picker.repeat && { ...picker.repeat, onPress: () => {
-      setOpen(false);
-      picker.repeat.onPress(input.current);
-    } }, value, onChange: (d) => {
-      say(d);
-      setOpen(false);
-      input.current?.focus({ preventScroll: true });
-    } }) }) })
-  ] });
+        ),
+        /* @__PURE__ */ jsx29(Popover, { open: open && !disabled, onClose: () => {
+          const d = input.current?.ownerDocument ?? document;
+          const a = d.activeElement;
+          if (!a || a === d.body || drop.current?.contains(a)) input.current?.focus({ preventScroll: true });
+          setOpen(false);
+        }, anchor, noClose: true, keepFocus: true, ariaLabel: label, id: dropId, className: "ad-datefield__drop", children: /* @__PURE__ */ jsx29("div", { ref: drop, children: /* @__PURE__ */ jsx29(DatePicker, { ...picker, repeat: picker.repeat && { ...picker.repeat, onPress: () => {
+          setOpen(false);
+          picker.repeat.onPress(input.current);
+        } }, value, onChange: (d) => {
+          say(d);
+          setOpen(false);
+          input.current?.focus({ preventScroll: true });
+        } }) }) })
+      ]
+    }
+  );
 }
 function DateRange({ from, to, onChange, today, weekStart, fromLabel = "From", toLabel = "To", disabled }) {
   const after = (a, b) => daysBetween(b, a) > 0;
@@ -4740,7 +4753,7 @@ function TimeRange({ start, end, onChange, startLabel = "Starts", endLabel = "En
 }
 
 // src/components/Card/Card.tsx
-import { createContext as createContext9, forwardRef as forwardRef7, useContext as useContext12, useState as useState19 } from "react";
+import { createContext as createContext9, forwardRef as forwardRef7, useContext as useContext12, useLayoutEffect as useLayoutEffect7, useRef as useRef20, useState as useState19 } from "react";
 import { jsx as jsx31, jsxs as jsxs28 } from "react/jsx-runtime";
 var OpenCard = createContext9(void 0);
 var Card = forwardRef7(function Card2({ title, headerLayout = "row", density, end, onMore, moreLabel = "More", children, onOpen, selected, dragging, picking, size = "tile", showIndex = true, className, onClick, ...rest }, ref) {
@@ -4777,7 +4790,7 @@ var Card = forwardRef7(function Card2({ title, headerLayout = "row", density, en
 });
 function CardName({ children, lead, onRename, renameLabel }) {
   const open = useContext12(OpenCard);
-  const name = onRename ? /* @__PURE__ */ jsx31(InlineEdit, { value: String(children), onCommit: onRename, ariaLabel: renameLabel ?? "Name", className: "ad-card__name" }) : open ? /* @__PURE__ */ jsx31("button", { type: "button", className: "ad-card__name ad-open", onClick: (e) => {
+  const name = onRename ? /* @__PURE__ */ jsx31(CardRename, { value: String(children), onRename, label: renameLabel ?? "Name" }) : open ? /* @__PURE__ */ jsx31("button", { type: "button", className: "ad-card__name ad-open", onClick: (e) => {
     e.stopPropagation();
     open();
   }, children }) : /* @__PURE__ */ jsx31("div", { className: "ad-card__name", children });
@@ -4785,6 +4798,47 @@ function CardName({ children, lead, onRename, renameLabel }) {
     /* @__PURE__ */ jsx31("span", { className: "ad-card__lead", children: lead }),
     name
   ] }) : name;
+}
+function CardRename({ value, onRename, label }) {
+  const [editing, setEditing] = useState19(false);
+  const box = useRef20(null);
+  const down = useRef20(null);
+  useLayoutEffect7(() => {
+    const el = box.current;
+    if (editing && el) {
+      el.focus({ preventScroll: true });
+      el.setSelectionRange(el.value.length, el.value.length);
+    }
+  }, [editing]);
+  if (editing) return /* @__PURE__ */ jsx31("span", { className: "ad-card__name-edit", onBlur: () => setEditing(false), children: /* @__PURE__ */ jsx31(InlineEdit, { ref: box, value, onCommit: onRename, ariaLabel: label, className: "ad-card__name" }) });
+  const still = (e) => !down.current || Math.hypot(e.clientX - down.current.x, e.clientY - down.current.y) < 4;
+  return /* @__PURE__ */ jsx31(
+    "span",
+    {
+      role: "button",
+      tabIndex: 0,
+      "aria-label": label,
+      className: "ad-inline-edit ad-inline-edit--body ad-card__name ad-card__name--read",
+      onPointerDown: (e) => {
+        down.current = { x: e.clientX, y: e.clientY };
+      },
+      onClick: (e) => {
+        if (!still(e)) return;
+        e.stopPropagation();
+        setEditing(true);
+      },
+      onFocus: (e) => {
+        if (e.currentTarget.matches(":focus-visible")) setEditing(true);
+      },
+      onKeyDown: (e) => {
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          setEditing(true);
+        }
+      },
+      children: value
+    }
+  );
 }
 function CardGrid({ children, columns = 3, align, compact, className, style, ...rest }) {
   return /* @__PURE__ */ jsx31("div", { ...rest, style: { ...style, "--ad-cols": columns }, className: cx("ad-card-grid", align === "start" && "ad-card-grid--start", compact && "ad-card-grid--compact", className), children });
@@ -4797,10 +4851,10 @@ function Picture({ src, alt, ...rest }) {
 }
 
 // src/components/PageHeader/PageHeader.tsx
-import { useId as useId12, useRef as useRef21, useState as useState21 } from "react";
+import { useId as useId12, useRef as useRef22, useState as useState21 } from "react";
 
 // src/components/ShowOptions/ShowOptions.tsx
-import { useRef as useRef20, useState as useState20 } from "react";
+import { useRef as useRef21, useState as useState20 } from "react";
 
 // src/components/Settings/Settings.tsx
 import { Children, isValidElement as isValidElement4 } from "react";
@@ -4867,7 +4921,7 @@ var WORDS = {
 };
 function ShowOptionsGear({ value, onChange, options = [...showOrder], labels: l = {} }) {
   const [open, setOpen] = useState20(false);
-  const gear = useRef20(null);
+  const gear = useRef21(null);
   const now = { ...SHOW_DEFAULTS, ...value };
   const shown = showOrder.filter((o) => options.includes(o));
   const gearLabel = l.gear ?? "Show options";
@@ -4913,7 +4967,7 @@ function PageHeader({ title, icon, stamp, back, description, countdown: given, a
 }
 function HeaderPick({ label, items, marked, ariaLabel }) {
   const [open, setOpen] = useState21(false);
-  const at = useRef21(null);
+  const at = useRef22(null);
   return /* @__PURE__ */ jsxs31("span", { className: "ad-page-header__menu", children: [
     /* @__PURE__ */ jsxs31("button", { ref: at, type: "button", className: cx("ad-page-header__pick", open && "ad-page-header__pick--open"), "aria-label": ariaLabel ? `${ariaLabel}: ${label}` : void 0, "aria-haspopup": "menu", "aria-expanded": open, onClick: () => setOpen((o) => !o), children: [
       label,
@@ -4943,7 +4997,7 @@ function HeaderActions({ children, groupProps, pickerMenu, connection, connectio
   ] });
 }
 function Tabs({ tabs, value, onChange, ariaLabel, numbered = true, panelId, className }) {
-  const list = useRef21(null);
+  const list = useRef22(null);
   const base = useId12();
   const at = tabs.findIndex((t) => t.id === value);
   const onKeyDown2 = (e) => {
@@ -4964,7 +5018,7 @@ function Tabs({ tabs, value, onChange, ariaLabel, numbered = true, panelId, clas
 }
 
 // src/components/Toolbar/Toolbar.tsx
-import { Children as Children2, forwardRef as forwardRef9, useEffect as useEffect15, useRef as useRef23, useState as useState22 } from "react";
+import { Children as Children2, forwardRef as forwardRef9, useEffect as useEffect15, useRef as useRef24, useState as useState22 } from "react";
 
 // src/components/Writing/Writing.tsx
 import { forwardRef as forwardRef8 } from "react";
@@ -5087,7 +5141,7 @@ function ViewPopover({ open, onClose, anchor, builtInViews = [], savedViews, cur
   const [name, setName] = useState22("");
   const [scope, setScope] = useState22(saveScopes?.[0]?.value);
   const [menuFor, setMenuFor] = useState22(null);
-  const menuAnchor = useRef23(null);
+  const menuAnchor = useRef24(null);
   const [drag, setDrag] = useState22(null);
   const [over, setOver] = useState22(null);
   const savedIds = (savedViews ?? []).map((v) => v.id);
@@ -5300,7 +5354,7 @@ function ShowSwitch({ setting: s }) {
 }
 
 // src/components/Warnings/Warnings.tsx
-import { forwardRef as forwardRef10, useId as useId13, useRef as useRef24, useState as useState23 } from "react";
+import { forwardRef as forwardRef10, useId as useId13, useRef as useRef25, useState as useState23 } from "react";
 import { Fragment as Fragment18, jsx as jsx37, jsxs as jsxs34 } from "react/jsx-runtime";
 function AlertsFloat({ open, onClose, anchor, ariaLabel = "Alerts", id, children }) {
   return /* @__PURE__ */ jsx37(Popover, { open, onClose, anchor, placement: "drop", width: "wide", ariaLabel, noClose: true, id, className: "ad-alerts-float", children: /* @__PURE__ */ jsx37("div", { role: "list", "aria-label": ariaLabel, className: "ad-alert-list", children }) });
@@ -5308,7 +5362,7 @@ function AlertsFloat({ open, onClose, anchor, ariaLabel = "Alerts", id, children
 function AlertsLine({ alerts, label = "Alerts", snoozeLabel = "Snooze", pillLabel = (p, n) => `${n} priority ${p}`, priorityLabel = (p) => `Priority ${p}`, defaultOpen = false, open, onOpenChange, className }) {
   const [own, setOwn] = useState23(defaultOpen);
   const isOpen = open ?? own;
-  const box = useRef24(null);
+  const box = useRef25(null);
   const listId = useId13();
   if (!alerts.length) return null;
   const counts = [1, 2, 3, 4].map((p) => [p, alerts.filter((a) => a.priority === p).length]);
@@ -5439,10 +5493,10 @@ function DropLine() {
 }
 
 // src/components/Splitter/Splitter.tsx
-import { useRef as useRef25 } from "react";
+import { useRef as useRef26 } from "react";
 import { Fragment as Fragment19, jsx as jsx39, jsxs as jsxs36 } from "react/jsx-runtime";
 function Splitter({ main, side, size, onResize, min = 0, max = Number.POSITIVE_INFINITY, at = "end", scrollPanes = true, label, className }) {
-  const box = useRef25(null);
+  const box = useRef26(null);
   const clamp = (n) => Math.max(min, Math.min(max, Math.round(n)));
   const onPointerDown2 = (e) => {
     const el = e.currentTarget;
@@ -5507,7 +5561,7 @@ function Splitter({ main, side, size, onResize, min = 0, max = Number.POSITIVE_I
 }
 
 // src/components/Text/Text.tsx
-import { useCallback as useCallback4, useLayoutEffect as useLayoutEffect7, useRef as useRef26 } from "react";
+import { useCallback as useCallback4, useLayoutEffect as useLayoutEffect8, useRef as useRef27 } from "react";
 import { jsx as jsx40, jsxs as jsxs37 } from "react/jsx-runtime";
 function DataText({ children, dim, small, size, estimate, className }) {
   return /* @__PURE__ */ jsx40("span", { className: cx("ad-type-data", "ad-data-text", small && "ad-data-text--small", size === "large" && !small && "ad-data-text--large", dim && "ad-data-text--dim", estimate && "ad-figure-estimate", className), children });
@@ -5517,10 +5571,10 @@ function Hint({ children, className }) {
 }
 function Figures({ items, ariaLabel, layout = "strip", density, face = "data", onIntrinsicWidth, className }) {
   const shown = face === "display" && layout === "rail";
-  const track = useRef26(null);
+  const track = useRef27(null);
   const clocks = layout === "clocks";
   const intrinsic = (clocks || layout === "rail") && onIntrinsicWidth != null;
-  const told = useRef26(null);
+  const told = useRef27(null);
   const measure = useCallback4(() => {
     const el = track.current;
     if (!el) return;
@@ -5539,7 +5593,7 @@ function Figures({ items, ariaLabel, layout = "strip", density, face = "data", o
     told.current = { to: onIntrinsicWidth, width };
     onIntrinsicWidth(width);
   }, [clocks, onIntrinsicWidth]);
-  useLayoutEffect7(() => {
+  useLayoutEffect8(() => {
     const el = track.current;
     if (!(clocks || intrinsic) || !el) return;
     measure();
@@ -5549,7 +5603,7 @@ function Figures({ items, ariaLabel, layout = "strip", density, face = "data", o
     observer.observe(el);
     return () => observer.disconnect();
   }, [clocks, intrinsic, measure]);
-  useLayoutEffect7(() => {
+  useLayoutEffect8(() => {
     if (clocks) measure();
   });
   return /* @__PURE__ */ jsx40("dl", { ref: track, className: cx("ad-figures", density === "compact" && "ad-figures--dense", layout !== "strip" && "ad-figures--grid", layout === "compact" && "ad-figures--compact", layout === "rail" && "ad-figures--rail", layout === "readings" && "ad-figures--readings", layout === "clocks" && "ad-figures--clocks", face === "display" && "ad-figures--display", intrinsic && "ad-figures--intrinsic", className), "aria-label": ariaLabel, children: (layout !== "strip" ? items : items.slice(0, 4)).map((f) => /* @__PURE__ */ jsxs37("div", { className: "ad-figures__item", title: !shown && (layout === "rail" || layout === "readings") && typeof f.note === "string" ? f.note : void 0, children: [
@@ -5648,10 +5702,10 @@ function sortRows(rows, value, direction, depth, group) {
 }
 
 // src/components/Table/Table.tsx
-import { useLayoutEffect as useLayoutEffect9, useRef as useRef28, useState as useState25 } from "react";
+import { useLayoutEffect as useLayoutEffect10, useRef as useRef29, useState as useState25 } from "react";
 
 // src/components/Timeline/Timeline.tsx
-import { useLayoutEffect as useLayoutEffect8, useRef as useRef27, useState as useState24 } from "react";
+import { useLayoutEffect as useLayoutEffect9, useRef as useRef28, useState as useState24 } from "react";
 import { Fragment as Fragment20, jsx as jsx42, jsxs as jsxs39 } from "react/jsx-runtime";
 var strip4 = (h) => {
   if (!h) return {};
@@ -5673,14 +5727,14 @@ function Bar({ code: code2, travel, dim, day: dayGiven, billing, label, unconfir
   const paint = barColour(color, hue);
   const plain = !thin && !code2;
   const day = code2 ? dayGiven ?? (travel ? "travel" : dim ? "dark" : void 0) : void 0;
-  const root = useRef27(null);
+  const root = useRef28(null);
   const [cramped, setCramped] = useState24(false);
   const [suffixFits, setSuffixFits] = useState24(true);
   const [suffixText, setSuffixText] = useState24("");
   const [nameGone, setNameGone] = useState24(false);
-  const tell = useRef27(onCramped);
+  const tell = useRef28(onCramped);
   tell.current = onCramped;
-  useLayoutEffect8(() => {
+  useLayoutEffect9(() => {
     const el = root.current;
     if (!el) return;
     const measure = () => {
@@ -5791,13 +5845,13 @@ function DeliverableBar({ parts, ...props }) {
 }
 function DeliverableRow({ lead, status, showStatus, statusLabel, markers: given, expandable, expanded, onToggle, toggleLabel = "Show parts", className, ...bar }) {
   const done = status === "good";
-  const row = useRef27(null);
+  const row = useRef28(null);
   const [marksOff, setMarksOff] = useState24(null);
   const onCramped = (c) => {
     const width = row.current?.clientWidth ?? 0;
     if (c && marksOff === null && given.length) setMarksOff(width);
   };
-  useLayoutEffect8(() => {
+  useLayoutEffect9(() => {
     const el = row.current;
     if (!el || marksOff === null || typeof ResizeObserver === "undefined") return;
     const ro = new ResizeObserver(() => {
@@ -5825,9 +5879,9 @@ function DeliverableRow({ lead, status, showStatus, statusLabel, markers: given,
 }
 var LEAD_AT = 0.12;
 function Lanes({ children, marks, ariaLabel, nameWidth, className }) {
-  const box = useRef27(null);
+  const box = useRef28(null);
   const [fit, setFit] = useState24(null);
-  useLayoutEffect8(() => {
+  useLayoutEffect9(() => {
     const el = box.current;
     if (!el || nameWidth !== "fit") return;
     const measure = () => {
@@ -6020,10 +6074,10 @@ function Table({ columns: named, rows: given, rowId, caption, sort, onSort, pick
   let stripe = 0;
   const all = rows.length > 0 && rows.every((r) => picked?.has(rowId(r)));
   const nameAt = Math.max(0, nameColumn ? columns.findIndex((c) => c.id === nameColumn) : 0);
-  const headRow = useRef28(null);
+  const headRow = useRef29(null);
   const [held, setHeld] = useState25({});
   const heldKey = columns.filter((c) => c.frozen === "start").map((c) => c.id).join(" ");
-  useLayoutEffect9(() => {
+  useLayoutEffect10(() => {
     const tr = headRow.current;
     if (!tr || heldKey.split(" ").length < 2) return;
     const measure = () => {
@@ -6041,7 +6095,7 @@ function Table({ columns: named, rows: given, rowId, caption, sort, onSort, pick
     tr.querySelectorAll("th").forEach((th) => seen.observe(th));
     return () => seen.disconnect();
   }, [heldKey, onPickedChange]);
-  const wrap = useRef28(null);
+  const wrap = useRef29(null);
   useKeyScroll(wrap);
   const at = (c) => c.frozen === "start" && held[c.id] ? { ["--ad-held"]: `${held[c.id]}px` } : {};
   const [near, setNear] = useState25(null);
@@ -6259,7 +6313,7 @@ function Table({ columns: named, rows: given, rowId, caption, sort, onSort, pick
 }
 function SelectionBar({ count, countLabel = (n) => `${n} selected`, actions, lead, onClear, clearLabel = "Clear", showAtZero, emptyLabel = "Nothing selected", onExit, exitLabel = "Exit", className }) {
   const [open, setOpen] = useState25(null);
-  const anchor = useRef28(null);
+  const anchor = useRef29(null);
   const ordered2 = [...actions.filter((a) => !a.danger), ...actions.filter((a) => a.danger)];
   if (count <= 0 && !showAtZero) return null;
   const zero = count <= 0;
@@ -6307,14 +6361,14 @@ function SelectionBarRoom() {
 }
 
 // src/components/Timeline/Ruler.tsx
-import { useEffect as useEffect16, useRef as useRef29, useState as useState26 } from "react";
+import { useEffect as useEffect16, useRef as useRef30, useState as useState26 } from "react";
 import { jsx as jsx44, jsxs as jsxs41 } from "react/jsx-runtime";
 function DayLines(_) {
   return null;
 }
 function Ruler({ start, days, dayWidth, locale = "en-US", pinned, holdLeft, end, marks, className }) {
-  const root = useRef29(null);
-  const corner = useRef29(null);
+  const root = useRef30(null);
+  const corner = useRef30(null);
   const [under, setUnder] = useState26(null);
   const hasEnd = end != null;
   useEffect16(() => {
@@ -6435,7 +6489,7 @@ function ZoomCluster({
 }
 
 // src/components/Calendar/Calendar.tsx
-import { useEffect as useEffect17, useLayoutEffect as useLayoutEffect10, useRef as useRef30, useState as useState27 } from "react";
+import { useEffect as useEffect17, useLayoutEffect as useLayoutEffect11, useRef as useRef31, useState as useState27 } from "react";
 import { Fragment as Fragment22, jsx as jsx45, jsxs as jsxs42 } from "react/jsx-runtime";
 var code = (it) => it.code ? /* @__PURE__ */ jsx45(ProjectPill, { code: it.code, color: it.color?.startsWith("project-") ? it.color : void 0 }) : null;
 var hooksOf3 = (h) => {
@@ -6600,7 +6654,7 @@ function scrollerAbove(el) {
 }
 function TimeGrid({ headerEnd, startHour, endHour, bookings = [], columns, now, hourLabel = clockHour, onOpen, itemProps, columnProps, ariaLabel, bandHours, onPressAt, over, visibleHours, scrollTo, asideWidth = "narrow", hourHeight = "compact", bandHeading, allDayContent, todayLine, className }) {
   const hours = Math.max(1, endHour - startHour);
-  const frame = useRef30(null);
+  const frame = useRef31(null);
   const [barW, setBarW] = useState27(0);
   useEffect17(() => {
     const el = frame.current;
@@ -6617,7 +6671,7 @@ function TimeGrid({ headerEnd, startHour, endHour, bookings = [], columns, now, 
   }, [headerEnd, visibleHours]);
   const [headH, setHeadH] = useState27(0);
   const [contentH, setContentH] = useState27(0);
-  useLayoutEffect10(() => {
+  useLayoutEffect11(() => {
     const el = frame.current;
     if (!el) return;
     const measure = () => {
@@ -6684,7 +6738,7 @@ function TimeGrid({ headerEnd, startHour, endHour, bookings = [], columns, now, 
     return leave;
   }, [scrollTo, startHour, hours, visibleHours]);
   const allDayCount = (columns ?? []).some((c) => c.allDay) ? Math.max(1, ...(columns ?? []).map((c) => c.allDay?.length ?? 0)) : 0;
-  useLayoutEffect10(() => {
+  useLayoutEffect11(() => {
     const el = frame.current;
     if (!el || hourHeight !== "fill") return;
     const box = scrollerAbove(el);
@@ -6840,7 +6894,7 @@ function PhaseBand({ label, color, unconfirmed }) {
 }
 
 // src/components/Map/Map.tsx
-import { useEffect as useEffect18, useMemo as useMemo3, useRef as useRef31, useState as useState28 } from "react";
+import { useEffect as useEffect18, useMemo as useMemo3, useRef as useRef32, useState as useState28 } from "react";
 
 // src/components/Map/worldGeo.ts
 var GEO_LAT_MAX = 84;
@@ -6911,7 +6965,7 @@ var PICKS = new Set(pickColours);
 function WorldMap({ pins, at, ariaLabel, onPin, hoverCard, pinProps }) {
   const [hover, setHover] = useState28(null);
   const night = useMemo3(() => nightPath(at), [at]);
-  const wrap = useRef31(null);
+  const wrap = useRef32(null);
   const [w, setW] = useState28(0);
   useEffect18(() => {
     const el = wrap.current;
@@ -7207,10 +7261,10 @@ function Steps({ steps, current, onPress, ariaLabel, compact, late, complete, cl
 }
 
 // src/components/Slider/Slider.tsx
-import { useRef as useRef32 } from "react";
+import { useRef as useRef33 } from "react";
 import { jsx as jsx50, jsxs as jsxs47 } from "react/jsx-runtime";
 function Slider({ value, onChange, min = 0, max = 100, step = 1, ariaLabel, display, disabled, className }) {
-  const track = useRef32(null);
+  const track = useRef33(null);
   const range = Array.isArray(value);
   const vals = range ? [...value] : [value];
   const span = Math.max(1e-9, max - min);
@@ -7282,10 +7336,10 @@ function Slider({ value, onChange, min = 0, max = 100, step = 1, ariaLabel, disp
 }
 
 // src/components/Search/Search.tsx
-import { useRef as useRef33 } from "react";
+import { useRef as useRef34 } from "react";
 import { jsx as jsx51 } from "react/jsx-runtime";
 function CommandSearch({ open, onClose, query, onQuery, results, onPick, label = "Search everything", noMatch = "Nothing by that name" }) {
-  const box = useRef33(null);
+  const box = useRef34(null);
   const z = useLayer(open, onClose, [box], "dialog");
   usePageInert(open, [box]);
   useFocusReturn(open, box);
@@ -7308,11 +7362,11 @@ function CommandSearch({ open, onClose, query, onQuery, results, onPick, label =
 }
 
 // src/components/Guidance/Guidance.tsx
-import { useEffect as useEffect19, useLayoutEffect as useLayoutEffect11, useRef as useRef34, useState as useState29 } from "react";
+import { useEffect as useEffect19, useLayoutEffect as useLayoutEffect12, useRef as useRef35, useState as useState29 } from "react";
 import { Fragment as Fragment25, jsx as jsx52, jsxs as jsxs48 } from "react/jsx-runtime";
-var useIsoLayoutEffect3 = typeof window === "undefined" ? useEffect19 : useLayoutEffect11;
+var useIsoLayoutEffect3 = typeof window === "undefined" ? useEffect19 : useLayoutEffect12;
 function TourStep({ open, anchor, step, total, title, children, onBack, onNext, onExit, backLabel = "Back", nextLabel = "Next", progressLabel = (s, t) => `${s} of ${t}`, placement, side: older, onClose, closeLabel }) {
-  const card = useRef34(null);
+  const card = useRef35(null);
   const [rect, setRect] = useState29(null);
   const [size, setSize] = useState29(null);
   const asked = placement ?? older ?? "below";

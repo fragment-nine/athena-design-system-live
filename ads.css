@@ -1267,6 +1267,10 @@ button.ad-card__name:focus-visible { outline: none; }
 .ad-card:has(.ad-card__pick) { padding-left: calc(var(--space-2) + var(--check-size) + var(--space-2)); }
 .ad-card__name-row { display: flex; align-items: flex-start; gap: var(--space-2); margin-bottom: var(--space-2); }
 .ad-card__name-row .ad-card__name { margin-bottom: 0; flex: 1; min-width: 0; }
+/* A renamable name at rest: the words, drawn as its box draws them, one line ending in "…"; dragging it lifts the card, never selects. */
+.ad-card__name--read { white-space: nowrap; overflow: hidden; cursor: text; user-select: none; -webkit-user-select: none; }
+.ad-card__name-edit { display: contents; }
+.ad-card__name-row .ad-card__name-edit .ad-card__name { margin-bottom: 0; flex: 1; min-width: 0; }
 .ad-card__lead { display: inline-flex; flex: none; }
 /* CardGrid: `--ad-cols` across (three unless said otherwise) while each card keeps a card's smallest width; as the room narrows,
    fewer across, down to one. The column's floor is the larger of the smallest card and an even share of the row. */
