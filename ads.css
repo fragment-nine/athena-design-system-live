@@ -1650,7 +1650,9 @@ button.ad-contents__button:focus-visible { outline: none; box-shadow: var(--ring
 .ad-caption { font: var(--type-data); font-size: var(--text-xs); text-transform: lowercase; color: var(--text-muted); }
 .ad-dual { font: var(--type-data); font-variant-numeric: tabular-nums; }
 /* The ground: the deep black with a warm wash top left and a cool one bottom right (Studio glass, locked 2026-10-29). No grain. */
-.ad-ground { display: flex; flex-direction: column; min-height: 100%; background-color: var(--bg-base); background-image: radial-gradient(80% 70% at 15% -10%, var(--wash-warm), transparent 60%), radial-gradient(60% 60% at 105% 105%, var(--wash-cool), transparent 60%); background-attachment: fixed; counter-reset: widget; }
+/* It names its washes, and what a section's fill looks like laid on it (--ad-section-plane: the fill, the washes, the black), so what must
+   cover a row scrolling under it inside a section (a pinned ruler) paints the section's own look, never a flat tone. */
+.ad-ground { --ad-ground-wash: radial-gradient(80% 70% at 15% -10%, var(--wash-warm), transparent 60%), radial-gradient(60% 60% at 105% 105%, var(--wash-cool), transparent 60%); --ad-section-plane: linear-gradient(var(--bg-surface), var(--bg-surface)), var(--ad-ground-wash), linear-gradient(var(--bg-base), var(--bg-base)); display: flex; flex-direction: column; min-height: 100%; background-color: var(--bg-base); background-image: var(--ad-ground-wash); background-attachment: fixed; counter-reset: widget; }
 /* The frame every screen keeps: the rail, then the page (header, one toolbar, the work) in its gutter. */
 .ad-frame { display: flex; align-items: stretch; flex: 1; min-height: 100vh; min-height: 100dvh; }
 /* The page: the header at the top with 8 above it, the toolbar 8 under the header, the work
@@ -2907,8 +2909,12 @@ button.ad-row__name:focus-visible { outline: none; box-shadow: var(--ring-select
 .ad-zoom__btn:hover { color: var(--accent); }
 .ad-zoom__btn:focus-visible { outline: none; box-shadow: var(--ring-select); }
 .ad-zoom__btn:disabled { color: var(--text-muted); cursor: default; }
-/* Pinned: held at the top of the scroller on its own ground, above the lanes. */
+/* Pinned: held at the top of the scroller, above the lanes, on the plane it sits on, so a row passing under its dates is covered. */
 .ad-ruler--pinned { position: sticky; top: 0; z-index: 2; background: var(--ad-under); }
+/* In a section or a dashboard widget that plane is the page's ground under the section's fill, and a flat tone would read as a dark bar
+   wherever the ground's wash shows through the section: the row paints the section's look as the ground names it (the fill, the washes, the black), held to the window as the ground's
+   washes are, so no bar shows behind the dates anywhere on the screen. A card inside the section keeps the card's plane. */
+:is(:is(.ad-section-frame, .ad-frame__work) .ad-section, .ad-card--widget) .ad-ruler--pinned:not(.ad-card:not(.ad-card--widget) .ad-ruler--pinned) { background-image: var(--ad-section-plane, none); background-attachment: fixed; }
 /* The chart's corner (Ruler end): over the months' tier at the visible right, held there while the chart scrolls sideways; it may
    lie over a month's name, on its own ground. */
 .ad-ruler:has(> .ad-ruler__end) { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: start; }
