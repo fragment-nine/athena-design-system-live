@@ -2203,6 +2203,11 @@ button.ad-steps__press:focus-visible { outline: none; box-shadow: var(--ring-sel
 .ad-pick-field__icon { flex: none; color: var(--text-muted); }
 .ad-pick-field__words { flex: 1; }
 .ad-pick-field__words--empty { color: var(--text-muted); }
+/* Empty is blank: the + where the caret was, never prompt words; in a table cell only under the pointer. */
+.ad-pick-field:has(> .ad-pick-field__words--empty) > .ad-pick-field__caret { display: none; }
+.ad-pick-field:has(> .ad-pick-field__words--empty) > .ad-icon.ad-field__add { display: inline-flex; flex: none; margin-left: auto; color: var(--text-secondary); }
+.ad-pick-field:has(> .ad-pick-field__words--empty):hover > .ad-icon.ad-field__add { color: var(--accent); }
+.ad-pick-field--compact:has(> .ad-pick-field__words--empty):not(:hover, :focus-visible, [aria-expanded="true"]) > .ad-icon.ad-field__add { visibility: hidden; }
 .ad-pick-field:hover .ad-pick-field__caret { color: var(--accent); }
 .ad-pick-field[aria-expanded="true"] { background: var(--bg-hover); }
 .ad-pick-field:focus-visible { outline: none; box-shadow: var(--ring-select); }

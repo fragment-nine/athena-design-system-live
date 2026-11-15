@@ -4194,8 +4194,9 @@ function ConfirmDialog({ open, act, thing, detail, onConfirm, onKeep, labels: l 
 }
 
 // src/components/Pickers/Pickers.tsx
-import { cloneElement as cloneElement2, isValidElement as isValidElement3, useEffect as useEffect11, useRef as useRef17, useState as useState16 } from "react";
+import { cloneElement as cloneElement2, isValidElement as isValidElement3, useContext as useContext10, useEffect as useEffect11, useRef as useRef17, useState as useState16 } from "react";
 import { Fragment as Fragment14, jsx as jsx28, jsxs as jsxs25 } from "react/jsx-runtime";
+var CLEAR_ROW = "__ad-clear";
 function PersonPicker({ people, none, open, anchor, onClose, header, ...rest }) {
   const list = /* @__PURE__ */ jsx28(PickList, { ...rest, options: [...none ? [{ id: none.id, label: none.label, lead: /* @__PURE__ */ jsx28(Icon, { job: "user", size: "sm" }) }] : [], ...people.map((p) => ({ id: p.id, label: p.name, keywords: p.email, hint: p.hint, lead: /* @__PURE__ */ jsx28(Avatar, { name: p.name, initials: p.initials, src: p.src }) }))] });
   if (!anchor) return list;
@@ -4213,7 +4214,13 @@ function StatusPicker({ statuses, noSearch = true, open, anchor, onClose, header
   }), anchor, ariaLabel: rest.searchLabel, items: statuses.map((s) => ({ id: s.id, label: s.label, dot: s.tone ?? "neutral", checked: s.id === rest.value, onSelect: () => rest.onPick(s.id) })) });
   return /* @__PURE__ */ jsx28(PickList, { ...rest, noSearch, options: statuses.map((s) => ({ id: s.id, label: s.label, lead: /* @__PURE__ */ jsx28(Dot, { tone: s.tone }), hint: s.hint })) });
 }
-function PickField({ options, value, onPick, label, placeholder, header, icon, search, disabled, className, trigger, marks, footer, typed, onTyped, compact, fill, onAdd, addLabel }) {
+function PickField({ options: given, value, onPick: pickGiven, label, header, icon, disabled, className, trigger, marks, footer, typed, onTyped, compact, fill, onAdd, addLabel, onClear, clearLabel }) {
+  const clearing = !!onClear && !Array.isArray(value);
+  const options = clearing ? [{ id: CLEAR_ROW, label: clearLabel ?? `No ${label.toLowerCase()}` }, ...given] : given;
+  const listValue = clearing && value == null ? CLEAR_ROW : value;
+  const onPick = (id) => id === CLEAR_ROW ? onClear?.() : pickGiven(id);
+  const named = useContext10(RowLabel) != null;
+  const emptyWords = named || compact ? "" : label;
   const [open, setOpen] = useState16(false);
   const [draft, setDraft] = useState16(null);
   const [editing, setEditing] = useState16(false);
@@ -4236,7 +4243,7 @@ function PickField({ options, value, onPick, label, placeholder, header, icon, s
     return () => cancelAnimationFrame(id);
   }, [open, typed]);
   const many = Array.isArray(value);
-  const picked = options.filter((o) => many ? value.includes(o.id) : o.id === value);
+  const picked = given.filter((o) => many ? value.includes(o.id) : o.id === value);
   const face = picked.length === 1 ? picked[0] : null;
   const cap = marks === true ? 3 : typeof marks === "number" && marks > 0 ? Math.floor(marks) : 0;
   const asMarks = cap > 0 && picked.length > 1;
@@ -4248,9 +4255,8 @@ function PickField({ options, value, onPick, label, placeholder, header, icon, s
       PickList,
       {
         options,
-        value,
+        value: listValue,
         searchLabel: label,
-        noSearch: search === false,
         footer: foot,
         onAdd: onAdd && ((words2) => {
           onAdd(words2);
@@ -4289,7 +4295,7 @@ function PickField({ options, value, onPick, label, placeholder, header, icon, s
             "aria-haspopup": "listbox",
             "aria-expanded": open,
             disabled,
-            placeholder: placeholder ?? label,
+            placeholder: emptyWords,
             value: words2,
             autoFocus: compact,
             onFocus: compact ? (e) => e.currentTarget.select() : void 0,
@@ -4328,7 +4334,7 @@ function PickField({ options, value, onPick, label, placeholder, header, icon, s
       ] }),
       open && narrowed.length > 0 && /* @__PURE__ */ jsx28(Portal, { children: /* @__PURE__ */ jsx28("div", { ref: box, style: { ...style, zIndex: z }, className: "ad-float ad-pick-field__list", onPointerDownCapture: () => {
         holding.current = true;
-      }, children: /* @__PURE__ */ jsx28(PickList, { options: narrowed, value, searchLabel: label, noSearch: true, footer: foot, onPick: (id) => {
+      }, children: /* @__PURE__ */ jsx28(PickList, { options: narrowed, value: listValue, searchLabel: label, noSearch: true, footer: foot, onPick: (id) => {
         onPick(id);
         if (compact) leave(true);
         else {
@@ -4397,7 +4403,7 @@ function PickField({ options, value, onPick, label, placeholder, header, icon, s
           ] }) : null : asMarks ? /* @__PURE__ */ jsx28("span", { className: "ad-pick-field__words ad-clamp-line", title: words, children: /* @__PURE__ */ jsxs25("span", { className: "ad-pick-field__marks", "aria-hidden": "true", children: [
             picked.slice(0, cap).map((o) => /* @__PURE__ */ jsx28("span", { className: "ad-pick-field__mark", children: o.lead ?? /* @__PURE__ */ jsx28(Dot, {}) }, o.id)),
             picked.length > cap && /* @__PURE__ */ jsx28("span", { className: "ad-pick-field__more", children: "\u2026" })
-          ] }) }) : /* @__PURE__ */ jsx28("span", { className: cx("ad-pick-field__words", "ad-clamp-line", picked.length === 0 && "ad-pick-field__words--empty"), children: picked.length ? words : placeholder ?? label }),
+          ] }) }) : /* @__PURE__ */ jsx28("span", { className: cx("ad-pick-field__words", "ad-clamp-line", picked.length === 0 && "ad-pick-field__words--empty"), children: picked.length ? words : emptyWords }),
           /* @__PURE__ */ jsx28(Icon, { name: "caret-down", size: "sm", className: "ad-pick-field__caret ad-glyph-quiet" }),
           /* @__PURE__ */ jsx28(Icon, { job: "plus", size: "sm", className: "ad-field__add" })
         ]
@@ -4442,7 +4448,7 @@ function FieldPopover({ label, words, placeholder, icon, title, children, width 
 }
 
 // src/components/Pickers/DatePicker.tsx
-import { useContext as useContext10, useEffect as useEffect12, useId as useId10, useMemo as useMemo2, useRef as useRef18, useState as useState17 } from "react";
+import { useContext as useContext11, useEffect as useEffect12, useId as useId10, useMemo as useMemo2, useRef as useRef18, useState as useState17 } from "react";
 import { jsx as jsx29, jsxs as jsxs26 } from "react/jsx-runtime";
 var EN = { today: "Today", tomorrow: "Tomorrow", nextWeek: "Next week", inTwoWeeks: "In two weeks", previousMonth: "Previous month", nextMonth: "Next month", previousYear: "Previous year", nextYear: "Next year", noDate: "No date", repeat: "Repeat" };
 function DroppedDatePicker({ open, anchor, onClose, repeatEditor, backLabel, ...picker }) {
@@ -4604,7 +4610,7 @@ function DateField({ onParsed, label, text: given, onText, format, icon, disable
     if (given === void 0) setOwn(value ? fmt(value) : "");
   }, [value?.getTime()]);
   const result = text && (!value || text !== fmt(value)) ? read2(text) : null;
-  const named = useContext10(RowLabel) != null;
+  const named = useContext11(RowLabel) != null;
   return /* @__PURE__ */ jsxs26("span", { ref: anchor, className: cx("ad-datefield", compact && "ad-datefield--compact", className), children: [
     /* @__PURE__ */ jsx29(
       TextField,
@@ -4734,7 +4740,7 @@ function TimeRange({ start, end, onChange, startLabel = "Starts", endLabel = "En
 }
 
 // src/components/Card/Card.tsx
-import { createContext as createContext9, forwardRef as forwardRef7, useContext as useContext11, useState as useState19 } from "react";
+import { createContext as createContext9, forwardRef as forwardRef7, useContext as useContext12, useState as useState19 } from "react";
 import { jsx as jsx31, jsxs as jsxs28 } from "react/jsx-runtime";
 var OpenCard = createContext9(void 0);
 var Card = forwardRef7(function Card2({ title, headerLayout = "row", density, end, onMore, moreLabel = "More", children, onOpen, selected, dragging, picking, size = "tile", showIndex = true, className, onClick, ...rest }, ref) {
@@ -4770,7 +4776,7 @@ var Card = forwardRef7(function Card2({ title, headerLayout = "row", density, en
   );
 });
 function CardName({ children, lead, onRename, renameLabel }) {
-  const open = useContext11(OpenCard);
+  const open = useContext12(OpenCard);
   const name = onRename ? /* @__PURE__ */ jsx31(InlineEdit, { value: String(children), onCommit: onRename, ariaLabel: renameLabel ?? "Name", className: "ad-card__name" }) : open ? /* @__PURE__ */ jsx31("button", { type: "button", className: "ad-card__name ad-open", onClick: (e) => {
     e.stopPropagation();
     open();
@@ -7410,7 +7416,7 @@ function Ground({ children, className, style }) {
 }
 
 // src/runtime/AdsProvider.tsx
-import { useContext as useContext12, useEffect as useEffect20, useMemo as useMemo4 } from "react";
+import { useContext as useContext13, useEffect as useEffect20, useMemo as useMemo4 } from "react";
 import { jsx as jsx54 } from "react/jsx-runtime";
 var MODE = typeof process !== "undefined" && process.env && process.env.NODE_ENV || "development";
 var pending = [];
@@ -7454,7 +7460,7 @@ function AdsProvider({ strict = false, show, children }) {
       document.removeEventListener("focusin", look, true);
     };
   }, [on]);
-  const outer = useContext12(HueSwitches);
+  const outer = useContext13(HueSwitches);
   const o = { ...SHOW_DEFAULTS, ...show ?? {} };
   const project = o.projectColours === true;
   const item = o.itemColours === true;
@@ -7465,7 +7471,7 @@ function AdsProvider({ strict = false, show, children }) {
   return /* @__PURE__ */ jsx54(HueSwitches.Provider, { value, children: /* @__PURE__ */ jsx54(Show.Provider, { value: options, children }) });
 }
 function AdsScope({ project, children }) {
-  const outer = useContext12(HueSwitches);
+  const outer = useContext13(HueSwitches);
   const value = useMemo4(() => ({ ...outer, inProject: true }), [outer]);
   return /* @__PURE__ */ jsx54(HueSwitches.Provider, { value, children: /* @__PURE__ */ jsx54("div", { "data-ads-project": project, style: { display: "contents" }, children }) });
 }
