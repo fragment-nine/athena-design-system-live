@@ -2967,10 +2967,11 @@ button.ad-row__name:focus-visible { outline: none; }
 /* The cells split by hairlines, as his Overview picture draws them. */
 .ad-figures__item { display: flex; flex-direction: column; gap: var(--space-2); min-width: 0; padding: var(--space-4) var(--space-6); border-left: var(--border-w) solid var(--border); }
 .ad-figures__item:first-child { padding-left: 0; border-left: 0; }
-/* In a section the section's hairline is the only horizontal rule: the strip draws no top or bottom rule. Its figures are split as a
-   rail's readings are, a hairline between one and the next with space after it, the first flush left. */
+/* In a section the section's hairline is the only horizontal rule: the strip draws no top or bottom rule. A strip's figures are split as a
+   rail's readings are, a hairline between one and the next with space after it, the first flush left; a grid that wraps (readings, clocks)
+   takes no lead-in, so every cell starts at its own column's edge and the rows stack. */
 .ad-section .ad-figures { border-top: 0; border-bottom: 0; }
-.ad-section .ad-figures__item + .ad-figures__item { padding-left: var(--space-4); }
+.ad-section .ad-figures:not(.ad-figures--grid) > .ad-figures__item + .ad-figures__item { padding-left: var(--space-4); }
 /* A strip lines its readings up: the labels on one row, the values on the next, the graphics under them taking the slack, and the
    notes on one line at the bottom however tall a graphic runs. In a section it fills the section, so strips side by side end level. */
 .ad-figures:not(.ad-figures--grid) { grid-template-rows: auto auto 1fr auto; }
