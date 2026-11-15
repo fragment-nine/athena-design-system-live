@@ -3195,6 +3195,8 @@ button.ad-milestone:focus-visible { outline: none; }
 /* Hidden, it keeps its width measured, so zooming wider brings the whole group back and never half an icon. */
 .ad-bar__suffix[aria-hidden="true"] { position: absolute; visibility: hidden; pointer-events: none; }
 .ad-bar--name-gone .ad-bar__label > .ad-bar__name { visibility: hidden; }
+/* Clipped with no room for more than a stub: no name, never "R…"; the lead and the date after it stay where they were. */
+.ad-bar--clip-name-gone .ad-bar__words { visibility: hidden; }
 
 /* src/components/Toolbar/Toolbar.css */
 /* Toolbar */

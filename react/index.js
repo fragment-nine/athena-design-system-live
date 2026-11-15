@@ -5677,6 +5677,7 @@ function Bar({ code: code2, travel, dim, day: dayGiven, billing, label, unconfir
   const [cramped, setCramped] = useState24(false);
   const [suffixFits, setSuffixFits] = useState24(true);
   const [suffixText, setSuffixText] = useState24("");
+  const [nameGone, setNameGone] = useState24(false);
   const tell = useRef27(onCramped);
   tell.current = onCramped;
   useLayoutEffect8(() => {
@@ -5688,6 +5689,12 @@ function Bar({ code: code2, travel, dim, day: dayGiven, billing, label, unconfir
         const c = n.scrollWidth > n.clientWidth + 1;
         setCramped(c);
         tell.current?.(c);
+      }
+      const words2 = el.querySelector(".ad-bar__words");
+      const wn = words2?.querySelector(".ad-bar__name");
+      if (words2 && wn) {
+        const stub = parseFloat(getComputedStyle(el).getPropertyValue("--space-6")) || 24;
+        setNameGone(wn.scrollWidth > words2.clientWidth + 1 && words2.clientWidth < stub);
       }
       const lab2 = el.querySelector(".ad-bar__label");
       const tail2 = lab2?.querySelector(".ad-bar__suffix");
@@ -5738,7 +5745,7 @@ function Bar({ code: code2, travel, dim, day: dayGiven, billing, label, unconfir
       },
       "aria-current": selected || void 0,
       title: tip ?? hooks.title,
-      className: cx("ad-bar", "ad-striped", code2 && "ad-bar--code", code2 && travel && "ad-bar--travel", code2 && dim && !dayGiven && !billing && "ad-bar--dim", day && `ad-bar--day-${day}`, code2 && billing && billing !== "plain" && `ad-bar--bill-${billing}`, labelOutside === "never" && "ad-bar--keep-in", clip && "ad-bar--clip", labelOutside === "never" && cramped && "ad-bar--name-gone", labelOutside === "before" && "ad-bar--label-before", plain && !!paint["--ad-bar"] && "ad-bar--hued", plain && !unconfirmed && !deal && !backup && "ad-bar--confirmed", unconfirmed && "ad-bar--unconfirmed", deal && "ad-bar--deal", backup && "ad-bar--backup", thin && "ad-bar--thin", outside && "ad-bar--label-outside", selected && "ad-bar--selected", late && "ad-bar--late", dense && "ad-bar--dense", fade && `ad-bar--fade-${fade}`, labelHidden && "ad-bar--label-hidden", className),
+      className: cx("ad-bar", "ad-striped", code2 && "ad-bar--code", code2 && travel && "ad-bar--travel", code2 && dim && !dayGiven && !billing && "ad-bar--dim", day && `ad-bar--day-${day}`, code2 && billing && billing !== "plain" && `ad-bar--bill-${billing}`, labelOutside === "never" && "ad-bar--keep-in", clip && "ad-bar--clip", clip && nameGone && suffix != null && "ad-bar--clip-name-gone", labelOutside === "never" && cramped && "ad-bar--name-gone", labelOutside === "before" && "ad-bar--label-before", plain && !!paint["--ad-bar"] && "ad-bar--hued", plain && !unconfirmed && !deal && !backup && "ad-bar--confirmed", unconfirmed && "ad-bar--unconfirmed", deal && "ad-bar--deal", backup && "ad-bar--backup", thin && "ad-bar--thin", outside && "ad-bar--label-outside", selected && "ad-bar--selected", late && "ad-bar--late", dense && "ad-bar--dense", fade && `ad-bar--fade-${fade}`, labelHidden && "ad-bar--label-hidden", className),
       style: { ...style, ...paint, ...labelInset ? { ["--ad-label-in"]: `${Math.max(0, labelInset)}px` } : {}, ...fade && fadeStart != null ? { ["--ad-fade-start"]: `${Math.max(0, fadeStart)}px` } : {}, ...fade && fadeEnd != null ? { ["--ad-fade-end"]: `${Math.max(0, fadeEnd)}px` } : {} },
       children: [
         fade && /* @__PURE__ */ jsx42("span", { className: "ad-bar__ground", "aria-hidden": "true" }),
