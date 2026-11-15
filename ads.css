@@ -1945,7 +1945,7 @@ button.ad-contents__button:focus-visible { outline: none; }
 
 /* src/components/Navigation/Navigation.css */
 /* Rail, SideMenu, ProjectPill */
-.ad-rail { display: flex; flex-direction: column; align-items: center; gap: var(--space-4); box-sizing: border-box; width: var(--w-rail); height: 100%; padding: var(--space-4) 0 var(--space-3); background: var(--bg-side); border-right: var(--border-w) solid var(--border); backdrop-filter: var(--blur-glass); -webkit-backdrop-filter: var(--blur-glass); box-shadow: var(--shadow-side); }
+.ad-rail { display: flex; flex-direction: column; align-items: center; gap: var(--space-4); box-sizing: border-box; width: var(--w-rail); height: 100%; padding: var(--ad-menu-top) 0 var(--space-3); background: var(--bg-side); border-right: var(--border-w) solid var(--border); backdrop-filter: var(--blur-glass); -webkit-backdrop-filter: var(--blur-glass); box-shadow: var(--shadow-side); }
 .ad-rail__group { display: flex; flex-direction: column; align-items: center; gap: var(--space-1); }
 /* The project pills sit on the icon column's left edge, not centred, rail and open menu alike. */
 .ad-rail__group--projects, .ad-rail__pinned { align-self: stretch; display: flex; flex-direction: column; align-items: flex-start; gap: var(--space-1); padding-left: calc((var(--w-rail) - var(--h-btn)) / 2); }
@@ -2003,8 +2003,10 @@ button:hover > .ad-project-pill:not(.ad-project-pill--current) { color: var(--ac
 :where(:root:not([data-ad-pointer])) .ad-project-pill--press:focus-visible { box-shadow: var(--ring-select); }
 /* The row pieces (MenuPieces.tsx): a row is its button and a trail of small buttons; rows under it sit indented; the one separator is
    a hairline; you sit at the foot with your name and role; the build is one small mono line. */
-/* The menu pieces' frame: its own class, apart from the dropdown Menu's `.ad-menu`. */
-.ad-menu-frame { display: flex; flex-direction: column; }
+/* The menu pieces' frame: its own class, apart from the dropdown Menu's `.ad-menu`. Its top is what centres the X (a button tall) on
+ the page header's title row (a row and a step tall, PageHeader.css), so the X and the screen's name share one line and, a gap on,
+ the first row starts a step under the header's line, as the page's own next row does. Folded and open alike. */
+.ad-menu-frame { display: flex; flex-direction: column; --ad-menu-top: calc((var(--h-row) + var(--space-2) - var(--h-btn)) / 2); }
 .ad-menu__row { display: flex; flex-direction: column; }
 .ad-menu__line { display: flex; align-items: center; gap: var(--space-1); }
 .ad-side .ad-menu__line > .ad-side__item { flex: 1; min-width: 0; }
@@ -2016,6 +2018,7 @@ button:hover > .ad-project-pill:not(.ad-project-pill--current) { color: var(--ac
 /* On a touch screen every row and button in the menu is finger-sized. */
 @media (pointer: coarse) {
   .ad-menu-frame .ad-side__item, .ad-menu-frame .ad-rail__item { min-height: var(--h-touch); }
+  .ad-menu-frame { --ad-menu-top: calc((var(--h-row) + var(--space-2) - var(--h-touch)) / 2); }
 }
 .ad-menu__row[draggable] { cursor: grab; }
 
@@ -2055,7 +2058,7 @@ button:hover > .ad-project-pill:not(.ad-project-pill--current) { color: var(--ac
 .ad-menu__label--project { text-transform: uppercase; }
 
 /* Adding a separator: the table's insert, coral line and +, on the gap between two screens (SideMenu onAddSeparator). */
-.ad-side.ad-menu-frame { position: relative; }
+.ad-side.ad-menu-frame { position: relative; padding-top: var(--ad-menu-top); }
 .ad-menu__insert { pointer-events: auto; }
 /* Taking one out: an x at the separator's right while you point at it or reach it by keyboard. */
 .ad-menu__sep--removable { position: relative; }
