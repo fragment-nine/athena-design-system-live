@@ -4213,7 +4213,7 @@ function StatusPicker({ statuses, noSearch = true, open, anchor, onClose, header
   }), anchor, ariaLabel: rest.searchLabel, items: statuses.map((s) => ({ id: s.id, label: s.label, dot: s.tone ?? "neutral", checked: s.id === rest.value, onSelect: () => rest.onPick(s.id) })) });
   return /* @__PURE__ */ jsx28(PickList, { ...rest, noSearch, options: statuses.map((s) => ({ id: s.id, label: s.label, lead: /* @__PURE__ */ jsx28(Dot, { tone: s.tone }), hint: s.hint })) });
 }
-function PickField({ options, value, onPick, label, placeholder, header, icon, search, disabled, className, trigger, marks, footer, typed, onTyped, compact, fill }) {
+function PickField({ options, value, onPick, label, placeholder, header, icon, search, disabled, className, trigger, marks, footer, typed, onTyped, compact, fill, onAdd, addLabel }) {
   const [open, setOpen] = useState16(false);
   const [draft, setDraft] = useState16(null);
   const [editing, setEditing] = useState16(false);
@@ -4252,6 +4252,11 @@ function PickField({ options, value, onPick, label, placeholder, header, icon, s
         searchLabel: label,
         noSearch: search === false,
         footer: foot,
+        onAdd: onAdd && ((words2) => {
+          onAdd(words2);
+          if (!many) close();
+        }),
+        addLabel,
         onPick: (id) => {
           onPick(id);
           if (!many) close();
