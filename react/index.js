@@ -512,6 +512,13 @@ function useScrollFade(ref) {
       else el.removeAttribute("data-more-below");
       if (above) el.setAttribute("data-more-above", "");
       else el.removeAttribute("data-more-above");
+      const across = /auto|scroll/.test(getComputedStyle(el).overflowX);
+      const right = across && el.scrollWidth - el.clientWidth - el.scrollLeft > 1;
+      const left = across && el.scrollLeft > 1;
+      if (right) el.setAttribute("data-more-right", "");
+      else el.removeAttribute("data-more-right");
+      if (left) el.setAttribute("data-more-left", "");
+      else el.removeAttribute("data-more-left");
     };
     mark();
     el.addEventListener("scroll", mark, { passive: true });
@@ -5490,9 +5497,12 @@ function NotificationList({ days, unreadLabel = "Unread" }) {
 }
 
 // src/components/Board/Board.tsx
+import { useRef as useRef26 } from "react";
 import { jsx as jsx38, jsxs as jsxs35 } from "react/jsx-runtime";
 function Board({ children, ariaLabel, className }) {
-  return /* @__PURE__ */ jsx38("div", { className: cx("ad-board", className), role: "region", "aria-label": ariaLabel, children });
+  const ref = useRef26(null);
+  useScrollFade(ref);
+  return /* @__PURE__ */ jsx38("div", { ref, className: cx("ad-board", className), role: "region", "aria-label": ariaLabel, children });
 }
 function BoardLane({ title, mark, onTitle, titleLabel, children, className }) {
   return /* @__PURE__ */ jsxs35("section", { className: cx("ad-board-lane", className), children: [
@@ -5522,10 +5532,10 @@ function DropLine() {
 }
 
 // src/components/Splitter/Splitter.tsx
-import { useRef as useRef26 } from "react";
+import { useRef as useRef27 } from "react";
 import { Fragment as Fragment21, jsx as jsx39, jsxs as jsxs36 } from "react/jsx-runtime";
 function Splitter({ main, side, size, onResize, min = 0, max = Number.POSITIVE_INFINITY, at = "end", scrollPanes = true, label, className }) {
-  const box = useRef26(null);
+  const box = useRef27(null);
   const clamp = (n) => Math.max(min, Math.min(max, Math.round(n)));
   const onPointerDown2 = (e) => {
     const el = e.currentTarget;
@@ -5590,7 +5600,7 @@ function Splitter({ main, side, size, onResize, min = 0, max = Number.POSITIVE_I
 }
 
 // src/components/Text/Text.tsx
-import { useCallback as useCallback4, useLayoutEffect as useLayoutEffect8, useRef as useRef27 } from "react";
+import { useCallback as useCallback4, useLayoutEffect as useLayoutEffect8, useRef as useRef28 } from "react";
 import { jsx as jsx40, jsxs as jsxs37 } from "react/jsx-runtime";
 function DataText({ children, dim, small, size, estimate, className }) {
   return /* @__PURE__ */ jsx40("span", { className: cx("ad-type-data", "ad-data-text", small && "ad-data-text--small", size === "large" && !small && "ad-data-text--large", dim && "ad-data-text--dim", estimate && "ad-figure-estimate", className), children });
@@ -5600,10 +5610,10 @@ function Hint({ children, className }) {
 }
 function Figures({ items, ariaLabel, layout = "strip", density, face = "data", onIntrinsicWidth, className }) {
   const shown = face === "display" && layout === "rail";
-  const track = useRef27(null);
+  const track = useRef28(null);
   const clocks = layout === "clocks";
   const intrinsic = (clocks || layout === "rail") && onIntrinsicWidth != null;
-  const told = useRef27(null);
+  const told = useRef28(null);
   const measure = useCallback4(() => {
     const el = track.current;
     if (!el) return;
@@ -5731,10 +5741,10 @@ function sortRows(rows, value, direction, depth, group) {
 }
 
 // src/components/Table/Table.tsx
-import { useLayoutEffect as useLayoutEffect10, useRef as useRef29, useState as useState25 } from "react";
+import { useLayoutEffect as useLayoutEffect10, useRef as useRef30, useState as useState25 } from "react";
 
 // src/components/Timeline/Timeline.tsx
-import { useLayoutEffect as useLayoutEffect9, useRef as useRef28, useState as useState24 } from "react";
+import { useLayoutEffect as useLayoutEffect9, useRef as useRef29, useState as useState24 } from "react";
 import { Fragment as Fragment22, jsx as jsx42, jsxs as jsxs39 } from "react/jsx-runtime";
 var strip4 = (h) => {
   if (!h) return {};
@@ -5756,12 +5766,12 @@ function Bar({ code: code2, travel, dim, day: dayGiven, billing, label, unconfir
   const paint = barColour(color, hue);
   const plain = !thin && !code2;
   const day = code2 ? dayGiven ?? (travel ? "travel" : dim ? "dark" : void 0) : void 0;
-  const root = useRef28(null);
+  const root = useRef29(null);
   const [cramped, setCramped] = useState24(false);
   const [suffixFits, setSuffixFits] = useState24(true);
   const [suffixText, setSuffixText] = useState24("");
   const [nameGone, setNameGone] = useState24(false);
-  const tell = useRef28(onCramped);
+  const tell = useRef29(onCramped);
   tell.current = onCramped;
   useLayoutEffect9(() => {
     const el = root.current;
@@ -5874,7 +5884,7 @@ function DeliverableBar({ parts, ...props }) {
 }
 function DeliverableRow({ lead, status, showStatus, statusLabel, markers: given, expandable, expanded, onToggle, toggleLabel = "Show parts", className, ...bar }) {
   const done = status === "good";
-  const row = useRef28(null);
+  const row = useRef29(null);
   const [marksOff, setMarksOff] = useState24(null);
   const onCramped = (c) => {
     const width = row.current?.clientWidth ?? 0;
@@ -5908,7 +5918,7 @@ function DeliverableRow({ lead, status, showStatus, statusLabel, markers: given,
 }
 var LEAD_AT = 0.12;
 function Lanes({ children, marks, ariaLabel, nameWidth, className }) {
-  const box = useRef28(null);
+  const box = useRef29(null);
   const [fit, setFit] = useState24(null);
   useLayoutEffect9(() => {
     const el = box.current;
@@ -6103,7 +6113,7 @@ function Table({ columns: named, rows: given, rowId, caption, sort, onSort, pick
   let stripe = 0;
   const all = rows.length > 0 && rows.every((r) => picked?.has(rowId(r)));
   const nameAt = Math.max(0, nameColumn ? columns.findIndex((c) => c.id === nameColumn) : 0);
-  const headRow = useRef29(null);
+  const headRow = useRef30(null);
   const [held, setHeld] = useState25({});
   const heldKey = columns.filter((c) => c.frozen === "start").map((c) => c.id).join(" ");
   useLayoutEffect10(() => {
@@ -6124,7 +6134,7 @@ function Table({ columns: named, rows: given, rowId, caption, sort, onSort, pick
     tr.querySelectorAll("th").forEach((th) => seen.observe(th));
     return () => seen.disconnect();
   }, [heldKey, onPickedChange]);
-  const wrap = useRef29(null);
+  const wrap = useRef30(null);
   useKeyScroll(wrap);
   const at = (c) => c.frozen === "start" && held[c.id] ? { ["--ad-held"]: `${held[c.id]}px` } : {};
   const [near, setNear] = useState25(null);
@@ -6342,7 +6352,7 @@ function Table({ columns: named, rows: given, rowId, caption, sort, onSort, pick
 }
 function SelectionBar({ count, countLabel = (n) => `${n} selected`, actions, lead, onClear, clearLabel = "Clear", showAtZero, emptyLabel = "Nothing selected", onExit, exitLabel = "Exit", className }) {
   const [open, setOpen] = useState25(null);
-  const anchor = useRef29(null);
+  const anchor = useRef30(null);
   const ordered2 = [...actions.filter((a) => !a.danger), ...actions.filter((a) => a.danger)];
   if (count <= 0 && !showAtZero) return null;
   const zero = count <= 0;
@@ -6390,14 +6400,14 @@ function SelectionBarRoom() {
 }
 
 // src/components/Timeline/Ruler.tsx
-import { useEffect as useEffect16, useRef as useRef30, useState as useState26 } from "react";
+import { useEffect as useEffect16, useRef as useRef31, useState as useState26 } from "react";
 import { jsx as jsx44, jsxs as jsxs41 } from "react/jsx-runtime";
 function DayLines(_) {
   return null;
 }
 function Ruler({ start, days, dayWidth, locale = "en-US", pinned, holdLeft, end, marks, className }) {
-  const root = useRef30(null);
-  const corner = useRef30(null);
+  const root = useRef31(null);
+  const corner = useRef31(null);
   const [under, setUnder] = useState26(null);
   const hasEnd = end != null;
   useEffect16(() => {
@@ -6518,7 +6528,7 @@ function ZoomCluster({
 }
 
 // src/components/Calendar/Calendar.tsx
-import { useEffect as useEffect17, useLayoutEffect as useLayoutEffect11, useRef as useRef31, useState as useState27 } from "react";
+import { useEffect as useEffect17, useLayoutEffect as useLayoutEffect11, useRef as useRef32, useState as useState27 } from "react";
 import { Fragment as Fragment24, jsx as jsx45, jsxs as jsxs42 } from "react/jsx-runtime";
 var code = (it) => it.code ? /* @__PURE__ */ jsx45(ProjectPill, { code: it.code, color: it.color?.startsWith("project-") ? it.color : void 0 }) : null;
 var hooksOf3 = (h) => {
@@ -6683,7 +6693,7 @@ function scrollerAbove(el) {
 }
 function TimeGrid({ headerEnd, startHour, endHour, bookings = [], columns, now, hourLabel = clockHour, onOpen, itemProps, columnProps, ariaLabel, bandHours, onPressAt, over, visibleHours, scrollTo, asideWidth = "narrow", hourHeight = "compact", bandHeading, allDayContent, todayLine, className }) {
   const hours = Math.max(1, endHour - startHour);
-  const frame = useRef31(null);
+  const frame = useRef32(null);
   const [barW, setBarW] = useState27(0);
   useEffect17(() => {
     const el = frame.current;
@@ -6923,7 +6933,7 @@ function PhaseBand({ label, color, unconfirmed }) {
 }
 
 // src/components/Map/Map.tsx
-import { useEffect as useEffect18, useMemo as useMemo3, useRef as useRef32, useState as useState28 } from "react";
+import { useEffect as useEffect18, useMemo as useMemo3, useRef as useRef33, useState as useState28 } from "react";
 
 // src/components/Map/worldGeo.ts
 var GEO_LAT_MAX = 84;
@@ -6994,7 +7004,7 @@ var PICKS = new Set(pickColours);
 function WorldMap({ pins, at, ariaLabel, onPin, hoverCard, pinProps }) {
   const [hover, setHover] = useState28(null);
   const night = useMemo3(() => nightPath(at), [at]);
-  const wrap = useRef32(null);
+  const wrap = useRef33(null);
   const [w, setW] = useState28(0);
   useEffect18(() => {
     const el = wrap.current;
@@ -7293,10 +7303,10 @@ function Steps({ steps, current, onPress, ariaLabel, compact, late, complete, cl
 }
 
 // src/components/Slider/Slider.tsx
-import { useRef as useRef33 } from "react";
+import { useRef as useRef34 } from "react";
 import { jsx as jsx50, jsxs as jsxs47 } from "react/jsx-runtime";
 function Slider({ value, onChange, min = 0, max = 100, step = 1, ariaLabel, display, disabled, className }) {
-  const track = useRef33(null);
+  const track = useRef34(null);
   const range = Array.isArray(value);
   const vals = range ? [...value] : [value];
   const span = Math.max(1e-9, max - min);
@@ -7368,10 +7378,10 @@ function Slider({ value, onChange, min = 0, max = 100, step = 1, ariaLabel, disp
 }
 
 // src/components/Search/Search.tsx
-import { useRef as useRef34 } from "react";
+import { useRef as useRef35 } from "react";
 import { jsx as jsx51 } from "react/jsx-runtime";
 function CommandSearch({ open, onClose, query, onQuery, results, onPick, label = "Search everything", noMatch = "Nothing by that name" }) {
-  const box = useRef34(null);
+  const box = useRef35(null);
   const z = useLayer(open, onClose, [box], "dialog");
   usePageInert(open, [box]);
   useFocusReturn(open, box);
@@ -7394,11 +7404,11 @@ function CommandSearch({ open, onClose, query, onQuery, results, onPick, label =
 }
 
 // src/components/Guidance/Guidance.tsx
-import { useEffect as useEffect19, useLayoutEffect as useLayoutEffect12, useRef as useRef35, useState as useState29 } from "react";
+import { useEffect as useEffect19, useLayoutEffect as useLayoutEffect12, useRef as useRef36, useState as useState29 } from "react";
 import { Fragment as Fragment27, jsx as jsx52, jsxs as jsxs48 } from "react/jsx-runtime";
 var useIsoLayoutEffect3 = typeof window === "undefined" ? useEffect19 : useLayoutEffect12;
 function TourStep({ open, anchor, step, total, title, children, onBack, onNext, onExit, backLabel = "Back", nextLabel = "Next", progressLabel = (s, t) => `${s} of ${t}`, placement, side: older, onClose, closeLabel }) {
-  const card = useRef35(null);
+  const card = useRef36(null);
   const [rect, setRect] = useState29(null);
   const [size, setSize] = useState29(null);
   const asked = placement ?? older ?? "below";
