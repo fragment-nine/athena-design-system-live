@@ -1513,6 +1513,10 @@ button.ad-card__name:focus-visible { outline: none; }
    it to the native <select> and to the input inside the field's skin; `:where` keeps each ring rule at the weight it had. */
 :where(:root:not([data-ad-pointer])) .ad-field:has(:focus-visible) { box-shadow: var(--ring-select); }
 .ad-field__error { margin-top: var(--space-2); font: var(--type-body); line-height: var(--lh-normal); color: var(--text-secondary); }
+/* Under a box narrower than its sentence (a figure's box), the refusal line is as long as its sentence, up to a card's width, never the
+   box's: it is the box's width and asks no more, so the box and what sits beside it stay where they were, and its words run past the box. */
+.ad-field-wrap:not(.ad-field-wrap--wide) > .ad-field__error { width: 0; min-width: 100%; overflow: visible; }
+.ad-field-wrap:not(.ad-field-wrap--wide) > .ad-field__error > .ad-field__error-words { display: block; width: max-content; max-width: var(--w-card); }
 .ad-field--disabled { opacity: var(--opacity-disabled); }
 .ad-field__input, .ad-select__native { all: unset; box-sizing: border-box; flex: 1; min-width: 0; height: 100%; font: inherit; color: inherit; }
 .ad-field__input::placeholder { color: var(--text-muted); }

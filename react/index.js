@@ -2099,7 +2099,7 @@ var TextField = forwardRef2(function TextField2({ icon, end, parsed, error, mono
       parsed,
       " ]"
     ] }),
-    error != null && /* @__PURE__ */ jsx10("span", { id: errorId, className: "ad-field__error", role: "alert", children: error })
+    error != null && /* @__PURE__ */ jsx10("span", { id: errorId, className: "ad-field__error", role: "alert", children: /* @__PURE__ */ jsx10("span", { className: "ad-field__error-words", children: error }) })
   ] });
 });
 function useGrowingBox(value) {
