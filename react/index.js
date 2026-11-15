@@ -7641,7 +7641,8 @@ function AdsScope({ project, children }) {
 // src/components/ClockFace/ClockFace.tsx
 import { forwardRef as forwardRef11 } from "react";
 import { Fragment as Fragment28, jsx as jsx55, jsxs as jsxs50 } from "react/jsx-runtime";
-var ClockFace = forwardRef11(function ClockFace2({ label, time, period, daytime, detail, className, ...props }, ref) {
+var ClockFace = forwardRef11(function ClockFace2({ label, time: given, period, daytime, detail, className, ...props }, ref) {
+  const time = period ? given.replace(/^0(?=\d:)/, "") : given;
   return /* @__PURE__ */ jsxs50("button", { type: "button", ...props, ref, title: detail, "aria-label": props["aria-label"] ?? `Options for ${label}, ${time}${period ? ` ${period}` : ""}${detail ? `, ${detail}` : ""}`, className: cx("ad-clock-face", className), children: [
     /* @__PURE__ */ jsxs50("span", { className: "ad-clock-face__label", children: [
       label,
