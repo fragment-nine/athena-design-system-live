@@ -944,10 +944,10 @@ a.ad-icon-button { text-decoration: none; }
 /* src/components/Calendar/Calendar.css */
 /* MonthCalendar, Booking, NowMarker, WeekendShade, TimeGrid, as the Calendar card draws them */
 .ad-month { --ad-lanes: 3; font: var(--type-name); color: var(--text-primary); border-top: var(--border-w) solid var(--border); border-left: var(--border-w) solid var(--border); }
-.ad-month__dows { display: grid; grid-template-columns: repeat(7, 1fr); }
+.ad-month__dows { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); }
 .ad-month__dow { padding: var(--space-1) var(--space-2); border-right: var(--border-w) solid var(--border); border-bottom: var(--border-w) solid var(--border); font: var(--type-data); font-size: var(--text-xs); text-transform: uppercase; color: var(--text-muted); }
 .ad-month__week {
-  position: relative; display: grid; grid-template-columns: repeat(7, 1fr); grid-template-rows: var(--space-6) repeat(var(--ad-lanes), var(--h-bar)) 1fr;
+  position: relative; display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); grid-template-rows: var(--space-6) repeat(var(--ad-lanes), var(--h-bar)) 1fr;
   row-gap: var(--space-1); min-height: var(--cal-cell);
 }
 .ad-month__cell { grid-row: 1 / -1; display: flex; flex-direction: column; justify-content: space-between; padding: var(--space-1) var(--space-1); border-right: var(--border-w) solid var(--border); border-bottom: var(--border-w) solid var(--border); }
@@ -956,7 +956,8 @@ a.ad-icon-button { text-decoration: none; }
 .ad-month__cell[data-ring] { position: relative; z-index: 1; box-shadow: var(--ring-today); }
 .ad-month__cell[data-outside] .ad-month__num { color: var(--text-muted); }
 .ad-month__day { display: flex; align-items: center; gap: var(--space-2); align-self: stretch; }
-.ad-month__marks { display: inline-flex; align-items: center; gap: var(--space-1); margin-left: auto; color: var(--text-secondary); }
+/* Every day one width in every week: a day's marks crowd and clip inside it, set to its right, never widening it. */
+.ad-month__marks { display: inline-flex; flex: 1 1 0; min-width: 0; justify-content: flex-end; overflow: hidden; align-items: center; gap: var(--space-1); margin-left: auto; color: var(--text-secondary); }
 .ad-month__num { position: relative; align-self: flex-start; font: var(--type-data); font-size: var(--text-xs); color: var(--text-secondary); }
 .ad-month__num[data-today] { color: var(--text-primary); }
 /* A milestone in the month: its diamond before its name, no bar: white ahead, grey once past, hatched when unconfirmed. */

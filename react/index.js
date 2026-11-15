@@ -4585,7 +4585,7 @@ function DatePickerBody({ value, onChange, today: todayIn, weekStart = 1, locale
     ] })
   ] });
 }
-function DateField({ onParsed, label, text: given, onText, format, icon, disabled, due, done, compact, className, value, onChange, ...picker }) {
+function DateField({ onParsed, label, error, text: given, onText, format, icon, disabled, due, done, compact, className, value, onChange, ...picker }) {
   const fmt = format ?? ((d) => monoDate(d));
   const read2 = (t) => {
     const r = readDate(t, picker.today, { weekStart: picker.weekStart });
@@ -4639,6 +4639,7 @@ function DateField({ onParsed, label, text: given, onText, format, icon, disable
             parsed: result ? result.readback : void 0,
             end: compact ? void 0 : /* @__PURE__ */ jsx29(Icon, { job: "plus", size: "sm", className: "ad-field__add" }),
             disabled,
+            error,
             onChange: (e) => setText(e.target.value),
             onClick: () => {
               if (!disabled) setOpen(true);
