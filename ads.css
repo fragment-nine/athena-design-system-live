@@ -1673,6 +1673,10 @@ button.ad-contents__button:focus-visible { outline: none; }
 .ad-frame__page > .ad-toolbar { margin-bottom: var(--space-2); }
 /* A ground inside a card or a section (a names column that scrolls sideways needs an opaque cell) is the tone of what it sits on, not the page's black. */
 .ad-card .ad-ground, :is(.ad-section-frame, .ad-frame__work) .ad-section .ad-ground { background-color: var(--ad-under); background-image: none; }
+/* In a section or a dashboard widget that tone is the section's fill over the page's ground, and a flat one reads as a darker column
+   wherever the ground's wash shows through: it paints the section's own look (--ad-section-plane), held to the window as the page's
+   ground is, so a names column never reads darker than its rows. A card inside the section keeps the card's tone. */
+:is(:is(.ad-section-frame, .ad-frame__work) .ad-section, .ad-card--widget) .ad-ground:not(.ad-card:not(.ad-card--widget) .ad-ground) { background-image: var(--ad-section-plane); }
 /* The slots. The toolbar row, h-row tall, 16 over the work (the page's 8 and its own 8), only while the screen has something for it;
  with no row the work starts 16 under the header. The work fills what is left, the page's whole width. */
 .ad-frame__toolbar { display: flex; align-items: center; flex: none; min-height: var(--h-row); margin-bottom: var(--space-2); }
