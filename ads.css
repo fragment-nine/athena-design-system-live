@@ -2561,9 +2561,9 @@ button.ad-row__name:focus-visible { outline: none; }
 /* One body face and one body size across the build, the alerts'; the second line is 13. */
 .ad-row__name { line-height: var(--lh-tight); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .ad-row--heading .ad-row__name { font: var(--type-name); }
-/* A heading row (approved Rows card): name, then its status beside it, the review date at the far right. */
+/* A heading row (approved Rows card): name, then its status and the review date at the row's right end, as on every row. */
 .ad-row--heading .ad-row__body { flex: 0 1 auto; min-width: 0; }
-.ad-row--heading .ad-row__dates { margin-left: auto; }
+.ad-row--heading .ad-row__body + * { margin-left: auto; }
 /* The second line is the body face at 12: the calendar glyph and the date, the department glyph, the department's name. */
 .ad-row__meta { display: flex; align-items: center; gap: var(--space-2); margin-top: var(--space-1); font: var(--type-detail); line-height: var(--lh-tight); color: var(--text-muted); min-width: 0; }
 .ad-row__status, .ad-row__dates, .ad-row__tags, .ad-row__people, .ad-row__trail { display: inline-flex; align-items: center; gap: var(--space-2); flex: none; }
