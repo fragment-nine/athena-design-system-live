@@ -2230,7 +2230,7 @@ button.ad-steps__press:focus-visible { outline: none; }
 .ad-pick-field__lead { display: inline-flex; flex: none; }
 .ad-pick-field__icon { flex: none; color: var(--text-muted); }
 .ad-pick-field__words { flex: 1; }
-.ad-pick-field__words--empty { color: var(--text-muted); }
+.ad-pick-field__words--empty, .ad-pick-field__words--fallback { color: var(--text-muted); }
 /* Empty is blank: the + where the caret was, never prompt words; in a table cell only under the pointer. */
 .ad-pick-field:has(> .ad-pick-field__words--empty) > .ad-pick-field__caret { display: none; }
 .ad-pick-field:has(> .ad-pick-field__words--empty) > .ad-icon.ad-field__add { display: inline-flex; flex: none; margin-left: auto; color: var(--text-secondary); }
@@ -2622,7 +2622,6 @@ button.ad-row__name:focus-visible { outline: none; }
 .ad-slider__track { position: relative; flex: 1; min-width: var(--w-col-sm); height: var(--space-1); border-radius: var(--radius-mark); background: var(--bg-hover); cursor: pointer; touch-action: none; }
 .ad-slider__set { position: absolute; top: 0; bottom: 0; border-radius: var(--radius-mark); background: var(--bitrate-grey); }
 .ad-slider__knob { position: absolute; top: 50%; width: var(--knob-size); height: var(--knob-size); border-radius: var(--radius-round); background: var(--text-primary); transform: translate(-50%, -50%); }
-.ad-slider__knob:hover { box-shadow: var(--glow-hover); }
 .ad-slider__knob:focus-visible { outline: none; }
 :where(:root:not([data-ad-pointer])) .ad-slider__knob:focus-visible { box-shadow: var(--ring-select); }
 .ad-slider__value { min-width: var(--w-col-xs); font: var(--type-data); font-size: var(--text-xs); color: var(--text-primary); text-align: right; white-space: nowrap; font-variant-numeric: tabular-nums; }
@@ -3006,8 +3005,7 @@ button.ad-bar { cursor: pointer; }
 .ad-bar--confirmed { outline: var(--border-w) solid var(--ad-edge-ink); outline-offset: calc(var(--border-w) * -1); }
 .ad-bar--deal { outline: var(--border-w) dashed var(--ad-edge-ink); outline-offset: calc(var(--border-w) * -1); }
 .ad-bar--backup { background: transparent; outline: var(--border-w) dotted var(--ad-edge-ink); outline-offset: calc(var(--border-w) * -1); color: var(--text-secondary); }
-.ad-bar:hover { box-shadow: var(--glow-hover); }
-.ad-bar--unconfirmed:hover, .ad-bar--thin:hover { box-shadow: inset 0 0 0 var(--border-w) var(--line-strong), var(--glow-hover); }
+/* Under the pointer a bar's name turns coral; nothing glows (2026-11-14, Jeremy: "Yes, all of them"). */
 .ad-bar:hover .ad-bar__name { color: var(--accent); }
 .ad-bar--selected { outline: none; box-shadow: var(--ring-select); }
 .ad-bar:focus-visible { outline: none; }

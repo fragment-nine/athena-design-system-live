@@ -4214,7 +4214,7 @@ function StatusPicker({ statuses, noSearch = true, open, anchor, onClose, header
   }), anchor, ariaLabel: rest.searchLabel, items: statuses.map((s) => ({ id: s.id, label: s.label, dot: s.tone ?? "neutral", checked: s.id === rest.value, onSelect: () => rest.onPick(s.id) })) });
   return /* @__PURE__ */ jsx28(PickList, { ...rest, noSearch, options: statuses.map((s) => ({ id: s.id, label: s.label, lead: /* @__PURE__ */ jsx28(Dot, { tone: s.tone }), hint: s.hint })) });
 }
-function PickField({ options: given, value, onPick: pickGiven, label, header, icon, disabled, className, trigger, marks, footer, typed, onTyped, compact, fill, onAdd, addLabel, onClear, clearLabel }) {
+function PickField({ options: given, value, onPick: pickGiven, label, header, icon, disabled, className, trigger, marks, footer, typed, onTyped, compact, fill, onAdd, addLabel, onClear, clearLabel, fallback }) {
   const clearing = !!onClear && !Array.isArray(value);
   const options = clearing ? [{ id: CLEAR_ROW, label: clearLabel ?? `No ${label.toLowerCase()}` }, ...given] : given;
   const listValue = clearing && value == null ? CLEAR_ROW : value;
@@ -4295,7 +4295,7 @@ function PickField({ options: given, value, onPick: pickGiven, label, header, ic
             "aria-haspopup": "listbox",
             "aria-expanded": open,
             disabled,
-            placeholder: emptyWords,
+            placeholder: fallback ?? emptyWords,
             value: words2,
             autoFocus: compact,
             onFocus: compact ? (e) => e.currentTarget.select() : void 0,
@@ -4403,7 +4403,7 @@ function PickField({ options: given, value, onPick: pickGiven, label, header, ic
           ] }) : null : asMarks ? /* @__PURE__ */ jsx28("span", { className: "ad-pick-field__words ad-clamp-line", title: words, children: /* @__PURE__ */ jsxs25("span", { className: "ad-pick-field__marks", "aria-hidden": "true", children: [
             picked.slice(0, cap).map((o) => /* @__PURE__ */ jsx28("span", { className: "ad-pick-field__mark", children: o.lead ?? /* @__PURE__ */ jsx28(Dot, {}) }, o.id)),
             picked.length > cap && /* @__PURE__ */ jsx28("span", { className: "ad-pick-field__more", children: "\u2026" })
-          ] }) }) : /* @__PURE__ */ jsx28("span", { className: cx("ad-pick-field__words", "ad-clamp-line", picked.length === 0 && "ad-pick-field__words--empty"), children: picked.length ? words : emptyWords }),
+          ] }) }) : /* @__PURE__ */ jsx28("span", { className: cx("ad-pick-field__words", "ad-clamp-line", picked.length === 0 && (fallback ? "ad-pick-field__words--fallback" : "ad-pick-field__words--empty")), children: picked.length ? words : fallback ?? emptyWords }),
           /* @__PURE__ */ jsx28(Icon, { name: "caret-down", size: "sm", className: "ad-pick-field__caret ad-glyph-quiet" }),
           /* @__PURE__ */ jsx28(Icon, { job: "plus", size: "sm", className: "ad-field__add" })
         ]
