@@ -2071,6 +2071,16 @@ button:hover > .ad-project-pill:not(.ad-project-pill--current) { color: var(--ac
 /* The screen's name: Work Sans 800 in caps at text-20, in the second ink, no icon (the work is the loudest thing, not the title). */
 .ad-page-header__title { display: flex; align-items: center; margin: 0; flex: none; white-space: nowrap; font: var(--type-title); font-size: var(--text-20); font-weight: 800; text-transform: uppercase; line-height: var(--lh-none); color: var(--text-secondary); }
 .ad-page-header__words { display: block; }
+/* A page under others: the steps above it in the title's own face, quieter, each pressed to go back up (coral under the pointer), a
+   slash between, then the page's name as any title. Short of room the steps above shorten with "…"; the page's name stays whole. */
+.ad-page-header__title--trail { flex: 0 1 auto; min-width: 0; gap: var(--space-2); }
+.ad-page-header__title--trail .ad-page-header__words { flex: none; }
+.ad-page-header__titled:has(> .ad-page-header__title--trail) { flex: 0 1 auto; min-width: 0; }
+.ad-page-header__step { flex: 0 1 auto; min-width: 0; color: var(--text-muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; cursor: pointer; }
+.ad-page-header__step:hover { color: var(--accent); }
+.ad-page-header__step:focus-visible { outline: none; }
+:where(:root:not([data-ad-pointer])) .ad-page-header__step:focus-visible { box-shadow: var(--ring-select); border-radius: var(--radius-page); }
+.ad-page-header__slash { flex: none; color: var(--text-muted); }
 /* HeaderActions: Athena's raised box round the header's icon buttons, kept as it was. */
 .ad-header-actions { display: inline-flex; flex: none; align-items: center; box-sizing: border-box; gap: var(--space-2); height: var(--h-btn-bar); padding: 0 var(--pad-header-actions); border-radius: var(--radius-page); background: var(--bg-surface); }
 .ad-page-header__row > .ad-header-actions { margin-left: auto; }
