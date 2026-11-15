@@ -88,10 +88,10 @@ function useViewInAddress(defaults) {
   return [view, set];
 }
 var SAVE_FAILED = "Couldn't save, so it's back to what it was. Try again.";
-function useSaveAsYouGo(saved, save, words = {}) {
+function useSaveAsYouGo(saved, save, words2 = {}) {
   const [value, setValue] = useState(saved);
   const [failed, setFailed] = useState(null);
-  const sentence = words.failed ?? SAVE_FAILED;
+  const sentence = words2.failed ?? SAVE_FAILED;
   const last = useRef(saved);
   const turn = useRef(0);
   useEffect(() => {
@@ -1933,9 +1933,9 @@ function PickList({ options, value, onPick, searchLabel, noMatch = "Nothing matc
   const many = Array.isArray(value);
   const shown = useMemo(() => {
     const found = onQuery ? options : searchOptions(options, q);
-    const words = q.trim();
-    if (!onAdd || !words || options.some((o) => String(o.label).toLowerCase() === words.toLowerCase())) return found;
-    return [...found, { id: ADD_ROW, label: addLabel ? addLabel(words) : `Add "${words}"`, lead: /* @__PURE__ */ jsx9(Icon, { job: "plus", size: "sm" }) }];
+    const words2 = q.trim();
+    if (!onAdd || !words2 || options.some((o) => String(o.label).toLowerCase() === words2.toLowerCase())) return found;
+    return [...found, { id: ADD_ROW, label: addLabel ? addLabel(words2) : `Add "${words2}"`, lead: /* @__PURE__ */ jsx9(Icon, { job: "plus", size: "sm" }) }];
   }, [options, q, onQuery, onAdd, addLabel]);
   const pick = (id) => {
     if (id === ADD_ROW) onAdd?.(q.trim());
@@ -2345,7 +2345,7 @@ var Select = forwardRef2(function Select2({ options, placeholder, quiet, fill, c
     open != null && /* @__PURE__ */ jsx10(Portal, { children: /* @__PURE__ */ jsx10("div", { ref: box, style: { ...style, zIndex: z }, className: "ad-float ad-pick-field__list", children: /* @__PURE__ */ jsx10(PickList, { options: options.map((o) => ({ id: o.value, label: o.label, disabled: o.disabled })), value: open, searchLabel: String(rest["aria-label"] ?? placeholder ?? ""), onPick: pick }) }) })
   ] });
 });
-function PriorityPicker({ value, onChange, label = "Priority", words = ["P1", "P2", "P3", "P4"], none, disabled, className, ...rest }) {
+function PriorityPicker({ value, onChange, label = "Priority", words: words2 = ["P1", "P2", "P3", "P4"], none, disabled, className, ...rest }) {
   const data = Object.fromEntries(Object.entries(rest).filter(([k]) => k.startsWith("data-")));
   return /* @__PURE__ */ jsx10(
     Select,
@@ -2355,7 +2355,7 @@ function PriorityPicker({ value, onChange, label = "Priority", words = ["P1", "P
       value: String(value),
       disabled,
       onChange: (e) => onChange(Number(e.target.value)),
-      options: [...none != null ? [{ value: "0", label: none }] : [], ...words.map((w, i) => ({ value: String(i + 1), label: w }))],
+      options: [...none != null ? [{ value: "0", label: none }] : [], ...words2.map((w, i) => ({ value: String(i + 1), label: w }))],
       className: cx("ad-priority-pick", `ad-priority-pick--p${value}`, className)
     }
   );
@@ -2568,7 +2568,7 @@ function TextScramble({
     if (timeoutRef.current) clearTimeout(timeoutRef.current);
   };
   const run = useCallback2(() => {
-    const words = [];
+    const words2 = [];
     const wordAt = [];
     for (let i = 0; i < text.length; ) {
       if (text[i] === " ") {
@@ -2577,15 +2577,15 @@ function TextScramble({
       }
       const start = i;
       while (i < text.length && text[i] !== " ") {
-        wordAt[i] = words.length;
+        wordAt[i] = words2.length;
         i++;
       }
-      words.push({ start, end: i });
+      words2.push({ start, end: i });
     }
     let wordIndex = 0;
     let progress = 0;
     const step = () => {
-      if (wordIndex >= words.length) {
+      if (wordIndex >= words2.length) {
         setDisplay(text);
         setMinWidth(void 0);
         return;
@@ -2593,11 +2593,11 @@ function TextScramble({
       setDisplay(text.split("").map((ch, pos) => {
         if (ch === " ") return " ";
         const w = wordAt[pos];
-        const resolved = w < wordIndex || w === wordIndex && pos - words[w].start < Math.floor(progress);
+        const resolved = w < wordIndex || w === wordIndex && pos - words2[w].start < Math.floor(progress);
         return resolved ? ch : randomChar();
       }).join(""));
       progress += 0.5;
-      if (progress >= words[wordIndex].end - words[wordIndex].start) {
+      if (progress >= words2[wordIndex].end - words2[wordIndex].start) {
         wordIndex++;
         progress = 0;
       }
@@ -3347,7 +3347,7 @@ function RowDate({ due, today, until, done, milestone, what, icon, countdown: co
   const last = until ? dueLabel(until, today) : null;
   const late = !milestone && isLate(due, today, { until, done });
   const isDueToday = !late && !done && !until && !!due && daysBetween(today, due) === 0;
-  const words = last ? `${first.label} \u2013 ${last.label}` : first.label;
+  const words2 = last ? `${first.label} \u2013 ${last.label}` : first.label;
   const title = last ? `${first.title} \u2013 ${last.title}` : first.title;
   return /* @__PURE__ */ jsxs18("span", { className: cx("ad-row-date", late && "ad-row-date--late", isDueToday && "ad-row-date--today"), title: repeat ? `${title} \xB7 ${repeat}` : title, children: [
     icon && /* @__PURE__ */ jsx21("span", { "aria-hidden": "true", className: "ad-row-date__icon", children: slotIcon(icon, { size: "sm" }) }),
@@ -3355,13 +3355,13 @@ function RowDate({ due, today, until, done, milestone, what, icon, countdown: co
       what,
       ": "
     ] }),
-    words,
+    words2,
     repeat && /* @__PURE__ */ jsx21("span", { className: "ad-row-date__icon ad-row-date__repeat", role: "img", "aria-label": repeat, children: slotIcon("repeat", { size: "sm" }) })
   ] });
 }
 var bareNumber = (text) => {
-  const words = text.trim().split(/\s+/).filter(Boolean);
-  return words.some((w) => /\d/.test(w)) && words.every((w) => /\d/.test(w) || /^[A-Z]{2,4}$/.test(w));
+  const words2 = text.trim().split(/\s+/).filter(Boolean);
+  return words2.some((w) => /\d/.test(w)) && words2.every((w) => /\d/.test(w) || /^[A-Z]{2,4}$/.test(w));
 };
 function RowFigure({ children, icon, estimate }) {
   const text = String(children);
@@ -4101,7 +4101,7 @@ function EditorCard({ open, onClose, anchor: given, at, kind, title, lead, chip,
     };
   }, [open]);
   if (!open) return null;
-  const words = onRename && typeof title === "string" ? { title, onRename, renameLabel, read: read2, suggestions } : { title };
+  const words2 = onRename && typeof title === "string" ? { title, onRename, renameLabel, read: read2, suggestions } : { title };
   return /* @__PURE__ */ jsxs23(Portal, { children: [
     at && /* @__PURE__ */ jsx26("span", { ref: mark, "aria-hidden": "true", className: "ad-menu__at", style: { left: at.x, top: at.y } }),
     /* @__PURE__ */ jsxs23(
@@ -4118,7 +4118,7 @@ function EditorCard({ open, onClose, anchor: given, at, kind, title, lead, chip,
         cardProps,
         foot,
         rail: phone ? void 0 : rail,
-        header: /* @__PURE__ */ jsx26(PopoverHeader, { eyebrow: kind, chip, lead, description: sub, action, ...words }),
+        header: /* @__PURE__ */ jsx26(PopoverHeader, { eyebrow: kind, chip, lead, description: sub, action, ...words2 }),
         children: [
           head,
           phone && rail,
@@ -4247,7 +4247,7 @@ function PickField({ options: given, value, onPick: pickGiven, label, header, ic
   const face = picked.length === 1 ? picked[0] : null;
   const cap = marks === true ? 3 : typeof marks === "number" && marks > 0 ? Math.floor(marks) : 0;
   const asMarks = cap > 0 && picked.length > 1;
-  const words = picked.map((o) => o.label).join(", ");
+  const words2 = picked.map((o) => o.label).join(", ");
   const foot = typeof footer === "function" ? footer(close) : footer;
   const list = open && /* @__PURE__ */ jsx28(Portal, { children: /* @__PURE__ */ jsxs25("div", { ref: box, style: { ...style, zIndex: z }, className: "ad-float ad-pick-field__list", children: [
     header && /* @__PURE__ */ jsx28("div", { className: "ad-pick-field__head", children: /* @__PURE__ */ jsx28(PopoverHeader, { title: header.title, description: header.description }) }),
@@ -4258,8 +4258,8 @@ function PickField({ options: given, value, onPick: pickGiven, label, header, ic
         value: listValue,
         searchLabel: label,
         footer: foot,
-        onAdd: onAdd && ((words2) => {
-          onAdd(words2);
+        onAdd: onAdd && ((words3) => {
+          onAdd(words3);
           if (!many) close();
         }),
         addLabel,
@@ -4281,7 +4281,7 @@ function PickField({ options: given, value, onPick: pickGiven, label, header, ic
     }
   };
   if (typed && !quiet) {
-    const words2 = draft ?? words;
+    const words22 = draft ?? words2;
     const narrowed = draft ? searchOptions(options, draft) : options;
     return /* @__PURE__ */ jsxs25(Fragment14, { children: [
       /* @__PURE__ */ jsxs25("span", { ref: anchor, className: cx("ad-field", "ad-pick-field", "ad-pick-field--typed", compact && "ad-pick-field--compact", fill && "ad-field--fill", disabled && "ad-field--disabled", className), children: [
@@ -4296,7 +4296,7 @@ function PickField({ options: given, value, onPick: pickGiven, label, header, ic
             "aria-expanded": open,
             disabled,
             placeholder: fallback ?? emptyWords,
-            value: words2,
+            value: words22,
             autoFocus: compact,
             onFocus: compact ? (e) => e.currentTarget.select() : void 0,
             onBlur: compact ? (e) => {
@@ -4393,17 +4393,17 @@ function PickField({ options: given, value, onPick: pickGiven, label, header, ic
           }
         } : void 0,
         className: cx("ad-field", "ad-pick-field", compact && "ad-pick-field--compact", fill && "ad-field--fill", disabled && "ad-field--disabled", className),
-        title: compact && words ? words : void 0,
+        title: compact && words2 ? words2 : void 0,
         children: [
           icon && /* @__PURE__ */ jsx28(Icon, { job: icon, size: "md", className: "ad-pick-field__icon" }),
           face?.lead != null && /* @__PURE__ */ jsx28("span", { className: "ad-pick-field__lead", "aria-hidden": "true", children: face.lead }),
           compact && picked.length > 0 && (asMarks || picked.every((o) => o.lead != null)) ? picked.length > 1 ? /* @__PURE__ */ jsxs25("span", { className: "ad-pick-field__marks", "aria-hidden": "true", children: [
             picked.slice(0, cap || 3).map((o) => /* @__PURE__ */ jsx28("span", { className: "ad-pick-field__mark", children: o.lead ?? /* @__PURE__ */ jsx28(Dot, {}) }, o.id)),
             picked.length > (cap || 3) && /* @__PURE__ */ jsx28("span", { className: "ad-pick-field__more", children: "\u2026" })
-          ] }) : null : asMarks ? /* @__PURE__ */ jsx28("span", { className: "ad-pick-field__words ad-clamp-line", title: words, children: /* @__PURE__ */ jsxs25("span", { className: "ad-pick-field__marks", "aria-hidden": "true", children: [
+          ] }) : null : asMarks ? /* @__PURE__ */ jsx28("span", { className: "ad-pick-field__words ad-clamp-line", title: words2, children: /* @__PURE__ */ jsxs25("span", { className: "ad-pick-field__marks", "aria-hidden": "true", children: [
             picked.slice(0, cap).map((o) => /* @__PURE__ */ jsx28("span", { className: "ad-pick-field__mark", children: o.lead ?? /* @__PURE__ */ jsx28(Dot, {}) }, o.id)),
             picked.length > cap && /* @__PURE__ */ jsx28("span", { className: "ad-pick-field__more", children: "\u2026" })
-          ] }) }) : /* @__PURE__ */ jsx28("span", { className: cx("ad-pick-field__words", "ad-clamp-line", picked.length === 0 && (fallback ? "ad-pick-field__words--fallback" : "ad-pick-field__words--empty")), children: picked.length ? words : fallback ?? emptyWords }),
+          ] }) }) : /* @__PURE__ */ jsx28("span", { className: cx("ad-pick-field__words", "ad-clamp-line", picked.length === 0 && (fallback ? "ad-pick-field__words--fallback" : "ad-pick-field__words--empty")), children: picked.length ? words2 : fallback ?? emptyWords }),
           /* @__PURE__ */ jsx28(Icon, { name: "caret-down", size: "sm", className: "ad-pick-field__caret ad-glyph-quiet" }),
           /* @__PURE__ */ jsx28(Icon, { job: "plus", size: "sm", className: "ad-field__add" })
         ]
@@ -4412,14 +4412,14 @@ function PickField({ options: given, value, onPick: pickGiven, label, header, ic
     list
   ] });
 }
-function FieldPopover({ label, words, placeholder, icon, title, children, width = "card", disabled, fill, compact, className }) {
+function FieldPopover({ label, words: words2, placeholder, icon, title, children, width = "card", disabled, fill, compact, className }) {
   const [open, setOpen] = useState16(false);
   const anchor = useRef17(null);
   const close = () => {
     setOpen(false);
     anchor.current?.focus({ preventScroll: true });
   };
-  const empty = words == null || words === "" || words === false;
+  const empty = words2 == null || words2 === "" || words2 === false;
   return /* @__PURE__ */ jsxs25(Fragment14, { children: [
     /* @__PURE__ */ jsxs25(
       "button",
@@ -4434,7 +4434,7 @@ function FieldPopover({ label, words, placeholder, icon, title, children, width 
         className: cx("ad-field", "ad-pick-field", "ad-field-popover", compact && "ad-pick-field--compact", fill && "ad-field--fill", disabled && "ad-field--disabled", className),
         children: [
           icon && /* @__PURE__ */ jsx28(Icon, { job: icon, size: "md", className: "ad-pick-field__icon" }),
-          /* @__PURE__ */ jsx28("span", { className: cx("ad-pick-field__words", "ad-clamp-line", empty && "ad-pick-field__words--empty"), children: empty ? placeholder ?? label : words }),
+          /* @__PURE__ */ jsx28("span", { className: cx("ad-pick-field__words", "ad-clamp-line", empty && "ad-pick-field__words--empty"), children: empty ? placeholder ?? label : words2 }),
           /* @__PURE__ */ jsx28(Icon, { name: "caret-down", size: "sm", className: "ad-pick-field__caret ad-glyph-quiet" }),
           /* @__PURE__ */ jsx28(Icon, { job: "plus", size: "sm", className: "ad-field__add" })
         ]
@@ -4479,7 +4479,7 @@ function DatePickerBody({ value, onChange, today: todayIn, weekStart = 1, locale
   const [focus, setFocus] = useState17(dayOf(value ?? openOn ?? today));
   const grid = useRef18(null);
   const moved = useRef18(false);
-  const said = (words, fallback) => readDate(words, today, { weekStart })?.date ?? fallback;
+  const said = (words2, fallback) => readDate(words2, today, { weekStart })?.date ?? fallback;
   const nextWeekStart = said("next week", nextWeekday(today, weekStart, { forceNext: true }));
   const picks = yearly ? [] : quickPicks ?? [
     { id: "today", label: labels.today, date: today },
@@ -4925,8 +4925,8 @@ function HeaderPick({ label, items, marked, ariaLabel }) {
 }
 var CONNECTION_WORDS = { offline: "Working offline. Your changes are kept here and sync when you are back online.", refused: "Some changes could not be saved. They need a look." };
 function ConnectionMark({ state, labels }) {
-  const words = labels?.[state] ?? CONNECTION_WORDS[state];
-  return /* @__PURE__ */ jsx34(Tooltip, { text: words, children: /* @__PURE__ */ jsx34("span", { className: cx("ad-connection", `ad-connection--${state}`), role: "img", "aria-label": words, tabIndex: 0, children: /* @__PURE__ */ jsx34(Icon, { job: state === "offline" ? "offline" : "save-refused", size: "md" }) }) });
+  const words2 = labels?.[state] ?? CONNECTION_WORDS[state];
+  return /* @__PURE__ */ jsx34(Tooltip, { text: words2, children: /* @__PURE__ */ jsx34("span", { className: cx("ad-connection", `ad-connection--${state}`), role: "img", "aria-label": words2, tabIndex: 0, children: /* @__PURE__ */ jsx34(Icon, { job: state === "offline" ? "offline" : "save-refused", size: "md" }) }) });
 }
 var strip2 = (h) => {
   if (!h) return {};
@@ -5579,6 +5579,74 @@ function Columns({ main, side, sideWidth = "card", className }) {
   ] });
 }
 
+// src/components/Table/sortRows.ts
+import { isValidElement as isValidElement5 } from "react";
+function cellText(node) {
+  if (node == null || typeof node === "boolean") return "";
+  if (typeof node === "string" || typeof node === "number") return String(node);
+  if (Array.isArray(node)) return node.map(cellText).join("");
+  if (isValidElement5(node)) {
+    const props = node.props;
+    const inside = cellText(props.children);
+    if (inside.trim()) return inside;
+    for (const k of ["name", "value", "label", "title"]) {
+      const v = props[k];
+      if (typeof v === "string" || typeof v === "number") return String(v);
+    }
+  }
+  return "";
+}
+function figureOf(words2) {
+  const digits = words2.replace(/[−–]/g, "-").replace(/[^0-9.\-]/g, "");
+  if (!/[0-9]/.test(digits)) return null;
+  const n = Number(digits);
+  return Number.isFinite(n) ? n : null;
+}
+var words = new Intl.Collator(void 0, { numeric: true, sensitivity: "base" });
+var keyOf = (v) => {
+  if (v == null) return null;
+  if (v instanceof Date) return Number.isNaN(v.getTime()) ? null : v.getTime();
+  if (typeof v === "number") return Number.isNaN(v) ? null : v;
+  return v.trim() === "" ? null : v.trim();
+};
+var compare = (a, b) => {
+  if (typeof a === "number" && typeof b === "number") return a - b;
+  if (typeof a === "number") return -1;
+  if (typeof b === "number") return 1;
+  return words.compare(a, b);
+};
+function sortRows(rows, value, direction, depth, group) {
+  const sign = direction === "ascending" ? 1 : -1;
+  const order = (a, b) => {
+    if (a.key == null || b.key == null) return a.key == null && b.key == null ? a.at - b.at : a.key == null ? 1 : -1;
+    return sign * compare(a.key, b.key) || a.at - b.at;
+  };
+  const keyed = rows.map((row, at) => ({ row, at, key: keyOf(value(row)) }));
+  const under = (run) => {
+    if (!depth) return [...run].sort(order).map((k) => k.row);
+    const roots = [];
+    const open = [];
+    for (const k of run) {
+      const d = depth(k.row);
+      while (open.length && open[open.length - 1].d >= d) open.pop();
+      const n = { k, kids: [] };
+      (open.length ? open[open.length - 1].n.kids : roots).push(n);
+      open.push({ d, n });
+    }
+    const flat = (nodes) => [...nodes].sort((a, b) => order(a.k, b.k)).flatMap((n) => [n.k.row, ...flat(n.kids)]);
+    return flat(roots);
+  };
+  const out = [];
+  for (let i = 0; i < keyed.length; ) {
+    const g = group?.(keyed[i].row);
+    let j = i + 1;
+    while (j < keyed.length && group?.(keyed[j].row) === g) j++;
+    out.push(...under(keyed.slice(i, j)));
+    i = j;
+  }
+  return out;
+}
+
 // src/components/Table/Table.tsx
 import { useLayoutEffect as useLayoutEffect9, useRef as useRef28, useState as useState25 } from "react";
 
@@ -5893,9 +5961,29 @@ var Arrow = ({ up }) => /* @__PURE__ */ jsx43(SortGlyph, { direction: up ? "asce
 function NameRow({ on, children }) {
   return on ? /* @__PURE__ */ jsx43("span", { className: "ad-table__name-row", children }) : /* @__PURE__ */ jsx43(Fragment21, { children });
 }
-function Table({ columns: named, rows, rowId, caption, sort, onSort, picked, onPickedChange, onPickAllChange, pickLabel, pickAllLabel = "Pick all", onOpen, opens, openLabel = "Open", rowProps, groupProps, grip, addRow, addToGroup, striped = true, columnLines, rowTone, group, groups, foldGroups, foldedGroups, onFoldGroup, depth, foldParents, foldedRows, onFoldRow, foldLabel, nameColumn, fixed, onInsertRow, onInsertColumn, insertRowLabel = "Insert a row here", insertColumnLabel = "Insert a column here", total, className }) {
+function Table({ columns: named, rows: given, rowId, caption, sort, onSort, picked, onPickedChange, onPickAllChange, pickLabel, pickAllLabel = "Pick all", onOpen, opens, openLabel = "Open", rowProps, groupProps, grip, addRow, addToGroup, striped = true, columnLines, rowTone, group, groups, foldGroups, foldedGroups, onFoldGroup, depth, foldParents, foldedRows, onFoldRow, foldLabel, nameColumn, fixed, onInsertRow, onInsertColumn, insertRowLabel = "Insert a row here", insertColumnLabel = "Insert a column here", total, className }) {
   const columns = onOpen && !named.some((c) => c.id === "open") ? [...named, { id: "open", label: openLabel, labelHidden: true, frozen: "end", width: "var(--h-btn)", cell: (r) => opens?.(r) === false ? null : /* @__PURE__ */ jsx43(Icon, { job: "chevron-right", size: "sm", className: "ad-table__arrow ad-glyph-quiet" }) }] : named;
   const span = columns.length + (onPickedChange ? 1 : 0);
+  const appSorts = sort !== void 0 || onSort !== void 0;
+  const [ownSort, setOwnSort] = useState25(null);
+  const plain = (c) => typeof c.label === "string" && c.label.trim() !== "" || typeof c.label === "number";
+  const sorts = (c) => !c.labelHidden && (appSorts ? !!c.sortable : c.sortable ?? plain(c));
+  const by = !appSorts && ownSort ? columns.find((c) => c.id === ownSort.id && sorts(c)) : void 0;
+  const sortBy = (c) => (r) => {
+    if (c.sortValue) return c.sortValue(r);
+    const said = cellText(c.cell(r));
+    return c.numeric ? figureOf(said) ?? said : said;
+  };
+  const rows = by && ownSort ? sortRows(given, sortBy(by), ownSort.direction, depth, group) : given;
+  const now = appSorts ? sort : by && ownSort ? ownSort : void 0;
+  const press = (id) => {
+    if (appSorts) {
+      onSort?.(id);
+      return;
+    }
+    setOwnSort((was) => was?.id !== id ? { id, direction: "ascending" } : was.direction === "ascending" ? { id, direction: "descending" } : null);
+  };
+  const ownAt = (at2) => rows === given ? at2 : at2 >= rows.length ? given.length : given.indexOf(rows[at2]);
   const [ownFolded, setOwnFolded] = useState25(() => /* @__PURE__ */ new Set());
   const folded = foldedGroups ?? ownFolded;
   const [ownRows, setOwnRows] = useState25(() => /* @__PURE__ */ new Set());
@@ -6001,10 +6089,10 @@ function Table({ columns: named, rows, rowId, caption, sort, onSort, picked, onP
       /* @__PURE__ */ jsx43("thead", { children: /* @__PURE__ */ jsxs40("tr", { ref: headRow, children: [
         onPickedChange && /* @__PURE__ */ jsx43("th", { scope: "col", className: "ad-table__pick", children: /* @__PURE__ */ jsx43(Checkbox, { "aria-label": pickAllLabel, checked: all, onChange: (on) => onPickAllChange?.(on) }) }),
         columns.map((c) => {
-          const sorted = sort?.id === c.id ? sort.direction : void 0;
-          return /* @__PURE__ */ jsxs40("th", { scope: "col", "data-col-at": onInsertColumn ? columns.indexOf(c) : void 0, "data-held": c.frozen === "start" ? c.id : void 0, "aria-sort": sorted ?? (c.sortable ? "none" : void 0), className: cx(c.numeric && "ad-num", c.frozen && `ad-table__frozen--${c.frozen}`), style: { ...c.width ? { width: c.width } : {}, ...c.minWidth ? { minWidth: c.minWidth } : {}, ...at(c) }, children: [
+          const sorted = now?.id === c.id ? now.direction : void 0;
+          return /* @__PURE__ */ jsxs40("th", { scope: "col", "data-col-at": onInsertColumn ? columns.indexOf(c) : void 0, "data-held": c.frozen === "start" ? c.id : void 0, "aria-sort": sorted ?? (sorts(c) ? "none" : void 0), className: cx(c.numeric && "ad-num", c.frozen && `ad-table__frozen--${c.frozen}`), style: { ...c.width ? { width: c.width } : {}, ...c.minWidth ? { minWidth: c.minWidth } : {}, ...at(c) }, children: [
             c.minWidth && /* @__PURE__ */ jsx43("span", { className: "ad-table__floor", "aria-hidden": "true", style: { width: c.minWidth } }),
-            c.labelHidden ? /* @__PURE__ */ jsx43("span", { className: "ad-sr", children: c.label }) : c.sortable && onSort ? /* @__PURE__ */ jsxs40("button", { type: "button", className: "ad-table__sort ad-sort-button", onClick: () => onSort(c.id), children: [
+            c.labelHidden ? /* @__PURE__ */ jsx43("span", { className: "ad-sr", children: c.label }) : sorts(c) && (!appSorts || onSort) ? /* @__PURE__ */ jsxs40("button", { type: "button", className: "ad-table__sort ad-sort-button", onClick: () => press(c.id), children: [
               c.label,
               sorted && /* @__PURE__ */ jsx43(Arrow, { up: sorted === "ascending" })
             ] }) : c.label
@@ -6122,7 +6210,7 @@ function Table({ columns: named, rows, rowId, caption, sort, onSort, picked, onP
               if (i !== nameAt) return /* @__PURE__ */ jsx43("td", { className: cx(c.numeric && "ad-num", c.mono && "ad-mono", frozen), style: c.frozen === "start" ? at(c) : void 0, children: c.cell(r) }, c.id);
               const said = c.cell(r);
               const named2 = fixed && (typeof said === "string" || typeof said === "number") ? /* @__PURE__ */ jsx43("span", { className: "ad-clamp-line", children: said }) : said;
-              const words = opening ? /* @__PURE__ */ jsx43("button", { type: "button", className: "ad-table__open", onClick: () => opening(r), children: named2 }) : named2;
+              const words2 = opening ? /* @__PURE__ */ jsx43("button", { type: "button", className: "ad-table__open", onClick: () => opening(r), children: named2 }) : named2;
               const meta = c.meta?.(r);
               return /* @__PURE__ */ jsxs40("th", { scope: "row", className: cx("ad-table__name", frozen, meta != null && "ad-table__name--two"), style: d || c.frozen === "start" ? { ...d ? { ["--ad-depth"]: d } : {}, ...at(c) } : void 0, children: [
                 d > 0 && /* @__PURE__ */ jsxs40(Fragment21, { children: [
@@ -6136,9 +6224,9 @@ function Table({ columns: named, rows, rowId, caption, sort, onSort, picked, onP
                     foldRow(id);
                   }, children: /* @__PURE__ */ jsx43(Icon, { name: "caret-down", size: "sm", className: cx("ad-table__chevron", rowShut && "ad-table__chevron--shut") }) }),
                   meta != null ? /* @__PURE__ */ jsxs40("span", { className: "ad-table__words", children: [
-                    /* @__PURE__ */ jsx43("span", { className: "ad-table__line", children: words }),
+                    /* @__PURE__ */ jsx43("span", { className: "ad-table__line", children: words2 }),
                     /* @__PURE__ */ jsx43("span", { className: "ad-table__meta", children: meta })
-                  ] }) : words
+                  ] }) : words2
                 ] })
               ] }, c.id);
             })
@@ -6157,7 +6245,7 @@ function Table({ columns: named, rows, rowId, caption, sort, onSort, picked, onP
     near && /* @__PURE__ */ jsx43("div", { className: cx("ad-insert", `ad-insert--${near.kind}`), style: near.kind === "row" ? { left: near.x, top: near.y, width: near.length } : { left: near.x, top: near.y, height: near.length }, children: /* @__PURE__ */ jsx43("button", { type: "button", className: "ad-insert__mark", "aria-label": near.kind === "row" ? insertRowLabel : insertColumnLabel, onClick: () => {
       const n = near;
       setNear(null);
-      if (n.kind === "row") onInsertRow?.(n.at);
+      if (n.kind === "row") onInsertRow?.(ownAt(n.at));
       else onInsertColumn?.(n.at);
     }, children: /* @__PURE__ */ jsx43(Icon, { name: "plus", size: "sm" }) }) })
   ] });
@@ -6686,18 +6774,18 @@ function TimeGrid({ headerEnd, startHour, endHour, bookings = [], columns, now, 
           return /* @__PURE__ */ jsx45("div", { className: cx("ad-time-grid__slot", reach > 1 && "ad-time-grid__slot--span"), "data-lane": n > 1 ? `${k + 1}/${n}` : void 0, style: { top: at(b.start), height: `calc(${at(b.end)} - ${at(b.start)})`, ...n > 1 ? { ["--ad-lane-k"]: k, ["--ad-lanes"]: n } : {}, ...reach > 1 ? { ["--ad-span"]: reach } : {} }, children: b.node }, b.id);
         }),
         c.aside && /* @__PURE__ */ jsx45("div", { className: "ad-time-grid__aside", children: [...c.aside].sort((x, y) => x.at - y.at).map((m, i) => {
-          const words = [m.time, m.title].filter(Boolean).join(" ");
-          const inner = m.node ?? (asideWidth === "narrow" ? /* @__PURE__ */ jsx45("span", { className: "ad-time-grid__moment-mark", "aria-label": m.onPress ? void 0 : words, role: m.onPress ? void 0 : "img" }) : /* @__PURE__ */ jsxs42(Fragment22, { children: [
+          const words2 = [m.time, m.title].filter(Boolean).join(" ");
+          const inner = m.node ?? (asideWidth === "narrow" ? /* @__PURE__ */ jsx45("span", { className: "ad-time-grid__moment-mark", "aria-label": m.onPress ? void 0 : words2, role: m.onPress ? void 0 : "img" }) : /* @__PURE__ */ jsxs42(Fragment22, { children: [
             m.time && /* @__PURE__ */ jsx45("span", { className: "ad-time-grid__moment-time", children: m.time }),
             m.title && /* @__PURE__ */ jsx45("span", { className: "ad-time-grid__moment-title", title: m.title, children: m.title })
           ] }));
           const shown = m.hue ? hueOf(m.hue) : void 0;
           const style = { top: at(m.at), ...shown ? { ["--ad-stripe"]: shown } : {} };
           const cls = cx("ad-time-grid__moment", m.unconfirmed && "ad-time-grid__moment--unconfirmed", m.hue && "ad-time-grid__moment--hued");
-          return m.onPress ? /* @__PURE__ */ jsx45("button", { type: "button", className: cx(cls, "ad-time-grid__moment--press"), style, "aria-label": words || void 0, title: asideWidth === "narrow" ? words : void 0, onClick: (e) => {
+          return m.onPress ? /* @__PURE__ */ jsx45("button", { type: "button", className: cx(cls, "ad-time-grid__moment--press"), style, "aria-label": words2 || void 0, title: asideWidth === "narrow" ? words2 : void 0, onClick: (e) => {
             e.stopPropagation();
             m.onPress();
-          }, children: inner }, i) : /* @__PURE__ */ jsx45("span", { className: cls, style, title: asideWidth === "narrow" && words ? words : void 0, children: inner }, i);
+          }, children: inner }, i) : /* @__PURE__ */ jsx45("span", { className: cls, style, title: asideWidth === "narrow" && words2 ? words2 : void 0, children: inner }, i);
         }) }),
         Array.from({ length: hours }, (_, i) => /* @__PURE__ */ jsx45("div", { className: cx("ad-time-grid__hour", bandHours && i % 2 === 1 && "ad-time-grid__hour--band"), "aria-hidden": "true" }, i)),
         c.bookings.map(({ id, start, end, ...b }) => /* @__PURE__ */ jsx45("div", { className: "ad-time-grid__slot", style: { top: at(start), height: `calc(${at(end)} - ${at(start)})` }, children: /* @__PURE__ */ jsx45(Booking, { ...b, style: { height: "100%" } }) }, id))
@@ -7099,13 +7187,13 @@ function Steps({ steps, current, onPress, ariaLabel, compact, late, complete, cl
       style: { gridTemplateColumns: `repeat(${Math.max(1, steps.length)}, minmax(0, 1fr))`, ...finished ? { ["--ad-steps-complete"]: finished } : {} },
       children: steps.map((s, i) => {
         const state = i < at ? "done" : i === at ? "current" : "next";
-        const words = /* @__PURE__ */ jsxs46(Fragment24, { children: [
+        const words2 = /* @__PURE__ */ jsxs46(Fragment24, { children: [
           /* @__PURE__ */ jsx49("span", { className: cx("ad-steps__bar", `ad-steps__bar--${state}`, state === "current" && late && "ad-steps__bar--late"), "aria-hidden": "true" }),
           /* @__PURE__ */ jsx49("span", { className: compact ? "ad-sr" : "ad-steps__name ad-clamp-line", children: s.label }),
           s.note && !compact && /* @__PURE__ */ jsx49("span", { className: "ad-steps__note ad-clamp-line", children: s.note }),
           /* @__PURE__ */ jsx49("span", { className: "ad-sr", children: state === "done" ? ", done" : state === "next" ? ", to do" : late ? ", late" : "" })
         ] });
-        return /* @__PURE__ */ jsx49("li", { className: cx("ad-steps__step", `ad-steps__step--${state}`), "aria-current": state === "current" ? "step" : void 0, children: state === "done" && onPress ? /* @__PURE__ */ jsx49("button", { type: "button", className: "ad-steps__press", onClick: () => onPress(s.id), children: words }) : /* @__PURE__ */ jsx49("span", { className: "ad-steps__press", children: words }) }, s.id);
+        return /* @__PURE__ */ jsx49("li", { className: cx("ad-steps__step", `ad-steps__step--${state}`), "aria-current": state === "current" ? "step" : void 0, children: state === "done" && onPress ? /* @__PURE__ */ jsx49("button", { type: "button", className: "ad-steps__press", onClick: () => onPress(s.id), children: words2 }) : /* @__PURE__ */ jsx49("span", { className: "ad-steps__press", children: words2 }) }, s.id);
       })
     }
   );
@@ -7158,7 +7246,7 @@ function Slider({ value, onChange, min = 0, max = 100, step = 1, ariaLabel, disp
     else return;
     e.preventDefault();
   };
-  const words = (v) => display ? display(v) : String(v);
+  const words2 = (v) => display ? display(v) : String(v);
   const lo = range ? at(vals[0]) : 0;
   const hi = at(range ? vals[1] : vals[0]);
   return /* @__PURE__ */ jsxs47("div", { className: cx("ad-slider", disabled && "ad-slider--disabled", className), children: [
@@ -7175,14 +7263,14 @@ function Slider({ value, onChange, min = 0, max = 100, step = 1, ariaLabel, disp
           "aria-valuemin": min,
           "aria-valuemax": max,
           "aria-valuenow": v,
-          "aria-valuetext": words(v),
+          "aria-valuetext": words2(v),
           "aria-disabled": disabled || void 0,
           onKeyDown: disabled ? void 0 : key(i)
         },
         i
       ))
     ] }),
-    /* @__PURE__ */ jsx50("span", { className: "ad-slider__value", "aria-hidden": "true", children: range ? `${words(vals[0])} \u2013 ${words(vals[1])}` : words(vals[0]) })
+    /* @__PURE__ */ jsx50("span", { className: "ad-slider__value", "aria-hidden": "true", children: range ? `${words2(vals[0])} \u2013 ${words2(vals[1])}` : words2(vals[0]) })
   ] });
 }
 
