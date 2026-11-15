@@ -5443,8 +5443,9 @@ function AlertBarHead({ open, onToggle, label = "Alerts", counts, pillLabel = (p
 function AlertList({ children, id, hidden, ariaLabel, listProps }) {
   return /* @__PURE__ */ jsx37("div", { ...strip3(listProps), id, hidden, role: "list", "aria-label": ariaLabel, className: "ad-alert-list", children });
 }
-function AlertRow({ priority, priorityLabel = `Priority ${priority}`, sentence, number, actions, go, onSnooze, snoozeLabel = "Snooze", onDismiss, dismissLabel = "Dismiss", end, details, children, rowProps, muted }) {
+function AlertRow({ priority, priorityLabel = `Priority ${priority}`, sentence, number, actions, go, onSnooze, snoozeLabel = "Snooze", onDismiss, dismissLabel = "Dismiss", end, details, children, rowProps, muted, grip }) {
   const line = /* @__PURE__ */ jsxs34(Fragment20, { children: [
+    /* @__PURE__ */ jsx37("span", { className: "ad-alert__grip", children: grip && /* @__PURE__ */ jsx37(Grip, {}) }),
     /* @__PURE__ */ jsx37(CountPill, { priority, label: priorityLabel }),
     /* @__PURE__ */ jsx37("span", { className: "ad-alert__sentence", children: sentence }),
     /* @__PURE__ */ jsxs34("span", { className: "ad-alert__info", children: [
