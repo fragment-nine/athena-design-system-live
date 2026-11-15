@@ -1137,7 +1137,7 @@ button.ad-year__day:focus-visible { outline: none; }
 /* In a section or a dashboard widget what is held at the top (the day headings, the heads, the corner beside them, the all-day band) paints the
    section's own look, the ground and its washes under the section's fill, held to the window, as a pinned Ruler does: no darker strip behind
    the day names and no darker corner above the hours, wherever the section is in the window. In a card they keep the card's plane. */
-:is(:is(.ad-section-frame, .ad-frame__work) .ad-section, .ad-card--widget) .ad-time-grid:not(.ad-card:not(.ad-card--widget) .ad-time-grid) :is(.ad-time-grid__column > .ad-time-grid__day, .ad-time-grid__allday, .ad-time-grid__allday-space, .ad-time-grid__head), :is(:is(.ad-section-frame, .ad-frame__work) .ad-section, .ad-card--widget) .ad-time-grid:not(.ad-card:not(.ad-card--widget) .ad-time-grid) .ad-time-grid__gutter::before { background-image: var(--ad-section-plane, none); background-attachment: fixed; }
+:is(:is(.ad-section-frame, .ad-frame__work) .ad-section, .ad-card--widget) .ad-time-grid:not(.ad-card:not(.ad-card--widget) .ad-time-grid) :is(.ad-time-grid__column > .ad-time-grid__day, .ad-time-grid__allday, .ad-time-grid__allday-space, .ad-time-grid__allday-content, .ad-time-grid__gutter > .ad-time-grid__content-space, .ad-time-grid__head), :is(:is(.ad-section-frame, .ad-frame__work) .ad-section, .ad-card--widget) .ad-time-grid:not(.ad-card:not(.ad-card--widget) .ad-time-grid) .ad-time-grid__gutter::before { background-image: var(--ad-section-plane, none); background-attachment: fixed; }
 .ad-time-grid--aside-wide { --ad-aside: var(--w-aside); }
 .ad-time-grid--aside-day { --ad-aside: var(--w-side); }
 .ad-time-grid .ad-time-grid__body--aside { padding-right: var(--ad-aside); }
@@ -1182,8 +1182,10 @@ button.ad-year__day:focus-visible { outline: none; }
 
 .ad-time-grid { --ad-column-count: 1; --ad-allday-content-h: 0px; }
 /* Existing Resourcing lanes span the exact day-column geometry without CalendarItem chrome. */
-.ad-time-grid__allday-content { position: sticky; top: var(--ad-held-top); z-index: var(--z-sticky); width: calc(100% * var(--ad-column-count) + (var(--ad-column-count) - 1) * var(--border-w)); }
+.ad-time-grid__allday-content { position: sticky; top: var(--ad-held-top); z-index: var(--z-sticky); background: var(--ad-under); width: calc(100% * var(--ad-column-count) + (var(--ad-column-count) - 1) * var(--border-w)); }
 .ad-time-grid__content-space { height: var(--ad-allday-content-h); }
+/* The app's strip is on the page's ground, the gutter beside it too, held with it: the hours scrolled under it are covered, never read through. */
+.ad-time-grid__gutter > .ad-time-grid__content-space { position: sticky; top: var(--ad-held-top); z-index: var(--z-sticky); background: var(--ad-under); }
 
 .ad-time-grid:has(.ad-time-grid__allday-content) .ad-time-grid__allday, .ad-time-grid:has(.ad-time-grid__allday-content) .ad-time-grid__allday-space { top: calc(var(--ad-held-top) + var(--ad-allday-content-h)); }
 /* The today line runs the whole calendar: from under the headings through the all-day band and every hour. First in its column, so
