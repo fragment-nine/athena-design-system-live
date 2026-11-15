@@ -1640,7 +1640,7 @@ var JOBS = {
   "print": "printer",
   "project": "hash",
   "refresh": "arrows-clockwise",
-  "repeat": "repeat",
+  "repeat": "arrows-clockwise",
   "reports": "chart-line",
   "restore": "arrow-counter-clockwise",
   "review date": "eye",
@@ -4564,7 +4564,7 @@ function DatePickerBody({ value, onChange, today: todayIn, weekStart = 1, locale
     ] }),
     marksKey != null && /* @__PURE__ */ jsx29("div", { className: "ad-datepicker__key", children: marksKey }),
     repeat && /* @__PURE__ */ jsxs26("button", { type: "button", className: "ad-datepicker__repeat", onClick: (e) => repeat.onPress(e.currentTarget), children: [
-      /* @__PURE__ */ jsx29(Icon, { name: "repeat", size: "sm" }),
+      /* @__PURE__ */ jsx29(Icon, { job: "repeat", size: "sm" }),
       /* @__PURE__ */ jsx29("span", { children: labels.repeat }),
       /* @__PURE__ */ jsx29("span", { className: "ad-datepicker__pick-date", children: repeat.words })
     ] })

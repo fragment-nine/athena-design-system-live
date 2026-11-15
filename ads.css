@@ -1511,10 +1511,13 @@ button.ad-card__name:focus-visible { outline: none; box-shadow: var(--ring-selec
 .ad-priority-pick--p1 { --ad-pick-ink: var(--priority-p1); }
 .ad-priority-pick--p2 { --ad-pick-ink: var(--priority-p2); }
 .ad-priority-pick--p3 { --ad-pick-ink: var(--priority-p3); }
-/* No priority: an empty pick in the pill's shape, the muted words on the field's fill. */
-.ad-priority-pick.ad-priority-pick--p0 { background: var(--bg-raised); color: var(--text-muted); }
+/* No priority: an empty pick like any other, the field's skin (its height, corner and fill) with the muted words in the body face; no pill. */
+.ad-priority-pick.ad-priority-pick--p0 { height: var(--h-field); padding: 0 var(--space-8) 0 var(--space-3); border-radius: var(--radius-page); background: var(--bg-raised); color: var(--text-muted); font: var(--type-name); line-height: var(--lh-tight); font-variant-numeric: normal; }
+.ad-priority-pick.ad-priority-pick--p0:focus-within { background: var(--bg-hover); }
+.ad-priority-pick--p0 .ad-select__native { height: var(--h-field); line-height: var(--h-field); }
 .ad-priority-pick .ad-select__caret, .ad-priority-pick:hover .ad-select__caret { right: var(--space-2); color: var(--on-accent); }
-.ad-priority-pick--p0 .ad-select__caret, .ad-priority-pick--p0:hover .ad-select__caret { color: var(--text-muted); }
+.ad-priority-pick--p0 .ad-select__caret { right: var(--space-3); color: var(--text-muted); }
+.ad-priority-pick--p0:hover .ad-select__caret { right: var(--space-3); color: var(--accent); }
 /* A pick box in a row's trail: its closed words at the detail size (the row's meta line), so the row's name reads larger. */
 .ad-row__trail :is(.ad-select, .ad-pick-field):not(.ad-priority-pick) { font: var(--type-detail); }
 /* A settings row: the label in one column, its control right beside it (never across the screen), a hairline under. */
@@ -2288,7 +2291,9 @@ button.ad-steps__press:focus-visible { outline: none; box-shadow: var(--ring-sel
    and carries the card's bottom padding itself; with none, the body keeps the card's 16 under its last row. */
 .ad-popover--framed { display: flex; flex-direction: column; overflow: hidden; }
 .ad-popover--with-foot { padding-bottom: 0; }
-.ad-popover__body { flex: 1; min-height: 0; overflow-x: hidden; overflow-y: auto; scrollbar-gutter: stable; }
+/* The body's scroll bar sits at the card's right edge, in the card's own padding, and the rows stop a step (8) short of it, never against it. */
+.ad-popover__body { flex: 1; min-height: 0; overflow-x: hidden; overflow-y: auto; scrollbar-gutter: stable; margin-right: calc(var(--space-4) * -1); padding-right: var(--space-2); }
+.ad-popover__cols > .ad-popover__body { margin-right: 0; }
 .ad-popover__foot { flex: none; display: flex; align-items: center; gap: var(--space-2); margin: var(--space-3) calc(var(--space-4) * -1) 0; padding: var(--space-3) var(--space-4); border-top: var(--border-w) solid var(--border); }
 .ad-popover__action { margin-left: auto; display: inline-flex; }
 /* PopoverCard: a pinned header, then one scrolling body, or two columns (the rail at the right, a hairline between) each
@@ -2314,7 +2319,9 @@ button.ad-steps__press:focus-visible { outline: none; box-shadow: var(--ring-sel
 .ad-popover__title-read .ad-token-input__field { min-height: 0; padding: 0 var(--space-2); margin: 0 calc(var(--space-2) * -1); background: transparent; box-shadow: none; }
 .ad-popover__title-read .ad-token-input__field:hover { background: var(--bg-raised); }
 .ad-popover__title-read .ad-token-input__field:focus-within { background: var(--bg-hover); box-shadow: none; }
-.ad-popover__title-read .ad-token-input__box { padding: var(--space-1) 0; font: var(--type-title); line-height: var(--lh-tight); overflow-wrap: anywhere; }
+/* A todo's title is the todo's own words, typed in place: the row's Name rung, as its row draws it, never the card title's. */
+.ad-popover__title:has(.ad-popover__title-read) { font: var(--type-name); }
+.ad-popover__title-read .ad-token-input__box { padding: var(--space-1) 0; font: var(--type-name); line-height: var(--lh-tight); overflow-wrap: anywhere; }
 
 /* A list inside a card grows to its rows: the card's body is the one scroll area. */
 
