@@ -2572,7 +2572,8 @@ button.ad-row__name:focus-visible { outline: none; }
 .ad-item-dates { display: inline-flex; align-items: baseline; gap: var(--space-2); white-space: nowrap; }
 /* The two fixed slots (`layout="columns"`), each a date's width, so dates line up down a list. */
 .ad-item-dates--columns { display: inline-grid; grid-template-columns: repeat(2, calc(var(--w-col-xs) * 2)); }
-.ad-item-dates--columns > .ad-row-date { justify-self: end; }
+/* Each date set at its slot's left, so down a list the eyes and their words start at one x, eye under eye. */
+.ad-item-dates--columns > .ad-row-date { justify-self: start; }
 /* Beside a neighbour in a cell it keeps its room; in a row's date line the line's own gap does that. */
 :not(.ad-row__meta) > * + .ad-item-dates, :not(.ad-row__meta) > .ad-item-dates + * { margin-left: var(--space-2); }
 .ad-row-date { display: inline-flex; align-items: baseline; gap: var(--space-1); font: var(--type-detail); color: var(--text-muted); white-space: nowrap; }
