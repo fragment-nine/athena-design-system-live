@@ -1134,6 +1134,10 @@ button.ad-year__day:focus-visible { outline: none; }
 .ad-time-grid:has(.ad-time-grid__head) { padding-top: 0; }
 .ad-time-grid:has(.ad-time-grid__head) .ad-time-grid__gutter::before { content: ''; display: block; position: sticky; top: 0; z-index: var(--z-sticky); height: max(var(--space-6), var(--ad-head-h)); background: var(--ad-under); }
 .ad-time-grid .ad-time-grid__head { position: sticky; top: 0; z-index: var(--z-sticky); box-sizing: border-box; min-height: max(var(--space-6), var(--ad-head-h)); background: var(--ad-under); }
+/* In a section or a dashboard widget what is held at the top (the day headings, the heads, the corner beside them, the all-day band) paints the
+   section's own look, the ground and its washes under the section's fill, held to the window, as a pinned Ruler does: no darker strip behind
+   the day names and no darker corner above the hours, wherever the section is in the window. In a card they keep the card's plane. */
+:is(:is(.ad-section-frame, .ad-frame__work) .ad-section, .ad-card--widget) .ad-time-grid:not(.ad-card:not(.ad-card--widget) .ad-time-grid) :is(.ad-time-grid__column > .ad-time-grid__day, .ad-time-grid__allday, .ad-time-grid__allday-space, .ad-time-grid__head), :is(:is(.ad-section-frame, .ad-frame__work) .ad-section, .ad-card--widget) .ad-time-grid:not(.ad-card:not(.ad-card--widget) .ad-time-grid) .ad-time-grid__gutter::before { background-image: var(--ad-section-plane, none); background-attachment: fixed; }
 .ad-time-grid--aside-wide { --ad-aside: var(--w-aside); }
 .ad-time-grid--aside-day { --ad-aside: var(--w-side); }
 .ad-time-grid .ad-time-grid__body--aside { padding-right: var(--ad-aside); }
@@ -2711,6 +2715,9 @@ button.ad-row__name:focus-visible { outline: none; }
 /* The tick column keeps its own width under `fixed`: never cut to "☑…". */
 .ad-table--fixed .ad-table__pick { box-sizing: border-box; width: calc(var(--check-size) + 2 * var(--space-2)); overflow: visible; text-overflow: clip; }
 .ad-table th[scope="col"] { position: sticky; top: 0; z-index: 1; height: calc(var(--h-strip) - var(--border-w)); padding: 0 var(--space-2); text-align: left; white-space: nowrap; background: var(--ad-under); border-bottom: var(--border-w) solid var(--line-strong); font: var(--type-heading); text-transform: uppercase; color: var(--text-secondary); letter-spacing: var(--track-caps); }
+/* In a section or a dashboard widget the heading row paints the section's own look, the ground and its washes under the section's fill, held to the
+   window, as a pinned Ruler does: no darker bar behind the headings wherever the section is in the window. In a card it keeps the card's plane. */
+:is(:is(.ad-section-frame, .ad-frame__work) .ad-section, .ad-card--widget) .ad-table:not(.ad-card:not(.ad-card--widget) .ad-table) th[scope="col"] { background-image: var(--ad-section-plane, none); background-attachment: fixed; }
 .ad-table th[aria-sort="ascending"], .ad-table th[aria-sort="descending"] { color: var(--text-primary); }
 /* A table's row is a timeline's row, h-strip 30 with its hairline inside it (the same pitch), its heading and total rows too; what sits in a cell takes the row size (a field, a
    select, a date box at h-btn-row; a button through the body's ButtonSizeScope), so nothing in a cell makes its row taller. */
