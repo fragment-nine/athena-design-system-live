@@ -3350,7 +3350,8 @@ button.ad-milestone:focus-visible { outline: none; }
 .ad-toolbar__end:empty { display: none; }
 .ad-toolbar__end :is(.ad-zoom, .ad-segmented) { height: auto; padding: 0; border: 0; background: transparent; }
 .ad-toolbar__end > .ad-zoom, .ad-toolbar__end > .ad-button--view { border-radius: 0; box-shadow: calc(var(--border-w) * -1) 0 0 var(--border); }
-.ad-toolbar__end > :first-child { box-shadow: none; }
+/* No hairline before the first group; only the pieces that draw one lose it, so a first field keeps its keyboard ring. */
+.ad-toolbar__end > :is(.ad-zoom, .ad-button--view):first-child { box-shadow: none; }
 /* The bar on its own: a section's or a tab's own tools, in its corner. Each tool is a group with a hairline before it; a switcher
    draws no bar of its own in it and a button is the View button's bare words, so nothing in it has a box of its own. */
 .ad-toolbar__end--alone { margin-left: 0; }
