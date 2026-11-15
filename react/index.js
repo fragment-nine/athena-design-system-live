@@ -7130,12 +7130,15 @@ function Dial({ fraction, label, size, value, valueText, half, target, targetLab
     t != null ? targetLabel ?? `Target ${Math.round(t * 100)}%` : null
   ].filter(Boolean).join(", ");
   const track = gauge ? arc(0, 1) : null;
+  const full = size != null && !gauge && Number.isFinite(fraction) && fraction >= 1;
+  const past = full ? Math.min(1, fraction - 1) : 0;
   return /* @__PURE__ */ jsxs44("figure", { className: cx("ad-dial", size != null && "ad-dial--compact", gauge && "ad-dial--half", pointer && "ad-dial--needle", gauge && scale && "ad-dial--scaled", className), children: [
     /* @__PURE__ */ jsxs44("div", { className: "ad-dial__face", role: "meter", "aria-valuemin": 0, "aria-valuemax": 100, "aria-valuenow": Math.round(f * 100), "aria-label": String(label), "aria-valuetext": said || void 0, children: [
       /* @__PURE__ */ jsxs44("svg", { viewBox: gauge ? "0 0 70 40" : "0 0 70 70", "aria-hidden": "true", children: [
         gauge ? /* @__PURE__ */ jsx47("path", { className: "ad-dial__track", d: track }) : /* @__PURE__ */ jsx47("circle", { className: "ad-dial__track", cx: "35", cy: "35", r }),
         b != null && b[1] > b[0] && /* @__PURE__ */ jsx47("path", { className: "ad-dial__band", d: arc(b[0], b[1], r - 5.5) }),
-        !pointer && (gauge ? /* @__PURE__ */ jsx47("path", { className: "ad-dial__arc", d: track, strokeDasharray: `${c * f} ${c}` }) : /* @__PURE__ */ jsx47("circle", { className: "ad-dial__arc", cx: "35", cy: "35", r, strokeDasharray: `${c * f} ${c}`, transform: "rotate(-90 35 35)" })),
+        !pointer && (gauge ? /* @__PURE__ */ jsx47("path", { className: "ad-dial__arc", d: track, strokeDasharray: `${c * f} ${c}` }) : /* @__PURE__ */ jsx47("circle", { className: cx("ad-dial__arc", full && "ad-dial__arc--full"), cx: "35", cy: "35", r, strokeDasharray: `${c * f} ${c}`, transform: "rotate(-90 35 35)" })),
+        past > 0 && /* @__PURE__ */ jsx47("circle", { className: "ad-dial__past", cx: "35", cy: "35", r, strokeDasharray: `${c * past} ${c}`, transform: "rotate(-90 35 35)" }),
         gauge && scale && Array.from({ length: 11 }, (_, i) => /* @__PURE__ */ jsx47("line", { className: "ad-dial__tick", ...line(i / 10, r + 4.5, i % 5 === 0 ? r + 8 : r + 6.5) }, i)),
         t != null && /* @__PURE__ */ jsx47("line", { className: "ad-dial__target", ...line(t, r - 5, r + 5) }),
         pointer && /* @__PURE__ */ jsxs44(Fragment23, { children: [

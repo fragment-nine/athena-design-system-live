@@ -1332,6 +1332,9 @@ button.ad-card__name:focus-visible { outline: none; }
 .ad-dial__track, .ad-dial__arc { fill: none; stroke-width: var(--dial-stroke); }
 .ad-dial__track { stroke: var(--bg-hover); }
 .ad-dial__arc { stroke: var(--bitrate-grey); }
+/* The summary ring at or past full: the whole ring in the done green, the part past full laid over it in amber from the top. */
+.ad-dial__arc--full { stroke: var(--status-good); }
+.ad-dial__past { fill: none; stroke-width: var(--dial-stroke); stroke: var(--status-warn); }
 .ad-dial__value { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font: var(--type-data); font-size: var(--text-xs); color: var(--text-primary); }
 .ad-dial__label { font: var(--type-detail); color: var(--text-muted); text-align: center; }
 /* The verdict is the one headline on a screen: the site's weight, a faint coral glow. */
@@ -2935,7 +2938,9 @@ button.ad-row__name:focus-visible { outline: none; }
 /* A unit as a word after its value ("3 days"). */
 .ad-figures__unit { margin-left: var(--space-1); white-space: nowrap; font: var(--type-detail); color: var(--text-muted); }
 /* A rail in the display face: the graphic leads at the left, beside it the label, the value in Work Sans with its unit, the note. */
-.ad-figures--rail.ad-figures--display .ad-figures__item { display: grid; grid-template-columns: var(--w-figure-graphic) minmax(0, 1fr); align-content: center; column-gap: var(--space-4); row-gap: var(--space-1); }
+.ad-figures--rail.ad-figures--display .ad-figures__item { display: grid; grid-template-columns: var(--w-figure-graphic) minmax(0, 1fr); align-content: start; column-gap: var(--space-4); row-gap: var(--space-1); }
+/* Squeezed, the titles still line up: every title on one line at the top of its reading, whatever wraps under it. */
+.ad-figures--rail.ad-figures--display .ad-figures__label { align-self: start; min-height: 0; }
 .ad-figures--rail.ad-figures--display .ad-figures__item:not(:has(.ad-figures__graphic)) { grid-template-columns: minmax(0, 1fr); }
 .ad-figures--rail.ad-figures--display .ad-figures__graphic { grid-column: 1; grid-row: 1 / span 3; order: 0; width: var(--w-figure-graphic); height: auto; align-self: center; display: grid; place-items: center; overflow: hidden; }
 .ad-figures--rail.ad-figures--display .ad-figures__label { grid-column: -2; grid-row: 1; text-align: left; }
