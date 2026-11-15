@@ -4717,19 +4717,21 @@ function DateRange({ from, to, onChange, today, weekStart, fromLabel = "From", t
 // src/components/Pickers/TimeField.tsx
 import { useEffect as useEffect13, useRef as useRef19, useState as useState18 } from "react";
 import { jsx as jsx30, jsxs as jsxs27 } from "react/jsx-runtime";
-function TimeField({ value, onChange, label, step = 30, bareHoursArePm, className }) {
+function TimeField({ value, onChange, label, step = 30, bareHoursArePm, min, className }) {
   const shown = value == null ? "" : formatTimeOfDay(value);
   const [text, setText] = useState18(shown);
   const [open, setOpen] = useState18(false);
   const anchor = useRef19(null);
   useEffect13(() => setText(shown), [shown]);
   const read2 = text.trim() && text !== shown ? parseTimeOfDay(text, void 0, { bareHoursArePm }) : null;
+  const early = read2 != null && min != null && read2 < min;
   const commit = () => {
-    if (read2 != null) onChange(read2);
+    if (read2 != null && !early) onChange(read2);
     else if (!text.trim()) onChange(null);
     else setText(shown);
   };
-  const times = Array.from({ length: Math.floor(24 * 60 / step) }, (_, i) => i * step);
+  const grid = Array.from({ length: Math.floor(24 * 60 / step) }, (_, i) => i * step);
+  const times = min == null ? grid : [...min % step ? [min] : [], ...grid.filter((m) => m >= min)];
   return /* @__PURE__ */ jsxs27("span", { ref: anchor, className: cx("ad-timefield", className), children: [
     /* @__PURE__ */ jsx30(
       TextField,
@@ -4741,7 +4743,7 @@ function TimeField({ value, onChange, label, step = 30, bareHoursArePm, classNam
         role: "combobox",
         "aria-haspopup": "listbox",
         "aria-expanded": open,
-        parsed: read2 != null ? formatTimeOfDay(read2).toLowerCase() : void 0,
+        parsed: read2 != null && !early ? formatTimeOfDay(read2).toLowerCase() : void 0,
         onChange: (e) => setText(e.target.value),
         onFocus: () => setOpen(true),
         onClick: () => setOpen(true),
