@@ -161,6 +161,9 @@ function resolve(on, hue) {
   if (hue.startsWith("dept-")) return on.department ? `var(--${hue})` : void 0;
   return on.item ? `var(--${hue})` : void 0;
 }
+function projectPillHue(hue) {
+  return hue && /^project-(0[1-9]|1[0-2])$/.test(hue) ? `var(--${hue})` : void 0;
+}
 function useHue(hue) {
   return resolve(useContext(HueSwitches), hue);
 }
@@ -2949,7 +2952,7 @@ function useMenuDrag(onReorder) {
   } : {};
 }
 function ProjectPill({ code: code2, current, color, onPress, pressLabel }) {
-  const hue = useHue(color);
+  const hue = projectPillHue(color);
   const shown = hue && !current ? hue : void 0;
   if (onPress) return /* @__PURE__ */ jsx18("button", { type: "button", "aria-label": pressLabel ?? code2, onClick: (e) => {
     e.stopPropagation();
