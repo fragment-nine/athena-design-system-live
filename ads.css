@@ -288,7 +288,7 @@
   --icon-lg: 24px;
   --avatar-sm: 20px;
   --avatar-md: 32px;
-  --avatar-overlap: 6px;
+  --avatar-overlap: 4px;
   --switch-w: 34px;
   --switch-h: 20px;
   --w-menu: 240px;
@@ -3209,6 +3209,8 @@ button.ad-bar { cursor: pointer; }
 /* Under the pointer a bar's name turns coral; nothing glows (2026-11-14, Jeremy: "Yes, all of them"). */
 .ad-bar:hover .ad-bar__name { color: var(--accent); }
 .ad-bar--selected { outline: none; box-shadow: var(--ring-select); }
+/* Where it was, while a move is previewed: faint and out of reach; its new place is the same bar, ringed (selected). */
+.ad-bar--ghost { opacity: var(--opacity-faint); pointer-events: none; }
 .ad-bar:focus-visible { outline: none; }
 :where(:root:not([data-ad-pointer])) .ad-bar:focus-visible { box-shadow: var(--ring-select); }
 /* Selected or focused, a bar keeps its edge: the ring is the selection, the edge is still what it is. */

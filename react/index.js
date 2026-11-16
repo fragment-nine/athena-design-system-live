@@ -386,14 +386,16 @@ function onPointerDown(e) {
     keep = i;
     break;
   }
-  layers.slice(keep + 1).reverse().forEach((l) => l.close());
+  layers.slice(keep + 1).reverse().forEach((l) => {
+    if (!l.stays) l.close();
+  });
 }
 function onKeyDown(e) {
   if (e.key !== "Escape" || !layers.length) return;
   e.preventDefault();
   layers[layers.length - 1].close();
 }
-function useLayer(open, onClose, refs, level = "popover") {
+function useLayer(open, onClose, refs, level = "popover", stays = false) {
   const latest = useRef2(onClose);
   latest.current = onClose;
   const doc = useFloatingDocument() ?? document;
@@ -401,7 +403,7 @@ function useLayer(open, onClose, refs, level = "popover") {
   const [z, setZ] = useState2(base);
   useIsoLayoutEffect(() => {
     if (!open) return;
-    const layer = { boxes: () => refs.map((r) => r?.current), close: () => latest.current?.(), base, z: -1, setZ, doc };
+    const layer = { boxes: () => refs.map((r) => r?.current), close: () => latest.current?.(), base, z: -1, setZ, doc, stays };
     const n = listening.get(doc) ?? 0;
     if (!n) {
       doc.addEventListener("pointerdown", onPointerDown, true);
@@ -4238,30 +4240,30 @@ function EditorCard({ open, onClose, anchor: given, at, kind, title, lead, chip,
 import { useId as useId9, useRef as useRef17 } from "react";
 import { Fragment as Fragment13, jsx as jsx27, jsxs as jsxs24 } from "react/jsx-runtime";
 var hooksOf2 = (a) => Object.fromEntries(Object.entries(a).filter(([k]) => k.startsWith("data-")));
-function Dialog({ open, onClose, title, children, body, actions, role = "dialog", width = "dialog", closeLabel, blur, className }) {
+function Dialog({ open, onClose, title, children, body, actions, role = "dialog", width = "dialog", closeLabel, blur, modal = true, className }) {
   const rich = useRef17(null);
   useScrollFade(rich);
   useKeyScroll(rich);
   const box = useRef17(null);
   const titleId = useId9();
   const bodyId = useId9();
-  const z = useLayer(open, onClose, [box], "dialog");
-  usePageInert(open, [box]);
+  const z = useLayer(open, onClose, [box], "dialog", !modal);
+  usePageInert(open && modal, [box]);
   useFocusReturn(open, box, "box");
   if (!open) return null;
   return /* @__PURE__ */ jsxs24(Portal, { children: [
-    /* @__PURE__ */ jsx27("div", { className: cx("ad-scrim", blur && "ad-scrim--blur"), "aria-hidden": "true", style: { zIndex: z - 1 } }),
+    modal && /* @__PURE__ */ jsx27("div", { className: cx("ad-scrim", blur && "ad-scrim--blur"), "aria-hidden": "true", style: { zIndex: z - 1 } }),
     /* @__PURE__ */ jsxs24(
       "div",
       {
         ref: box,
         role,
-        "aria-modal": "true",
+        "aria-modal": modal ? "true" : void 0,
         "aria-labelledby": titleId,
         "aria-describedby": children ? bodyId : void 0,
         tabIndex: -1,
         style: { zIndex: z },
-        onKeyDown: (e) => trapTab(e, box.current),
+        onKeyDown: modal ? (e) => trapTab(e, box.current) : void 0,
         className: cx("ad-float", "ad-dialog", `ad-dialog--${width}`, body != null && "ad-dialog--rich", className),
         children: [
           /* @__PURE__ */ jsx27(CloseButton, { onClose, label: closeLabel }),
@@ -5847,7 +5849,8 @@ function Envelope({ side }) {
     /* @__PURE__ */ jsx42("path", { d: curve, vectorEffect: "non-scaling-stroke" })
   ] });
 }
-function Bar({ code: code2, travel, dim, day: dayGiven, billing, label, unconfirmed, deal, backup, color, selected, startLabel, endLabel, lead, children, thin, labelOutside, onOpen, ends, barProps, labelInset, labelHidden, late, dense, fade, fadeStart, fadeEnd, onCramped, detail, suffix, className, style }) {
+function Bar({ code: code2, travel, dim, day: dayGiven, billing, label, unconfirmed, deal, backup, color, selected, ghost, startLabel, endLabel, lead, children, thin, labelOutside, onOpen: onOpenGiven, ends, barProps, labelInset, labelHidden, late, dense, fade, fadeStart, fadeEnd, onCramped, detail, suffix, className, style }) {
+  const onOpen = ghost ? void 0 : onOpenGiven;
   const asButton = !!onOpen && !ends;
   const Tag2 = asButton ? "button" : "div";
   const hue = useHue(color);
@@ -5926,8 +5929,9 @@ function Bar({ code: code2, travel, dim, day: dayGiven, billing, label, unconfir
         }
       },
       "aria-current": selected || void 0,
+      "aria-hidden": ghost || void 0,
       title: tip ?? hooks.title,
-      className: cx("ad-bar", "ad-striped", code2 && "ad-bar--code", code2 && travel && "ad-bar--travel", code2 && dim && !dayGiven && !billing && "ad-bar--dim", day && `ad-bar--day-${day}`, code2 && billing && billing !== "plain" && `ad-bar--bill-${billing}`, labelOutside === "never" && "ad-bar--keep-in", clip && "ad-bar--clip", clip && nameGone && suffix != null && "ad-bar--clip-name-gone", labelOutside === "never" && cramped && "ad-bar--name-gone", labelOutside === "before" && "ad-bar--label-before", plain && !!paint["--ad-bar"] && "ad-bar--hued", plain && !unconfirmed && !deal && !backup && "ad-bar--confirmed", unconfirmed && "ad-bar--unconfirmed", deal && "ad-bar--deal", backup && "ad-bar--backup", thin && "ad-bar--thin", outside && "ad-bar--label-outside", selected && "ad-bar--selected", late && "ad-bar--late", dense && "ad-bar--dense", fade && `ad-bar--fade-${fade}`, labelHidden && "ad-bar--label-hidden", className),
+      className: cx("ad-bar", "ad-striped", code2 && "ad-bar--code", code2 && travel && "ad-bar--travel", code2 && dim && !dayGiven && !billing && "ad-bar--dim", day && `ad-bar--day-${day}`, code2 && billing && billing !== "plain" && `ad-bar--bill-${billing}`, labelOutside === "never" && "ad-bar--keep-in", clip && "ad-bar--clip", clip && nameGone && suffix != null && "ad-bar--clip-name-gone", labelOutside === "never" && cramped && "ad-bar--name-gone", labelOutside === "before" && "ad-bar--label-before", plain && !!paint["--ad-bar"] && "ad-bar--hued", plain && !unconfirmed && !deal && !backup && "ad-bar--confirmed", unconfirmed && "ad-bar--unconfirmed", deal && "ad-bar--deal", backup && "ad-bar--backup", thin && "ad-bar--thin", outside && "ad-bar--label-outside", selected && "ad-bar--selected", ghost && "ad-bar--ghost", late && "ad-bar--late", dense && "ad-bar--dense", fade && `ad-bar--fade-${fade}`, labelHidden && "ad-bar--label-hidden", className),
       style: { ...style, ...paint, ...labelInset ? { ["--ad-label-in"]: `${Math.max(0, labelInset)}px` } : {}, ...fade && fadeStart != null ? { ["--ad-fade-start"]: `${Math.max(0, fadeStart)}px` } : {}, ...fade && fadeEnd != null ? { ["--ad-fade-end"]: `${Math.max(0, fadeEnd)}px` } : {} },
       children: [
         fade && /* @__PURE__ */ jsx42("span", { className: "ad-bar__ground", "aria-hidden": "true" }),
