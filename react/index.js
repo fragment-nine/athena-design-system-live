@@ -268,6 +268,13 @@ function useStaysInWindow(box) {
     };
   }, [doc]);
 }
+function wholeHeight(f) {
+  let past = Math.max(0, f.scrollHeight - f.clientHeight);
+  f.querySelectorAll(":scope > .ad-popover__body, :scope > .ad-popover__cols > .ad-popover__body").forEach((b) => {
+    past = Math.max(past, b.scrollHeight - b.clientHeight);
+  });
+  return f.offsetHeight + past;
+}
 function usePlacement(open, anchor, floating, placement, within) {
   const [pos, setPos] = useState2(null);
   const doc = useFloatingDocument();
@@ -282,7 +289,7 @@ function usePlacement(open, anchor, floating, placement, within) {
     const vw = win.innerWidth;
     const vh = win.innerHeight;
     const fw = f.offsetWidth;
-    const fh = f.offsetHeight;
+    const fh = wholeHeight(f);
     const a = anchor?.current?.getBoundingClientRect();
     const room = within?.current?.getBoundingClientRect();
     const footer = placement === "side" || placement === "over" || placement === "drop" ? (doc ?? document).querySelector(".ad-footer")?.getBoundingClientRect() : void 0;
@@ -331,9 +338,12 @@ function usePlacement(open, anchor, floating, placement, within) {
     const el = floating.current;
     if (el && watched.current?.el !== el && typeof ResizeObserver !== "undefined") {
       watched.current?.ro.disconnect();
+      watched.current?.mo?.disconnect();
       const ro = new ResizeObserver(() => place.current());
       ro.observe(el);
-      watched.current = { el, ro };
+      const mo = typeof MutationObserver !== "undefined" ? new MutationObserver(() => place.current()) : void 0;
+      mo?.observe(el, { childList: true, subtree: true, characterData: true });
+      watched.current = { el, ro, mo };
     }
   });
   useIsoLayoutEffect(() => {
@@ -347,6 +357,7 @@ function usePlacement(open, anchor, floating, placement, within) {
     win.addEventListener("scroll", run, true);
     return () => {
       watched.current?.ro.disconnect();
+      watched.current?.mo?.disconnect();
       watched.current = null;
       win.removeEventListener("resize", run);
       win.removeEventListener("scroll", run, true);
