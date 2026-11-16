@@ -14,6 +14,7 @@
   --bg-surface: rgba(255, 255, 255, 0.035);
   --bg-raised: rgba(255, 255, 255, 0.08);
   --bg-band: rgba(255, 255, 255, 0.055);
+  --bg-alt: rgba(255, 255, 255, 0.035);
   --bg-hover: rgba(255, 255, 255, 0.115);
   --bg-float: #121213;
   --bg-held: #19181a;
@@ -142,6 +143,7 @@
   --bg-surface: rgba(255, 255, 255, 0.62);
   --bg-raised: rgba(0, 0, 0, 0.045);
   --bg-band: rgba(0, 0, 0, 0.03);
+  --bg-alt: rgba(0, 0, 0, 0.03);
   --bg-hover: rgba(0, 0, 0, 0.075);
   --bg-float: #ffffff;
   --bg-held: #fbfbfa;
@@ -2956,7 +2958,7 @@ button.ad-row__name:focus-visible { outline: none; }
 /* A reorderable table row's grip, first in its name cell. */
 .ad-table__name > .ad-grip, .ad-table__name-row > .ad-grip { margin-right: var(--space-2); vertical-align: middle; }
 /* Striped: every other row no priority washes takes the lanes' quiet alternate ground, painted as the wash is, so frozen cells keep it. */
-.ad-table .ad-table__row--alt > * { background-image: linear-gradient(var(--bg-surface), var(--bg-surface)); }
+.ad-table .ad-table__row--alt > * { background-image: linear-gradient(var(--bg-alt), var(--bg-alt)); }
 /* Column lines: a hairline between columns, from the heading down, in the rows' line. */
 .ad-table--column-lines :is(th, td) + :is(th, td) { border-left: var(--border-w) solid var(--border); }
 /* An add row inside a table (Table addRow, or an app's own): no underline of its own, the table's hairline is the one line; it fills the
@@ -3294,7 +3296,7 @@ button.ad-milestone:focus-visible { outline: none; }
 .ad-lanes--ruler { padding-top: var(--space-4); }
 .ad-lanes { --ad-lane-name: var(--w-side); }
 .ad-lane { --ad-lane-ground: var(--ad-under); display: grid; grid-template-columns: var(--ad-lane-name) minmax(0, 1fr); min-height: var(--h-row); }
-.ad-lane:nth-child(even) { --ad-lane-ground: var(--bg-surface); background: var(--bg-surface); }
+.ad-lane:nth-child(even) { --ad-lane-ground: var(--bg-alt); background: var(--bg-alt); }
 .ad-lane__name { display: flex; align-items: center; align-self: start; height: var(--h-row); padding-right: var(--space-4); font: var(--type-name); color: var(--text-primary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .ad-lane__chart { position: relative; min-height: var(--h-row); }
 .ad-lane--tall .ad-lane__chart { min-height: var(--h-row); }
