@@ -3449,7 +3449,7 @@ button.ad-milestone:focus-visible { outline: none; }
 .ad-popover__section + .ad-view-halves, .ad-view-halves + .ad-popover__section { border-top: var(--border-w) solid var(--border); padding-top: var(--space-4); }
 .ad-view-halves > .ad-popover__section { margin-top: 0; border-top: 0; padding-top: 0; }
 
-/* A narrowed view: the binoculars in the primary ink, the word stays quiet. */
+/* A narrowed view: the sliders in the primary ink, the word stays quiet. */
 .ad-button--view-narrowed .ad-icon { color: var(--text-primary); }
 
 /* The View pop-over: the filter's two halves with "or" between; the sentence when there is no saved view yet. */
