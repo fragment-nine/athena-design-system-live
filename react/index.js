@@ -6230,6 +6230,18 @@ function Table({ columns: named, rows: given, rowId, caption, sort, onSort, pick
   }, [heldKey, onPickedChange]);
   const wrap = useRef31(null);
   useKeyScroll(wrap);
+  const [wide, setWide] = useState25(false);
+  useLayoutEffect10(() => {
+    const el = wrap.current;
+    const t = el?.querySelector("table");
+    if (!el || !t || typeof ResizeObserver === "undefined") return;
+    const check = () => setWide(t.offsetWidth > el.clientWidth + 1);
+    check();
+    const ro = new ResizeObserver(check);
+    ro.observe(el);
+    ro.observe(t);
+    return () => ro.disconnect();
+  }, []);
   const at = (c) => c.frozen === "start" && held[c.id] ? { ["--ad-held"]: `${held[c.id]}px` } : {};
   const [near, setNear] = useState25(null);
   const inserts = !!(onInsertRow || onInsertColumn);
@@ -6277,7 +6289,7 @@ function Table({ columns: named, rows: given, rowId, caption, sort, onSort, pick
     const found = best;
     setNear((was) => was && found && was.kind === found.kind && was.at === found.at && was.x === found.x && was.y === found.y ? was : found);
   };
-  return /* @__PURE__ */ jsxs40("div", { ref: wrap, className: cx("ad-table-wrap", inserts && "ad-table-wrap--inserts", className), onPointerMove: inserts ? findNear : void 0, onPointerLeave: inserts ? () => setNear(null) : void 0, children: [
+  return /* @__PURE__ */ jsxs40("div", { ref: wrap, "data-wide": wide || void 0, className: cx("ad-table-wrap", inserts && "ad-table-wrap--inserts", className), onPointerMove: inserts ? findNear : void 0, onPointerLeave: inserts ? () => setNear(null) : void 0, children: [
     /* @__PURE__ */ jsxs40("table", { className: cx("ad-table", fixed && "ad-table--fixed", columnLines && "ad-table--column-lines"), children: [
       /* @__PURE__ */ jsx43("caption", { className: "ad-sr", children: caption }),
       /* @__PURE__ */ jsx43("thead", { children: /* @__PURE__ */ jsxs40("tr", { ref: headRow, children: [

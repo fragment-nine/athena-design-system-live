@@ -2952,6 +2952,8 @@ button.ad-row__name:focus-visible { outline: none; }
 .ad-selection-bar .ad-button--quiet { background: var(--bg-hover); }
 /* Built 2026-10-25 for Athena. Held columns stay put while a wide table scrolls sideways; they keep the page's ground under them. */
 .ad-table-wrap { position: relative; overflow-x: auto; }
+/* As wide as its box or narrower: no sideways scroll, so its heading holds against the page's scroll. */
+.ad-table-wrap:not([data-wide]) { overflow-x: visible; }
 /* A column's floor (Column.minWidth): an empty line as wide as the floor, so auto layout never squeezes the column under it. */
 .ad-table__floor { display: block; height: 0; overflow: hidden; }
 .ad-table__frozen--start, .ad-table__frozen--end { position: sticky; z-index: 1; background-color: var(--ad-under); }
