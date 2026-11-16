@@ -333,6 +333,7 @@
   --h-bar-dense: 17px;
   --blur-glass-radius: 22px;
   --blur-drill-radius: 3px;
+  --blur-focus-in: var(--blur-drill-radius);
   --w-scrollbar: 10px;
   --word-pill-corner: 4px;
   --map-line: 0.5;
@@ -614,6 +615,7 @@
   --tint-field-bar: 22%;
   --tint-lane-wash: 8%;
   --tint-day-fill: 24%;
+  --tint-flash: 28%;
   --tint-bar-edge: 50%;
   --tint-lane-edge: 45%;
   --map-op-land: 0.95;
@@ -656,6 +658,8 @@
   --delay-tip: 0.5s;
   --delay-loading: 1s;
   --dur-check-pop: 260ms;
+  --dur-draw: 0.6s;
+  --dur-stagger: 60ms;
   --ease-check-pop: cubic-bezier(0.34, 1.56, 0.64, 1);
   --dur-ack-pulse: 2.4s;
   --ease-ack-pulse: ease-in-out;
@@ -838,7 +842,8 @@ tr[data-ad-drop="after"] > :is(td, th) { box-shadow: inset 0 calc(var(--bw-selec
 .ad-float { box-sizing: border-box; --ad-tray: var(--bg-base); /* Quiet buttons and face discs sit one tone lighter than the glass they are on. */
   --ad-lift: var(--bg-float); background: var(--glass-bg); backdrop-filter: var(--blur-glass); -webkit-backdrop-filter: var(--blur-glass); box-shadow: var(--elev-float); border-radius: var(--radius-float); color: var(--text-primary); font: var(--type-name); animation: ad-fade-in var(--dur) var(--ease-out); }
 .ad-float:focus { outline: none; }
-@keyframes ad-fade-in { from { opacity: 0; } to { opacity: 1; } }
+/* It comes into focus: from faint and a little blurred to sharp, never a slide or a scale. */
+@keyframes ad-fade-in { from { opacity: 0; filter: blur(var(--blur-focus-in)); } to { opacity: 1; filter: none; } }
 @media (prefers-reduced-motion: reduce) { .ad-float { animation: none; } }
 /* A part that scrolls fades its edge while there is more beyond it (useScrollFade), so a cut last row reads as "scroll", never as clipped. */
 [data-more-below]:not(.ad-popover) { -webkit-mask-image: linear-gradient(to bottom, var(--bg-base) calc(100% - var(--space-6)), transparent); mask-image: linear-gradient(to bottom, var(--bg-base) calc(100% - var(--space-6)), transparent); }
@@ -1380,6 +1385,19 @@ button.ad-card__name:focus-visible { outline: none; }
 .ad-dial__end { font: var(--type-data); font-size: var(--text-xs); color: var(--text-muted); }
 .ad-dial__reading { font: var(--type-data); color: var(--text-primary); }
 .ad-dial--scaled .ad-dial__under, .ad-dial--needle .ad-dial__under { margin-top: calc(var(--space-1) * -1); }
+
+
+/* A chart draws in once: each bar grows from its start to its length in dur-draw when the chart first shows, one after another
+   dur-stagger apart; never again on scroll or a new reading (only a bar that is new runs it). */
+.ad-amounts__bar, .ad-progress__done, .ad-sharebar__part { transform-origin: left center; animation: ad-bar-draw var(--dur-draw) var(--ease-out) both; }
+@keyframes ad-bar-draw { from { transform: scaleX(0); } }
+.ad-amounts__row:nth-child(2) .ad-amounts__bar, .ad-sharebar__part:nth-child(2) { animation-delay: var(--dur-stagger); }
+.ad-amounts__row:nth-child(3) .ad-amounts__bar, .ad-sharebar__part:nth-child(3) { animation-delay: calc(var(--dur-stagger) * 2); }
+.ad-amounts__row:nth-child(4) .ad-amounts__bar, .ad-sharebar__part:nth-child(4) { animation-delay: calc(var(--dur-stagger) * 3); }
+.ad-amounts__row:nth-child(5) .ad-amounts__bar, .ad-sharebar__part:nth-child(5) { animation-delay: calc(var(--dur-stagger) * 4); }
+.ad-amounts__row:nth-child(6) .ad-amounts__bar, .ad-sharebar__part:nth-child(6) { animation-delay: calc(var(--dur-stagger) * 5); }
+.ad-amounts__row:nth-child(n+7) .ad-amounts__bar, .ad-sharebar__part:nth-child(n+7) { animation-delay: calc(var(--dur-stagger) * 6); }
+@media (prefers-reduced-motion: reduce) { .ad-amounts__bar, .ad-progress__done, .ad-sharebar__part { animation: none; } }
 
 /* src/components/Charts/Graphs.css */
 /* Graphs: Sparkline, ShareBar, Heatmap, DotMatrix, Tracker. */
@@ -2671,6 +2689,18 @@ button.ad-row__name:focus-visible { outline: none; }
 .ad-row__fact--late svg { color: var(--status-error-ink); }
 /* Being dragged: it lifts as glass, the same as a dragged card. */
 .ad-row[data-dragging] { background: var(--glass-bg); backdrop-filter: var(--blur-glass); -webkit-backdrop-filter: var(--blur-glass); box-shadow: var(--elev-float); border-radius: var(--radius-float); }
+/* Dropped: it sinks back from the lifted glass in dur, never snaps. */
+.ad-row[data-settling] { animation: ad-row-settle var(--dur) var(--ease-out); }
+@keyframes ad-row-settle { from { background: var(--glass-bg); box-shadow: var(--elev-float); border-radius: var(--radius-float); } }
+/* Saved: it glows green once and fades back over dur-flash (Row flash). */
+.ad-row[data-flash] { animation: ad-row-flash var(--dur-flash) var(--ease-out); }
+@keyframes ad-row-flash { from { background-color: color-mix(in srgb, var(--status-good) var(--tint-flash), transparent); } }
+/* A row added to a list that is already showing fades up while the list opens its gap; one leaving fades and the gap closes. */
+.ad-row[data-arrive] { animation: ad-row-arrive var(--dur) var(--ease-out); overflow: hidden; }
+@keyframes ad-row-arrive { from { opacity: 0; min-height: 0; max-height: 0; } to { opacity: 1; max-height: var(--h-row-2); } }
+.ad-row-leaving { overflow: hidden; pointer-events: none; animation: ad-row-leave var(--dur) var(--ease-out) forwards; }
+@keyframes ad-row-leave { from { opacity: 1; max-height: var(--h-row-2); } to { opacity: 0; max-height: 0; } }
+@media (prefers-reduced-motion: reduce) { .ad-row:is([data-settling], [data-flash], [data-arrive]), .ad-row-leaving { animation: none; } }
 /* The face, and under it the project's code in a list mixing projects. */
 .ad-row__who { display: inline-flex; flex-direction: column; align-items: flex-end; gap: var(--space-1); }
 /* A fact you press to change it: it looks the same; coral under the cursor. */
