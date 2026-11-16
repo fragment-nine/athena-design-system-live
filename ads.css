@@ -2692,14 +2692,14 @@ button.ad-row__name:focus-visible { outline: none; }
 /* Dropped: it sinks back from the lifted glass in dur, never snaps. */
 .ad-row[data-settling] { animation: ad-row-settle var(--dur) var(--ease-out); }
 @keyframes ad-row-settle { from { background: var(--glass-bg); box-shadow: var(--elev-float); border-radius: var(--radius-float); } }
-/* Saved: it glows green once and fades back over dur-flash (Row flash). */
-.ad-row[data-flash] { animation: ad-row-flash var(--dur-flash) var(--ease-out); }
-@keyframes ad-row-flash { from { background-color: color-mix(in srgb, var(--status-good) var(--tint-flash), transparent); } }
 /* A row added to a list that is already showing fades up while the list opens its gap; one leaving fades and the gap closes. */
 .ad-row[data-arrive] { animation: ad-row-arrive var(--dur) var(--ease-out); overflow: hidden; }
 @keyframes ad-row-arrive { from { opacity: 0; min-height: 0; max-height: 0; } to { opacity: 1; max-height: var(--h-row-2); } }
 .ad-row-leaving { overflow: hidden; pointer-events: none; animation: ad-row-leave var(--dur) var(--ease-out) forwards; }
 @keyframes ad-row-leave { from { opacity: 1; max-height: var(--h-row-2); } to { opacity: 0; max-height: 0; } }
+/* Saved: it glows green once and fades back over dur-flash (Row flash); over an arrival still running, the glow wins. */
+.ad-row[data-flash], .ad-row[data-flash][data-arrive] { animation: ad-row-flash var(--dur-flash) var(--ease-out); }
+@keyframes ad-row-flash { from { background-color: color-mix(in srgb, var(--status-good) var(--tint-flash), transparent); } }
 @media (prefers-reduced-motion: reduce) { .ad-row:is([data-settling], [data-flash], [data-arrive]), .ad-row-leaving { animation: none; } }
 /* The face, and under it the project's code in a list mixing projects. */
 .ad-row__who { display: inline-flex; flex-direction: column; align-items: flex-end; gap: var(--space-1); }

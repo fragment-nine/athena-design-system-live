@@ -3313,7 +3313,10 @@ function Grip() {
 }
 var Row = forwardRef5(function Row2({ name, meta, grip, lead, status, dates, tags, people, trail, selected, picked, dragging, flash, heading, onOpen, onRename, renameLabel, cells, className, onClick, ...rest }, ref) {
   const shown = useContext6(ListShown);
-  const [arrive] = useState11(() => !!shown?.current);
+  const [arrive, setArrive] = useState11(() => !!shown?.current);
+  useEffect8(() => {
+    if (shown) shown.seen = true;
+  }, [shown]);
   const was = useRef12(dragging);
   const [settling, setSettling] = useState11(false);
   useEffect8(() => {
@@ -3338,6 +3341,7 @@ var Row = forwardRef5(function Row2({ name, meta, grip, lead, status, dates, tag
       "data-arrive": arrive || void 0,
       onAnimationEnd: (e) => {
         if (e.target === e.currentTarget && e.animationName === "ad-row-settle") setSettling(false);
+        if (e.target === e.currentTarget && e.animationName === "ad-row-arrive") setArrive(false);
         rest.onAnimationEnd?.(e);
       },
       onClick: (e) => {
@@ -3511,10 +3515,10 @@ import { Fragment as Fragment9, jsx as jsx22, jsxs as jsxs19 } from "react/jsx-r
 var InList2 = createContext6(false);
 var ListShown = createContext6(null);
 function useShownMark() {
-  const shown = useRef13(false);
+  const shown = useRef13({ current: false, seen: false }).current;
   useEffect9(() => {
-    shown.current = true;
-  }, []);
+    if (shown.seen) shown.current = true;
+  });
   return shown;
 }
 function leaveMs() {
