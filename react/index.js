@@ -3772,7 +3772,7 @@ function SectionFrame({ children, level, numbering, className, ...rest }) {
   };
   return /* @__PURE__ */ jsx24(Ctx.Provider, { value, children: /* @__PURE__ */ jsx24("div", { ...rest, "data-section-frame": frameId, className: cx("ad-section-frame", className), children }) });
 }
-var Section = forwardRef6(function Section2({ title, day, beside, children, className, bodyId, rule, needsYou, lead, end, help, collapsible, collapsed, onToggle, onMore, moreLabel = "More", ...rest }, ref) {
+var Section = forwardRef6(function Section2({ title, day, beside, children, className, bodyId, rule, needsYou, lead, end, help, collapsible, collapsed, onToggle, onMore, moreLabel = "More", fill, ...rest }, ref) {
   const frame = useContext8(Ctx);
   if (!frame) throw new Error("Section: a section sits inside a SectionFrame; a heading on its own is a GroupHeading used as a label.");
   const own = useRef14(null);
@@ -3807,7 +3807,7 @@ var Section = forwardRef6(function Section2({ title, day, beside, children, clas
       },
       "data-section": day ? "day" : bare ? "bare" : "",
       "data-collapsed": collapsible ? String(shut) : void 0,
-      className: cx("ad-section", className),
+      className: cx("ad-section", fill && "ad-section--fill", className),
       children: [
         day ? /* @__PURE__ */ jsxs21("div", { className: "ad-section__day", children: [
           /* @__PURE__ */ jsx24(DayHeading, { day: day.day, today: day.today, level: frame.level === 2 ? 2 : frame.level === 3 ? 3 : 4 }),
@@ -4905,14 +4905,14 @@ var Card = forwardRef7(function Card2({ title, headerLayout = "row", density, en
     }
   );
 });
-function CardName({ children, lead, onRename, renameLabel }) {
+function CardName({ children, lead, leadAlign = "start", onRename, renameLabel }) {
   const open = useContext12(OpenCard);
   const name = onRename ? /* @__PURE__ */ jsx31(CardRename, { value: String(children), onRename, label: renameLabel ?? "Name" }) : open ? /* @__PURE__ */ jsx31("button", { type: "button", className: "ad-card__name ad-open", onClick: (e) => {
     e.stopPropagation();
     open();
   }, children }) : /* @__PURE__ */ jsx31("div", { className: "ad-card__name", children });
   return lead != null ? /* @__PURE__ */ jsxs28("div", { className: "ad-card__name-row", children: [
-    /* @__PURE__ */ jsx31("span", { className: "ad-card__lead", children: lead }),
+    /* @__PURE__ */ jsx31("span", { className: cx("ad-card__lead", leadAlign === "center" && "ad-card__lead--center"), children: lead }),
     name
   ] }) : name;
 }
@@ -5699,7 +5699,7 @@ function DataText({ children, dim, small, size, estimate, className }) {
 function Hint({ children, className }) {
   return /* @__PURE__ */ jsx40("span", { className: cx("ad-hint", className), children });
 }
-function Figures({ items, ariaLabel, layout = "strip", density, face = "data", onIntrinsicWidth, className }) {
+function Figures({ items, ariaLabel, layout = "strip", density, face = "data", columns, onIntrinsicWidth, className }) {
   const shown = face === "display" && layout === "rail";
   const track = useRef29(null);
   const clocks = layout === "clocks";
@@ -5736,7 +5736,7 @@ function Figures({ items, ariaLabel, layout = "strip", density, face = "data", o
   useLayoutEffect8(() => {
     if (clocks) measure();
   });
-  return /* @__PURE__ */ jsx40("dl", { ref: track, className: cx("ad-figures", density === "compact" && "ad-figures--dense", layout !== "strip" && "ad-figures--grid", layout === "compact" && "ad-figures--compact", layout === "rail" && "ad-figures--rail", layout === "readings" && "ad-figures--readings", layout === "clocks" && "ad-figures--clocks", face === "display" && "ad-figures--display", intrinsic && "ad-figures--intrinsic", className), "aria-label": ariaLabel, children: (layout !== "strip" ? items : items.slice(0, 4)).map((f) => /* @__PURE__ */ jsxs37("div", { className: "ad-figures__item", title: !shown && (layout === "rail" || layout === "readings") && typeof f.note === "string" ? f.note : void 0, children: [
+  return /* @__PURE__ */ jsx40("dl", { ref: track, className: cx("ad-figures", density === "compact" && "ad-figures--dense", layout !== "strip" && "ad-figures--grid", layout === "compact" && "ad-figures--compact", layout === "rail" && "ad-figures--rail", layout === "readings" && "ad-figures--readings", layout === "clocks" && "ad-figures--clocks", face === "display" && "ad-figures--display", intrinsic && "ad-figures--intrinsic", clocks && !!columns && "ad-figures--set-columns", className), "aria-label": ariaLabel, style: clocks && !!columns ? { ["--ad-figures-columns"]: columns } : void 0, children: (layout !== "strip" ? items : items.slice(0, 4)).map((f) => /* @__PURE__ */ jsxs37("div", { className: "ad-figures__item", title: !shown && (layout === "rail" || layout === "readings") && typeof f.note === "string" ? f.note : void 0, children: [
     /* @__PURE__ */ jsx40("dt", { className: cx("ad-figures__label ad-type-heading", layout === "clocks" && "ad-sr"), children: f.label }),
     /* @__PURE__ */ jsxs37("dd", { className: cx("ad-figures__value", !shown && (layout === "rail" || layout === "clocks") && f.graphic != null && "ad-sr"), children: [
       layout === "readings" ? /* @__PURE__ */ jsx40(ButtonSizeScope, { size: "row", children: f.value }) : f.onOpen ? /* @__PURE__ */ jsx40("button", { type: "button", className: "ad-figures__open", "aria-expanded": f.expanded == null ? void 0 : f.expanded, onClick: f.onOpen, children: f.value }) : f.value,
@@ -6155,7 +6155,7 @@ var Arrow = ({ up }) => /* @__PURE__ */ jsx43(SortGlyph, { direction: up ? "asce
 function NameRow({ on, children }) {
   return on ? /* @__PURE__ */ jsx43("span", { className: "ad-table__name-row", children }) : /* @__PURE__ */ jsx43(Fragment23, { children });
 }
-function Table({ columns: named, rows: given, rowId, caption, sort, onSort, picked, onPickedChange, onPickAllChange, pickLabel, pickAllLabel = "Pick all", onOpen, opens, openLabel = "Open", rowProps, groupProps, grip, addRow, addToGroup, striped = true, columnLines, rowTone, group, groups, foldGroups, foldedGroups, onFoldGroup, depth, foldParents, foldedRows, onFoldRow, foldLabel, nameColumn, fixed, onInsertRow, onInsertColumn, insertRowLabel = "Insert a row here", insertColumnLabel = "Insert a column here", total, className }) {
+function Table({ columns: named, rows: given, rowId, caption, sort, onSort, picked, onPickedChange, onPickAllChange, pickLabel, pickAllLabel = "Pick all", onOpen, opens, openLabel = "Open", rowProps, groupProps, grip, addRow, addToGroup, striped = true, columnLines, rowTone, group, groups, groupHeading, foldGroups, foldedGroups, onFoldGroup, depth, foldParents, foldedRows, onFoldRow, foldLabel, nameColumn, fixed, onInsertRow, onInsertColumn, insertRowLabel = "Insert a row here", insertColumnLabel = "Insert a column here", total, className }) {
   const columns = onOpen && !named.some((c) => c.id === "open") ? [...named, { id: "open", label: openLabel, labelHidden: true, frozen: "end", width: "var(--h-btn)", cell: (r) => opens?.(r) === false ? null : /* @__PURE__ */ jsx43(Icon, { job: "chevron-right", size: "sm", className: "ad-table__arrow ad-glyph-quiet" }) }] : named;
   const span = columns.length + (onPickedChange ? 1 : 0);
   const appSorts = sort !== void 0 || onSort !== void 0;
@@ -6301,7 +6301,7 @@ function Table({ columns: named, rows: given, rowId, caption, sort, onSort, pick
           drawnEmpty.add(g);
           const a = addToGroup?.(g);
           return [
-            /* @__PURE__ */ jsx43("tr", { ...groupProps?.(g) ?? {}, className: "ad-table__group ad-table__group--empty", children: /* @__PURE__ */ jsx43("th", { scope: "colgroup", colSpan: span, children: /* @__PURE__ */ jsx43(GroupBandName, { children: g }) }) }, `group-empty-${g}`),
+            /* @__PURE__ */ jsx43("tr", { ...groupProps?.(g) ?? {}, className: "ad-table__group ad-table__group--empty", children: /* @__PURE__ */ jsx43("th", { scope: "colgroup", colSpan: span, children: groupHeading ? groupHeading(g) : /* @__PURE__ */ jsx43(GroupBandName, { children: g }) }) }, `group-empty-${g}`),
             a ? /* @__PURE__ */ jsx43("tr", { className: "ad-table__add ad-table__add--group", children: /* @__PURE__ */ jsx43("th", { scope: "row", colSpan: span, className: "ad-table__name", children: /* @__PURE__ */ jsx43(AddRow, { label: a.label, onAdd: a.onAdd }) }) }, `group-add-${g}`) : null
           ];
         };
@@ -6384,8 +6384,8 @@ function Table({ columns: named, rows: given, rowId, caption, sort, onSort, pick
           const shut = !!foldGroups && g != null && folded.has(g);
           const heading = head != null && /* @__PURE__ */ jsx43("tr", { ...groupProps?.(head) ?? {}, className: "ad-table__group", children: /* @__PURE__ */ jsx43("th", { scope: "colgroup", colSpan: span, children: foldGroups ? /* @__PURE__ */ jsxs40("button", { type: "button", className: "ad-table__fold", "aria-expanded": !shut, onClick: () => foldGroup(head), children: [
             /* @__PURE__ */ jsx43(Icon, { name: "caret-down", size: "sm", className: cx("ad-table__chevron", shut && "ad-table__chevron--shut") }),
-            /* @__PURE__ */ jsx43(GroupBandName, { children: head })
-          ] }) : /* @__PURE__ */ jsx43(GroupBandName, { children: head }) }) }, `group-${id}`);
+            groupHeading ? groupHeading(head) : /* @__PURE__ */ jsx43(GroupBandName, { children: head })
+          ] }) : groupHeading ? groupHeading(head) : /* @__PURE__ */ jsx43(GroupBandName, { children: head }) }) }, `group-${id}`);
           const before = head != null ? emptiesBefore(head) : [];
           if (shut) return heading ? [...before, heading] : null;
           const d = depth?.(r) ?? 0;

@@ -1286,6 +1286,7 @@ button.ad-card__name:focus-visible { outline: none; }
 .ad-card__name-edit { display: contents; }
 .ad-card__name-row .ad-card__name-edit .ad-card__name { margin-bottom: 0; flex: 1; min-width: 0; }
 .ad-card__lead { display: inline-flex; flex: none; }
+.ad-card__lead--center { align-self: center; }
 /* CardGrid: `--ad-cols` across (three unless said otherwise) while each card keeps a card's smallest width; as the room narrows,
    fewer across, down to one. The column's floor is the larger of the smallest card and an even share of the row. */
 .ad-card-grid { --ad-cols: 3; --ad-card-min: var(--card-min-md); display: grid; grid-template-columns: repeat(auto-fill, minmax(max(var(--ad-card-min), calc((100% - (var(--ad-cols) - 1) * var(--space-3)) / var(--ad-cols))), 1fr)); gap: var(--space-3); min-width: 0; }
@@ -2770,6 +2771,10 @@ button.ad-row__name:focus-visible { outline: none; }
 .ad-section__day > .ad-day-heading { margin: 0; }
 .ad-section__day-end { margin-left: auto; display: inline-flex; align-items: center; }
 
+/* Fill (Section fill): the body takes the room left under the heading, and what it holds stretches to it, so sections side by side end level. */
+.ad-section--fill > .ad-section__body { flex: 1 1 auto; }
+.ad-section--fill > .ad-section__body > * { flex: 1 1 auto; }
+
 /* src/components/Segmented/Segmented.css */
 /* Segmented: pick one of 2 to 5. The choices sit loose and the current one sits on a bg-raised tile, as the view switch draws
  it. space-hair between the choices: tight neighbours. */
@@ -3118,6 +3123,9 @@ button.ad-row__name:focus-visible { outline: none; }
 /* A measurable natural track never inherits an expanded app grid cell's width, and is never wider than what holds it. */
 .ad-figures--clocks.ad-figures--intrinsic { width: max-content; }
 .ad-figures--clocks.ad-figures--intrinsic[data-cells] { width: min(100%, var(--ad-clock-row)); }
+/* Clocks in a set number of columns (Figures columns): always that many across, row after row, whatever the width. */
+.ad-figures--set-columns { --ad-figures-columns: 2; }
+.ad-figures--clocks.ad-figures--set-columns, .ad-figures--clocks.ad-figures--set-columns[data-cells] { grid-template-columns: repeat(var(--ad-figures-columns), minmax(0, 1fr)); grid-auto-flow: row; grid-auto-columns: auto; }
 
 .ad-figures--rail.ad-figures--intrinsic { width: max-content; grid-auto-columns: max-content; }
 /* A figure's move since its last reading: an arrow and the change, grey either way, beside the value. */
