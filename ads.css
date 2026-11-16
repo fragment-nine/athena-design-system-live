@@ -3487,7 +3487,11 @@ button.ad-milestone:focus-visible { outline: none; }
 /* One alert, in fixed columns: the grip while the list can be reordered, the pill, the sentence (taking the room), the number and the details' i, the action, Snooze, Dismiss,
    the app's mark, then the chevron of where its action goes, at the row's right end. In a list every row shares the list's columns (subgrid), so each column starts at the same x on every row; an empty
    column takes no room and no gap (a cell's gap is its own left margin, only while it holds something). */
-.ad-alert { display: grid; grid-template-columns: auto auto minmax(0, 1fr) auto minmax(var(--w-alert-action), auto) auto auto minmax(var(--w-col-sm), auto) auto; align-items: center; min-height: var(--h-row); padding: 0 var(--space-3); border-top: var(--border-w) solid var(--border); }
+/* The action and end columns keep their floors (every list's actions on one x) only where the row has a card's width or more; narrower (a
+   card's own list, 420 less its padding) the floors fall away, the action fits its words, an empty end takes no room and the sentence
+   takes the rest. A percentage here is the grid's own width, so the row fits itself with nothing for the app to pass. */
+.ad-alert, .ad-alert-list { --ad-alert-action-floor: max(0px, min(var(--w-alert-action), (100% - var(--w-card)) * 1000)); --ad-alert-end-floor: max(0px, min(var(--w-col-sm), (100% - var(--w-card)) * 1000)); }
+.ad-alert { display: grid; grid-template-columns: auto auto minmax(0, 1fr) auto minmax(var(--ad-alert-action-floor), auto) auto auto minmax(var(--ad-alert-end-floor), auto) auto; align-items: center; min-height: var(--h-row); padding: 0 var(--space-3); border-top: var(--border-w) solid var(--border); }
 .ad-alert > * + *:not(:empty) { margin-left: var(--space-3); }
 /* The grip sits as a Row's does, half out to the left, the pill a step after it; with no grip the pill starts the row. */
 .ad-alert__grip:not(:empty) { display: inline-flex; margin-left: calc(var(--space-1) * -1); }
@@ -3496,7 +3500,7 @@ button.ad-milestone:focus-visible { outline: none; }
 .ad-alert > :is(.ad-alert__snooze, .ad-alert__dismiss):not(:empty) { margin-left: var(--space-1); }
 .ad-alert__info, .ad-alert__actions, .ad-alert__snooze, .ad-alert__dismiss { display: flex; align-items: center; gap: var(--space-2); justify-self: start; }
 .ad-alert__actions .ad-button { gap: var(--space-1); }
-.ad-alert-list { display: grid; grid-template-columns: auto auto minmax(0, 1fr) auto minmax(var(--w-alert-action), auto) auto auto minmax(var(--w-col-sm), auto) auto; }
+.ad-alert-list { display: grid; grid-template-columns: auto auto minmax(0, 1fr) auto minmax(var(--ad-alert-action-floor), auto) auto auto minmax(var(--ad-alert-end-floor), auto) auto; }
 .ad-alert-list > :is(.ad-alert, .ad-alert-item), .ad-alert-item > .ad-alert, .ad-alert-item > .ad-alert__under { grid-column: 1 / -1; }
 .ad-alert-list > .ad-alert, .ad-alert-list > .ad-alert-item, .ad-alert-list > .ad-alert-item > .ad-alert { display: grid; grid-template-columns: subgrid; }
 .ad-alert__sentence { min-width: 0; line-height: var(--lh-tight); color: var(--text-primary); }
