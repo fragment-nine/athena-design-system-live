@@ -47,9 +47,9 @@
   --day-work: var(--status-good);
   --day-travel: var(--status-warn);
   --day-dark: var(--status-neutral);
-  --day-ink-custom: var(--status-info-blue);
+  --day-ink-custom: #6f9fc4;
   --day-ink-dark: #e86fd4;
-  --day-ink-unbilled: var(--status-error-ink);
+  --day-ink-unbilled: #fd7266;
   --pick-grey: var(--status-neutral);
   --pick-blue: #4e88b4;
   --pick-teal: #5aa0a0;
@@ -176,9 +176,9 @@
   --day-work: var(--status-good);
   --day-travel: var(--status-warn);
   --day-dark: var(--status-neutral);
-  --day-ink-custom: var(--status-info-blue);
-  --day-ink-dark: #a8168f;
-  --day-ink-unbilled: var(--status-error-ink);
+  --day-ink-custom: #2f5674;
+  --day-ink-dark: #8f137a;
+  --day-ink-unbilled: #9f0e02;
   --pick-grey: var(--status-neutral);
   --pick-blue: #4880aa;
   --pick-teal: #498383;
@@ -186,7 +186,7 @@
   --pick-amber: var(--status-warn);
   --pick-orange: #d34d23;
   --pick-red: var(--status-error);
-  --pick-purple: #986aae;
+  --pick-purple: #805296;
   --pick-white: #3f3f46;
   --priority-p1: var(--status-error-ink);
   --priority-p2: var(--status-warn);

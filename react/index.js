@@ -2057,7 +2057,7 @@ function PickList({ options, value, onPick, searchLabel, noMatch = "Nothing matc
       )
     ] }),
     /* @__PURE__ */ jsxs7("div", { ref: listRef, className: "ad-picklist__list", children: [
-      /* @__PURE__ */ jsxs7("div", { id: listId, role: "listbox", "aria-label": searchLabel, tabIndex: searching ? -1 : 0, "data-autofocus": !searching || void 0, "aria-activedescendant": !searching && lit && cur ? optId(cur) : void 0, "aria-multiselectable": Array.isArray(value) || void 0, className: "ad-picklist__box", children: [
+      /* @__PURE__ */ jsxs7("div", { id: listId, role: "listbox", "aria-label": searchLabel, tabIndex: 0, "data-autofocus": !searching || void 0, "aria-activedescendant": lit && cur ? optId(cur) : void 0, "aria-multiselectable": Array.isArray(value) || void 0, className: "ad-picklist__box", children: [
         shown.length === 0 && /* @__PURE__ */ jsx9("div", { className: "ad-picklist__empty", children: noMatch }),
         shown.map((o) => {
           const head = o.group && o.group !== lastGroup ? o.group : null;
