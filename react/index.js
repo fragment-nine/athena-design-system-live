@@ -6127,8 +6127,9 @@ function OffscreenStart({ date, side = "start" }) {
   ] });
 }
 var KEY_MARKS = /* @__PURE__ */ new Set(["confirmed", "hatched", "deal", "backup", "clash", "moment"]);
-function ChartKey({ items, ariaLabel = "Key" }) {
-  return /* @__PURE__ */ jsx42("div", { className: "ad-chart-key", role: "group", "aria-label": ariaLabel, children: items.map((it, i) => {
+function ChartKey({ items, ariaLabel = "Key", columns }) {
+  const cols = columns && columns > 0 ? Math.floor(columns) : void 0;
+  return /* @__PURE__ */ jsx42("div", { className: cx("ad-chart-key", cols !== void 0 && "ad-chart-key--columns"), style: cols ? { "--ad-key-columns": cols } : void 0, role: "group", "aria-label": ariaLabel, children: items.map((it, i) => {
     const swatch = typeof it.mark === "string" && KEY_MARKS.has(it.mark) ? /* @__PURE__ */ jsx42("span", { "aria-hidden": "true", className: `ad-chart-key__swatch ad-chart-key__swatch--${it.mark}` }) : it.mark && typeof it.mark === "object" && "code" in it.mark ? (() => {
       const m = it.mark;
       return /* @__PURE__ */ jsx42("span", { "aria-hidden": "true", className: cx("ad-bar", "ad-bar--code", "ad-chart-key__code", m.day && `ad-bar--day-${m.day}`, m.day === "travel" && "ad-bar--travel", m.billing && m.billing !== "plain" && `ad-bar--bill-${m.billing}`), children: m.code });

@@ -3304,6 +3304,8 @@ button.ad-milestone:focus-visible { outline: none; }
 @media (prefers-reduced-motion: reduce) { .ad-bar, .ad-bar__end, .ad-deliverable__chevron { transition: none; } }
 /* ChartKey: each word with its swatch, drawn as the bar draws that mark; no "FIG.". */
 .ad-chart-key { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-2) var(--space-4); font: var(--type-detail); color: var(--text-muted); }
+/* A key in columns (ChartKey columns): a grid of that many columns, each as wide as its widest word, held to the start, never stretched. */
+.ad-chart-key--columns { --ad-key-columns: 1; display: grid; grid-template-columns: repeat(var(--ad-key-columns), max-content); justify-content: start; }
 .ad-chart-key__item { display: inline-flex; align-items: center; gap: var(--space-2); }
 .ad-chart-key__item--press { padding: 0; border: 0; background: none; color: inherit; font: inherit; cursor: pointer; }
 .ad-chart-key__item--press:hover { color: var(--accent); }
