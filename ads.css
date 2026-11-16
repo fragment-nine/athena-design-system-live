@@ -305,6 +305,7 @@
   --w-field-name: 96px;
   --w-aside: 112px;
   --h-hour-min: var(--space-4);
+  --h-hour: var(--space-8);
   --h-hour-roomy: var(--h-touch);
   --w-col-sm: 64px;
   --target-min: 24px;
@@ -1029,7 +1030,7 @@ button.ad-booking:focus-visible { outline: none; }
 .ad-now__dot { width: var(--dot-size); height: var(--dot-size); margin-right: calc(var(--dot-size) / -2); border-radius: var(--radius-round); background: var(--text-primary); }
 .ad-weekend { background-image: var(--hatch-fine); }
 /* The time grid: hours down the left in mono, each day a column under its mono heading, hour hairlines across. */
-.ad-time-grid { --ad-hour: var(--space-8); display: grid; grid-auto-flow: column; grid-template-columns: max-content; grid-auto-columns: minmax(0, 1fr); padding-top: var(--space-6); font: var(--type-name); }
+.ad-time-grid { --ad-hour: var(--h-hour); display: grid; grid-auto-flow: column; grid-template-columns: max-content; grid-auto-columns: minmax(0, 1fr); padding-top: var(--space-6); font: var(--type-name); }
 .ad-time-grid { --ad-hours: 24; }
 .ad-time-grid__gutter { position: relative; width: calc(var(--space-8) + var(--space-3)); }
 .ad-time-grid__hour-label { position: absolute; right: var(--space-2); transform: translateY(-50%); font: var(--type-data); font-size: var(--text-xs); color: var(--text-muted); }
@@ -2959,6 +2960,7 @@ button.ad-row__name:focus-visible { outline: none; }
 :where(:root:not([data-ad-pointer])) .ad-table__fold:focus-visible { box-shadow: var(--ring-select); border-radius: var(--radius-page); }
 .ad-table__chevron--shut { transform: rotate(-90deg); }
 .ad-table__fold--row { margin-right: var(--space-2); vertical-align: middle; }
+.ad-table__fold-room { display: inline-block; flex: none; width: var(--icon-sm); margin-right: var(--space-2); vertical-align: middle; }
 .ad-table__group th { height: calc(var(--h-strip) - var(--border-w)); padding: 0 var(--space-2); text-align: left; background: var(--bg-band); border-bottom: var(--border-w) solid var(--border); color: var(--text-primary); }
 .ad-table__fold:hover .ad-group-band__title { color: var(--accent); }
 /* A child row: indented one step per level, hung on the list's own elbow (one elbow build-wide): one trunk down the parent's
@@ -3004,6 +3006,9 @@ button.ad-row__name:focus-visible { outline: none; }
 /* An add row inside a table (Table addRow, or an app's own): no underline of its own, the table's hairline is the one line; it fills the
    name cell's height. */
 .ad-table .ad-add-row { border-bottom: 0; height: auto; min-height: var(--h-btn-row); padding: 0; }
+
+/* A sortable heading keeps its arrow's room while unsorted (the arrow unseen), so sorting never moves a column's width or any heading. */
+.ad-table__sort-room { display: inline-flex; visibility: hidden; }
 
 /* src/components/Tag/Tag.css */
 /* Tag, FilterTag, UnreadDot. (TokenPill's look is .ad-token, in Writing.css: one red pill.) */
@@ -3493,7 +3498,7 @@ button.ad-milestone:focus-visible { outline: none; }
    card's own list, 420 less its padding) the floors fall away, the action fits its words, an empty end takes no room and the sentence
    takes the rest. A percentage here is the grid's own width, so the row fits itself with nothing for the app to pass. */
 .ad-alert, .ad-alert-list { --ad-alert-action-floor: max(0px, min(var(--w-alert-action), (100% - var(--w-card)) * 1000)); --ad-alert-end-floor: max(0px, min(var(--w-col-sm), (100% - var(--w-card)) * 1000)); }
-.ad-alert { display: grid; grid-template-columns: auto auto minmax(0, 1fr) auto minmax(var(--ad-alert-action-floor), auto) auto auto minmax(var(--ad-alert-end-floor), auto) auto; align-items: center; min-height: var(--h-row); padding: 0 var(--space-3); border-top: var(--border-w) solid var(--border); }
+.ad-alert { display: grid; grid-template-columns: auto auto minmax(0, 1fr) auto minmax(var(--ad-alert-action-floor), auto) auto auto minmax(var(--ad-alert-end-floor), auto) auto; align-items: center; box-sizing: border-box; min-height: var(--h-row); padding: 0 var(--space-3); border-top: var(--border-w) solid var(--border); }
 .ad-alert > * + *:not(:empty) { margin-left: var(--space-3); }
 /* The grip sits as a Row's does, half out to the left, the pill a step after it; with no grip the pill starts the row. */
 .ad-alert__grip:not(:empty) { display: inline-flex; margin-left: calc(var(--space-1) * -1); }
@@ -3530,6 +3535,8 @@ button.ad-notification:focus-visible { outline: none; }
 .ad-alert__go-mark { display: inline-flex; align-items: center; justify-content: center; width: var(--h-btn-row); height: var(--h-btn-row); color: var(--text-secondary); cursor: pointer; }
 .ad-alert:hover .ad-alert__go-mark { color: var(--accent); }
 .ad-alert__under { padding: 0 var(--space-3) var(--space-2) calc(var(--space-3) * 2 + var(--space-8)); }
+/* With nothing shown under it (no details, or details closed and hidden) the row is a row's height, never 8 taller. */
+.ad-alert__under:not(:has(> :not([hidden]))) { display: none; }
 /* A snoozed alert, dimmed: the pill, the sentence and the number in the muted ink; its buttons are untouched and
  stay pressable (an opacity would make them read as off). */
 .ad-alert--muted .ad-alert__sentence, .ad-alert--muted .ad-alert__number { color: var(--text-muted); }

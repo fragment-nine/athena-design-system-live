@@ -6288,7 +6288,7 @@ function Table({ columns: named, rows: given, rowId, caption, sort, onSort, pick
             c.minWidth && /* @__PURE__ */ jsx43("span", { className: "ad-table__floor", "aria-hidden": "true", style: { width: c.minWidth } }),
             c.labelHidden ? /* @__PURE__ */ jsx43("span", { className: "ad-sr", children: c.label }) : sorts(c) && (!appSorts || onSort) ? /* @__PURE__ */ jsxs40("button", { type: "button", className: "ad-table__sort ad-sort-button", onClick: () => press(c.id), children: [
               c.label,
-              sorted && /* @__PURE__ */ jsx43(Arrow, { up: sorted === "ascending" })
+              sorted ? /* @__PURE__ */ jsx43(Arrow, { up: sorted === "ascending" }) : /* @__PURE__ */ jsx43("span", { className: "ad-table__sort-room", "aria-hidden": "true", children: /* @__PURE__ */ jsx43(Arrow, { up: true }) })
             ] }) : c.label
           ] }, c.id);
         })
@@ -6417,6 +6417,7 @@ function Table({ columns: named, rows: given, rowId, caption, sort, onSort, pick
                     e.stopPropagation();
                     foldRow(id);
                   }, children: /* @__PURE__ */ jsx43(Icon, { name: "caret-down", size: "sm", className: cx("ad-table__chevron", rowShut && "ad-table__chevron--shut") }) }),
+                  foldParents && !parent && /* @__PURE__ */ jsx43("span", { className: "ad-table__fold-room", "aria-hidden": "true" }),
                   meta != null ? /* @__PURE__ */ jsxs40("span", { className: "ad-table__words", children: [
                     /* @__PURE__ */ jsx43("span", { className: "ad-table__line", children: words2 }),
                     /* @__PURE__ */ jsx43("span", { className: "ad-table__meta", children: meta })
