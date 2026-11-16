@@ -1749,6 +1749,10 @@ button.ad-contents__button:focus-visible { outline: none; }
 /* A work slot that scrolls itself reaches past the page's end inset to the window's edge and keeps that inset inside: its scrollbar sits at the
    window's right edge, in the inset (its room held whether the work is long or short), so the work ends where the header's buttons do. */
 .ad-frame__work--scroll { overflow-y: auto; scrollbar-gutter: stable; margin-right: calc(var(--ad-page-end) * -1); padding-right: calc(var(--ad-page-end) - var(--w-scrollbar)); }
+/* Columns that scroll by themselves: each keeps its scrollbar's room outside its content, the last one's at the window's edge, and
+   the gap between two is gap-section less that room, so their content sits gap-section apart and ends on the page's inset. */
+.ad-frame__work--columns { flex-direction: row; gap: calc(var(--gap-section) - var(--w-scrollbar)); overflow: hidden; margin-right: calc(var(--ad-page-end) * -1); padding-right: calc(var(--ad-page-end) - var(--w-scrollbar)); }
+.ad-frame__work--columns > * { min-height: 0; overflow-y: auto; scrollbar-gutter: stable; }
 .ad-frame > .ad-rail, .ad-frame > .ad-side { height: auto; align-self: stretch; }
 /* The footer: on a short page it stays at the bottom of the screen, never floating up under the work.
  The frame is never shorter than the window (above), so the page column has room and the footer's top margin takes it; an app
@@ -2823,6 +2827,10 @@ button.ad-row__name:focus-visible { outline: none; }
 .ad-splitter--page-scroll > .ad-splitter__main, .ad-splitter--page-scroll > .ad-splitter__side { overflow: visible; }
 /* The divider is the one gap between sections (gap-section), so a pane's sections sit as far from the other pane's as from each other; its hairline is the handle, in the middle. */
 .ad-splitter__divider { flex: none; position: relative; width: var(--gap-section); cursor: col-resize; touch-action: none; }
+/* Panes that scroll by themselves: the pane before the divider keeps its scrollbar's room outside its content, and the divider is
+   gap-section less that room, so the two panes' content sits gap-section apart, scrollbar or none. */
+.ad-splitter:not(.ad-splitter--page-scroll) > :first-child { scrollbar-gutter: stable; }
+.ad-splitter:not(.ad-splitter--page-scroll) > .ad-splitter__divider { width: calc(var(--gap-section) - var(--w-scrollbar)); }
 .ad-splitter__divider::after { content: ''; position: absolute; top: 0; bottom: 0; left: 50%; width: var(--border-w); transform: translateX(-50%); background: var(--border); }
 .ad-splitter__divider:hover::after { background: var(--accent); }
 :where(:root:not([data-ad-pointer])) .ad-splitter__divider:focus-visible::after { background: var(--accent); }

@@ -7686,7 +7686,7 @@ function FrameKey({ children }) {
   return /* @__PURE__ */ jsx53("div", { className: "ad-frame__key", children });
 }
 function FrameWork({ scroll, children }) {
-  return /* @__PURE__ */ jsx53("div", { className: scroll ? "ad-frame__work ad-frame__work--scroll" : "ad-frame__work", children });
+  return /* @__PURE__ */ jsx53("div", { className: cx("ad-frame__work", scroll === "columns" ? "ad-frame__work--columns" : scroll && "ad-frame__work--scroll"), children });
 }
 function CloudGlow() {
   return /* @__PURE__ */ jsx53("div", { className: "ad-cloud-glow", "aria-hidden": "true", children: /* @__PURE__ */ jsx53("div", { className: "ad-cloud-glow__drift" }) });
