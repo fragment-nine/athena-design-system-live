@@ -7368,7 +7368,7 @@ function Tracker({ periods, ariaLabel, className }) {
 
 // src/components/Path/Path.tsx
 import { Fragment as Fragment26, jsx as jsx49, jsxs as jsxs46 } from "react/jsx-runtime";
-function Steps({ steps, current, onPress, ariaLabel, compact, late, complete, className }) {
+function Steps({ steps, current, onPress, ariaLabel, compact, late, complete, waiting, className }) {
   const finished = useNamedColour(complete);
   const at = finished ? steps.length : Math.max(0, steps.findIndex((s) => s.id === current));
   return /* @__PURE__ */ jsx49(
@@ -7378,14 +7378,14 @@ function Steps({ steps, current, onPress, ariaLabel, compact, late, complete, cl
       "aria-label": ariaLabel,
       style: { gridTemplateColumns: `repeat(${Math.max(1, steps.length)}, minmax(0, 1fr))`, ...finished ? { ["--ad-steps-complete"]: finished } : {} },
       children: steps.map((s, i) => {
-        const state = i < at ? "done" : i === at ? "current" : "next";
+        const state = i < at ? !finished && waiting?.includes(s.id) ? "waiting" : "done" : i === at ? "current" : "next";
         const words2 = /* @__PURE__ */ jsxs46(Fragment26, { children: [
           /* @__PURE__ */ jsx49("span", { className: cx("ad-steps__bar", `ad-steps__bar--${state}`, state === "current" && late && "ad-steps__bar--late"), "aria-hidden": "true" }),
           /* @__PURE__ */ jsx49("span", { className: compact ? "ad-sr" : "ad-steps__name ad-clamp-line", children: s.label }),
           s.note && !compact && /* @__PURE__ */ jsx49("span", { className: "ad-steps__note ad-clamp-line", children: s.note }),
-          /* @__PURE__ */ jsx49("span", { className: "ad-sr", children: state === "done" ? ", done" : state === "next" ? ", to do" : late ? ", late" : "" })
+          /* @__PURE__ */ jsx49("span", { className: "ad-sr", children: state === "done" ? ", done" : state === "waiting" ? ", waiting for feedback" : state === "next" ? ", to do" : late ? ", late" : "" })
         ] });
-        return /* @__PURE__ */ jsx49("li", { className: cx("ad-steps__step", `ad-steps__step--${state}`), "aria-current": state === "current" ? "step" : void 0, children: state === "done" && onPress ? /* @__PURE__ */ jsx49("button", { type: "button", className: "ad-steps__press", onClick: () => onPress(s.id), children: words2 }) : /* @__PURE__ */ jsx49("span", { className: "ad-steps__press", children: words2 }) }, s.id);
+        return /* @__PURE__ */ jsx49("li", { className: cx("ad-steps__step", `ad-steps__step--${state}`), "aria-current": state === "current" ? "step" : void 0, children: (state === "done" || state === "waiting") && onPress ? /* @__PURE__ */ jsx49("button", { type: "button", className: "ad-steps__press", onClick: () => onPress(s.id), children: words2 }) : /* @__PURE__ */ jsx49("span", { className: "ad-steps__press", children: words2 }) }, s.id);
       })
     }
   );

@@ -2207,12 +2207,14 @@ button.ad-steps__press:focus-visible { outline: none; }
 .ad-steps__bar--current { background: var(--text-primary); }
 .ad-steps__bar--next { background: transparent; background-image: var(--hatch); box-shadow: inset 0 0 0 var(--border-w) var(--line-strong); }
 .ad-steps__bar--late { background: var(--status-error); }
+/* Behind the current step, still waiting for feedback: a hollow ring in the current step's white, its middle empty. */
+.ad-steps__bar--waiting { background: transparent; box-shadow: inset 0 0 0 var(--border-w) var(--text-primary); }
 /* The bar alone in a cell: no room under it; every segment the final colour once the run is approved. */
 .ad-steps--compact .ad-steps__bar { margin-bottom: 0; }
 .ad-steps--compact .ad-steps__press { gap: 0; }
 .ad-steps--complete .ad-steps__bar { background: var(--ad-steps-complete); background-image: none; box-shadow: none; }
 .ad-steps__name { font: var(--type-name); color: var(--text-primary); }
-.ad-steps__step--done .ad-steps__name, .ad-steps__step--next .ad-steps__name { color: var(--text-secondary); }
+.ad-steps__step--done .ad-steps__name, .ad-steps__step--waiting .ad-steps__name, .ad-steps__step--next .ad-steps__name { color: var(--text-secondary); }
 .ad-steps__note { font: var(--type-detail); color: var(--text-muted); }
 
 /* src/components/Pickers/Pickers.css */
