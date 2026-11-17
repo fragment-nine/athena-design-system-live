@@ -715,6 +715,12 @@
 .ad-type-body { font: var(--type-body); color: var(--text-secondary); }
 .ad-type-detail { font: var(--type-detail); color: var(--text-muted); }
 .ad-type-data { font: var(--type-data); }
+.ad-type-title.ad-type-title--text-base { font-size: var(--text-base); }
+.ad-type-title.ad-type-title--text-17 { font-size: var(--text-17); }
+.ad-type-title.ad-type-title--text-20 { font-size: var(--text-20); }
+.ad-type-title.ad-type-title--text-28 { font-size: var(--text-28); }
+.ad-type-title.ad-type-title--text-44 { font-size: var(--text-44); }
+.ad-type-title.ad-type-title--size-hero { font-size: var(--size-hero); }
 
 /* Athena Design System — patterns.css: the hatch, outline and ground recipes (.ad-hatched, .ad-ground, …), plain CSS. Generated from src/css/patterns.css; do not edit. Import order, once per app, all four: fonts.css, tokens.css, patterns.css, components.css. */
 /* Recipes built from tokens: the hatches, the glass, the ground. Load after tokens.css. The build copies this file to dist/. */
@@ -1294,6 +1300,7 @@ button.ad-card__name:focus-visible { outline: none; }
 .ad-card-grid--compact { --ad-card-min: min(100%, var(--card-min-sm)); }
 .ad-card-grid > * { min-width: 0; }
 .ad-card-grid--start { align-items: start; }
+.ad-card-grid--equal-rows { grid-auto-rows: 1fr; }
 /* Picture: the Roadmap's picture of finished work, as Athena draws it (.rm-shot), moved here. The frame
  carries the Card's corner and nothing else; the picture fills it from the top left, the card tone behind it while it loads. */
 .ad-picture { display: block; width: 100%; height: 100%; overflow: hidden; border-radius: var(--radius-page); }
@@ -3156,6 +3163,16 @@ button.ad-row__name:focus-visible { outline: none; }
 .ad-figures--rail.ad-figures--display .ad-figures__value:not(.ad-sr) { grid-column: -2; grid-row: 2; order: 0; height: auto; display: block; font: var(--type-title); line-height: var(--lh-tight); }
 .ad-figures--rail.ad-figures--display .ad-figures__note { grid-column: -2; grid-row: 3; }
 
+/* One-line values (Figures valueLines={1}): a value in words keeps one line and ends in "…"; an amount is never cut (its unit drops under). */
+/* In the display face a value and its unit share a line with a gap between them; with no room the unit drops under the number, flush with it. */
+.ad-figures--rail.ad-figures--display .ad-figures__value:not(.ad-sr) { display: flex; flex-wrap: wrap; align-items: baseline; column-gap: var(--space-1); }
+.ad-figures--rail.ad-figures--display .ad-figures__unit { margin-left: 0; }
+.ad-figures--rail.ad-figures--display .ad-figures__value.ad-figures__value--one-line:not(.ad-sr), .ad-figures__value--one-line, .ad-figures__value--one-line > * { min-width: 0; max-width: 100%; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+.ad-figures--rail.ad-figures--display .ad-figures__value.ad-figures__value--one-line:not(.ad-sr) { display: block; }
+/* Joins (Figures joins): the readings are the cells of the grid the figures sit in; centred (align center): each in its cell's middle. */
+.ad-figures--joins { display: contents; }
+.ad-figures--align-center > .ad-figures__item { justify-self: center; max-width: 100%; }
+
 /* src/components/Timeline/Ruler.css */
 /* Ruler and ZoomCluster: a line-strong rule, months in white mono caps along the top, ticks from the rule (weeks taller than
  days), day numbers mono muted in the middle of their day, the ticks on the line where it starts. The zoom cluster sits in the chart's top-right corner. */
@@ -3492,7 +3509,8 @@ button.ad-milestone:focus-visible { outline: none; }
 
 /* src/components/Tooltip/Tooltip.css */
 /* Tooltip */
-.ad-tooltip { position: fixed; z-index: var(--z-tip); transform: translateX(-50%); pointer-events: none; padding: var(--space-2) var(--space-3); border-radius: var(--radius-page); background: var(--bg-float); box-shadow: var(--shadow-float); font: var(--type-name); line-height: var(--lh-tight); color: var(--text-primary); box-sizing: border-box; width: max-content; max-width: var(--w-tooltip); white-space: normal; overflow-wrap: break-word; animation: ad-fade-in var(--dur-fast) var(--ease-out); }
+/* A light aside, not a label: the Detail rung in italic, the quiet ink, a little padding. */
+.ad-tooltip { position: fixed; z-index: var(--z-tip); transform: translateX(-50%); pointer-events: none; padding: var(--space-1) var(--space-2); border-radius: var(--radius-page); background: var(--bg-float); box-shadow: var(--shadow-float); font: var(--type-detail); font-style: italic; line-height: var(--lh-tight); color: var(--text-muted); box-sizing: border-box; width: max-content; max-width: var(--w-tooltip); white-space: normal; overflow-wrap: break-word; animation: ad-fade-in var(--dur-fast) var(--ease-out); }
 @media (prefers-reduced-motion: reduce) { .ad-tooltip { animation: none; } }
 
 /* src/components/Warnings/Warnings.css */

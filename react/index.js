@@ -4956,8 +4956,8 @@ function CardRename({ value, onRename, label }) {
     }
   );
 }
-function CardGrid({ children, columns = 3, align, compact, className, style, ...rest }) {
-  return /* @__PURE__ */ jsx31("div", { ...rest, style: { ...style, "--ad-cols": columns }, className: cx("ad-card-grid", align === "start" && "ad-card-grid--start", compact && "ad-card-grid--compact", className), children });
+function CardGrid({ children, columns = 3, align, compact, rows, className, style, ...rest }) {
+  return /* @__PURE__ */ jsx31("div", { ...rest, style: { ...style, "--ad-cols": columns }, className: cx("ad-card-grid", align === "start" && "ad-card-grid--start", compact && "ad-card-grid--compact", rows === "equal" && "ad-card-grid--equal-rows", className), children });
 }
 function Picture({ src, alt, ...rest }) {
   const [failed, setFailed] = useState19(null);
@@ -5698,7 +5698,8 @@ function DataText({ children, dim, small, size, estimate, className }) {
 function Hint({ children, className }) {
   return /* @__PURE__ */ jsx40("span", { className: cx("ad-hint", className), children });
 }
-function Figures({ items, ariaLabel, layout = "strip", density, face = "data", columns, onIntrinsicWidth, className }) {
+var isAmount = (v) => typeof v === "number" || typeof v === "string" && /^[\s$€£¥+\-−~≈]*[\d][\d.,:%\s/–-]*[a-z%]{0,3}$/i.test(v.trim());
+function Figures({ items, ariaLabel, layout = "strip", density, face = "data", columns, valueLines, joins, align, onIntrinsicWidth, className }) {
   const shown = face === "display" && layout === "rail";
   const track = useRef29(null);
   const clocks = layout === "clocks";
@@ -5735,9 +5736,9 @@ function Figures({ items, ariaLabel, layout = "strip", density, face = "data", c
   useLayoutEffect8(() => {
     if (clocks) measure();
   });
-  return /* @__PURE__ */ jsx40("dl", { ref: track, className: cx("ad-figures", density === "compact" && "ad-figures--dense", layout !== "strip" && "ad-figures--grid", layout === "compact" && "ad-figures--compact", layout === "rail" && "ad-figures--rail", layout === "readings" && "ad-figures--readings", layout === "clocks" && "ad-figures--clocks", face === "display" && "ad-figures--display", intrinsic && "ad-figures--intrinsic", clocks && !!columns && "ad-figures--set-columns", className), "aria-label": ariaLabel, style: clocks && !!columns ? { ["--ad-figures-columns"]: columns } : void 0, children: (layout !== "strip" ? items : items.slice(0, 4)).map((f) => /* @__PURE__ */ jsxs37("div", { className: "ad-figures__item", title: !shown && (layout === "rail" || layout === "readings") && typeof f.note === "string" ? f.note : void 0, children: [
+  return /* @__PURE__ */ jsx40("dl", { ref: track, className: cx("ad-figures", density === "compact" && "ad-figures--dense", layout !== "strip" && "ad-figures--grid", layout === "compact" && "ad-figures--compact", layout === "rail" && "ad-figures--rail", layout === "readings" && "ad-figures--readings", layout === "clocks" && "ad-figures--clocks", face === "display" && "ad-figures--display", intrinsic && "ad-figures--intrinsic", clocks && !!columns && "ad-figures--set-columns", joins && "ad-figures--joins", align === "center" && "ad-figures--align-center", className), "aria-label": ariaLabel, style: clocks && !!columns ? { ["--ad-figures-columns"]: columns } : void 0, children: (layout !== "strip" ? items : items.slice(0, 4)).map((f) => /* @__PURE__ */ jsxs37("div", { className: "ad-figures__item", title: !shown && (layout === "rail" || layout === "readings") && typeof f.note === "string" ? f.note : void 0, children: [
     /* @__PURE__ */ jsx40("dt", { className: cx("ad-figures__label ad-type-heading", layout === "clocks" && "ad-sr"), children: f.label }),
-    /* @__PURE__ */ jsxs37("dd", { className: cx("ad-figures__value", !shown && (layout === "rail" || layout === "clocks") && f.graphic != null && "ad-sr"), children: [
+    /* @__PURE__ */ jsxs37("dd", { className: cx("ad-figures__value", valueLines === 1 && !isAmount(f.value) && "ad-figures__value--one-line", !shown && (layout === "rail" || layout === "clocks") && f.graphic != null && "ad-sr"), children: [
       layout === "readings" ? /* @__PURE__ */ jsx40(ButtonSizeScope, { size: "row", children: f.value }) : f.onOpen ? /* @__PURE__ */ jsx40("button", { type: "button", className: "ad-figures__open", "aria-expanded": f.expanded == null ? void 0 : f.expanded, onClick: f.onOpen, children: f.value }) : f.value,
       f.unit && /* @__PURE__ */ jsxs37(Fragment22, { children: [
         /* @__PURE__ */ jsx40("wbr", {}),
