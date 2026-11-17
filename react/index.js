@@ -1758,6 +1758,10 @@ function Dot({ tone = "neutral", hue, priority, colour: picked, swatch, classNam
   const colour = useNamedColour(picked && PICKABLE.has(picked) ? picked : hue);
   return /* @__PURE__ */ jsx4("span", { "aria-hidden": "true", ...rest, "data-coloured": colour ? true : void 0, style: colour ? { ["--ad-dot"]: colour } : void 0, className: cx("ad-dot", `ad-dot--${tone}`, priority && `ad-dot--p${priority}`, swatch && "ad-dot--swatch", className) });
 }
+function Dots({ count, perRow = 10, rows, className, tone, hue, priority, colour, swatch, ...hooks }) {
+  const shown = Math.max(0, Math.round(rows ? Math.min(count, perRow * rows) : count));
+  return /* @__PURE__ */ jsx4("span", { "aria-hidden": "true", ...hooks, className: cx("ad-dots", className), style: { ["--ad-dots-per-row"]: perRow }, children: Array.from({ length: shown }, (_, i) => /* @__PURE__ */ jsx4(Dot, { tone, hue, priority, colour, swatch }, i)) });
+}
 function Status({ label, tone = "neutral", colour, className, ...rest }) {
   return /* @__PURE__ */ jsxs2("span", { ...rest, className: cx("ad-status", className), children: [
     /* @__PURE__ */ jsx4(Dot, { tone, colour }),
@@ -7892,6 +7896,7 @@ export {
   Dialog,
   Dot,
   DotMatrix,
+  Dots,
   DragBand,
   DropLine,
   DualUnit,

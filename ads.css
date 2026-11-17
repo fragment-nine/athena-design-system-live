@@ -2888,6 +2888,8 @@ button.ad-row__name:focus-visible { outline: none; }
 .ad-side-stripe--right::after { top: 0; bottom: 0; right: 0; width: var(--w-stripe); border-radius: 0 var(--radius-page) var(--radius-page) 0; }
 .ad-side-stripe--top::after { left: 0; right: 0; top: 0; height: var(--w-stripe); border-radius: var(--radius-page) var(--radius-page) 0 0; }
 .ad-side-stripe--bottom::after { left: 0; right: 0; bottom: 0; height: var(--w-stripe); border-radius: 0 0 var(--radius-page) var(--radius-page); }
+/* Dots: a dot per thing in rows of ten, one gap apart, never wider than its box. */
+.ad-dots { --ad-dots-per-row: 10; display: grid; grid-template-columns: repeat(var(--ad-dots-per-row), var(--dot-size)); gap: var(--space-1); justify-content: start; max-width: 100%; overflow: hidden; }
 
 /* src/components/Switch/Switch.css */
 /* Switch */
