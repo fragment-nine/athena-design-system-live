@@ -3600,6 +3600,24 @@ button.ad-notification:focus-visible { outline: none; }
 /* A hairline between rows and none above the first (the first row only: a row inside its item wrapper is that wrapper's first child). */
 .ad-alerts-float .ad-alert-list > .ad-alert:first-child, .ad-alerts-float .ad-alert-list > .ad-alert-item:first-child > .ad-alert { border-top: 0; }
 
+/* A sentence's quiet line under it (AlertRow detail). */
+.ad-alert__detail { display: block; margin-top: var(--space-hair); font: var(--type-detail); color: var(--text-muted); }
+/* Narrower than a card (Pixx's window): line one the pill, the sentence across, snooze and dismiss at the right, all top-aligned; under
+   the sentence its detail and then its one action, the action's word on the sentence's left edge; no end mark (the action says where). */
+.ad-alert.ad-alert[data-narrow], .ad-alert-list > .ad-alert[data-narrow], .ad-alert-list > .ad-alert-item > .ad-alert[data-narrow] {
+  grid-template-columns: auto minmax(0, 1fr) auto auto auto; grid-template-areas: "pill sentence info snooze dismiss" ". action end end end";
+  align-items: start; column-gap: var(--space-2); row-gap: var(--space-1); padding-top: var(--space-2); padding-bottom: var(--space-2); }
+.ad-alert[data-narrow] > * { margin-left: 0; }
+.ad-alert[data-narrow] > .ad-count-pill { grid-area: pill; margin-right: var(--space-1); }
+.ad-alert[data-narrow] > .ad-alert__sentence { grid-area: sentence; }
+.ad-alert[data-narrow] > .ad-alert__info { grid-area: info; }
+.ad-alert[data-narrow] > .ad-alert__snooze { grid-area: snooze; }
+.ad-alert[data-narrow] > .ad-alert__dismiss { grid-area: dismiss; }
+.ad-alert[data-narrow] > .ad-alert__actions { grid-area: action; margin-left: calc(var(--space-2) * -1); } /* the action's word on the sentence's edge, its fill reaching left under the pointer */
+.ad-alert[data-narrow] > .ad-alert__end { grid-area: end; justify-self: end; }
+.ad-alert[data-narrow] > :is(.ad-alert__go, .ad-alert__grip:empty) { display: none; }
+.ad-alert[data-narrow] > .ad-alert__actions:empty { display: none; }
+
 /* src/components/Writing/Writing.css */
 /* TokenInput, NoteBox, ActivityThread, RuleBuilder, RuleValue */
 .ad-token-input { display: flex; flex-direction: column; gap: var(--space-2); }

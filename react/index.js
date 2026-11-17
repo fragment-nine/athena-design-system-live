@@ -5488,7 +5488,7 @@ function ShowSwitch({ setting: s }) {
 }
 
 // src/components/Warnings/Warnings.tsx
-import { forwardRef as forwardRef10, useId as useId13, useRef as useRef26, useState as useState23 } from "react";
+import { forwardRef as forwardRef10, useId as useId13, useLayoutEffect as useLayoutEffect8, useRef as useRef26, useState as useState23 } from "react";
 import { Fragment as Fragment20, jsx as jsx37, jsxs as jsxs34 } from "react/jsx-runtime";
 function AlertsFloat({ open, onClose, anchor, ariaLabel = "Alerts", id, children }) {
   return /* @__PURE__ */ jsx37(Popover, { open, onClose, anchor, placement: "drop", width: "wide", ariaLabel, noClose: true, id, className: "ad-alerts-float", children: /* @__PURE__ */ jsx37("div", { role: "list", "aria-label": ariaLabel, className: "ad-alert-list", children }) });
@@ -5537,11 +5537,14 @@ function AlertBarHead({ open, onToggle, label = "Alerts", counts, pillLabel = (p
 function AlertList({ children, id, hidden, ariaLabel, listProps }) {
   return /* @__PURE__ */ jsx37("div", { ...strip3(listProps), id, hidden, role: "list", "aria-label": ariaLabel, className: "ad-alert-list", children });
 }
-function AlertRow({ priority, priorityLabel = `Priority ${priority}`, sentence, number, actions, go, onSnooze, snoozeLabel = "Snooze", onDismiss, dismissLabel = "Dismiss", end, details, children, rowProps, muted, grip }) {
+function AlertRow({ priority, priorityLabel = `Priority ${priority}`, sentence, detail, number, actions, go, onSnooze, snoozeLabel = "Snooze", onDismiss, dismissLabel = "Dismiss", end, details, children, rowProps, muted, grip }) {
   const line = /* @__PURE__ */ jsxs34(Fragment20, { children: [
     /* @__PURE__ */ jsx37("span", { className: "ad-alert__grip", children: grip && /* @__PURE__ */ jsx37(Grip, {}) }),
     /* @__PURE__ */ jsx37(CountPill, { priority, label: priorityLabel }),
-    /* @__PURE__ */ jsx37("span", { className: "ad-alert__sentence", children: sentence }),
+    /* @__PURE__ */ jsxs34("span", { className: "ad-alert__sentence", children: [
+      sentence,
+      detail != null && /* @__PURE__ */ jsx37("span", { className: "ad-alert__detail", children: detail })
+    ] }),
     /* @__PURE__ */ jsxs34("span", { className: "ad-alert__info", children: [
       number != null && number !== "" && /* @__PURE__ */ jsx37("span", { className: "ad-alert__number ad-note-data", children: number }),
       details && /* @__PURE__ */ jsx37(ButtonSizeScope, { size: "row", children: /* @__PURE__ */ jsx37(IconButton, { ...strip3(details.hooks), label: details.open ? details.hideLabel ?? "Hide details" : details.showLabel ?? "Show details", "aria-expanded": details.open, "aria-controls": details.controls, onClick: details.onToggle, children: /* @__PURE__ */ jsx37(Icon, { job: "info", fill: details.open }) }) })
@@ -5555,10 +5558,21 @@ function AlertRow({ priority, priorityLabel = `Priority ${priority}`, sentence, 
     /* @__PURE__ */ jsx37("span", { className: "ad-alert__end", children: end != null && /* @__PURE__ */ jsx37(ButtonSizeScope, { size: "row", children: end }) }),
     /* @__PURE__ */ jsx37("span", { className: "ad-alert__go", children: go && !go.fixes && /* @__PURE__ */ jsx37("span", { "aria-hidden": "true", className: "ad-alert__go-mark", onClick: go.onSelect, children: /* @__PURE__ */ jsx37(Icon, { job: "chevron-right", size: "sm" }) }) })
   ] });
+  const box = useRef26(null);
+  const [narrow, setNarrow] = useState23(false);
+  useLayoutEffect8(() => {
+    const el = box.current;
+    if (!el || typeof ResizeObserver === "undefined") return;
+    const check = () => setNarrow(el.getBoundingClientRect().width < tokenPx("--w-card", 420));
+    check();
+    const ro = new ResizeObserver(check);
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, []);
   const look = cx("ad-alert", muted && "ad-alert--muted");
-  if (children == null || children === false) return /* @__PURE__ */ jsx37("div", { ...strip3(rowProps), role: "listitem", className: look, children: line });
+  if (children == null || children === false) return /* @__PURE__ */ jsx37("div", { ...strip3(rowProps), ref: box, role: "listitem", "data-narrow": narrow || void 0, className: look, children: line });
   return /* @__PURE__ */ jsxs34("div", { ...strip3(rowProps), role: "listitem", className: "ad-alert-item", children: [
-    /* @__PURE__ */ jsx37("div", { className: look, children: line }),
+    /* @__PURE__ */ jsx37("div", { ref: box, "data-narrow": narrow || void 0, className: look, children: line }),
     /* @__PURE__ */ jsx37("div", { className: "ad-alert__under", children })
   ] });
 }
@@ -5697,7 +5711,7 @@ function Splitter({ main, side, size, onResize, min = 0, max = Number.POSITIVE_I
 }
 
 // src/components/Text/Text.tsx
-import { useCallback as useCallback4, useLayoutEffect as useLayoutEffect8, useRef as useRef29 } from "react";
+import { useCallback as useCallback4, useLayoutEffect as useLayoutEffect9, useRef as useRef29 } from "react";
 import { Fragment as Fragment22, jsx as jsx40, jsxs as jsxs37 } from "react/jsx-runtime";
 function DataText({ children, dim, small, size, estimate, className }) {
   return /* @__PURE__ */ jsx40("span", { className: cx("ad-type-data", "ad-data-text", small && "ad-data-text--small", size === "large" && !small && "ad-data-text--large", dim && "ad-data-text--dim", estimate && "ad-figure-estimate", className), children });
@@ -5730,7 +5744,7 @@ function Figures({ items, ariaLabel, layout = "strip", density, face = "data", c
     told.current = { to: onIntrinsicWidth, width };
     onIntrinsicWidth(width);
   }, [clocks, onIntrinsicWidth]);
-  useLayoutEffect8(() => {
+  useLayoutEffect9(() => {
     const el = track.current;
     if (!(clocks || intrinsic) || !el) return;
     measure();
@@ -5740,7 +5754,7 @@ function Figures({ items, ariaLabel, layout = "strip", density, face = "data", c
     observer.observe(el);
     return () => observer.disconnect();
   }, [clocks, intrinsic, measure]);
-  useLayoutEffect8(() => {
+  useLayoutEffect9(() => {
     if (clocks) measure();
   });
   return /* @__PURE__ */ jsx40("dl", { ref: track, className: cx("ad-figures", density === "compact" && "ad-figures--dense", layout !== "strip" && "ad-figures--grid", layout === "compact" && "ad-figures--compact", layout === "rail" && "ad-figures--rail", layout === "readings" && "ad-figures--readings", layout === "clocks" && "ad-figures--clocks", face === "display" && "ad-figures--display", intrinsic && "ad-figures--intrinsic", clocks && !!columns && "ad-figures--set-columns", joins && "ad-figures--joins", align === "center" && "ad-figures--align-center", className), "aria-label": ariaLabel, style: clocks && !!columns ? { ["--ad-figures-columns"]: columns } : void 0, children: (layout !== "strip" ? items : items.slice(0, 4)).map((f) => /* @__PURE__ */ jsxs37("div", { className: "ad-figures__item", title: !shown && (layout === "rail" || layout === "readings") && typeof f.note === "string" ? f.note : void 0, children: [
@@ -5842,10 +5856,10 @@ function sortRows(rows, value, direction, depth, group) {
 }
 
 // src/components/Table/Table.tsx
-import { useLayoutEffect as useLayoutEffect10, useRef as useRef31, useState as useState25 } from "react";
+import { useLayoutEffect as useLayoutEffect11, useRef as useRef31, useState as useState25 } from "react";
 
 // src/components/Timeline/Timeline.tsx
-import { useLayoutEffect as useLayoutEffect9, useRef as useRef30, useState as useState24 } from "react";
+import { useLayoutEffect as useLayoutEffect10, useRef as useRef30, useState as useState24 } from "react";
 import { Fragment as Fragment23, jsx as jsx42, jsxs as jsxs39 } from "react/jsx-runtime";
 var strip4 = (h) => {
   if (!h) return {};
@@ -5875,7 +5889,7 @@ function Bar({ code: code2, travel, dim, day: dayGiven, billing, label, unconfir
   const [nameGone, setNameGone] = useState24(false);
   const tell = useRef30(onCramped);
   tell.current = onCramped;
-  useLayoutEffect9(() => {
+  useLayoutEffect10(() => {
     const el = root.current;
     if (!el) return;
     const measure = () => {
@@ -5993,7 +6007,7 @@ function DeliverableRow({ lead, status, showStatus, statusLabel, markers: given,
     const width = row.current?.clientWidth ?? 0;
     if (c && marksOff === null && given.length) setMarksOff(width);
   };
-  useLayoutEffect9(() => {
+  useLayoutEffect10(() => {
     const el = row.current;
     if (!el || marksOff === null || typeof ResizeObserver === "undefined") return;
     const ro = new ResizeObserver(() => {
@@ -6023,7 +6037,7 @@ var LEAD_AT = 0.12;
 function Lanes({ children, marks, ariaLabel, nameWidth, className }) {
   const box = useRef30(null);
   const [fit, setFit] = useState24(null);
-  useLayoutEffect9(() => {
+  useLayoutEffect10(() => {
     const el = box.current;
     if (!el || nameWidth !== "fit") return;
     const measure = () => {
@@ -6220,7 +6234,7 @@ function Table({ columns: named, rows: given, rowId, caption, sort, onSort, pick
   const headRow = useRef31(null);
   const [held, setHeld] = useState25({});
   const heldKey = columns.filter((c) => c.frozen === "start").map((c) => c.id).join(" ");
-  useLayoutEffect10(() => {
+  useLayoutEffect11(() => {
     const tr = headRow.current;
     if (!tr || heldKey.split(" ").length < 2) return;
     const measure = () => {
@@ -6242,7 +6256,7 @@ function Table({ columns: named, rows: given, rowId, caption, sort, onSort, pick
   useKeyScroll(wrap);
   const [wide, setWide] = useState25(false);
   const [snug, setSnug] = useState25(false);
-  useLayoutEffect10(() => {
+  useLayoutEffect11(() => {
     const el = wrap.current;
     const t = el?.querySelector("table");
     if (!el || !t || typeof ResizeObserver === "undefined") return;
@@ -6663,7 +6677,7 @@ function ZoomCluster({
 }
 
 // src/components/Calendar/Calendar.tsx
-import { useEffect as useEffect18, useLayoutEffect as useLayoutEffect11, useRef as useRef33, useState as useState27 } from "react";
+import { useEffect as useEffect18, useLayoutEffect as useLayoutEffect12, useRef as useRef33, useState as useState27 } from "react";
 import { Fragment as Fragment25, jsx as jsx45, jsxs as jsxs42 } from "react/jsx-runtime";
 var code = (it) => it.code ? /* @__PURE__ */ jsx45(ProjectPill, { code: it.code, color: it.color?.startsWith("project-") ? it.color : void 0 }) : null;
 var hooksOf3 = (h) => {
@@ -6846,7 +6860,7 @@ function TimeGrid({ headerEnd, startHour, endHour, bookings = [], columns, now, 
   const [headH, setHeadH] = useState27(0);
   const [asideCap, setAsideCap] = useState27(0);
   const [contentH, setContentH] = useState27(0);
-  useLayoutEffect11(() => {
+  useLayoutEffect12(() => {
     const el = frame.current;
     if (!el) return;
     const measure = () => {
@@ -6919,7 +6933,7 @@ function TimeGrid({ headerEnd, startHour, endHour, bookings = [], columns, now, 
     return leave;
   }, [scrollTo, startHour, hours, visibleHours]);
   const allDayCount = (columns ?? []).some((c) => c.allDay) ? Math.max(1, ...(columns ?? []).map((c) => c.allDay?.length ?? 0)) : 0;
-  useLayoutEffect11(() => {
+  useLayoutEffect12(() => {
     const el = frame.current;
     if (!el || hourHeight !== "fill") return;
     const box = scrollerAbove(el);
@@ -7546,9 +7560,9 @@ function CommandSearch({ open, onClose, query, onQuery, results, onPick, label =
 }
 
 // src/components/Guidance/Guidance.tsx
-import { useEffect as useEffect20, useLayoutEffect as useLayoutEffect12, useRef as useRef37, useState as useState29 } from "react";
+import { useEffect as useEffect20, useLayoutEffect as useLayoutEffect13, useRef as useRef37, useState as useState29 } from "react";
 import { Fragment as Fragment28, jsx as jsx52, jsxs as jsxs48 } from "react/jsx-runtime";
-var useIsoLayoutEffect3 = typeof window === "undefined" ? useEffect20 : useLayoutEffect12;
+var useIsoLayoutEffect3 = typeof window === "undefined" ? useEffect20 : useLayoutEffect13;
 function TourStep({ open, anchor, step, total, title, children, onBack, onNext, onExit, backLabel = "Back", nextLabel = "Next", progressLabel = (s, t) => `${s} of ${t}`, placement, side: older, onClose, closeLabel }) {
   const card = useRef37(null);
   const [rect, setRect] = useState29(null);
