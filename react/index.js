@@ -6575,14 +6575,17 @@ function Ruler({ start, days, dayWidth, locale = "en-US", pinned, holdLeft, end,
   const showDay = dayWidth >= tokenPx("--space-4", 16);
   const dayEvery = showDay ? [1, 2, 4].find((n) => n * dayWidth >= numberRoom) ?? 0 : 0;
   const weekEvery = showDay ? 0 : [1, 2].find((n) => n * 7 * dayWidth >= numberRoom) ?? 0;
+  const weekdayRoom = tokenPx("--w-col-sm", 64);
+  const withWeekday = dayEvery === 1 && dayWidth >= weekdayRoom;
+  const dayLabel = (d) => withWeekday ? `${d.toLocaleDateString(locale, { weekday: "short" })} ${d.getDate()}` : String(d.getDate());
   const monthRoom = tokenPx("--w-col-sm", 64);
   let weeks = 0;
   const pad = (n) => String(n).padStart(2, "0");
   const dayKey = (d) => `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
   const marked = new Map((marks ?? []).map((m) => [m.date, m.label]));
   const dots = [];
-  const halfNumber = tokenPx("--space-3", 12);
-  const covered = (x) => !!under && x + dayWidth / 2 + halfNumber >= under[0] && x + dayWidth / 2 - halfNumber <= under[1];
+  const halfLabel = withWeekday ? weekdayRoom / 2 : tokenPx("--space-3", 12);
+  const covered = (x) => !!under && x + dayWidth / 2 + halfLabel >= under[0] && x + dayWidth / 2 - halfLabel <= under[1];
   for (let i = 0; i < days; i++) {
     const d = at(i);
     if (d.getDate() === 1 || i === 0) {
@@ -6598,7 +6601,7 @@ function Ruler({ start, days, dayWidth, locale = "en-US", pinned, holdLeft, end,
     if (mark) dots.push({ x: i * dayWidth, label: mark, words: `${mark}, ${d.toLocaleDateString(locale, { weekday: "long", month: "long", day: "numeric" })}` });
     const monday = d.getDay() === 1;
     const monthStart = d.getDate() === 1;
-    if (showDay) ticks.push({ x: i * dayWidth, major: monday || monthStart, label: dayEvery && i % dayEvery === 0 && !covered(i * dayWidth) ? String(d.getDate()) : void 0 });
+    if (showDay) ticks.push({ x: i * dayWidth, major: monday || monthStart, label: dayEvery && i % dayEvery === 0 && !covered(i * dayWidth) ? dayLabel(d) : void 0 });
     else if (monday) {
       const shown = weekEvery && weeks++ % weekEvery === 0;
       ticks.push({ x: i * dayWidth, major: true, label: shown && !covered(i * dayWidth) ? String(d.getDate()) : void 0 });
