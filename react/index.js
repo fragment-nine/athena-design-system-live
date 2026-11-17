@@ -6686,41 +6686,43 @@ var hooksOf3 = (h) => {
   return rest;
 };
 var diff = (a, b) => daysBetween(b, a);
-function MonthCalendar({ month, items, today: todayIn, weekStart = 1, locale = "en-US", onOpen, dayProps, itemProps, marks, ringDay, className }) {
+function MonthCalendar({ month, span = "month", items, today: todayIn, weekStart = 1, locale = "en-US", onOpen, dayProps, itemProps, marks, ringDay, dayContent, className }) {
   const today = dayOf(todayIn);
   const hueOf = useHueOf();
   const shadeWeekends = useShow().weekendShading;
   const first = new Date(month.getFullYear(), month.getMonth(), 1);
-  const start = weekStartOf(first, weekStart);
+  const cols = span === "day" ? 1 : 7;
+  const start = span === "day" ? dayOf(month) : weekStartOf(span === "week" ? month : first, weekStart);
   const last = new Date(month.getFullYear(), month.getMonth() + 1, 0);
-  const weeks = Math.ceil((diff(last, start) + 1) / 7);
-  const dows = Array.from({ length: 7 }, (_, i) => addDays(start, i).toLocaleDateString(locale, { weekday: "short" }));
+  const weeks = span === "month" ? Math.ceil((diff(last, start) + 1) / 7) : 1;
+  const dows = Array.from({ length: cols }, (_, i) => addDays(start, i).toLocaleDateString(locale, { weekday: "short" }));
   const sorted = [...items].sort((a, b) => a.start.getTime() - b.start.getTime() || diff(b.end, b.start) - diff(a.end, a.start));
-  return /* @__PURE__ */ jsxs42("section", { className: cx("ad-month", className), "aria-label": first.toLocaleDateString(locale, { month: "long", year: "numeric" }), children: [
+  const name = span === "day" ? start.toLocaleDateString(locale, { weekday: "long", month: "long", day: "numeric", year: "numeric" }) : span === "week" ? `${start.toLocaleDateString(locale, { month: "short", day: "numeric" })} \u2013 ${addDays(start, 6).toLocaleDateString(locale, { month: "short", day: "numeric", year: "numeric" })}` : first.toLocaleDateString(locale, { month: "long", year: "numeric" });
+  return /* @__PURE__ */ jsxs42("section", { className: cx("ad-month", span !== "month" && "ad-month--fill", className), style: cols !== 7 ? { "--ad-cols": cols } : void 0, "aria-label": name, children: [
     /* @__PURE__ */ jsx45("div", { className: "ad-month__dows", "aria-hidden": "true", children: dows.map((d, i) => /* @__PURE__ */ jsx45("span", { className: "ad-month__dow", children: d }, i)) }),
     Array.from({ length: weeks }, (_, w) => {
       const ws = addDays(start, w * 7);
-      const we = addDays(ws, 6);
+      const we = addDays(ws, cols - 1);
       const lanes = [];
       const placed = [];
       for (const it of sorted) {
         if (diff(it.end, ws) < 0 || diff(it.start, we) > 0) continue;
         const from = Math.max(0, diff(it.start, ws));
-        const to = Math.min(6, diff(it.end, ws));
+        const to = Math.min(cols - 1, diff(it.end, ws));
         let lane = lanes.findIndex((l) => l.slice(from, to + 1).every((x) => !x));
         if (lane < 0) {
-          lanes.push(Array(7).fill(false));
+          lanes.push(Array(cols).fill(false));
           lane = lanes.length - 1;
         }
         for (let i = from; i <= to; i++) lanes[lane][i] = true;
         placed.push({ item: it, lane, from, to, cutStart: diff(it.start, ws) < 0, cutEnd: diff(it.end, we) > 0 });
       }
-      return /* @__PURE__ */ jsxs42("div", { className: "ad-month__week", role: "group", style: { ["--ad-lanes"]: Math.max(1, lanes.length) }, "aria-label": `${ws.toLocaleDateString(locale, { month: "short", day: "numeric" })} \u2013 ${we.toLocaleDateString(locale, { month: "short", day: "numeric" })}`, children: [
-        Array.from({ length: 7 }, (_2, i) => {
+      return /* @__PURE__ */ jsxs42("div", { className: cx("ad-month__week", span !== "month" && !lanes.length && "ad-month__week--no-bars"), role: "group", style: { ["--ad-lanes"]: Math.max(1, lanes.length) }, "aria-label": `${ws.toLocaleDateString(locale, { month: "short", day: "numeric" })} \u2013 ${we.toLocaleDateString(locale, { month: "short", day: "numeric" })}`, children: [
+        Array.from({ length: cols }, (_2, i) => {
           const d = addDays(ws, i);
           const wk = d.getDay() === 0 || d.getDay() === 6;
           const mark = marks?.(d);
-          return /* @__PURE__ */ jsx45("div", { "aria-hidden": dayProps ? void 0 : true, ...hooksOf3(dayProps?.(d)), style: { gridColumn: i + 1 }, className: "ad-month__cell", "data-outside": d.getMonth() !== first.getMonth() || void 0, "data-weekend": shadeWeekends && wk || void 0, "data-ring": diff(d, today) === 0 || ringDay?.(d) || void 0, children: /* @__PURE__ */ jsxs42("span", { className: "ad-month__day", children: [
+          return /* @__PURE__ */ jsx45("div", { "aria-hidden": dayProps ? void 0 : true, ...hooksOf3(dayProps?.(d)), style: { gridColumn: i + 1 }, className: "ad-month__cell", "data-outside": span === "month" && d.getMonth() !== first.getMonth() || void 0, "data-weekend": shadeWeekends && wk || void 0, "data-ring": diff(d, today) === 0 || ringDay?.(d) || void 0, children: /* @__PURE__ */ jsxs42("span", { className: "ad-month__day", children: [
             /* @__PURE__ */ jsx45("span", { className: "ad-month__num", "data-today": diff(d, today) === 0 || void 0, children: d.getDate() }),
             mark != null && /* @__PURE__ */ jsx45("span", { className: "ad-month__marks", children: mark })
           ] }) }, i);
@@ -6740,6 +6742,10 @@ function MonthCalendar({ month, items, today: todayIn, weekStart = 1, locale = "
             hooks.onClick?.(e);
             onOpen(item);
           }, children: inner }, item.id) : /* @__PURE__ */ jsx45("span", { ...hooks, className: cls, style, children: inner }, item.id);
+        }),
+        dayContent && Array.from({ length: cols }, (_2, i) => {
+          const content = dayContent(addDays(ws, i));
+          return content == null ? null : /* @__PURE__ */ jsx45("div", { className: "ad-month__content", style: { gridColumn: i + 1 }, children: content }, `content-${i}`);
         })
       ] }, w);
     })

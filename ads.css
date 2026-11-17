@@ -978,13 +978,19 @@ a.ad-icon-button { text-decoration: none; }
 
 /* src/components/Calendar/Calendar.css */
 /* MonthCalendar, Booking, NowMarker, WeekendShade, TimeGrid, as the Calendar card draws them */
-.ad-month { --ad-lanes: 3; font: var(--type-name); color: var(--text-primary); border-top: var(--border-w) solid var(--border); border-left: var(--border-w) solid var(--border); }
-.ad-month__dows { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); }
+.ad-month { --ad-lanes: 3; --ad-cols: 7; font: var(--type-name); color: var(--text-primary); border-top: var(--border-w) solid var(--border); border-left: var(--border-w) solid var(--border); }
+.ad-month__dows { display: grid; grid-template-columns: repeat(var(--ad-cols), minmax(0, 1fr)); }
 .ad-month__dow { padding: var(--space-1) var(--space-2); border-right: var(--border-w) solid var(--border); border-bottom: var(--border-w) solid var(--border); font: var(--type-data); font-size: var(--text-xs); text-transform: uppercase; color: var(--text-muted); }
 .ad-month__week {
-  position: relative; display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); grid-template-rows: var(--space-6) repeat(var(--ad-lanes), var(--h-bar)) 1fr;
+  position: relative; display: grid; grid-template-columns: repeat(var(--ad-cols), minmax(0, 1fr)); grid-template-rows: var(--space-6) repeat(var(--ad-lanes), var(--h-bar)) 1fr;
   row-gap: var(--space-1); min-height: var(--cal-cell);
 }
+/* A week or a day (MonthCalendar span): the same calendar as tall as the room it is given, its day names held at the top and each
+   day's own content (dayContent) scrolling inside its day under its number and bars. */
+.ad-month--fill { display: flex; flex-direction: column; flex: 1 1 auto; height: 100%; min-height: 0; }
+.ad-month--fill .ad-month__week { flex: 1 1 0; min-height: var(--cal-cell); grid-template-rows: var(--space-6) repeat(var(--ad-lanes), var(--h-bar)) minmax(0, 1fr); }
+.ad-month--fill .ad-month__week--no-bars { grid-template-rows: var(--space-6) minmax(0, 1fr); }
+.ad-month__content { grid-row: -2 / -1; z-index: 1; display: flex; flex-direction: column; min-width: 0; min-height: 0; overflow-y: auto; overscroll-behavior: contain; padding: 0 var(--space-1) var(--space-1); }
 .ad-month__cell { grid-row: 1 / -1; display: flex; flex-direction: column; justify-content: space-between; padding: var(--space-1) var(--space-1); border-right: var(--border-w) solid var(--border); border-bottom: var(--border-w) solid var(--border); }
 .ad-month__cell[data-weekend] { background-image: var(--hatch-fine); }
 /* Today's cell, and a cell the app rings (a drop target), wear Athena's 2px white ring, drawn over its neighbours' hairlines. */
