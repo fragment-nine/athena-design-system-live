@@ -12,7 +12,6 @@ import {
   formatTimeOfDay,
   initials,
   keyChord,
-  monoDate,
   nextWeekday,
   parseTask,
   parseTimeOfDay,
@@ -4695,7 +4694,7 @@ function DatePickerBody({ value, onChange, today: todayIn, weekStart = 1, locale
   ] });
 }
 function DateField({ onParsed, label, error, text: given, onText, format, icon, disabled, due, done, compact, className, value, onChange, ...picker }) {
-  const fmt = format ?? ((d) => monoDate(d));
+  const fmt = format ?? ((d) => dueLabel(d, picker.today).label);
   const read2 = (t) => {
     const r = readDate(t, picker.today, { weekStart: picker.weekStart });
     return r && { date: r.date, readback: r.readback, extra: r.recurrence };

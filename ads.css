@@ -393,6 +393,7 @@
   --h-pin-chip: 13px;
   --band-fine: 2px;
   --w-drawer: 268px;
+  --w-tooltip: var(--w-field-lg);
   --w-tip: 200px;
   --w-key: 54px;
   --w-alert-action: 136px;
@@ -1532,6 +1533,9 @@ button.ad-card__name:focus-visible { outline: none; }
 .ad-empty { display: flex; flex-direction: column; align-items: flex-start; }
 .ad-empty__sentence { margin: var(--space-2) 0 var(--space-4); font: var(--type-body); line-height: var(--lh-normal); color: var(--text-secondary); }
 .ad-empty > :not(.ad-empty__sentence) { align-self: stretch; }
+/* The room under the sentence is for what follows it (an add row, actions); alone, it keeps none, so its box is as snug below as above. */
+.ad-empty__sentence:last-child { margin-bottom: 0; }
+.ad-empty__sentence:first-child { margin-top: 0; }
 
 .ad-empty__actions { display: flex; gap: var(--space-2); }
 
@@ -2688,7 +2692,7 @@ button.ad-row__name:focus-visible { outline: none; }
  whole words in the hover), so nothing runs under the faces: they give way first, and all the way, before a date moves. Two dates still too wide for the row, plain or pressable: the due date drops under the review date, never cut, and the pair is never narrower than its wider date, so a date never lies over what follows it. */
 .ad-row__meta { overflow: hidden; }
 .ad-row__meta > * { flex-shrink: 0; }
-.ad-row__meta > .ad-row__fact--cut, .ad-row__meta > .ad-row__press:has(.ad-row__fact--cut) { flex-shrink: 1000; min-width: 0; }
+.ad-row__meta > .ad-row__fact--cut, .ad-row__meta > .ad-row__press:has(.ad-row__fact--cut) { flex-shrink: 1000000; min-width: 0; }
 .ad-row__meta > :is(.ad-item-dates, :has(.ad-item-dates)), .ad-row__meta .ad-item-dates { flex-shrink: 1; min-width: min-content; }
 .ad-row__meta .ad-item-dates { flex-wrap: wrap; row-gap: var(--space-hair); }
 .ad-row__press:has(.ad-row__fact--cut) { overflow: hidden; }
@@ -3481,7 +3485,7 @@ button.ad-milestone:focus-visible { outline: none; }
 
 /* src/components/Tooltip/Tooltip.css */
 /* Tooltip */
-.ad-tooltip { position: fixed; z-index: var(--z-tip); transform: translateX(-50%); pointer-events: none; padding: var(--space-2) var(--space-3); border-radius: var(--radius-page); background: var(--bg-float); box-shadow: var(--shadow-float); font: var(--type-name); line-height: var(--lh-tight); color: var(--text-primary); white-space: nowrap; animation: ad-fade-in var(--dur-fast) var(--ease-out); }
+.ad-tooltip { position: fixed; z-index: var(--z-tip); transform: translateX(-50%); pointer-events: none; padding: var(--space-2) var(--space-3); border-radius: var(--radius-page); background: var(--bg-float); box-shadow: var(--shadow-float); font: var(--type-name); line-height: var(--lh-tight); color: var(--text-primary); box-sizing: border-box; width: max-content; max-width: var(--w-tooltip); white-space: normal; overflow-wrap: break-word; animation: ad-fade-in var(--dur-fast) var(--ease-out); }
 @media (prefers-reduced-motion: reduce) { .ad-tooltip { animation: none; } }
 
 /* src/components/Warnings/Warnings.css */
