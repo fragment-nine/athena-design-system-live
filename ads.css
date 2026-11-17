@@ -1588,7 +1588,9 @@ button.ad-card__name:focus-visible { outline: none; }
 /* A pick box in a row's trail: its closed words at the detail size (the row's meta line), so the row's name reads larger. */
 .ad-row__trail :is(.ad-select, .ad-pick-field):not(.ad-priority-pick) { font: var(--type-detail); }
 /* A settings row: the label in one column, its control right beside it (never across the screen), a hairline under. */
-.ad-field-row { display: grid; grid-template-columns: var(--w-menu) minmax(0, var(--w-card)); justify-content: start; align-items: center; column-gap: var(--space-4); min-height: var(--h-row); border-bottom: var(--border-w) solid var(--border); }
+/* Its words' column is a menu wide; narrower than a menu and a menu-wide field (a card's settings), it is a card's name column, so the
+   field keeps the room. Read off the row's own width: nothing for the app to pass. */
+.ad-field-row { display: grid; grid-template-columns: clamp(var(--w-field-name), (100% - var(--w-menu) * 2 - var(--space-4)) * 1000, var(--w-menu)) minmax(0, var(--w-card)); justify-content: start; align-items: center; column-gap: var(--space-4); min-height: var(--h-row); border-bottom: var(--border-w) solid var(--border); }
 .ad-field-row__label { display: inline-flex; align-items: center; gap: var(--space-2); font: var(--type-body); line-height: var(--lh-tight); color: var(--text-secondary); }
 .ad-field-row__control { display: flex; align-items: center; justify-self: start; }
 /* The label beside its field (a form, a pop-over field): no hairline, the field right after the words. */
@@ -2596,6 +2598,9 @@ button.ad-steps__press:focus-visible { outline: none; }
 /* Repeat: a todo that repeats shows the small repeat mark right after its date's words, inside the bar, in the date's ink. */
 .ad-popover--framed .ad-field-row--beside:not(.ad-setting) .ad-datefield .ad-field__input { flex: none; min-width: 0; }
 
+/* A person's + keeps its room but is not drawn once someone is set: the face says who. */
+.ad-fact-sign--held { visibility: hidden; }
+
 /* src/components/Row/Row.css */
 /* Row, RowDate, TodoCheck */
 /* The grip: the six dots a reorderable row is dragged by, muted, coral while the pointer is on its row (a Row, a table row, or a row the
@@ -2907,7 +2912,7 @@ button.ad-row__name:focus-visible { outline: none; }
    each line of a two-line name clip the same way. */
 /* The name's parts sit in one row (Table's name row): the grip, the fold chevron and the second line's column keep their size, and
    the name takes what is left, shrinking to its own "…" (an app's name inside the open button too: its clamp line shrinks). */
-.ad-table--fixed .ad-table__name-row { display: flex; align-items: center; min-width: 0; }
+.ad-table--fixed .ad-table__name-row, .ad-table__name-row { display: flex; align-items: center; min-width: 0; }
 .ad-table--fixed .ad-table__name-row > :is(.ad-grip, .ad-table__fold) { flex: none; }
 .ad-table--fixed .ad-table__name-row > :not(.ad-grip, .ad-table__fold), .ad-table--fixed .ad-table__open > *, .ad-table--fixed .ad-table__line > * { min-width: 0; flex: 0 1 auto; }
 .ad-table--fixed .ad-table__open, .ad-table--fixed .ad-table__line { display: flex; align-items: center; min-width: 0; max-width: 100%; overflow: hidden; }

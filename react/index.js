@@ -4503,7 +4503,7 @@ function PickField({ options: given, value, onPick: pickGiven, label, header, ic
         title: compact && words2 ? words2 : void 0,
         children: [
           icon && /* @__PURE__ */ jsx28(Icon, { job: icon, size: "md", className: "ad-pick-field__icon" }),
-          sign && /* @__PURE__ */ jsx28("span", { className: `ad-fact-sign ad-fact-sign--${sign}`, "aria-hidden": "true", children: sign === "project" ? "#" : "+" }),
+          sign && /* @__PURE__ */ jsx28("span", { className: cx("ad-fact-sign", `ad-fact-sign--${sign}`, sign === "person" && picked.length > 0 && "ad-fact-sign--held"), "aria-hidden": "true", children: sign === "project" ? "#" : "+" }),
           face?.lead != null && /* @__PURE__ */ jsx28("span", { className: "ad-pick-field__lead", "aria-hidden": "true", children: face.lead }),
           compact && picked.length > 0 && (asMarks || picked.every((o) => o.lead != null)) ? picked.length > 1 ? /* @__PURE__ */ jsxs25("span", { className: "ad-pick-field__marks", "aria-hidden": "true", children: [
             picked.slice(0, cap || 3).map((o) => /* @__PURE__ */ jsx28("span", { className: "ad-pick-field__mark", children: o.lead ?? /* @__PURE__ */ jsx28(Dot, {}) }, o.id)),
@@ -6437,7 +6437,7 @@ function Table({ columns: named, rows: given, rowId, caption, sort, onSort, pick
                   trunks(rowAt, d - 1),
                   /* @__PURE__ */ jsx43("span", { className: cx("ad-table__elbow", runs(rowAt, d) && "ad-table__elbow--on"), "aria-hidden": "true" })
                 ] }),
-                /* @__PURE__ */ jsxs40(NameRow, { on: !!fixed, children: [
+                /* @__PURE__ */ jsxs40(NameRow, { on: !!fixed || !!grip?.(r), children: [
                   grip?.(r) && /* @__PURE__ */ jsx43(Grip, {}),
                   parent && /* @__PURE__ */ jsx43("button", { type: "button", className: "ad-table__fold ad-table__fold--row", "aria-expanded": !rowShut, "aria-label": foldLabel?.(r) ?? "Fold", onClick: (e) => {
                     e.stopPropagation();
