@@ -35,6 +35,7 @@
   --cloud-coral: #e16d48;
   --accent-hover: #ec8059;
   --on-accent: #0d0d0d;
+  --on-signal: #0d0d0d;
   --status-error: #cf5340;
   --status-error-ink: #fd7266;
   --word-pill: #672b28;
@@ -164,6 +165,7 @@
   --cloud-coral: #e16d48;
   --accent-hover: #ec8059;
   --on-accent: #0d0d0d;
+  --on-signal: #ffffff;
   --status-error: #cf5340;
   --status-error-ink: #c71203;
   --word-pill: #f9d9d5;
@@ -1590,7 +1592,7 @@ button.ad-card__name:focus-visible { outline: none; }
 .ad-select:hover .ad-select__caret { color: var(--accent); }
 /* PriorityPicker: the closed box drawn as the alerts line's count pill (its height, round corner, mono caps, the priority's colour as
    the fill, the on-colour ink), with its caret. */
-.ad-priority-pick { --ad-pick-ink: var(--priority-p4); height: var(--h-pill); padding: 0 calc(var(--space-2) + var(--icon-sm) + var(--space-1)) 0 var(--space-2); border-radius: var(--radius-pill); background: var(--ad-pick-ink); color: var(--on-accent); font: var(--type-data); font-size: var(--text-xs); font-variant-numeric: tabular-nums; }
+.ad-priority-pick { --ad-pick-ink: var(--priority-p4); height: var(--h-pill); padding: 0 calc(var(--space-2) + var(--icon-sm) + var(--space-1)) 0 var(--space-2); border-radius: var(--radius-pill); background: var(--ad-pick-ink); color: var(--on-signal); font: var(--type-data); font-size: var(--text-xs); font-variant-numeric: tabular-nums; }
 .ad-priority-pick:focus-within { background: var(--ad-pick-ink); }
 .ad-priority-pick .ad-select__native { height: var(--h-pill); line-height: var(--h-pill); field-sizing: content; }
 /* The pill is as wide as the priority it shows ("P1"), never as its longest choice ("No priority"); it never stretches in a row. */
@@ -1602,7 +1604,7 @@ button.ad-card__name:focus-visible { outline: none; }
 .ad-priority-pick.ad-priority-pick--p0 { height: var(--h-field); padding: 0 var(--space-8) 0 var(--space-3); border-radius: var(--radius-page); background: var(--bg-raised); color: var(--text-muted); font: var(--type-name); line-height: var(--lh-tight); font-variant-numeric: normal; }
 .ad-priority-pick.ad-priority-pick--p0:focus-within { background: var(--bg-hover); }
 .ad-priority-pick--p0 .ad-select__native { height: var(--h-field); line-height: var(--h-field); }
-.ad-priority-pick .ad-select__caret, .ad-priority-pick:hover .ad-select__caret { right: var(--space-2); color: var(--on-accent); }
+.ad-priority-pick .ad-select__caret, .ad-priority-pick:hover .ad-select__caret { right: var(--space-2); color: var(--on-signal); }
 .ad-priority-pick--p0 .ad-select__caret { right: var(--space-3); color: var(--text-muted); }
 .ad-priority-pick--p0:hover .ad-select__caret { right: var(--space-3); color: var(--accent); }
 /* A pick box in a row's trail: its closed words at the detail size (the row's meta line), so the row's name reads larger. */
@@ -3546,7 +3548,7 @@ button.ad-milestone:focus-visible { outline: none; }
 :where(:root:not([data-ad-pointer])) .ad-alert-bar__head:focus-visible { box-shadow: var(--ring-select); }
 .ad-alert-bar__caret { width: var(--icon-sm); height: var(--icon-sm); color: var(--text-muted); }
 .ad-alert-bar__word { margin-right: var(--space-1); font: var(--type-heading); text-transform: uppercase; letter-spacing: var(--track-caps); }
-.ad-count-pill { display: inline-flex; align-items: center; justify-content: center; box-sizing: border-box; height: var(--h-pill); min-width: var(--space-8); padding: 0 var(--space-2); border-radius: var(--radius-pill); font: var(--type-data); font-size: var(--text-xs); color: var(--on-accent); font-variant-numeric: tabular-nums; }
+.ad-count-pill { display: inline-flex; align-items: center; justify-content: center; box-sizing: border-box; height: var(--h-pill); min-width: var(--space-8); padding: 0 var(--space-2); border-radius: var(--radius-pill); font: var(--type-data); font-size: var(--text-xs); color: var(--on-signal); font-variant-numeric: tabular-nums; }
 .ad-count-pill--p1 { background: var(--priority-p1); }
 .ad-count-pill--p2 { background: var(--priority-p2); }
 .ad-count-pill--p3 { background: var(--priority-p3); }
