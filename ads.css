@@ -2113,7 +2113,10 @@ button:hover > .ad-project-pill:not(.ad-project-pill--current) { color: var(--ac
 .ad-page-list__group > .ad-group-heading { padding-left: var(--ad-page-list-in); }
 /* The screens inside a page: the menu's nested rows under it, set in to its word; the one showing is lit as any row. */
 .ad-page-list__inside { margin-top: var(--space-1); }
-.ad-page-list__inside .ad-side__item { padding-left: calc(var(--ad-page-list-in) - var(--space-3) + var(--icon-lg) + var(--space-2)); }
+.ad-page-list__inside .ad-side__item { padding-left: calc(var(--ad-page-list-in) - var(--space-3) + var(--icon-md) + var(--space-2)); }
+/* A page list's icons a step smaller than the app menu's, on its pages and their inner rows alike. */
+.ad-page-list .ad-side__icon, .ad-page-list .ad-side__icon svg { width: var(--icon-md); }
+.ad-page-list .ad-side__icon svg { height: var(--icon-md); }
 /* A separator the person placed among the screens: a short hairline with room above and below, grabbed like any row. */
 .ad-menu__sep { list-style: none; display: flex; align-items: center; height: var(--space-3); cursor: grab; }
 .ad-menu__sep::before { content: ''; flex: 1; height: var(--border-w); margin: 0 var(--space-2); background: var(--border); }
@@ -2890,6 +2893,7 @@ button.ad-row__name:focus-visible { outline: none; }
 .ad-side-stripe--bottom::after { left: 0; right: 0; bottom: 0; height: var(--w-stripe); border-radius: 0 0 var(--radius-page) var(--radius-page); }
 /* Dots: a dot per thing in rows of ten, one gap apart, never wider than its box. */
 .ad-dots { --ad-dots-per-row: 10; display: grid; grid-template-columns: repeat(var(--ad-dots-per-row), var(--dot-size)); gap: var(--space-1); justify-content: start; max-width: 100%; overflow: hidden; }
+.ad-dots--hold { --ad-dots-rows: 2; grid-template-rows: repeat(var(--ad-dots-rows), var(--dot-size)); }
 
 /* src/components/Switch/Switch.css */
 /* Switch */
@@ -3268,6 +3272,8 @@ button.ad-bar { cursor: pointer; }
 .ad-bar__label { position: relative; z-index: 1; display: inline-flex; align-items: center; gap: var(--space-2); min-width: 0; margin-left: var(--ad-label-in); }
 .ad-bar--label-hidden .ad-bar__label, .ad-bar--label-hidden .ad-bar__outside { opacity: 0; }
 .ad-bar--dense { height: var(--h-bar-dense); padding: 0 var(--space-1); }
+/* Its name at the small size, the Detail rung in the bar's own ink, so it sits inside the 17 with air. */
+.ad-bar--dense .ad-bar__label { font: var(--type-detail); }
 /* Travel: an S curve across each ramp's width, inside the bar, drawn as the bar's edge, the same width and ink, the corner outside it shaded; the name stays solid. */
 .ad-bar--fade-start, .ad-bar--fade-end, .ad-bar--fade-both { --ad-fade-start: var(--h-bar); --ad-fade-end: var(--h-bar); background: transparent; background-image: none; }
 .ad-bar--dense.ad-bar--fade-start, .ad-bar--dense.ad-bar--fade-end, .ad-bar--dense.ad-bar--fade-both { --ad-fade-start: var(--h-bar-dense); --ad-fade-end: var(--h-bar-dense); }

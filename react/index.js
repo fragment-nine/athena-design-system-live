@@ -1758,9 +1758,9 @@ function Dot({ tone = "neutral", hue, priority, colour: picked, swatch, classNam
   const colour = useNamedColour(picked && PICKABLE.has(picked) ? picked : hue);
   return /* @__PURE__ */ jsx4("span", { "aria-hidden": "true", ...rest, "data-coloured": colour ? true : void 0, style: colour ? { ["--ad-dot"]: colour } : void 0, className: cx("ad-dot", `ad-dot--${tone}`, priority && `ad-dot--p${priority}`, swatch && "ad-dot--swatch", className) });
 }
-function Dots({ count, perRow = 10, rows, className, tone, hue, priority, colour, swatch, ...hooks }) {
+function Dots({ count, perRow = 10, rows, hold, className, tone, hue, priority, colour, swatch, ...hooks }) {
   const shown = Math.max(0, Math.round(rows ? Math.min(count, perRow * rows) : count));
-  return /* @__PURE__ */ jsx4("span", { "aria-hidden": "true", ...hooks, className: cx("ad-dots", className), style: { ["--ad-dots-per-row"]: perRow }, children: Array.from({ length: shown }, (_, i) => /* @__PURE__ */ jsx4(Dot, { tone, hue, priority, colour, swatch }, i)) });
+  return /* @__PURE__ */ jsx4("span", { "aria-hidden": "true", ...hooks, className: cx("ad-dots", hold && !!rows && "ad-dots--hold", className), style: { ["--ad-dots-per-row"]: perRow, ...hold && rows ? { ["--ad-dots-rows"]: rows } : {} }, children: Array.from({ length: shown }, (_, i) => /* @__PURE__ */ jsx4(Dot, { tone, hue, priority, colour, swatch }, i)) });
 }
 function Status({ label, tone = "neutral", colour, className, ...rest }) {
   return /* @__PURE__ */ jsxs2("span", { ...rest, className: cx("ad-status", className), children: [
@@ -3091,7 +3091,10 @@ function PageList({ ariaLabel, head, search, groups, current, onPick, inline }) 
           (p.face || p.icon) && /* @__PURE__ */ jsx18("span", { className: "ad-side__icon", "aria-hidden": "true", children: p.face ? /* @__PURE__ */ jsx18(Avatar, { name: p.face.name, src: p.face.src, decorative: true }) : slotIcon(p.icon) }),
           p.label
         ] }),
-        p.pages != null && p.pages.length > 0 && /* @__PURE__ */ jsx18("ul", { className: "ad-side__list ad-side__list--nested ad-page-list__inside", children: p.pages.map((s) => /* @__PURE__ */ jsx18("li", { children: /* @__PURE__ */ jsx18("button", { type: "button", className: "ad-side__item", "aria-current": s.id === current ? "page" : void 0, onClick: () => onPick(s.id), children: s.label }) }, s.id)) })
+        p.pages != null && p.pages.length > 0 && /* @__PURE__ */ jsx18("ul", { className: "ad-side__list ad-side__list--nested ad-page-list__inside", children: p.pages.map((s) => /* @__PURE__ */ jsx18("li", { children: /* @__PURE__ */ jsxs15("button", { type: "button", className: "ad-side__item", "aria-current": s.id === current ? "page" : void 0, onClick: () => onPick(s.id), children: [
+          s.icon && /* @__PURE__ */ jsx18("span", { className: "ad-side__icon", "aria-hidden": "true", children: slotIcon(s.icon) }),
+          s.label
+        ] }) }, s.id)) })
       ] }, p.id)) })
     ] }, g.label || g.pages[0]?.id))
   ] });
