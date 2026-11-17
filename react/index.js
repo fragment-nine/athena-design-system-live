@@ -6230,11 +6230,26 @@ function Table({ columns: named, rows: given, rowId, caption, sort, onSort, pick
   const wrap = useRef31(null);
   useKeyScroll(wrap);
   const [wide, setWide] = useState25(false);
+  const [snug, setSnug] = useState25(false);
   useLayoutEffect10(() => {
     const el = wrap.current;
     const t = el?.querySelector("table");
     if (!el || !t || typeof ResizeObserver === "undefined") return;
-    const check = () => setWide(t.offsetWidth > el.clientWidth + 1);
+    const check = () => {
+      const over = t.offsetWidth - el.clientWidth;
+      const head = t.querySelector("thead tr, tbody tr");
+      const saved = (head?.children.length ?? 0) * 2 * (tokenPx("--space-2", 8) - tokenPx("--space-1", 4));
+      if (over > 1 && el.dataset.snug == null) {
+        setSnug(true);
+        return;
+      }
+      if (el.dataset.snug != null && -over > saved + 1) {
+        setSnug(false);
+        setWide(false);
+        return;
+      }
+      setWide(over > 1);
+    };
     check();
     const ro = new ResizeObserver(check);
     ro.observe(el);
@@ -6288,7 +6303,7 @@ function Table({ columns: named, rows: given, rowId, caption, sort, onSort, pick
     const found = best;
     setNear((was) => was && found && was.kind === found.kind && was.at === found.at && was.x === found.x && was.y === found.y ? was : found);
   };
-  return /* @__PURE__ */ jsxs40("div", { ref: wrap, "data-wide": wide || void 0, className: cx("ad-table-wrap", inserts && "ad-table-wrap--inserts", className), onPointerMove: inserts ? findNear : void 0, onPointerLeave: inserts ? () => setNear(null) : void 0, children: [
+  return /* @__PURE__ */ jsxs40("div", { ref: wrap, "data-wide": wide || void 0, "data-snug": snug || void 0, className: cx("ad-table-wrap", inserts && "ad-table-wrap--inserts", className), onPointerMove: inserts ? findNear : void 0, onPointerLeave: inserts ? () => setNear(null) : void 0, children: [
     /* @__PURE__ */ jsxs40("table", { className: cx("ad-table", fixed && "ad-table--fixed", columnLines && "ad-table--column-lines"), children: [
       /* @__PURE__ */ jsx43("caption", { className: "ad-sr", children: caption }),
       /* @__PURE__ */ jsx43("thead", { children: /* @__PURE__ */ jsxs40("tr", { ref: headRow, children: [
@@ -6815,6 +6830,7 @@ function TimeGrid({ headerEnd, startHour, endHour, bookings = [], columns, now, 
     return () => ro?.disconnect();
   }, [headerEnd, visibleHours]);
   const [headH, setHeadH] = useState27(0);
+  const [asideCap, setAsideCap] = useState27(0);
   const [contentH, setContentH] = useState27(0);
   useLayoutEffect11(() => {
     const el = frame.current;
@@ -6828,6 +6844,12 @@ function TimeGrid({ headerEnd, startHour, endHour, bookings = [], columns, now, 
       const content = el.querySelector(".ad-time-grid__allday-content");
       const contentHeight = content?.offsetHeight ?? 0;
       setContentH((was) => was === contentHeight ? was : contentHeight);
+      if (asideWidth === "wide") {
+        const col = el.querySelector(".ad-time-grid__column");
+        const full = tokenPx("--w-aside", 160);
+        const cap = col ? Math.min(full, Math.floor(col.offsetWidth / 2)) : full;
+        setAsideCap((was) => was === cap ? was : cap);
+      }
       if (asideWidth === "narrow") return;
       el.querySelectorAll(".ad-time-grid__aside").forEach((a) => {
         let floor = -Infinity;
@@ -6932,7 +6954,7 @@ function TimeGrid({ headerEnd, startHour, endHour, bookings = [], columns, now, 
   const last = cols[cols.length - 1];
   const lastHeaded = !!last && (last.head != null || headBand || !!last.label);
   const corner = headerEnd != null && !scrolls && lastHeaded ? /* @__PURE__ */ jsx45("span", { className: "ad-time-grid__corner", children: headerEnd }) : null;
-  const grid = /* @__PURE__ */ jsxs42("div", { ref: frame, className: cx("ad-time-grid", !!visibleHours && "ad-time-grid--scrolls", `ad-time-grid--aside-${asideWidth}`, hourHeight === "roomy" && "ad-time-grid--roomy", className), role: "group", "aria-label": ariaLabel, tabIndex: visibleHours ? 0 : void 0, style: { ["--ad-hours"]: hours, ["--ad-allday-rows"]: allDayRows, ["--ad-column-count"]: cols.length, ["--ad-allday-content-h"]: `${contentH}px`, ...visibleHours ? { ["--ad-visible-hours"]: visibleHours } : {}, ...headH ? { ["--ad-head-h"]: `${headH}px` } : {} }, children: [
+  const grid = /* @__PURE__ */ jsxs42("div", { ref: frame, className: cx("ad-time-grid", !!visibleHours && "ad-time-grid--scrolls", `ad-time-grid--aside-${asideWidth}`, hourHeight === "roomy" && "ad-time-grid--roomy", className), role: "group", "aria-label": ariaLabel, tabIndex: visibleHours ? 0 : void 0, style: { ["--ad-hours"]: hours, ["--ad-allday-rows"]: allDayRows, ["--ad-column-count"]: cols.length, ["--ad-allday-content-h"]: `${contentH}px`, ...visibleHours ? { ["--ad-visible-hours"]: visibleHours } : {}, ...headH ? { ["--ad-head-h"]: `${headH}px` } : {}, ...asideWidth === "wide" && asideCap ? { ["--ad-aside"]: `${asideCap}px` } : {} }, children: [
     headerEnd != null && !scrolls && !lastHeaded && /* @__PURE__ */ jsx45("div", { className: "ad-time-grid__corner", children: headerEnd }),
     /* @__PURE__ */ jsxs42("div", { className: "ad-time-grid__gutter", "aria-hidden": "true", children: [
       anyBand && !headBand && /* @__PURE__ */ jsx45("div", { className: "ad-time-grid__band-space" }),

@@ -1153,7 +1153,7 @@ button.ad-year__day:focus-visible { outline: none; }
    section's own look, the ground and its washes under the section's fill, held to the window, as a pinned Ruler does: no darker strip behind
    the day names and no darker corner above the hours, wherever the section is in the window. In a card they keep the card's plane. */
 :is(:is(.ad-section-frame, .ad-frame__work) .ad-section, .ad-card--widget) .ad-time-grid:not(.ad-card:not(.ad-card--widget) .ad-time-grid) :is(.ad-time-grid__column > .ad-time-grid__day, .ad-time-grid__allday, .ad-time-grid__allday-space, .ad-time-grid__allday-content, .ad-time-grid__gutter > .ad-time-grid__content-space, .ad-time-grid__head), :is(:is(.ad-section-frame, .ad-frame__work) .ad-section, .ad-card--widget) .ad-time-grid:not(.ad-card:not(.ad-card--widget) .ad-time-grid) .ad-time-grid__gutter::before { background-image: var(--ad-section-plane, none); background-attachment: fixed; }
-.ad-time-grid--aside-wide { --ad-aside: var(--w-aside); }
+.ad-time-grid--aside-wide { --ad-aside: var(--w-aside); } /* TimeGrid holds it to half a day in a narrow window */
 .ad-time-grid--aside-day { --ad-aside: var(--w-side); }
 .ad-time-grid .ad-time-grid__body--aside { padding-right: var(--ad-aside); }
 .ad-time-grid .ad-time-grid__aside { width: var(--ad-aside); }
@@ -2958,6 +2958,8 @@ button.ad-row__name:focus-visible { outline: none; }
 .ad-table-wrap { position: relative; overflow-x: auto; }
 /* As wide as its box or narrower: no sideways scroll, so its heading holds against the page's scroll. */
 .ad-table-wrap:not([data-wide]) { overflow-x: visible; }
+/* Snug: a table too wide for its box draws its cells 4 a side, not 8, before it scrolls sideways. */
+.ad-table-wrap[data-snug] .ad-table :is(th[scope], td) { padding-left: var(--space-1); padding-right: var(--space-1); }
 /* A column's floor (Column.minWidth): an empty line as wide as the floor, so auto layout never squeezes the column under it. */
 .ad-table__floor { display: block; height: 0; overflow: hidden; }
 .ad-table__frozen--start, .ad-table__frozen--end { position: sticky; z-index: 1; background-color: var(--ad-under); }
