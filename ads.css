@@ -923,6 +923,19 @@ tr[data-ad-drop="after"] > :is(td, th) { box-shadow: inset 0 calc(var(--bw-selec
 .ad-board-lane__card-meta > .ad-board-lane__card-fact--cut { flex-shrink: 1; min-width: 0; max-width: 100%; }
 .ad-board-lane__card-fact-word { overflow: hidden; text-overflow: ellipsis; min-width: 0; }
 
+/* A todo's card on a board is one height: its name takes two lines' room, then ends in "…" (read or not); its bottom line is one row
+   (the deliverable's name gives way first), each part centred on one line, the words set tight so their glyphs, not their line boxes,
+   meet the icons' and the face's centre. */
+.ad-board-lane__cards > .ad-card:has(.ad-board-lane__card-meta) .ad-card__name { display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; height: 2lh; white-space: normal; overflow: hidden; }
+.ad-board-lane__cards > .ad-card:has(.ad-board-lane__card-meta) .ad-board-lane__card-meta { flex-wrap: nowrap; height: var(--h-btn-row); overflow: hidden; line-height: var(--lh-none); }
+.ad-board-lane__cards > .ad-card:has(.ad-board-lane__card-meta) .ad-board-lane__card-meta > * { display: inline-flex; align-items: center; }
+/* On that one row the role and the deliverable give way first, then the dates, marks and code; the faces never do, so they always stay
+   on the card. */
+.ad-board-lane__cards > .ad-card:has(.ad-board-lane__card-meta) .ad-board-lane__card-meta > * { flex: 0 1 auto; min-width: 0; overflow: hidden; }
+.ad-board-lane__cards > .ad-card:has(.ad-board-lane__card-meta) .ad-board-lane__card-meta > .ad-board-lane__card-fact { flex-shrink: 1000000; }
+.ad-board-lane__cards > .ad-card:has(.ad-board-lane__card-meta) .ad-board-lane__card-meta > .ad-board-lane__card-face { flex: none; overflow: visible; margin-left: auto; }
+.ad-board-lane__cards > .ad-card:has(.ad-board-lane__card-meta) .ad-board-lane__card-fact-word { white-space: nowrap; }
+
 /* src/components/Button/Button.css */
 /* Button and IconButton */
 .ad-button { display: inline-flex; align-items: center; justify-content: center; gap: var(--space-2); box-sizing: border-box; border: var(--border-w) solid var(--border); border-radius: var(--radius-control); margin: 0; font: var(--type-name); line-height: var(--lh-none); white-space: nowrap; background: var(--ad-lift, var(--bg-raised)); color: var(--text-primary); cursor: pointer; }
