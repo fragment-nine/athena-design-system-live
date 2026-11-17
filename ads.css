@@ -2134,10 +2134,10 @@ button:hover > .ad-project-pill:not(.ad-project-pill--current) { color: var(--ac
 .ad-page-list__group > .ad-group-heading { padding-left: var(--ad-page-list-in); }
 /* The screens inside a page: the menu's nested rows under it, set in to its word; the one showing is lit as any row. */
 .ad-page-list__inside { margin-top: var(--space-1); }
-.ad-page-list__inside .ad-side__item { padding-left: calc(var(--ad-page-list-in) - var(--space-3) + var(--icon-md) + var(--space-2)); }
-/* A page list's icons a step smaller than the app menu's, on its pages and their inner rows alike. */
-.ad-page-list .ad-side__icon, .ad-page-list .ad-side__icon svg { width: var(--icon-md); }
-.ad-page-list .ad-side__icon svg { height: var(--icon-md); }
+.ad-page-list__inside .ad-side__item { padding-left: calc(var(--ad-page-list-in) - var(--space-3) + var(--icon-sm) + var(--space-2)); }
+/* A page list's icons the small size, well under the app menu's, on its pages and their inner rows alike. */
+.ad-page-list .ad-side__icon, .ad-page-list .ad-side__icon svg { width: var(--icon-sm); }
+.ad-page-list .ad-side__icon svg { height: var(--icon-sm); }
 /* A separator the person placed among the screens: a short hairline with room above and below, grabbed like any row. */
 .ad-menu__sep { list-style: none; display: flex; align-items: center; height: var(--space-3); cursor: grab; }
 .ad-menu__sep::before { content: ''; flex: 1; height: var(--border-w); margin: 0 var(--space-2); background: var(--border); }
