@@ -7569,7 +7569,7 @@ function CommandSearch({ open, onClose, query, onQuery, results, onPick, label =
 import { useEffect as useEffect20, useLayoutEffect as useLayoutEffect13, useRef as useRef37, useState as useState29 } from "react";
 import { Fragment as Fragment28, jsx as jsx52, jsxs as jsxs48 } from "react/jsx-runtime";
 var useIsoLayoutEffect3 = typeof window === "undefined" ? useEffect20 : useLayoutEffect13;
-function TourStep({ open, anchor, step, total, title, children, onBack, onNext, onExit, backLabel = "Back", nextLabel = "Next", progressLabel = (s, t) => `${s} of ${t}`, placement, side: older, onClose, closeLabel }) {
+function TourStep({ open, anchor, heading, step, total, title, children, onBack, onNext, onExit, backLabel = "Back", nextLabel = "Next", backOff, nextOff, exitLabel = "Skip tour", progressLabel = (s, t) => `${s} of ${t}`, placement, side: older, onClose, closeLabel }) {
   const card = useRef37(null);
   const [rect, setRect] = useState29(null);
   const [size, setSize] = useState29(null);
@@ -7579,7 +7579,7 @@ function TourStep({ open, anchor, step, total, title, children, onBack, onNext, 
   useIsoLayoutEffect3(() => {
     if (!open) return;
     const place = () => {
-      const r = anchor.current?.getBoundingClientRect();
+      const r = anchor?.current?.getBoundingClientRect();
       if (r) setRect(r);
     };
     place();
@@ -7602,6 +7602,28 @@ function TourStep({ open, anchor, step, total, title, children, onBack, onNext, 
     const next = { w: el.offsetWidth, h: el.offsetHeight };
     setSize((o) => o && o.w === next.w && o.h === next.h ? o : next);
   });
+  const centred = anchor == null;
+  const foot = /* @__PURE__ */ jsx52("div", { className: "ad-tour-card__foot", children: /* @__PURE__ */ jsxs48(ButtonSizeScope, { size: "bar", children: [
+    onExit && /* @__PURE__ */ jsx52(Button, { className: "ad-tour-card__exit", onClick: onExit, children: exitLabel }),
+    onBack && /* @__PURE__ */ jsx52(Button, { onClick: onBack, disabled: backOff ?? step <= 1, children: backLabel }),
+    /* @__PURE__ */ jsx52(Button, { variant: "main", onClick: onNext, unavailable: nextOff, "data-autofocus": true, children: nextLabel })
+  ] }) });
+  const body = /* @__PURE__ */ jsxs48(Fragment28, { children: [
+    onClose && /* @__PURE__ */ jsx52(CloseButton, { onClose, label: closeLabel }),
+    /* @__PURE__ */ jsxs48("div", { className: "ad-tour-card__top", children: [
+      heading != null && /* @__PURE__ */ jsx52("span", { className: "ad-tour-card__heading", children: heading }),
+      /* @__PURE__ */ jsx52("div", { className: "ad-tour-card__ticks", "aria-label": progressLabel(step, total), role: "img", children: Array.from({ length: total }, (_, i) => /* @__PURE__ */ jsx52("i", { "data-done": i < step || void 0 }, i)) })
+    ] }),
+    /* @__PURE__ */ jsx52("h2", { className: "ad-tour-card__title", children: title }),
+    /* @__PURE__ */ jsx52("div", { className: "ad-tour-card__text", children }),
+    foot
+  ] });
+  if (open && centred) {
+    return /* @__PURE__ */ jsxs48(Portal, { children: [
+      /* @__PURE__ */ jsx52("div", { className: "ad-tour-dim", "aria-hidden": "true" }),
+      /* @__PURE__ */ jsx52("div", { ref: card, role: "dialog", "aria-label": typeof title === "string" ? title : void 0, tabIndex: -1, className: cx("ad-tour-card", "ad-tour-card--centre", onClose && "ad-tour-card--closes"), children: body })
+    ] });
+  }
   if (!open || !rect) return null;
   const gap = tokenPx("--notch-size", 12);
   const pad = tokenPx("--space-1", 4);
@@ -7635,16 +7657,7 @@ function TourStep({ open, anchor, step, total, title, children, onBack, onNext, 
   if (!size) cardStyle.visibility = "hidden";
   return /* @__PURE__ */ jsxs48(Portal, { children: [
     /* @__PURE__ */ jsx52("div", { className: "ad-spotlight", "aria-hidden": "true", style: { top: rect.top - pad, left: rect.left - pad, width: rect.width + pad * 2, height: rect.height + pad * 2 } }),
-    /* @__PURE__ */ jsxs48("div", { ref: card, role: "dialog", "aria-label": typeof title === "string" ? title : void 0, tabIndex: -1, className: cx("ad-tour-card", `ad-tour-card--${side}`, onClose && "ad-tour-card--closes"), style: cardStyle, children: [
-      onClose && /* @__PURE__ */ jsx52(CloseButton, { onClose, label: closeLabel }),
-      /* @__PURE__ */ jsx52("div", { className: "ad-tour-card__ticks", "aria-label": progressLabel(step, total), role: "img", children: Array.from({ length: total }, (_, i) => /* @__PURE__ */ jsx52("i", { "data-done": i < step || void 0 }, i)) }),
-      /* @__PURE__ */ jsx52("h2", { className: "ad-tour-card__title", children: title }),
-      /* @__PURE__ */ jsx52("div", { className: "ad-tour-card__text", children }),
-      /* @__PURE__ */ jsx52("div", { className: "ad-tour-card__foot", children: /* @__PURE__ */ jsxs48(ButtonSizeScope, { size: "bar", children: [
-        onBack && step > 1 && /* @__PURE__ */ jsx52(Button, { onClick: onBack, children: backLabel }),
-        /* @__PURE__ */ jsx52(Button, { variant: "main", onClick: onNext, "data-autofocus": true, children: nextLabel })
-      ] }) })
-    ] })
+    /* @__PURE__ */ jsx52("div", { ref: card, role: "dialog", "aria-label": typeof title === "string" ? title : void 0, tabIndex: -1, className: cx("ad-tour-card", `ad-tour-card--${side}`, onClose && "ad-tour-card--closes"), style: cardStyle, children: body })
   ] });
 }
 function PixxBrief({ open, face, greeting, children, onSnooze, onGotIt, snoozeLabel = "Snooze", gotItLabel = "Got it" }) {
