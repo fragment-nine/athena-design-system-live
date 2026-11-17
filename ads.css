@@ -1620,7 +1620,9 @@ button.ad-card__name:focus-visible { outline: none; }
    field keeps the room. Read off the row's own width: nothing for the app to pass. */
 .ad-field-row { display: grid; grid-template-columns: clamp(var(--w-field-name), (100% - var(--w-menu) * 2 - var(--space-4)) * 1000, var(--w-menu)) minmax(0, var(--w-card)); justify-content: start; align-items: center; column-gap: var(--space-4); min-height: var(--h-row); border-bottom: var(--border-w) solid var(--border); }
 .ad-field-row__label { display: inline-flex; align-items: center; gap: var(--space-2); font: var(--type-body); line-height: var(--lh-tight); color: var(--text-secondary); }
-.ad-field-row__control { display: flex; align-items: center; justify-self: start; }
+.ad-field-row__control { display: flex; align-items: center; justify-self: start; gap: var(--space-2); min-width: 0; max-width: 100%; }
+/* A row's controls stay inside their column: two or more fields share it, a step apart, and give way before they pass its edge. */
+.ad-field-row__control > .ad-field { flex: 0 1 auto; min-width: 0; }
 /* The label beside its field (a form, a pop-over field): no hairline, the field right after the words. */
 .ad-field-row--beside { display: flex; gap: var(--space-3); min-height: var(--h-field); max-width: var(--w-page-max); border-bottom: 0; }
 .ad-field-row--beside .ad-field-row__control { margin-left: 0; }
