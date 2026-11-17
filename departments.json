@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "version": "0.19.1",
-  "sourceHash": "bf3385b7dd32b14ac48fa7a74589529c717bfc4d3cd92c8f7248ba3b4e421570",
+  "sourceHash": "582b8994e0c92001f56b1625beac2d40226a25940e27b10e5be53202e64d06e8",
   "departments": [
     {
       "id": "lighting",
@@ -192,7 +192,7 @@
       "dept-automation": "#677c97",
       "dept-moment": "#8b7a32",
       "text-muted": "#585860",
-      "accent": "#ac3f1c",
+      "accent": "#e16d48",
       "icon-sm": "14px",
       "icon-md": "20px",
       "icon-lg": "24px",
