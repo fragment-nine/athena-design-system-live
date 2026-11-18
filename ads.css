@@ -135,6 +135,7 @@
   --shadow-pixx: drop-shadow(0 3px 6px rgba(0, 0, 0, 0.5));
   --shadow-pixx-open: drop-shadow(0 0 2px #e16d48) drop-shadow(0 3px 6px rgba(0, 0, 0, 0.5));
   --shadow-pixx-empty: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.5));
+  --tint-project-pill: 75%;
 }
 [data-theme="light"] {
   color-scheme: light;
@@ -260,6 +261,7 @@
   --shadow-pixx: drop-shadow(0 3px 6px rgba(0, 0, 0, 0.18));
   --shadow-pixx-open: drop-shadow(0 0 2px #e16d48) drop-shadow(0 3px 6px rgba(0, 0, 0, 0.18));
   --shadow-pixx-empty: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.18));
+  --tint-project-pill: 30%;
 }
 :root {
   --space-hair: 2px;
@@ -619,7 +621,6 @@
   --tint-field-bar: 22%;
   --tint-lane-wash: 8%;
   --tint-day-fill: 24%;
-  --tint-project-pill: 30%;
   --tint-flash: 28%;
   --tint-bar-edge: 50%;
   --tint-lane-edge: 45%;
