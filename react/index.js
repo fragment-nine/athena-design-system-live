@@ -2980,11 +2980,12 @@ function useMenuDrag(onReorder) {
 function ProjectPill({ code: code2, current, color, onPress, pressLabel, column }) {
   const hue = projectPillHue(color);
   const shown = hue && !current ? hue : void 0;
+  const style = { ["--ad-code-len"]: code2.length, ...shown ? { ["--ad-pill"]: shown } : {} };
   if (onPress) return /* @__PURE__ */ jsx18("button", { type: "button", "aria-label": pressLabel ?? code2, onClick: (e) => {
     e.stopPropagation();
     onPress();
-  }, className: cx("ad-project-pill", "ad-project-pill--press", current && "ad-project-pill--current", column && "ad-project-pill--column"), style: shown ? { ["--ad-pill"]: shown } : void 0, "data-coloured": shown ? true : void 0, children: code2 });
-  return /* @__PURE__ */ jsx18("span", { className: cx("ad-project-pill", current && "ad-project-pill--current", column && "ad-project-pill--column"), style: shown ? { ["--ad-pill"]: shown } : void 0, "data-coloured": shown ? true : void 0, children: code2 });
+  }, className: cx("ad-project-pill", "ad-project-pill--press", current && "ad-project-pill--current", column && "ad-project-pill--column"), style, "data-coloured": shown ? true : void 0, children: code2 });
+  return /* @__PURE__ */ jsx18("span", { className: cx("ad-project-pill", current && "ad-project-pill--current", column && "ad-project-pill--column"), style, "data-coloured": shown ? true : void 0, children: code2 });
 }
 function Rail({ foot = [], screens, projects, projectsScreen, current, onSelect, onHome, onSettings, onToggle, onReorder, labels: l = {} }) {
   const L = { home: "Home", settings: "Settings", expand: "Open the menu", menu: "Main", ...l };
