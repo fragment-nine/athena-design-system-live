@@ -64,6 +64,7 @@
   --pick-red: var(--status-error);
   --pick-purple: #9a6db0;
   --pick-white: #f2f2f0;
+  --pick-black: #5c5c63;
   --priority-p1: #e96d61;
   --priority-p2: #ed9432;
   --priority-p3: #598bf8;
@@ -199,6 +200,7 @@
   --pick-red: var(--status-error);
   --pick-purple: #805296;
   --pick-white: #3f3f46;
+  --pick-black: #18181b;
   --priority-p1: #e96d61;
   --priority-p2: #ed9432;
   --priority-p3: #598bf8;

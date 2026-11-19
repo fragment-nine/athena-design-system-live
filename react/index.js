@@ -1747,7 +1747,7 @@ import { useState as useState4 } from "react";
 
 // src/components/Status/Status.tsx
 import { jsx as jsx4, jsxs as jsxs2 } from "react/jsx-runtime";
-var pickColours = ["grey", "blue", "teal", "green", "amber", "orange", "red", "purple", "white"];
+var pickColours = ["grey", "blue", "teal", "green", "amber", "orange", "red", "purple", "white", "black"];
 var PICKABLE = new Set(pickColours);
 function useNamedColour(name) {
   const isPick = !!name && PICKABLE.has(name);
@@ -5874,13 +5874,14 @@ function Envelope({ side }) {
     /* @__PURE__ */ jsx42("path", { d: curve, vectorEffect: "non-scaling-stroke" })
   ] });
 }
-function Bar({ code: code2, travel, dim, day: dayGiven, billing, label, unconfirmed, deal, backup, color, selected, ghost, startLabel, endLabel, lead, children, thin, labelOutside, onOpen: onOpenGiven, ends, barProps, labelInset, labelHidden, late, dense, fade, fadeStart, fadeEnd, onCramped, detail, suffix, className, style }) {
+function Bar({ code: code2, travel, dim, day: dayGiven, billing, label, unconfirmed, deal, backup, color, stripe, selected, ghost, startLabel, endLabel, lead, children, thin, labelOutside, onOpen: onOpenGiven, ends, barProps, labelInset, labelHidden, late, dense, fade, fadeStart, fadeEnd, onCramped, detail, suffix, className, style }) {
   const onOpen = ghost ? void 0 : onOpenGiven;
   const asButton = !!onOpen && !ends;
   const Tag2 = asButton ? "button" : "div";
   const hue = useHue(color);
   const hooks = strip4(barProps);
-  const paint = barColour(color, hue);
+  const kind = useNamedColour(stripe);
+  const paint = { ...barColour(color, hue), ...kind ? { "--ad-stripe": kind } : {} };
   const plain = !thin && !code2;
   const day = code2 ? dayGiven ?? (travel ? "travel" : dim ? "dark" : void 0) : void 0;
   const root = useRef30(null);
