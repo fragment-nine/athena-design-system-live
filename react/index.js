@@ -2977,14 +2977,14 @@ function useMenuDrag(onReorder) {
     }
   } : {};
 }
-function ProjectPill({ code: code2, current, color, onPress, pressLabel }) {
+function ProjectPill({ code: code2, current, color, onPress, pressLabel, column }) {
   const hue = projectPillHue(color);
   const shown = hue && !current ? hue : void 0;
   if (onPress) return /* @__PURE__ */ jsx18("button", { type: "button", "aria-label": pressLabel ?? code2, onClick: (e) => {
     e.stopPropagation();
     onPress();
-  }, className: cx("ad-project-pill", "ad-project-pill--press", current && "ad-project-pill--current"), style: shown ? { ["--ad-pill"]: shown } : void 0, "data-coloured": shown ? true : void 0, children: code2 });
-  return /* @__PURE__ */ jsx18("span", { className: cx("ad-project-pill", current && "ad-project-pill--current"), style: shown ? { ["--ad-pill"]: shown } : void 0, "data-coloured": shown ? true : void 0, children: code2 });
+  }, className: cx("ad-project-pill", "ad-project-pill--press", current && "ad-project-pill--current", column && "ad-project-pill--column"), style: shown ? { ["--ad-pill"]: shown } : void 0, "data-coloured": shown ? true : void 0, children: code2 });
+  return /* @__PURE__ */ jsx18("span", { className: cx("ad-project-pill", current && "ad-project-pill--current", column && "ad-project-pill--column"), style: shown ? { ["--ad-pill"]: shown } : void 0, "data-coloured": shown ? true : void 0, children: code2 });
 }
 function Rail({ foot = [], screens, projects, projectsScreen, current, onSelect, onHome, onSettings, onToggle, onReorder, labels: l = {} }) {
   const L = { home: "Home", settings: "Settings", expand: "Open the menu", menu: "Main", ...l };
@@ -7274,6 +7274,17 @@ function BudgetBar({ fraction, figure, note = "worked", remainder, end, ariaLabe
     ] })
   ] });
 }
+function BudgetLines({ lines, ariaLabel, className }) {
+  return /* @__PURE__ */ jsx47("div", { className: cx("ad-budget-lines", className), role: "list", "aria-label": ariaLabel, children: lines.map((l) => /* @__PURE__ */ jsxs44("div", { className: "ad-budget-lines__line", role: "listitem", ...l.hooks, children: [
+    /* @__PURE__ */ jsx47("span", { className: "ad-budget-lines__label", children: l.label }),
+    /* @__PURE__ */ jsx47(FigureTip, { tip: l.tip, children: /* @__PURE__ */ jsx47("span", { className: "ad-budget-lines__figure", tabIndex: l.tip ? 0 : void 0, children: l.figure }) }),
+    /* @__PURE__ */ jsx47("span", { className: "ad-budget-lines__of", children: l.of }),
+    l.of != null && l.fraction != null && /* @__PURE__ */ jsx47("span", { className: "ad-budget-lines__bar", children: /* @__PURE__ */ jsx47(ProgressBar, { thin: true, fraction: l.fraction, planned: l.planned, ariaLabel: l.ariaLabel ?? String(l.label) }) })
+  ] }, l.id)) });
+}
+function FigureTip({ tip, children }) {
+  return tip ? /* @__PURE__ */ jsx47(Tooltip, { text: tip, children }) : children;
+}
 function ProgressBar({ fraction, ariaLabel, thin, planned, marks = [], meter: asMeter }) {
   const meter = !!asMeter || planned != null || marks.length > 0;
   return /* @__PURE__ */ jsxs44("div", { className: cx("ad-progress", thin && "ad-progress--thin"), role: meter ? "meter" : "progressbar", "aria-label": ariaLabel, "aria-valuemin": 0, "aria-valuemax": meter ? Math.max(100, Math.round(fraction * 100)) : 100, "aria-valuenow": Math.round(fraction * 100), children: [
@@ -7903,6 +7914,7 @@ export {
   BoardLane,
   Booking,
   BudgetBar,
+  BudgetLines,
   Button,
   Caption,
   Card,
