@@ -20,7 +20,7 @@ import {
   sameDay,
   searchRank,
   weekStartOf
-} from "../chunk-ZZ6PEXND.js";
+} from "../chunk-Y7FCI2EB.js";
 import {
   describeViolations,
   scanIn
@@ -3412,7 +3412,7 @@ function ItemDates({ review, deadline, today, done, repeat, labels, layout = "in
   const empty = /* @__PURE__ */ jsx21("span", { className: "ad-row-date", "aria-hidden": "true" });
   return /* @__PURE__ */ jsxs18("span", { className: cx("ad-item-dates", layout === "columns" && "ad-item-dates--columns"), children: [
     review ? /* @__PURE__ */ jsx21(RowDate, { due: review, today, done, icon: "review date", what: labels?.review ?? "Review date", repeat }) : layout === "columns" ? empty : null,
-    deadline ? /* @__PURE__ */ jsx21(RowDate, { due: deadline, today, done, icon: "deadline", what: labels?.deadline ?? "Due date", repeat: review ? void 0 : repeat }) : layout === "columns" ? empty : null
+    deadline ? /* @__PURE__ */ jsx21(RowDate, { due: deadline, today, done, icon: "deadline", what: labels?.deadline ?? "Deadline", repeat: review ? void 0 : repeat }) : layout === "columns" ? empty : null
   ] });
 }
 function RowDate({ due, today, until, done, milestone, what, icon, countdown: countdown2, repeat }) {
@@ -3484,11 +3484,11 @@ function TodoCheck({ hooks, checked, onChange, priority = 4, ariaLabel, disabled
 function UnseenDeliverable({ onAcknowledge, acknowledgeLabel }) {
   return /* @__PURE__ */ jsx21(ButtonSizeScope, { size: "row", children: /* @__PURE__ */ jsx21(IconButton, { label: acknowledgeLabel, onClick: onAcknowledge, className: "ad-unseen-mark", children: /* @__PURE__ */ jsx21(Icon, { job: "kind-deliverable", size: "sm", fill: true }) }) });
 }
-function TodoRow({ mark, ringProps, factProps, dragging, flash, name, priority, done, onTick, due, review, deadline, dateLayout = "inline", today, dept, who, selected, onOpen, completeLabel = "Complete", unacknowledged, onAcknowledge, acknowledgeLabel = "Acknowledge", repeat, pastDeadline, pastDeadlineLabel = "Due date passed", role, deliverable, project, picking, onPressDate, onPressWho, onPressDeliverable, pressLabels, onRename, onPressProject, onPressDept, rowProps, cells, ring = true, whoMax }) {
+function TodoRow({ mark, ringProps, factProps, dragging, flash, name, priority, done, onTick, due, review, deadline, dateLayout = "inline", today, dept, who, selected, onOpen, completeLabel = "Complete", unacknowledged, onAcknowledge, acknowledgeLabel = "Acknowledge", repeat, pastDeadline, pastDeadlineLabel = "Deadline passed", dateLabels, role, deliverable, project, picking, onPressDate, onPressWho, onPressDeliverable, pressLabels, onRename, onPressProject, onPressDept, rowProps, cells, ring = true, whoMax }) {
   const d = (k) => factProps?.[k] ? Object.fromEntries(Object.entries(factProps[k]).filter(([n]) => n.startsWith("data-"))) : {};
   const roleWords = Array.isArray(role) ? role.join(" \xB7 ") : role;
   const dated = !!(review || deadline);
-  const plain = dated || dateLayout === "columns" ? /* @__PURE__ */ jsx21("span", { ...d("date"), className: "ad-row__fact-hook", children: /* @__PURE__ */ jsx21(ItemDates, { review: dateLayout === "columns" ? review ?? due : review, deadline, today, done, repeat, layout: dateLayout }) }) : due ? /* @__PURE__ */ jsx21("span", { ...d("date"), className: "ad-row__fact-hook", children: /* @__PURE__ */ jsx21(RowDate, { due, today, done, icon: "calendar", repeat }) }) : null;
+  const plain = dated || dateLayout === "columns" ? /* @__PURE__ */ jsx21("span", { ...d("date"), className: "ad-row__fact-hook", children: /* @__PURE__ */ jsx21(ItemDates, { review: dateLayout === "columns" ? review ?? due : review, deadline, today, done, repeat, layout: dateLayout, labels: dateLabels }) }) : due ? /* @__PURE__ */ jsx21("span", { ...d("date"), className: "ad-row__fact-hook", children: /* @__PURE__ */ jsx21(RowDate, { due, today, done, icon: "calendar", repeat }) }) : null;
   const date = plain && onPressDate ? /* @__PURE__ */ jsx21(RowPress, { label: pressLabels?.date ?? "Change the date", onPress: onPressDate, children: plain }) : plain;
   const loneRepeat = repeat && !due && !dated ? /* @__PURE__ */ jsx21("span", { ...d("repeat"), className: "ad-row__fact", role: "img", "aria-label": String(repeat), title: String(repeat), children: /* @__PURE__ */ jsx21(Icon, { job: "repeat", size: "sm" }) }) : null;
   const extras = loneRepeat || pastDeadline || roleWords || deliverable;
@@ -6002,7 +6002,7 @@ function Bar({ code: code2, travel, dim, day: dayGiven, billing, label, unconfir
 }
 function BarMarker({ kind, at, due, today, done, labels: l = {} }) {
   const late = kind === "review" && !done && due instanceof Date && today instanceof Date && daysBetween(today, due) < 0;
-  const word = kind === "review" ? l.review ?? "Review date" : l.deadline ?? "Due date";
+  const word = kind === "review" ? l.review ?? "Review date" : l.deadline ?? "Deadline";
   const label = late ? `${word} ${l.passed ?? "passed"}` : word;
   return /* @__PURE__ */ jsx42("span", { className: cx("ad-bar-marker", late && "ad-bar-marker--late"), style: { left: `clamp(calc(var(--icon-md) / 2), ${Math.max(0, Math.min(1, at)) * 100}%, calc(100% - var(--icon-md) / 2))` }, role: "img", "aria-label": label, title: label, children: /* @__PURE__ */ jsx42(Icon, { name: kind === "review" ? "eye" : "paper-plane-tilt", fill: true }) });
 }

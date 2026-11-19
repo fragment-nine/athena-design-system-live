@@ -386,7 +386,7 @@ var ENGLISH = {
     today: ["today", "due today"],
     tomorrow: ["tomorrow", "due tomorrow"],
     overdue: ["overdue", "due overdue"],
-    noDate: ["no date", "no due date"],
+    noDate: ["no date", "no deadline"],
     recurring: ["recurring"],
     unassigned: ["unassigned", "no assignee", "not assigned"],
     noPriority: ["no priority"],
@@ -1950,4 +1950,4 @@ export {
   parseDurationHours,
   formatDurationHours
 };
-//# sourceMappingURL=chunk-ZZ6PEXND.js.map
+//# sourceMappingURL=chunk-Y7FCI2EB.js.map
