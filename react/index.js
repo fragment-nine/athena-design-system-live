@@ -6159,6 +6159,9 @@ function ChartKey({ items, ariaLabel = "Key", columns }) {
     const swatch = typeof it.mark === "string" && KEY_MARKS.has(it.mark) ? /* @__PURE__ */ jsx42("span", { "aria-hidden": "true", className: `ad-chart-key__swatch ad-chart-key__swatch--${it.mark}` }) : it.mark && typeof it.mark === "object" && "code" in it.mark ? (() => {
       const m = it.mark;
       return /* @__PURE__ */ jsx42("span", { "aria-hidden": "true", className: cx("ad-bar", "ad-bar--code", "ad-chart-key__code", m.day && `ad-bar--day-${m.day}`, m.day === "travel" && "ad-bar--travel", m.billing && m.billing !== "plain" && `ad-bar--bill-${m.billing}`), children: m.code });
+    })() : it.mark && typeof it.mark === "object" && "part" in it.mark ? (() => {
+      const c = projectPillHue(it.mark.part);
+      return /* @__PURE__ */ jsx42("span", { "aria-hidden": "true", className: "ad-chart-key__part ad-chart-part", style: c ? { "--ad-part": c } : void 0 });
     })() : it.mark && typeof it.mark === "object" && "presence" in it.mark ? /* @__PURE__ */ jsx42(PresenceSwatch, { colour: it.mark.presence, away: it.mark.away }) : /* @__PURE__ */ jsx42("span", { "aria-hidden": "true", className: "ad-chart-key__mark", children: it.mark });
     const { className: _c, style: _s, ...hooks } = it.itemProps ?? {};
     return it.onPress ? /* @__PURE__ */ jsxs39("button", { type: "button", ...hooks, className: "ad-chart-key__item ad-chart-key__item--press", onClick: (e) => {
@@ -7250,23 +7253,27 @@ function MapNightDot() {
 
 // src/components/Charts/Charts.tsx
 import { Fragment as Fragment26, jsx as jsx47, jsxs as jsxs44 } from "react/jsx-runtime";
+var partStyle = (hue) => {
+  const c = projectPillHue(hue);
+  return c ? { "--ad-part": c } : void 0;
+};
 function AmountBars({ items, max, ariaLabel, className }) {
   const top = max ?? Math.max(1, ...items.map((i) => i.value));
   return /* @__PURE__ */ jsx47("div", { className: cx("ad-amounts", className), role: "list", "aria-label": ariaLabel, children: items.map((i) => /* @__PURE__ */ jsxs44("div", { className: "ad-amounts__row", role: "listitem", children: [
     /* @__PURE__ */ jsx47("span", { className: "ad-amounts__label", children: i.label }),
     /* @__PURE__ */ jsxs44("span", { className: "ad-amounts__track", children: [
-      /* @__PURE__ */ jsx47("span", { className: "ad-amounts__bar", style: { width: `${Math.max(0, i.value / top) * 100}%` } }),
+      /* @__PURE__ */ jsx47("span", { className: cx("ad-amounts__bar", projectPillHue(i.hue) && "ad-chart-part"), style: { width: `${Math.max(0, i.value / top) * 100}%`, ...partStyle(i.hue) } }),
       /* @__PURE__ */ jsx47("span", { className: "ad-amounts__value", children: i.display })
     ] })
   ] }, i.id)) });
 }
-function BudgetBar({ fraction, figure, note = "worked", remainder, end, ariaLabel, planned, marks = [], className }) {
+function BudgetBar({ fraction, figure, note = "worked", remainder, end, ariaLabel, planned, marks = [], hue, segments: segments2, className }) {
   return /* @__PURE__ */ jsxs44("div", { className: cx("ad-budget", className), children: [
     /* @__PURE__ */ jsx47("div", { className: "ad-budget__figure", children: figure }),
-    /* @__PURE__ */ jsx47(ProgressBar, { meter: true, fraction, ariaLabel: ariaLabel ?? String(figure), planned, marks: marks.length ? marks : void 0 }),
+    /* @__PURE__ */ jsx47(ProgressBar, { meter: true, fraction, ariaLabel: ariaLabel ?? String(figure), planned, marks: marks.length ? marks : void 0, hue, segments: segments2 }),
     /* @__PURE__ */ jsxs44("div", { className: "ad-budget__foot", children: [
       /* @__PURE__ */ jsx47("span", { children: note }),
-      /* @__PURE__ */ jsxs44("span", { children: [
+      /* @__PURE__ */ jsxs44("span", { className: cx(fraction > 1 && "ad-budget__over"), children: [
         remainder,
         end && /* @__PURE__ */ jsxs44(Fragment26, { children: [
           " \xB7 ",
@@ -7287,12 +7294,24 @@ function BudgetLines({ lines, ariaLabel, className }) {
 function FigureTip({ tip, children }) {
   return tip ? /* @__PURE__ */ jsx47(Tooltip, { text: tip, children }) : children;
 }
-function ProgressBar({ fraction, ariaLabel, thin, planned, marks = [], meter: asMeter }) {
+function ProgressBar({ fraction, ariaLabel, thin, planned, marks = [], meter: asMeter, hue, segments: segments2 }) {
   const meter = !!asMeter || planned != null || marks.length > 0;
+  const f = Math.max(0, Number.isFinite(fraction) ? fraction : 0);
+  const over = meter && f > 1;
+  const scale = over ? 1 / f : 1;
+  const pct = (n) => `${Math.max(0, Math.min(1, n)) * scale * 100}%`;
+  const parts = segments2 ?? (projectPillHue(hue) ? [{ hue, value: f }] : void 0);
+  let at = 0;
   return /* @__PURE__ */ jsxs44("div", { className: cx("ad-progress", thin && "ad-progress--thin"), role: meter ? "meter" : "progressbar", "aria-label": ariaLabel, "aria-valuemin": 0, "aria-valuemax": meter ? Math.max(100, Math.round(fraction * 100)) : 100, "aria-valuenow": Math.round(fraction * 100), children: [
-    planned != null && /* @__PURE__ */ jsx47("span", { className: "ad-progress__planned", style: { width: `${Math.max(0, Math.min(1, planned)) * 100}%` } }),
-    /* @__PURE__ */ jsx47("span", { className: "ad-progress__done", style: { width: `${Math.max(0, Math.min(1, fraction)) * 100}%` } }),
-    marks.map((m) => /* @__PURE__ */ jsx47("span", { className: "ad-progress__mark", role: "img", "aria-label": m.label, title: m.label, style: { left: `${Math.max(0, Math.min(1, m.at)) * 100}%` } }, m.label))
+    planned != null && /* @__PURE__ */ jsx47("span", { className: "ad-progress__planned", style: { width: pct(planned) } }),
+    parts ? parts.map((p, i) => {
+      const from = Math.min(1, at);
+      at += Math.max(0, p.value);
+      const to = Math.min(1, at);
+      return to > from ? /* @__PURE__ */ jsx47("span", { className: cx("ad-progress__done", "ad-progress__part", projectPillHue(p.hue) && "ad-chart-part"), style: { left: pct(from), width: pct(to - from), ...partStyle(p.hue) } }, i) : null;
+    }) : /* @__PURE__ */ jsx47("span", { className: "ad-progress__done", style: { width: pct(f) } }),
+    over && /* @__PURE__ */ jsx47("span", { className: "ad-progress__over", style: { left: pct(1) } }),
+    marks.map((m) => /* @__PURE__ */ jsx47("span", { className: "ad-progress__mark", role: "img", "aria-label": m.label, title: m.label, style: { left: pct(m.at) } }, m.label))
   ] });
 }
 function OverTime({ periods, currentId, grid: lines = [], size, ariaLabel, className }) {
@@ -7304,7 +7323,10 @@ function OverTime({ periods, currentId, grid: lines = [], size, ariaLabel, class
       grid.map((g) => /* @__PURE__ */ jsx47("div", { className: "ad-overtime__grid", style: { bottom: `${g.value / top * 100}%` }, children: /* @__PURE__ */ jsx47("span", { children: g.display }) }, g.value)),
       /* @__PURE__ */ jsx47("div", { className: "ad-overtime__columns", role: "list", children: periods.map((p) => {
         const cur = p.id === currentId;
-        return /* @__PURE__ */ jsx47("div", { className: "ad-overtime__slot", role: "listitem", "aria-label": `${p.label}: ${p.display}`, children: /* @__PURE__ */ jsx47("div", { className: cx("ad-overtime__column", cur && "ad-overtime__column--current"), style: { height: `${p.value / top * 100}%` }, children: cur && !compact && /* @__PURE__ */ jsx47("span", { className: "ad-overtime__cap", children: p.display }) }) }, p.id);
+        return /* @__PURE__ */ jsx47("div", { className: "ad-overtime__slot", role: "listitem", "aria-label": `${p.label}: ${p.display}`, children: /* @__PURE__ */ jsxs44("div", { className: cx("ad-overtime__column", cur && "ad-overtime__column--current", p.parts && "ad-overtime__column--parts"), style: { height: `${p.value / top * 100}%` }, children: [
+          cur && !compact && /* @__PURE__ */ jsx47("span", { className: "ad-overtime__cap", children: p.display }),
+          p.parts?.map((q, i) => /* @__PURE__ */ jsx47("span", { className: cx("ad-overtime__part", projectPillHue(q.hue) && "ad-chart-part"), style: { height: `${p.value > 0 ? Math.max(0, q.value) / p.value * 100 : 0}%`, ...partStyle(q.hue) } }, i))
+        ] }) }, p.id);
       }) })
     ] }),
     !compact && /* @__PURE__ */ jsxs44("div", { className: "ad-overtime__labels", "aria-hidden": "true", children: [

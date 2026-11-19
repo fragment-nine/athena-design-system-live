@@ -652,6 +652,7 @@
   --cloud-dot-alpha-quiet: 1;
   --cloud-edge-alpha-quiet: var(--cloud-dot-alpha-quiet);
   --opacity-faint: 0.4;
+  --tint-chart-part: var(--tint-cat-deep);
   --tint-cat-deep: 55%;
   /* The sizes a rung names: 13 Detail and Heading, 14 Name and Body, 20 Title, 17 Title for a group's name; 12 is Data's smallest slot; 28, 44, 56 and 88 are Title's big sizes. 12 is the floor for everything but a project's code, whose letters sit at 11 in its pill. */
   --text-xs: 12px;
@@ -826,6 +827,10 @@
    row placed straight in a card's section or body draws none of its own either: the next child's hairline splits them. */
 :is(.ad-popover__section-body, .ad-popover__body, .ad-popover, .ad-section__body, .ad-list-section__body, .ad-popover__section-body > *, .ad-popover__body > *) :is(.ad-row, .ad-add-row, .ad-field-row):not(:has(~ :is(.ad-row, .ad-add-row, .ad-field-row), ~ * :is(.ad-row, .ad-add-row, .ad-field-row))):not(:is(.ad-popover__section-body, .ad-popover__body, .ad-popover, .ad-section__body, .ad-list-section__body, .ad-popover__section-body > *, .ad-popover__body > *) :has(~ :is(.ad-row, .ad-add-row, .ad-field-row), ~ * :is(.ad-row, .ad-add-row, .ad-field-row)):not(:has(:is(.ad-popover__section-body, .ad-popover__body, .ad-popover, .ad-section__body, .ad-list-section__body, .ad-popover__section-body > *, .ad-popover__body > *))) *),
 :is(.ad-popover__section-body, .ad-popover__body) > :is(.ad-row, .ad-add-row, .ad-field-row) { border-bottom: 0; }
+
+/* A chart's part in its Project's colour (Charts, the key's part mark): the colour at tint-chart-part over the page ground, so a hatch
+   never shows through, its full colour along the top edge. The piece sets --ad-part. */
+.ad-chart-part { --ad-part: var(--bitrate-grey); --ad-part-fill: color-mix(in srgb, var(--ad-part) var(--tint-chart-part), transparent); background: linear-gradient(var(--ad-part-fill), var(--ad-part-fill)), var(--bg-base); box-shadow: inset 0 var(--border-w-strong) 0 var(--ad-part); }
 
 /* Athena Design System — components.css: the look of every component, plain CSS. Generated from src/components; do not edit. Import order, once per app, all four: fonts.css, tokens.css, patterns.css, components.css. */
 
@@ -1461,6 +1466,17 @@ button.ad-card__name:focus-visible { outline: none; }
 .ad-budget-lines__figure { justify-self: end; font: var(--type-data); font-size: var(--text-xs); color: var(--text-primary); font-variant-numeric: tabular-nums; white-space: nowrap; }
 .ad-budget-lines__of { font: var(--type-data); font-size: var(--text-xs); color: var(--text-secondary); font-variant-numeric: tabular-nums; white-space: nowrap; }
 .ad-budget-lines__bar { grid-column: 1 / -1; }
+
+/* Colour says which Project, red says over (2026-11-19); a part in its Project's colour is .ad-chart-part (patterns.css). No project hue: the grey above. */
+.ad-progress__part { border-radius: 0; }
+.ad-progress__over { position: absolute; top: 0; bottom: 0; right: 0; z-index: 1; background: var(--status-error); }
+.ad-budget__over { color: var(--status-error-ink); }
+.ad-overtime__column--parts { display: flex; flex-direction: column-reverse; background: transparent; }
+.ad-overtime__part { flex: none; width: 100%; background: var(--bitrate-grey); }
+.ad-progress__done.ad-chart-part, .ad-amounts__bar.ad-chart-part, .ad-overtime__part.ad-chart-part { background: linear-gradient(var(--ad-part-fill), var(--ad-part-fill)), var(--bg-base); }
+.ad-overtime__column--parts > .ad-overtime__part:last-of-type { border-radius: inherit; }
+/* The period still running: its parts a step fainter, as the grey column is a step apart. */
+.ad-overtime__column--current.ad-overtime__column--parts > .ad-overtime__part { --ad-part-fill: color-mix(in srgb, var(--ad-part) calc(var(--tint-chart-part) * var(--opacity-dim)), transparent); }
 
 /* src/components/Charts/Graphs.css */
 /* Graphs: Sparkline, ShareBar, Heatmap, DotMatrix, Tracker. */
@@ -3526,6 +3542,7 @@ button.ad-milestone:focus-visible { outline: none; }
 .ad-bar--name-gone .ad-bar__label > .ad-bar__name { visibility: hidden; }
 /* Clipped with no room for more than a stub: no name, never "R…"; the lead and the date after it stay where they were. */
 .ad-bar--clip-name-gone .ad-bar__words { visibility: hidden; }
+.ad-chart-key__part { flex: none; display: inline-block; width: var(--space-3); height: var(--space-3); border-radius: var(--radius-control); }
 
 /* src/components/Toolbar/Toolbar.css */
 /* Toolbar */
