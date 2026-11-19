@@ -996,10 +996,12 @@ a.ad-icon-button { text-decoration: none; }
 /* Each row keeps its own height in the day: the day scrolls, its rows never shrink to fit. */
 .ad-month__content > * { flex: none; }
 .ad-month__content .ad-row { align-items: flex-start; padding-top: var(--space-2); padding-bottom: var(--space-2); }
-/* A todo's row in a calendar day: its name a step smaller (text-13) and wrapping to two lines, cut after two, the row as tall as that
+/* A todo's row in a calendar day: its name two steps smaller (text-xs 12, as a day planner's block) and wrapping to two lines, cut after two, the row as tall as that
    needs; the ring, face and code as in a list, the ring level with the first line. */
-.ad-month__content .ad-row__name { font-size: var(--text-13); white-space: normal; overflow-wrap: anywhere; display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; }
-.ad-month__content .ad-row > :not(.ad-row__body) { display: flex; align-items: center; min-height: calc(var(--text-13) * var(--lh-tight)); }
+.ad-month__content .ad-row__name { font-size: var(--text-xs); white-space: normal; overflow-wrap: anywhere; display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; }
+/* Its date line a step under the name (text-11), never larger than the name it sits under. */
+.ad-month__content .ad-row__meta, .ad-month__content .ad-row__meta .ad-row-date { font-size: var(--text-11); }
+.ad-month__content .ad-row > :not(.ad-row__body) { display: flex; align-items: center; min-height: calc(var(--text-xs) * var(--lh-tight)); }
 .ad-month__content { grid-row: -2 / -1; z-index: 1; display: flex; flex-direction: column; min-width: 0; min-height: 0; overflow-y: auto; overscroll-behavior: contain; padding: 0 var(--space-1) var(--space-1); }
 .ad-month__cell { grid-row: 1 / -1; display: flex; flex-direction: column; justify-content: space-between; padding: var(--space-1) var(--space-1); border-right: var(--border-w) solid var(--border); border-bottom: var(--border-w) solid var(--border); }
 .ad-month__cell[data-weekend] { background-image: var(--hatch-fine); }
