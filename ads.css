@@ -1699,6 +1699,9 @@ button.ad-card__name:focus-visible { outline: none; }
 .ad-inline-edit--title { font: var(--type-title); line-height: var(--lh-tight); padding-block: var(--space-1); }
 /* A typed code in a table reads as the table's codes: mono, small, grey. */
 .ad-inline-edit--mono { font: var(--type-data); font-size: var(--text-xs); line-height: var(--h-field); color: var(--text-secondary); }
+/* Empty, a place to type draws the field's fill at rest (2026-11-19); a page's title, a table's cell, a card's fact (its own empty look) and a read-only one stay bare. */
+.ad-inline-edit--blank:where(:not(:disabled, .ad-inline-edit--page, .ad-table *, .ad-inline-edit__box > *, .ad-popover--framed .ad-field-row--beside:not(.ad-setting) *)) { background: var(--bg-raised); }
+.ad-inline-edit__box:where(:has(> .ad-inline-edit--blank:not(:disabled)):not(.ad-table *, .ad-popover--framed .ad-field-row--beside:not(.ad-setting) *)) { background: var(--bg-raised); }
 .ad-inline-edit:hover { background: var(--bg-raised); }
 .ad-inline-edit:focus { background: var(--bg-hover); }
 :where(:root:not([data-ad-pointer])) .ad-inline-edit:focus-visible { box-shadow: var(--ring-select); }

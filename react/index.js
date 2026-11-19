@@ -2237,7 +2237,7 @@ var InlineWords = forwardRef2(function InlineWords2({ value, onCommit, ariaLabel
         e.currentTarget.blur();
       }
     },
-    className: cx("ad-inline-edit", `ad-inline-edit--${size}`, mono && "ad-inline-edit--mono", !draft && !placeholder && "ad-inline-edit--empty", className, wrap && "ad-inline-edit--wrap")
+    className: cx("ad-inline-edit", `ad-inline-edit--${size}`, mono && "ad-inline-edit--mono", !draft && !placeholder && "ad-inline-edit--empty", !draft && "ad-inline-edit--blank", className, wrap && "ad-inline-edit--wrap")
   };
   return inlineFrame(wrap ? /* @__PURE__ */ jsx10("textarea", { ref, rows: 1, ...shared }) : /* @__PURE__ */ jsx10("input", { ref, ...shared }), end, error, errorId, !draft && !placeholder);
 });
