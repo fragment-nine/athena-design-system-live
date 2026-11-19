@@ -893,6 +893,9 @@ var REGULAR = {
   "megaphone": [
     "M248,120a48.05,48.05,0,0,0-48-48H160.2c-2.91-.17-53.62-3.74-101.91-44.24A16,16,0,0,0,32,40V200a16,16,0,0,0,26.29,12.25c37.77-31.68,77-40.76,93.71-43.3v31.72A16,16,0,0,0,159.12,214l11,7.33A16,16,0,0,0,194.5,212l11.77-44.36A48.07,48.07,0,0,0,248,120ZM48,199.93V40h0c42.81,35.91,86.63,45,104,47.24v65.48C134.65,155,90.84,164.07,48,199.93Zm131,8,0,.11-11-7.33V168h21.6ZM200,152H168V88h32a32,32,0,1,1,0,64Z"
   ],
+  "microphone-stage": [
+    "M168,16A72.07,72.07,0,0,0,96,88a73.29,73.29,0,0,0,.63,9.42L27.12,192.22A15.93,15.93,0,0,0,28.71,213L43,227.29a15.93,15.93,0,0,0,20.78,1.59l94.81-69.53A73.29,73.29,0,0,0,168,160a72,72,0,1,0,0-144Zm56,72a55.72,55.72,0,0,1-11.16,33.52L134.49,43.16A56,56,0,0,1,224,88ZM54.32,216,40,201.68,102.14,117A72.37,72.37,0,0,0,139,153.86ZM112,88a55.67,55.67,0,0,1,11.16-33.51l78.34,78.34A56,56,0,0,1,112,88Zm-2.35,58.34a8,8,0,0,1,0,11.31l-8,8a8,8,0,1,1-11.31-11.31l8-8A8,8,0,0,1,109.67,146.33Z"
+  ],
   "milestone-diamond": [
     "M128,40L216,128L128,216L40,128ZM128,62.6L62.6,128L128,193.4L193.4,128Z"
   ],
@@ -1619,6 +1622,7 @@ var JOBS = {
   "chevron-left": "caret-left",
   "chevron-right": "caret-right",
   "export": "export",
+  "show-note": "microphone-stage",
   "lights-half": "lights-half",
   "lights-localised": "lights-localised",
   "lights-off": "lights-off",
@@ -1740,6 +1744,9 @@ function Icon(props) {
 function TintedIcon(props) {
   const resolved = useHue(`item-${props.tint}`) ?? null;
   return Icon({ ...props, resolved });
+}
+function NameMark({ icon, label }) {
+  return /* @__PURE__ */ jsx3("span", { className: "ad-name-mark", role: "img", "aria-label": label, title: label, children: slotIcon(icon, { size: "sm" }) });
 }
 
 // src/components/Avatar/Avatar.tsx
@@ -3330,7 +3337,7 @@ import { Fragment as Fragment8, jsx as jsx21, jsxs as jsxs18 } from "react/jsx-r
 function Grip() {
   return /* @__PURE__ */ jsx21("span", { className: "ad-grip", "aria-hidden": "true", children: /* @__PURE__ */ jsx21(Icon, { job: "drag", size: "sm" }) });
 }
-var Row = forwardRef5(function Row2({ name, meta, grip, lead, status, dates, tags, people, trail, selected, picked, dragging, flash, heading, onOpen, onRename, renameLabel, cells, className, onClick, ...rest }, ref) {
+var Row = forwardRef5(function Row2({ name, meta, grip, lead, status, dates, tags, people, trail, selected, picked, dragging, flash, heading, onOpen, onRename, renameLabel, nameMark, cells, className, onClick, ...rest }, ref) {
   const shown = useContext6(ListShown);
   const [arrive, setArrive] = useState11(() => !!shown?.current);
   useEffect8(() => {
@@ -3372,10 +3379,16 @@ var Row = forwardRef5(function Row2({ name, meta, grip, lead, status, dates, tag
         grip && /* @__PURE__ */ jsx21(Grip, {}),
         lead != null && /* @__PURE__ */ jsx21("span", { className: "ad-row__lead", children: /* @__PURE__ */ jsx21(ButtonSizeScope, { size: "row", children: lead }) }),
         /* @__PURE__ */ jsxs18("span", { className: "ad-row__body", children: [
-          onRename ? /* @__PURE__ */ jsx21(InlineEdit, { value: String(name), onCommit: onRename, ariaLabel: renameLabel ?? "Name", className: "ad-row__name" }) : onOpen ? /* @__PURE__ */ jsx21("button", { type: "button", className: "ad-row__name ad-open", "aria-current": selected || void 0, onClick: (e) => {
-            e.stopPropagation();
-            onOpen();
-          }, children: name }) : /* @__PURE__ */ jsx21("span", { className: "ad-row__name", children: name }),
+          (() => {
+            const named = onRename ? /* @__PURE__ */ jsx21(InlineEdit, { value: String(name), onCommit: onRename, ariaLabel: renameLabel ?? "Name", className: "ad-row__name" }) : onOpen ? /* @__PURE__ */ jsx21("button", { type: "button", className: "ad-row__name ad-open", "aria-current": selected || void 0, onClick: (e) => {
+              e.stopPropagation();
+              onOpen();
+            }, children: name }) : /* @__PURE__ */ jsx21("span", { className: "ad-row__name", children: name });
+            return nameMark ? /* @__PURE__ */ jsxs18("span", { className: "ad-row__name-line", children: [
+              /* @__PURE__ */ jsx21(NameMark, { icon: nameMark.icon, label: nameMark.label }),
+              named
+            ] }) : named;
+          })(),
           meta != null && /* @__PURE__ */ jsx21("span", { className: "ad-row__meta", children: meta })
         ] }),
         status != null && typeof status === "object" && "label" in status && /* @__PURE__ */ jsx21("span", { className: "ad-row__status", children: /* @__PURE__ */ jsx21(Status, { tone: status.tone, label: String(status.label) }) }),
@@ -3471,7 +3484,7 @@ function TodoCheck({ hooks, checked, onChange, priority = 4, ariaLabel, disabled
 function UnseenDeliverable({ onAcknowledge, acknowledgeLabel }) {
   return /* @__PURE__ */ jsx21(ButtonSizeScope, { size: "row", children: /* @__PURE__ */ jsx21(IconButton, { label: acknowledgeLabel, onClick: onAcknowledge, className: "ad-unseen-mark", children: /* @__PURE__ */ jsx21(Icon, { job: "kind-deliverable", size: "sm", fill: true }) }) });
 }
-function TodoRow({ ringProps, factProps, dragging, flash, name, priority, done, onTick, due, review, deadline, dateLayout = "inline", today, dept, who, selected, onOpen, completeLabel = "Complete", unacknowledged, onAcknowledge, acknowledgeLabel = "Acknowledge", repeat, pastDeadline, pastDeadlineLabel = "Due date passed", role, deliverable, project, picking, onPressDate, onPressWho, onPressDeliverable, pressLabels, onRename, onPressProject, onPressDept, rowProps, cells, ring = true, whoMax }) {
+function TodoRow({ mark, ringProps, factProps, dragging, flash, name, priority, done, onTick, due, review, deadline, dateLayout = "inline", today, dept, who, selected, onOpen, completeLabel = "Complete", unacknowledged, onAcknowledge, acknowledgeLabel = "Acknowledge", repeat, pastDeadline, pastDeadlineLabel = "Due date passed", role, deliverable, project, picking, onPressDate, onPressWho, onPressDeliverable, pressLabels, onRename, onPressProject, onPressDept, rowProps, cells, ring = true, whoMax }) {
   const d = (k) => factProps?.[k] ? Object.fromEntries(Object.entries(factProps[k]).filter(([n]) => n.startsWith("data-"))) : {};
   const roleWords = Array.isArray(role) ? role.join(" \xB7 ") : role;
   const dated = !!(review || deadline);
@@ -3512,6 +3525,7 @@ function TodoRow({ ringProps, factProps, dragging, flash, name, priority, done, 
         ring && /* @__PURE__ */ jsx21(TodoCheck, { hooks: ringProps, checked: done, onChange: onTick, priority, ariaLabel: `${completeLabel}: ${name}`, unacknowledged, onAcknowledge, acknowledgeLabel: `${acknowledgeLabel}: ${name}` })
       ] }),
       name: String(name),
+      nameMark: mark,
       meta,
       trail: dateLayout === "columns" ? date : void 0,
       people: who || project ? /* @__PURE__ */ jsxs18("span", { className: "ad-row__who", children: [
@@ -4912,16 +4926,20 @@ var Card = forwardRef7(function Card2({ title, headerLayout = "row", density, en
     }
   );
 });
-function CardName({ children, lead, leadAlign = "start", onRename, renameLabel }) {
+function CardName({ children, lead, leadAlign = "start", mark, onRename, renameLabel }) {
   const open = useContext12(OpenCard);
   const name = onRename ? /* @__PURE__ */ jsx31(CardRename, { value: String(children), onRename, label: renameLabel ?? "Name" }) : open ? /* @__PURE__ */ jsx31("button", { type: "button", className: "ad-card__name ad-open", onClick: (e) => {
     e.stopPropagation();
     open();
   }, children }) : /* @__PURE__ */ jsx31("div", { className: "ad-card__name", children });
-  return lead != null ? /* @__PURE__ */ jsxs28("div", { className: "ad-card__name-row", children: [
-    /* @__PURE__ */ jsx31("span", { className: cx("ad-card__lead", leadAlign === "center" && "ad-card__lead--center"), children: lead }),
+  const marked = mark ? /* @__PURE__ */ jsxs28("span", { className: "ad-card__name-line", children: [
+    /* @__PURE__ */ jsx31(NameMark, { icon: mark.icon, label: mark.label }),
     name
   ] }) : name;
+  return lead != null ? /* @__PURE__ */ jsxs28("div", { className: "ad-card__name-row", children: [
+    /* @__PURE__ */ jsx31("span", { className: cx("ad-card__lead", leadAlign === "center" && "ad-card__lead--center"), children: lead }),
+    marked
+  ] }) : marked;
 }
 function CardRename({ value, onRename, label }) {
   const [editing, setEditing] = useState19(false);
