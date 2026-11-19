@@ -38,6 +38,9 @@
   --on-signal: var(--on-accent);
   --status-error: #cf5340;
   --status-error-ink: #fd7266;
+  --date-late: #d1453b;
+  --date-today: #058527;
+  --date-tomorrow: #ad6200;
   --word-pill: #672b28;
   --word-pill-ink: #ffffff;
   --status-warn: #fa9a1b;
@@ -169,6 +172,9 @@
   --on-signal: var(--on-accent);
   --status-error: #cf5340;
   --status-error-ink: #c71203;
+  --date-late: #d1453b;
+  --date-today: #058527;
+  --date-tomorrow: #ad6200;
   --word-pill: #f9d9d5;
   --word-pill-ink: #6e1a17;
   --status-warn: #a25e04;
@@ -2699,10 +2705,10 @@ button.ad-row__name:focus-visible { outline: none; }
 /* Beside a neighbour in a cell it keeps its room; in a row's date line the line's own gap does that. */
 :not(.ad-row__meta) > * + .ad-item-dates, :not(.ad-row__meta) > .ad-item-dates + * { margin-left: var(--space-2); }
 .ad-row-date { display: inline-flex; align-items: baseline; gap: var(--space-1); font: var(--type-detail); color: var(--text-muted); white-space: nowrap; }
-.ad-row-date--late { color: var(--status-error-ink); }
+.ad-row-date--late { color: var(--date-late); }
 /* By when it is, Todoist's way (dateWhen): today green, tomorrow orange, a repeat purple, late red, later grey; the glyphs in the date's colour. */
-.ad-row-date--today { color: var(--status-good); }
-.ad-row-date--tomorrow { color: var(--status-warn); }
+.ad-row-date--today { color: var(--date-today); }
+.ad-row-date--tomorrow { color: var(--date-tomorrow); }
 .ad-row-date--repeats { color: var(--pick-purple); }
 .ad-row-date--later { color: var(--text-secondary); }
 .ad-row-date__repeat { margin-left: calc(var(--space-1) * -0.5); }
