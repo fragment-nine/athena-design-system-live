@@ -35,7 +35,7 @@
   --cloud-coral: #e16d48;
   --accent-hover: #ec8059;
   --on-accent: #0d0d0d;
-  --on-signal: #0d0d0d;
+  --on-signal: var(--on-accent);
   --status-error: #cf5340;
   --status-error-ink: #fd7266;
   --word-pill: #672b28;
@@ -60,10 +60,10 @@
   --pick-red: var(--status-error);
   --pick-purple: #9a6db0;
   --pick-white: #f2f2f0;
-  --priority-p1: var(--status-error-ink);
-  --priority-p2: var(--status-warn);
-  --priority-p3: var(--status-info-blue);
-  --priority-p4: var(--text-muted);
+  --priority-p1: #e96d61;
+  --priority-p2: #ed9432;
+  --priority-p3: #598bf8;
+  --priority-p4: #9f9f9f;
   --project-01: #83451e;
   --project-02: #764f03;
   --project-03: #625a04;
@@ -166,7 +166,7 @@
   --cloud-coral: #e16d48;
   --accent-hover: #ec8059;
   --on-accent: #0d0d0d;
-  --on-signal: #ffffff;
+  --on-signal: var(--on-accent);
   --status-error: #cf5340;
   --status-error-ink: #c71203;
   --word-pill: #f9d9d5;
@@ -191,10 +191,10 @@
   --pick-red: var(--status-error);
   --pick-purple: #805296;
   --pick-white: #3f3f46;
-  --priority-p1: var(--status-error-ink);
-  --priority-p2: var(--status-warn);
-  --priority-p3: var(--status-info-blue);
-  --priority-p4: var(--text-muted);
+  --priority-p1: #e96d61;
+  --priority-p2: #ed9432;
+  --priority-p3: #598bf8;
+  --priority-p4: #9f9f9f;
   --project-01: #a47257;
   --project-02: #98784a;
   --project-03: #857f49;
@@ -621,6 +621,7 @@
   --tint-field-bar: 22%;
   --tint-lane-wash: 8%;
   --tint-day-fill: 24%;
+  --tint-todo-check: 10%;
   --tint-flash: 28%;
   --tint-bar-edge: 50%;
   --tint-lane-edge: 45%;
@@ -2715,15 +2716,16 @@ button.ad-row__name:focus-visible { outline: none; }
 .ad-row-date__icon svg { width: var(--icon-sm); height: var(--icon-sm); }
 
 .ad-todo-check {
-  --ad-ring: var(--text-muted);
+  --ad-ring: var(--priority-p4);
   display: inline-flex; align-items: center; justify-content: center; flex: none; box-sizing: border-box;
   width: var(--check-size); height: var(--check-size); margin: 0; padding: 0; border: 0; border-radius: var(--radius-round);
-  /* Todoist's ring: 2px of its colour, a faint tint of it inside. */
-  background: color-mix(in srgb, var(--ad-ring) 14%, transparent); box-shadow: inset 0 0 0 var(--border-w-ring) var(--ad-ring); color: transparent; cursor: pointer;
+  /* Todoist's ring: 2px of its colour, a faint tint of it inside (tint-todo-check); P4 a plain grey hairline. */
+  background: color-mix(in srgb, var(--ad-ring) var(--tint-todo-check), transparent); box-shadow: inset 0 0 0 var(--border-w-ring) var(--ad-ring); color: transparent; cursor: pointer;
 }
 .ad-todo-check--p1 { --ad-ring: var(--priority-p1); }
 .ad-todo-check--p2 { --ad-ring: var(--priority-p2); }
 .ad-todo-check--p3 { --ad-ring: var(--priority-p3); }
+.ad-todo-check--p4 { background: transparent; box-shadow: inset 0 0 0 var(--border-w) var(--ad-ring); }
 .ad-todo-check svg { width: var(--icon-sm); height: var(--icon-sm); }
 .ad-todo-check:hover { color: var(--ad-ring); }
 .ad-todo-check[aria-checked="true"] { background: var(--text-muted); box-shadow: none; color: var(--bg-base); }
@@ -3632,10 +3634,10 @@ button.ad-notification:focus-visible { outline: none; }
 .ad-alert__under { padding: 0 var(--space-3) var(--space-2) calc(var(--space-3) * 2 + var(--space-8)); }
 /* With nothing shown under it (no details, or details closed and hidden) the row is a row's height, never 8 taller. */
 .ad-alert__under:not(:has(> :not([hidden]))) { display: none; }
-/* A snoozed alert, dimmed: the pill, the sentence and the number in the muted ink; its buttons are untouched and
+/* A snoozed alert, dimmed: the pill in the P4 grey (one colour in both themes, its words still read), the sentence and the number in the muted ink; its buttons are untouched and
  stay pressable (an opacity would make them read as off). */
 .ad-alert--muted .ad-alert__sentence, .ad-alert--muted .ad-alert__number { color: var(--text-muted); }
-.ad-alert--muted .ad-count-pill { background: var(--text-muted); }
+.ad-alert--muted .ad-count-pill { background: var(--priority-p4); }
 
 /* The unread mark is UnreadDot; here it keeps the row's left gutter. */
 .ad-notification__unread.ad-unread { margin-left: 0; }
