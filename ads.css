@@ -1483,6 +1483,29 @@ button.ad-card__name:focus-visible { outline: none; }
 /* The period still running: its parts a step fainter, as the grey column is a step apart. */
 .ad-overtime__column--current.ad-overtime__column--parts > .ad-overtime__part { --ad-part-fill: color-mix(in srgb, var(--ad-part) calc(var(--tint-chart-part) * var(--opacity-dim)), transparent); }
 
+/* A target (2026-11-19): a dashed line across the plot or down the bars; the part of a column or a bar past it solid red. */
+.ad-overtime__target { position: absolute; left: 0; right: 0; height: 0; z-index: 2; border-top: var(--border-w-strong) dashed var(--text-primary); pointer-events: none; }
+.ad-overtime__past { position: absolute; left: 0; right: 0; top: 0; z-index: 1; border-radius: inherit; background: var(--status-error); }
+.ad-amounts__track { position: relative; }
+.ad-amounts__bar { position: relative; overflow: hidden; }
+.ad-amounts__past { position: absolute; top: 0; bottom: 0; right: 0; background: var(--status-error); }
+.ad-amounts__target { position: absolute; top: 0; bottom: 0; width: 0; border-left: var(--border-w-strong) dashed var(--text-primary); pointer-events: none; }
+/* Compare: a second measure behind the first, hatched with its hairline (booked behind worked). */
+.ad-overtime__slot { position: relative; }
+.ad-overtime__compare { position: absolute; left: 0; right: 0; bottom: 0; border-radius: var(--radius-page) var(--radius-page) 0 0; background-image: var(--hatch); box-shadow: inset 0 0 0 var(--border-w) var(--line-strong); }
+.ad-overtime__column { z-index: 1; }
+/* A line chart: one line per series in its Project's colour (the total in the secondary ink), its last point a dot; compare dashed. */
+.ad-overtime__lines { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
+.ad-overtime__line { fill: none; stroke: var(--text-secondary); stroke-width: var(--border-w-strong); stroke-linejoin: round; stroke-linecap: round; vector-effect: non-scaling-stroke; }
+.ad-overtime__line--hued { stroke: var(--ad-part); }
+.ad-overtime__line--compare { stroke: var(--text-muted); stroke-dasharray: var(--space-1) var(--space-1); }
+.ad-overtime__end { position: absolute; width: var(--space-2); height: var(--space-2); border-radius: var(--radius-round); background: var(--text-secondary); transform: translate(-50%, -50%); }
+.ad-overtime__end--hued { background: var(--ad-part); }
+/* One figure (OneFigure): a report's single total, its label over it, its note under it. */
+.ad-one-figure { display: flex; flex-direction: column; align-items: flex-start; gap: var(--space-1); margin: 0; }
+.ad-one-figure__value { display: inline-flex; align-items: baseline; gap: var(--space-2); line-height: var(--lh-tight); font-variant-numeric: tabular-nums; }
+.ad-one-figure__value--over { color: var(--status-error-ink); }
+
 /* src/components/Charts/Graphs.css */
 /* Graphs: Sparkline, ShareBar, Heatmap, DotMatrix, Tracker. */
 /* The grey steps every graph draws its amounts in: the empty track, faint, dim, the grey, and the lightest for the one that matters most. */
@@ -3559,6 +3582,7 @@ button.ad-milestone:focus-visible { outline: none; }
 /* Clipped with no room for more than a stub: no name, never "R…"; the lead and the date after it stay where they were. */
 .ad-bar--clip-name-gone .ad-bar__words { visibility: hidden; }
 .ad-chart-key__part { flex: none; display: inline-block; width: var(--space-3); height: var(--space-3); border-radius: var(--radius-control); }
+.ad-chart-key__swatch--target { height: 0; background: transparent; border-top: var(--border-w-strong) dashed var(--text-primary); border-radius: 0; }
 
 /* src/components/Toolbar/Toolbar.css */
 /* Toolbar */
@@ -3806,3 +3830,10 @@ button.ad-notification:focus-visible { outline: none; }
 .ad-thread__date { width: auto; white-space: nowrap; }
 /* A bold mark the person typed (the ladder's third exception): the rung of what it sits in, at 600. */
 .ad-writing-strong { font: inherit; font-weight: 600; }
+
+/* Rules in groups (RuleGroups, a report's filter): each group in a hairline box, the and / or between them, Add group at the foot. */
+.ad-rule-groups { display: flex; flex-direction: column; gap: var(--space-2); }
+.ad-rule-groups__group { padding: var(--space-3); border-radius: var(--radius-page); box-shadow: inset 0 0 0 var(--border-w) var(--line-strong); }
+.ad-rule-groups__join { display: flex; align-items: center; }
+.ad-rule-groups__join .ad-select { height: var(--h-btn-bar); padding-left: var(--space-2); padding-right: var(--space-6); }
+.ad-rules__match-end { margin-left: auto; }
