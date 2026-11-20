@@ -5933,7 +5933,7 @@ function sortRows(rows, value, direction, depth, group) {
 }
 
 // src/components/Table/Table.tsx
-import { useLayoutEffect as useLayoutEffect11, useRef as useRef31, useState as useState25 } from "react";
+import { useLayoutEffect as useLayoutEffect11, useRef as useRef32, useState as useState26 } from "react";
 
 // src/components/Timeline/Timeline.tsx
 import { useLayoutEffect as useLayoutEffect10, useRef as useRef30, useState as useState24 } from "react";
@@ -6253,18 +6253,153 @@ function ChartKey({ items, ariaLabel = "Key", columns }) {
   }) });
 }
 
-// src/components/Table/Table.tsx
-import { Fragment as Fragment25, jsx as jsx43, jsxs as jsxs40 } from "react/jsx-runtime";
-var NEAR = 8;
-var Arrow = ({ up }) => /* @__PURE__ */ jsx43(SortGlyph, { direction: up ? "ascending" : "descending", size: "sm" });
-function NameRow({ on, children }) {
-  return on ? /* @__PURE__ */ jsx43("span", { className: "ad-table__name-row", children }) : /* @__PURE__ */ jsx43(Fragment25, { children });
+// src/components/Table/sheet.tsx
+import { useEffect as useEffect17, useRef as useRef31, useState as useState25 } from "react";
+import { jsx as jsx43 } from "react/jsx-runtime";
+var typing = (t) => t instanceof HTMLElement && !!t.closest('input, textarea, select, [contenteditable="true"]');
+var ARROWS = { ArrowUp: [-1, 0], ArrowDown: [1, 0], ArrowLeft: [0, -1], ArrowRight: [0, 1] };
+function useSheet(sheet, rowIds, colIds, table) {
+  const [fillTo, setFillTo] = useState25(null);
+  const anchor = useRef31(null);
+  const sel = sheet?.selection ?? null;
+  const ri = (id) => rowIds.indexOf(id);
+  const ci = (id) => colIds.indexOf(id);
+  const boxOf = (r) => {
+    if (!r) return null;
+    const a = ri(r.from.row), b = ri(r.to.row), c = ci(r.from.col), d = ci(r.to.col);
+    if (a < 0 || b < 0 || c < 0 || d < 0) return null;
+    return { r0: Math.min(a, b), r1: Math.max(a, b), c0: Math.min(c, d), c1: Math.max(c, d) };
+  };
+  const box = boxOf(sel);
+  const grown = (() => {
+    if (!box || !fillTo) return null;
+    const r = ri(fillTo.row), c = ci(fillTo.col);
+    if (r < 0 || c < 0) return null;
+    const dr = r < box.r0 ? box.r0 - r : r > box.r1 ? r - box.r1 : 0;
+    const dc = c < box.c0 ? box.c0 - c : c > box.c1 ? c - box.c1 : 0;
+    if (!dr && !dc) return null;
+    return dr >= dc ? { ...box, r0: Math.min(box.r0, r), r1: Math.max(box.r1, r) } : { ...box, c0: Math.min(box.c0, c), c1: Math.max(box.c1, c) };
+  })();
+  const cellAt = (r, c) => ({ row: rowIds[r], col: colIds[c] });
+  const rangeOf = (b) => ({ from: cellAt(b.r0, b.c0), to: cellAt(b.r1, b.c1) });
+  useEffect17(() => {
+    if (!sel || !table.current) return;
+    const at = document.activeElement;
+    if (!(at instanceof HTMLElement) || !table.current.contains(at) || !at.dataset.colId || typing(at)) return;
+    const next = table.current.querySelector(`[data-row-id="${CSS.escape(sel.from.row)}"][data-col-id="${CSS.escape(sel.from.col)}"]`);
+    if (next && next !== at) next.focus({ preventScroll: false });
+  }, [sel?.from.row, sel?.from.col]);
+  const under = (x, y) => {
+    const el = document.elementFromPoint(x, y)?.closest("[data-row-id][data-col-id]");
+    return el && table.current?.contains(el) ? { row: el.dataset.rowId, col: el.dataset.colId } : null;
+  };
+  const follow = (move, done) => {
+    const onMove = (e) => {
+      const c = under(e.clientX, e.clientY);
+      if (c) move(c);
+    };
+    const onUp = () => {
+      window.removeEventListener("pointermove", onMove);
+      window.removeEventListener("pointerup", onUp);
+      done?.();
+    };
+    window.addEventListener("pointermove", onMove);
+    window.addEventListener("pointerup", onUp);
+  };
+  const cellProps = (row, col) => {
+    if (!sheet) return {};
+    const r = ri(row), c = ci(col);
+    const inBox = (b) => !!b && r >= b.r0 && r <= b.r1 && c >= b.c0 && c <= b.c1;
+    const edges = (b) => inBox(b) ? [r === b.r0 && "t", r === b.r1 && "b", c === b.c0 && "l", c === b.c1 && "r"].filter(Boolean).join(" ") || "in" : void 0;
+    const active = !!sel && sel.from.row === row && sel.from.col === col;
+    const here = { row, col };
+    return {
+      "data-row-id": row,
+      "data-col-id": col,
+      "data-sel": edges(box),
+      "data-fill": grown ? edges(grown) : void 0,
+      "aria-selected": inBox(box),
+      tabIndex: active || !sel && r === 0 && c === 0 ? 0 : -1,
+      onPointerDown: (e) => {
+        if (e.button !== 0 || e.target.closest(".ad-table__fill")) return;
+        const from = e.shiftKey && sel ? sel.from : here;
+        anchor.current = from;
+        sheet.onSelect({ from, to: here });
+        if (!typing(e.target) && !e.target.closest("button, a")) follow((cell) => sheet.onSelect({ from: anchor.current, to: cell }));
+      },
+      onKeyDown: (e) => {
+        const step = ARROWS[e.key];
+        if (step && !typing(e.target) && sel) {
+          e.preventDefault();
+          const end = e.shiftKey ? sel.to : sel.from;
+          const nr = Math.max(0, Math.min(rowIds.length - 1, ri(end.row) + step[0]));
+          const nc = Math.max(0, Math.min(colIds.length - 1, ci(end.col) + step[1]));
+          const moved = cellAt(nr, nc);
+          sheet.onSelect(e.shiftKey ? { from: sel.from, to: moved } : { from: moved, to: moved });
+          return;
+        }
+        if (!typing(e.target)) sheet.onKey?.(e, sel?.from ?? here);
+      },
+      onCopy: (e) => {
+        if (!sheet.onCopy || !sel || typing(e.target)) return;
+        e.preventDefault();
+        e.clipboardData.setData("text/plain", sheet.onCopy(sel));
+      },
+      onPaste: (e) => {
+        if (!sheet.onPaste || typing(e.target)) return;
+        e.preventDefault();
+        sheet.onPaste(e.clipboardData.getData("text/plain"), sel?.from ?? here);
+      }
+    };
+  };
+  const handleAt = (row, col) => {
+    if (!sheet || !box || !sheet.onFill || ri(row) !== box.r1 || ci(col) !== box.c1) return null;
+    return /* @__PURE__ */ jsx43(
+      "span",
+      {
+        className: "ad-table__fill",
+        role: "button",
+        "aria-label": sheet.fillLabel ?? "Fill",
+        onPointerDown: (e) => {
+          if (e.button !== 0) return;
+          e.preventDefault();
+          e.stopPropagation();
+          let last = null;
+          follow((cell) => {
+            last = cell;
+            setFillTo(cell);
+          }, () => {
+            setFillTo(null);
+            if (!last || !box) return;
+            const r = ri(last.row), c = ci(last.col);
+            const dr = r < box.r0 ? box.r0 - r : r > box.r1 ? r - box.r1 : 0;
+            const dc = c < box.c0 ? box.c0 - c : c > box.c1 ? c - box.c1 : 0;
+            if (!dr && !dc) return;
+            const down = dr >= dc;
+            const target = down ? r > box.r1 ? { ...box, r0: box.r1 + 1, r1: r } : { ...box, r0: r, r1: box.r0 - 1 } : c > box.c1 ? { ...box, c0: box.c1 + 1, c1: c } : { ...box, c0: c, c1: box.c0 - 1 };
+            const whole = { r0: Math.min(box.r0, target.r0), r1: Math.max(box.r1, target.r1), c0: Math.min(box.c0, target.c0), c1: Math.max(box.c1, target.c1) };
+            sheet.onFill({ source: rangeOf(box), target: rangeOf(target) });
+            sheet.onSelect(rangeOf(whole));
+          });
+        }
+      }
+    );
+  };
+  return { cellProps, handleAt };
 }
-function Table({ columns: named, rows: given, rowId, caption, sort, onSort, picked, onPickedChange, onPickAllChange, pickLabel, pickAllLabel = "Pick all", onOpen, opens, openLabel = "Open", rowProps, groupProps, grip, addRow, addToGroup, striped = true, columnLines, rowTone, group, groups, groupHeading, foldGroups, foldedGroups, onFoldGroup, depth, foldParents, foldedRows, onFoldRow, foldLabel, nameColumn, fixed, onInsertRow, onInsertColumn, insertRowLabel = "Insert a row here", insertColumnLabel = "Insert a column here", total, className }) {
-  const columns = onOpen && !named.some((c) => c.id === "open") ? [...named, { id: "open", label: openLabel, labelHidden: true, frozen: "end", width: "var(--h-btn)", cell: (r) => opens?.(r) === false ? null : /* @__PURE__ */ jsx43(Icon, { job: "chevron-right", size: "sm", className: "ad-table__arrow ad-glyph-quiet" }) }] : named;
+
+// src/components/Table/Table.tsx
+import { Fragment as Fragment25, jsx as jsx44, jsxs as jsxs40 } from "react/jsx-runtime";
+var NEAR = 8;
+var Arrow = ({ up }) => /* @__PURE__ */ jsx44(SortGlyph, { direction: up ? "ascending" : "descending", size: "sm" });
+function NameRow({ on, children }) {
+  return on ? /* @__PURE__ */ jsx44("span", { className: "ad-table__name-row", children }) : /* @__PURE__ */ jsx44(Fragment25, { children });
+}
+function Table({ columns: named, rows: given, rowId, caption, sort, onSort, picked, onPickedChange, onPickAllChange, pickLabel, pickAllLabel = "Pick all", onOpen, opens, openLabel = "Open", rowProps, groupProps, grip, addRow, addToGroup, striped = true, columnLines, rowTone, group, groups, groupHeading, foldGroups, foldedGroups, onFoldGroup, depth, foldParents, foldedRows, onFoldRow, foldLabel, nameColumn, fixed, onInsertRow, onInsertColumn, insertRowLabel = "Insert a row here", insertColumnLabel = "Insert a column here", total, sheet, className }) {
+  const columns = onOpen && !named.some((c) => c.id === "open") ? [...named, { id: "open", label: openLabel, labelHidden: true, frozen: "end", width: "var(--h-btn)", cell: (r) => opens?.(r) === false ? null : /* @__PURE__ */ jsx44(Icon, { job: "chevron-right", size: "sm", className: "ad-table__arrow ad-glyph-quiet" }) }] : named;
   const span = columns.length + (onPickedChange ? 1 : 0);
   const appSorts = sort !== void 0 || onSort !== void 0;
-  const [ownSort, setOwnSort] = useState25(null);
+  const [ownSort, setOwnSort] = useState26(null);
   const plain = (c) => typeof c.label === "string" && c.label.trim() !== "" || typeof c.label === "number";
   const sorts = (c) => !c.labelHidden && (appSorts ? !!c.sortable : c.sortable ?? plain(c));
   const by = !appSorts && ownSort ? columns.find((c) => c.id === ownSort.id && sorts(c)) : void 0;
@@ -6274,6 +6409,8 @@ function Table({ columns: named, rows: given, rowId, caption, sort, onSort, pick
     return c.numeric ? figureOf(said) ?? said : said;
   };
   const rows = by && ownSort ? sortRows(given, sortBy(by), ownSort.direction, depth, group) : given;
+  const sheetTable = useRef32(null);
+  const { cellProps, handleAt } = useSheet(sheet, sheet ? rows.map(rowId) : [], sheet ? columns.filter((c) => c.id !== "open").map((c) => c.id) : [], sheetTable);
   const now = appSorts ? sort : by && ownSort ? ownSort : void 0;
   const press = (id) => {
     if (appSorts) {
@@ -6283,9 +6420,9 @@ function Table({ columns: named, rows: given, rowId, caption, sort, onSort, pick
     setOwnSort((was) => was?.id !== id ? { id, direction: "ascending" } : was.direction === "ascending" ? { id, direction: "descending" } : null);
   };
   const ownAt = (at2) => rows === given ? at2 : at2 >= rows.length ? given.length : given.indexOf(rows[at2]);
-  const [ownFolded, setOwnFolded] = useState25(() => /* @__PURE__ */ new Set());
+  const [ownFolded, setOwnFolded] = useState26(() => /* @__PURE__ */ new Set());
   const folded = foldedGroups ?? ownFolded;
-  const [ownRows, setOwnRows] = useState25(() => /* @__PURE__ */ new Set());
+  const [ownRows, setOwnRows] = useState26(() => /* @__PURE__ */ new Set());
   const rowsShut = foldedRows ?? ownRows;
   const foldRow = (id) => {
     const shut = !rowsShut.has(id);
@@ -6312,8 +6449,8 @@ function Table({ columns: named, rows: given, rowId, caption, sort, onSort, pick
   let stripe = 0;
   const all = rows.length > 0 && rows.every((r) => picked?.has(rowId(r)));
   const nameAt = Math.max(0, nameColumn ? columns.findIndex((c) => c.id === nameColumn) : 0);
-  const headRow = useRef31(null);
-  const [held, setHeld] = useState25({});
+  const headRow = useRef32(null);
+  const [held, setHeld] = useState26({});
   const heldKey = columns.filter((c) => c.frozen === "start").map((c) => c.id).join(" ");
   useLayoutEffect11(() => {
     const tr = headRow.current;
@@ -6333,10 +6470,10 @@ function Table({ columns: named, rows: given, rowId, caption, sort, onSort, pick
     tr.querySelectorAll("th").forEach((th) => seen.observe(th));
     return () => seen.disconnect();
   }, [heldKey, onPickedChange]);
-  const wrap = useRef31(null);
+  const wrap = useRef32(null);
   useKeyScroll(wrap);
-  const [wide, setWide] = useState25(false);
-  const [snug, setSnug] = useState25(false);
+  const [wide, setWide] = useState26(false);
+  const [snug, setSnug] = useState26(false);
   useLayoutEffect11(() => {
     const el = wrap.current;
     const t = el?.querySelector("table");
@@ -6363,7 +6500,7 @@ function Table({ columns: named, rows: given, rowId, caption, sort, onSort, pick
     return () => ro.disconnect();
   }, []);
   const at = (c) => c.frozen === "start" && held[c.id] ? { ["--ad-held"]: `${held[c.id]}px` } : {};
-  const [near, setNear] = useState25(null);
+  const [near, setNear] = useState26(null);
   const inserts = !!(onInsertRow || onInsertColumn);
   const findNear = (e) => {
     const el = wrap.current;
@@ -6410,22 +6547,22 @@ function Table({ columns: named, rows: given, rowId, caption, sort, onSort, pick
     setNear((was) => was && found && was.kind === found.kind && was.at === found.at && was.x === found.x && was.y === found.y ? was : found);
   };
   return /* @__PURE__ */ jsxs40("div", { ref: wrap, "data-wide": wide || void 0, "data-snug": snug || void 0, className: cx("ad-table-wrap", inserts && "ad-table-wrap--inserts", className), onPointerMove: inserts ? findNear : void 0, onPointerLeave: inserts ? () => setNear(null) : void 0, children: [
-    /* @__PURE__ */ jsxs40("table", { className: cx("ad-table", fixed && "ad-table--fixed", columnLines && "ad-table--column-lines"), children: [
-      /* @__PURE__ */ jsx43("caption", { className: "ad-sr", children: caption }),
-      /* @__PURE__ */ jsx43("thead", { children: /* @__PURE__ */ jsxs40("tr", { ref: headRow, children: [
-        onPickedChange && /* @__PURE__ */ jsx43("th", { scope: "col", className: "ad-table__pick", children: /* @__PURE__ */ jsx43(Checkbox, { "aria-label": pickAllLabel, checked: all, onChange: (on) => onPickAllChange?.(on) }) }),
+    /* @__PURE__ */ jsxs40("table", { ref: sheetTable, className: cx("ad-table", fixed && "ad-table--fixed", columnLines && "ad-table--column-lines", sheet && "ad-table--sheet"), children: [
+      /* @__PURE__ */ jsx44("caption", { className: "ad-sr", children: caption }),
+      /* @__PURE__ */ jsx44("thead", { children: /* @__PURE__ */ jsxs40("tr", { ref: headRow, children: [
+        onPickedChange && /* @__PURE__ */ jsx44("th", { scope: "col", className: "ad-table__pick", children: /* @__PURE__ */ jsx44(Checkbox, { "aria-label": pickAllLabel, checked: all, onChange: (on) => onPickAllChange?.(on) }) }),
         columns.map((c) => {
           const sorted = now?.id === c.id ? now.direction : void 0;
           return /* @__PURE__ */ jsxs40("th", { scope: "col", "data-col-at": onInsertColumn ? columns.indexOf(c) : void 0, "data-held": c.frozen === "start" ? c.id : void 0, "aria-sort": sorted ?? (sorts(c) ? "none" : void 0), className: cx(c.numeric && "ad-num", c.frozen && `ad-table__frozen--${c.frozen}`), style: { ...c.width ? { width: c.width } : {}, ...c.minWidth ? { minWidth: c.minWidth } : {}, ...at(c) }, children: [
-            c.minWidth && /* @__PURE__ */ jsx43("span", { className: "ad-table__floor", "aria-hidden": "true", style: { width: c.minWidth } }),
-            c.labelHidden ? /* @__PURE__ */ jsx43("span", { className: "ad-sr", children: c.label }) : sorts(c) && (!appSorts || onSort) ? /* @__PURE__ */ jsxs40("button", { type: "button", className: "ad-table__sort ad-sort-button", onClick: () => press(c.id), children: [
+            c.minWidth && /* @__PURE__ */ jsx44("span", { className: "ad-table__floor", "aria-hidden": "true", style: { width: c.minWidth } }),
+            c.labelHidden ? /* @__PURE__ */ jsx44("span", { className: "ad-sr", children: c.label }) : sorts(c) && (!appSorts || onSort) ? /* @__PURE__ */ jsxs40("button", { type: "button", className: "ad-table__sort ad-sort-button", onClick: () => press(c.id), children: [
               c.label,
-              sorted ? /* @__PURE__ */ jsx43(Arrow, { up: sorted === "ascending" }) : /* @__PURE__ */ jsx43("span", { className: "ad-table__sort-room", "aria-hidden": "true", children: /* @__PURE__ */ jsx43(Arrow, { up: true }) })
+              sorted ? /* @__PURE__ */ jsx44(Arrow, { up: sorted === "ascending" }) : /* @__PURE__ */ jsx44("span", { className: "ad-table__sort-room", "aria-hidden": "true", children: /* @__PURE__ */ jsx44(Arrow, { up: true }) })
             ] }) : c.label
           ] }, c.id);
         })
       ] }) }),
-      /* @__PURE__ */ jsx43("tbody", { children: /* @__PURE__ */ jsx43(ButtonSizeScope, { size: "row", children: (() => {
+      /* @__PURE__ */ jsx44("tbody", { children: /* @__PURE__ */ jsx44(ButtonSizeScope, { size: "row", children: (() => {
         const open = [];
         const withRows = new Set(group ? rows.map((r) => group(r)) : []);
         const drawnEmpty = /* @__PURE__ */ new Set();
@@ -6433,8 +6570,8 @@ function Table({ columns: named, rows: given, rowId, caption, sort, onSort, pick
           drawnEmpty.add(g);
           const a = addToGroup?.(g);
           return [
-            /* @__PURE__ */ jsx43("tr", { ...groupProps?.(g) ?? {}, className: "ad-table__group ad-table__group--empty", children: /* @__PURE__ */ jsx43("th", { scope: "colgroup", colSpan: span, children: groupHeading ? groupHeading(g) : /* @__PURE__ */ jsx43(GroupBandName, { children: g }) }) }, `group-empty-${g}`),
-            a ? /* @__PURE__ */ jsx43("tr", { className: "ad-table__add ad-table__add--group", children: /* @__PURE__ */ jsx43("th", { scope: "row", colSpan: span, className: "ad-table__name", children: /* @__PURE__ */ jsx43(AddRow, { label: a.label, onAdd: a.onAdd }) }) }, `group-add-${g}`) : null
+            /* @__PURE__ */ jsx44("tr", { ...groupProps?.(g) ?? {}, className: "ad-table__group ad-table__group--empty", children: /* @__PURE__ */ jsx44("th", { scope: "colgroup", colSpan: span, children: groupHeading ? groupHeading(g) : /* @__PURE__ */ jsx44(GroupBandName, { children: g }) }) }, `group-empty-${g}`),
+            a ? /* @__PURE__ */ jsx44("tr", { className: "ad-table__add ad-table__add--group", children: /* @__PURE__ */ jsx44("th", { scope: "row", colSpan: span, className: "ad-table__name", children: /* @__PURE__ */ jsx44(AddRow, { label: a.label, onAdd: a.onAdd }) }) }, `group-add-${g}`) : null
           ];
         };
         const emptiesBefore = (g) => {
@@ -6454,19 +6591,19 @@ function Table({ columns: named, rows: given, rowId, caption, sort, onSort, pick
         }
         const chain = [];
         const runs = (i, l) => !!more[i][l] || chain[l - 1] != null && !!addRow?.(chain[l - 1]);
-        const trunks = (i, upTo) => Array.from({ length: upTo }, (_, k) => k + 1).filter((l) => runs(i, l)).map((l) => /* @__PURE__ */ jsx43("span", { className: "ad-table__trunk", "aria-hidden": "true", style: { ["--ad-level"]: l } }, l));
+        const trunks = (i, upTo) => Array.from({ length: upTo }, (_, k) => k + 1).filter((l) => runs(i, l)).map((l) => /* @__PURE__ */ jsx44("span", { className: "ad-table__trunk", "aria-hidden": "true", style: { ["--ad-level"]: l } }, l));
         const groupAdd = (g) => {
           const a = addToGroup?.(g);
           if (!a || !!foldGroups && folded.has(g)) return null;
-          return /* @__PURE__ */ jsx43("tr", { className: "ad-table__add ad-table__add--group", children: /* @__PURE__ */ jsx43("th", { scope: "row", colSpan: span, className: "ad-table__name", children: /* @__PURE__ */ jsx43(AddRow, { label: a.label, onAdd: a.onAdd }) }) }, `group-add-${g}`);
+          return /* @__PURE__ */ jsx44("tr", { className: "ad-table__add ad-table__add--group", children: /* @__PURE__ */ jsx44("th", { scope: "row", colSpan: span, className: "ad-table__name", children: /* @__PURE__ */ jsx44(AddRow, { label: a.label, onAdd: a.onAdd }) }) }, `group-add-${g}`);
         };
         const addFor = (r, d, rowAt) => {
           const a = addRow?.(r);
           if (!a) return null;
-          return /* @__PURE__ */ jsx43("tr", { className: "ad-table__add", children: /* @__PURE__ */ jsxs40("th", { scope: "row", colSpan: span, className: "ad-table__name", style: { ["--ad-depth"]: d + 1 }, children: [
+          return /* @__PURE__ */ jsx44("tr", { className: "ad-table__add", children: /* @__PURE__ */ jsxs40("th", { scope: "row", colSpan: span, className: "ad-table__name", style: { ["--ad-depth"]: d + 1 }, children: [
             trunks(rowAt, d),
-            /* @__PURE__ */ jsx43("span", { className: "ad-table__elbow", "aria-hidden": "true" }),
-            /* @__PURE__ */ jsx43(AddRow, { label: a.label, onAdd: a.onAdd })
+            /* @__PURE__ */ jsx44("span", { className: "ad-table__elbow", "aria-hidden": "true" }),
+            /* @__PURE__ */ jsx44(AddRow, { label: a.label, onAdd: a.onAdd })
           ] }) }, `add-${rowId(r)}`);
         };
         let groupNow;
@@ -6514,10 +6651,10 @@ function Table({ columns: named, rows: given, rowId, caption, sort, onSort, pick
           const head = g != null && g !== lastGroup ? g : null;
           lastGroup = g;
           const shut = !!foldGroups && g != null && folded.has(g);
-          const heading = head != null && /* @__PURE__ */ jsx43("tr", { ...groupProps?.(head) ?? {}, className: "ad-table__group", children: /* @__PURE__ */ jsx43("th", { scope: "colgroup", colSpan: span, children: foldGroups ? /* @__PURE__ */ jsxs40("button", { type: "button", className: "ad-table__fold", "aria-expanded": !shut, onClick: () => foldGroup(head), children: [
-            /* @__PURE__ */ jsx43(Icon, { name: "caret-down", size: "sm", className: cx("ad-table__chevron", shut && "ad-table__chevron--shut") }),
-            groupHeading ? groupHeading(head) : /* @__PURE__ */ jsx43(GroupBandName, { children: head })
-          ] }) : groupHeading ? groupHeading(head) : /* @__PURE__ */ jsx43(GroupBandName, { children: head }) }) }, `group-${id}`);
+          const heading = head != null && /* @__PURE__ */ jsx44("tr", { ...groupProps?.(head) ?? {}, className: "ad-table__group", children: /* @__PURE__ */ jsx44("th", { scope: "colgroup", colSpan: span, children: foldGroups ? /* @__PURE__ */ jsxs40("button", { type: "button", className: "ad-table__fold", "aria-expanded": !shut, onClick: () => foldGroup(head), children: [
+            /* @__PURE__ */ jsx44(Icon, { name: "caret-down", size: "sm", className: cx("ad-table__chevron", shut && "ad-table__chevron--shut") }),
+            groupHeading ? groupHeading(head) : /* @__PURE__ */ jsx44(GroupBandName, { children: head })
+          ] }) : groupHeading ? groupHeading(head) : /* @__PURE__ */ jsx44(GroupBandName, { children: head }) }) }, `group-${id}`);
           const before = head != null ? emptiesBefore(head) : [];
           if (shut) return heading ? [...before, heading] : null;
           const d = depth?.(r) ?? 0;
@@ -6530,56 +6667,61 @@ function Table({ columns: named, rows: given, rowId, caption, sort, onSort, pick
             hooks.onClick?.(e);
             if (opening && !e.target.closest("input,button,a")) opening(r);
           }, children: [
-            onPickedChange && /* @__PURE__ */ jsx43("td", { className: "ad-table__pick", children: /* @__PURE__ */ jsx43(Checkbox, { "aria-label": pickLabel?.(r) ?? id, checked: !!on, onChange: (v) => onPickedChange(id, v) }) }),
+            onPickedChange && /* @__PURE__ */ jsx44("td", { className: "ad-table__pick", children: /* @__PURE__ */ jsx44(Checkbox, { "aria-label": pickLabel?.(r) ?? id, checked: !!on, onChange: (v) => onPickedChange(id, v) }) }),
             columns.map((c, i) => {
               const frozen = c.frozen && `ad-table__frozen--${c.frozen}`;
-              if (i !== nameAt) return /* @__PURE__ */ jsx43("td", { className: cx(c.numeric && "ad-num", c.mono && "ad-mono", frozen), style: c.frozen === "start" ? at(c) : void 0, children: c.cell(r) }, c.id);
+              const sheetCell = sheet && c.id !== "open" ? cellProps(id, c.id) : {};
+              if (i !== nameAt) return /* @__PURE__ */ jsxs40("td", { ...sheetCell, className: cx(c.numeric && "ad-num", c.mono && "ad-mono", frozen), style: c.frozen === "start" ? at(c) : void 0, children: [
+                c.cell(r),
+                sheet && handleAt(id, c.id)
+              ] }, c.id);
               const said = c.cell(r);
-              const named2 = fixed && (typeof said === "string" || typeof said === "number") ? /* @__PURE__ */ jsx43("span", { className: "ad-clamp-line", children: said }) : said;
-              const words2 = opening ? /* @__PURE__ */ jsx43("button", { type: "button", className: "ad-table__open", onClick: () => opening(r), children: named2 }) : named2;
+              const named2 = fixed && (typeof said === "string" || typeof said === "number") ? /* @__PURE__ */ jsx44("span", { className: "ad-clamp-line", children: said }) : said;
+              const words2 = opening ? /* @__PURE__ */ jsx44("button", { type: "button", className: "ad-table__open", onClick: () => opening(r), children: named2 }) : named2;
               const meta = c.meta?.(r);
-              return /* @__PURE__ */ jsxs40("th", { scope: "row", className: cx("ad-table__name", frozen, meta != null && "ad-table__name--two"), style: d || c.frozen === "start" ? { ...d ? { ["--ad-depth"]: d } : {}, ...at(c) } : void 0, children: [
+              return /* @__PURE__ */ jsxs40("th", { scope: "row", ...sheetCell, className: cx("ad-table__name", frozen, meta != null && "ad-table__name--two"), style: d || c.frozen === "start" ? { ...d ? { ["--ad-depth"]: d } : {}, ...at(c) } : void 0, children: [
                 d > 0 && /* @__PURE__ */ jsxs40(Fragment25, { children: [
                   trunks(rowAt, d - 1),
-                  /* @__PURE__ */ jsx43("span", { className: cx("ad-table__elbow", runs(rowAt, d) && "ad-table__elbow--on"), "aria-hidden": "true" })
+                  /* @__PURE__ */ jsx44("span", { className: cx("ad-table__elbow", runs(rowAt, d) && "ad-table__elbow--on"), "aria-hidden": "true" })
                 ] }),
                 /* @__PURE__ */ jsxs40(NameRow, { on: !!fixed || !!grip?.(r), children: [
-                  grip?.(r) && /* @__PURE__ */ jsx43(Grip, {}),
-                  parent && /* @__PURE__ */ jsx43("button", { type: "button", className: "ad-table__fold ad-table__fold--row", "aria-expanded": !rowShut, "aria-label": foldLabel?.(r) ?? "Fold", onClick: (e) => {
+                  grip?.(r) && /* @__PURE__ */ jsx44(Grip, {}),
+                  parent && /* @__PURE__ */ jsx44("button", { type: "button", className: "ad-table__fold ad-table__fold--row", "aria-expanded": !rowShut, "aria-label": foldLabel?.(r) ?? "Fold", onClick: (e) => {
                     e.stopPropagation();
                     foldRow(id);
-                  }, children: /* @__PURE__ */ jsx43(Icon, { name: "caret-down", size: "sm", className: cx("ad-table__chevron", rowShut && "ad-table__chevron--shut") }) }),
-                  foldParents && !parent && /* @__PURE__ */ jsx43("span", { className: "ad-table__fold-room", "aria-hidden": "true" }),
+                  }, children: /* @__PURE__ */ jsx44(Icon, { name: "caret-down", size: "sm", className: cx("ad-table__chevron", rowShut && "ad-table__chevron--shut") }) }),
+                  foldParents && !parent && /* @__PURE__ */ jsx44("span", { className: "ad-table__fold-room", "aria-hidden": "true" }),
                   meta != null ? /* @__PURE__ */ jsxs40("span", { className: "ad-table__words", children: [
-                    /* @__PURE__ */ jsx43("span", { className: "ad-table__line", children: words2 }),
-                    /* @__PURE__ */ jsx43("span", { className: "ad-table__meta", children: meta })
+                    /* @__PURE__ */ jsx44("span", { className: "ad-table__line", children: words2 }),
+                    /* @__PURE__ */ jsx44("span", { className: "ad-table__meta", children: meta })
                   ] }) : words2
-                ] })
+                ] }),
+                sheet && handleAt(id, c.id)
               ] }, c.id);
             })
           ] }, id);
           return heading ? [...before, heading, tr] : tr;
         }
       })() }) }),
-      total && /* @__PURE__ */ jsx43("tfoot", { className: "ad-table__total", children: /* @__PURE__ */ jsxs40("tr", { children: [
-        onPickedChange && /* @__PURE__ */ jsx43("td", { className: "ad-table__pick" }),
+      total && /* @__PURE__ */ jsx44("tfoot", { className: "ad-table__total", children: /* @__PURE__ */ jsxs40("tr", { children: [
+        onPickedChange && /* @__PURE__ */ jsx44("td", { className: "ad-table__pick" }),
         columns.map((c, i) => {
           const frozen = c.frozen && `ad-table__frozen--${c.frozen}`;
-          return i === nameAt ? /* @__PURE__ */ jsx43("th", { scope: "row", className: cx("ad-table__name", frozen), style: c.frozen === "start" ? at(c) : void 0, children: total[c.id] }, c.id) : /* @__PURE__ */ jsx43("td", { className: cx(c.numeric && "ad-num", c.mono && "ad-mono", frozen), style: c.frozen === "start" ? at(c) : void 0, children: total[c.id] }, c.id);
+          return i === nameAt ? /* @__PURE__ */ jsx44("th", { scope: "row", className: cx("ad-table__name", frozen), style: c.frozen === "start" ? at(c) : void 0, children: total[c.id] }, c.id) : /* @__PURE__ */ jsx44("td", { className: cx(c.numeric && "ad-num", c.mono && "ad-mono", frozen), style: c.frozen === "start" ? at(c) : void 0, children: total[c.id] }, c.id);
         })
       ] }) })
     ] }),
-    near && /* @__PURE__ */ jsx43("div", { className: cx("ad-insert", `ad-insert--${near.kind}`), style: near.kind === "row" ? { left: near.x, top: near.y, width: near.length } : { left: near.x, top: near.y, height: near.length }, children: /* @__PURE__ */ jsx43("button", { type: "button", className: "ad-insert__mark", "aria-label": near.kind === "row" ? insertRowLabel : insertColumnLabel, onClick: () => {
+    near && /* @__PURE__ */ jsx44("div", { className: cx("ad-insert", `ad-insert--${near.kind}`), style: near.kind === "row" ? { left: near.x, top: near.y, width: near.length } : { left: near.x, top: near.y, height: near.length }, children: /* @__PURE__ */ jsx44("button", { type: "button", className: "ad-insert__mark", "aria-label": near.kind === "row" ? insertRowLabel : insertColumnLabel, onClick: () => {
       const n = near;
       setNear(null);
       if (n.kind === "row") onInsertRow?.(ownAt(n.at));
       else onInsertColumn?.(n.at);
-    }, children: /* @__PURE__ */ jsx43(Icon, { name: "plus", size: "sm" }) }) })
+    }, children: /* @__PURE__ */ jsx44(Icon, { name: "plus", size: "sm" }) }) })
   ] });
 }
 function SelectionBar({ count, countLabel = (n) => `${n} selected`, actions, lead, onClear, clearLabel = "Clear", showAtZero, emptyLabel = "Nothing selected", onExit, exitLabel = "Exit", className }) {
-  const [open, setOpen] = useState25(null);
-  const anchor = useRef31(null);
+  const [open, setOpen] = useState26(null);
+  const anchor = useRef32(null);
   const ordered2 = [...actions.filter((a) => !a.danger), ...actions.filter((a) => a.danger)];
   if (count <= 0 && !showAtZero) return null;
   const zero = count <= 0;
@@ -6587,8 +6729,8 @@ function SelectionBar({ count, countLabel = (n) => `${n} selected`, actions, lea
   const close = () => setOpen(null);
   return /* @__PURE__ */ jsxs40(Portal, { children: [
     /* @__PURE__ */ jsxs40("div", { className: cx("ad-float", "ad-selection-bar", className), role: "toolbar", "aria-label": zero ? emptyLabel : countLabel(count), children: [
-      /* @__PURE__ */ jsx43("span", { className: "ad-selection-bar__count", "aria-live": "polite", children: zero ? emptyLabel : countLabel(count) }),
-      lead != null && /* @__PURE__ */ jsx43("span", { className: "ad-selection-bar__lead", children: lead }),
+      /* @__PURE__ */ jsx44("span", { className: "ad-selection-bar__count", "aria-live": "polite", children: zero ? emptyLabel : countLabel(count) }),
+      lead != null && /* @__PURE__ */ jsx44("span", { className: "ad-selection-bar__lead", children: lead }),
       /* @__PURE__ */ jsxs40(ButtonSizeScope, { size: "bar", children: [
         !zero && ordered2.map((a) => {
           const button = /* @__PURE__ */ jsxs40(
@@ -6608,36 +6750,36 @@ function SelectionBar({ count, countLabel = (n) => `${n} selected`, actions, lea
               },
               children: [
                 a.label,
-                a.picker && /* @__PURE__ */ jsx43(Icon, { name: "caret-down", size: "sm" })
+                a.picker && /* @__PURE__ */ jsx44(Icon, { name: "caret-down", size: "sm" })
               ]
             },
             a.id
           );
-          return a.picker ? /* @__PURE__ */ jsx43("span", { className: "ad-selection-bar__slot", children: button }, a.id) : button;
+          return a.picker ? /* @__PURE__ */ jsx44("span", { className: "ad-selection-bar__slot", children: button }, a.id) : button;
         }),
-        !zero && onClear && /* @__PURE__ */ jsx43(Button, { onClick: onClear, children: clearLabel }),
-        onExit && /* @__PURE__ */ jsx43(Button, { onClick: onExit, children: exitLabel })
+        !zero && onClear && /* @__PURE__ */ jsx44(Button, { onClick: onClear, children: clearLabel }),
+        onExit && /* @__PURE__ */ jsx44(Button, { onClick: onExit, children: exitLabel })
       ] })
     ] }),
-    shown && /* @__PURE__ */ jsx43(Popover, { open: true, onClose: close, anchor, width: shown.pickerWidth ?? "menu", noClose: true, ariaLabel: shown.label, children: shown.picker(close) })
+    shown && /* @__PURE__ */ jsx44(Popover, { open: true, onClose: close, anchor, width: shown.pickerWidth ?? "menu", noClose: true, ariaLabel: shown.label, children: shown.picker(close) })
   ] });
 }
 function SelectionBarRoom() {
-  return /* @__PURE__ */ jsx43("div", { className: "ad-selection-bar-room", "aria-hidden": "true" });
+  return /* @__PURE__ */ jsx44("div", { className: "ad-selection-bar-room", "aria-hidden": "true" });
 }
 
 // src/components/Timeline/Ruler.tsx
-import { useEffect as useEffect17, useRef as useRef32, useState as useState26 } from "react";
-import { jsx as jsx44, jsxs as jsxs41 } from "react/jsx-runtime";
+import { useEffect as useEffect18, useRef as useRef33, useState as useState27 } from "react";
+import { jsx as jsx45, jsxs as jsxs41 } from "react/jsx-runtime";
 function DayLines(_) {
   return null;
 }
 function Ruler({ start, days, dayWidth, locale = "en-US", pinned, holdLeft, end, marks, className }) {
-  const root = useRef32(null);
-  const corner = useRef32(null);
-  const [under, setUnder] = useState26(null);
+  const root = useRef33(null);
+  const corner = useRef33(null);
+  const [under, setUnder] = useState27(null);
   const hasEnd = end != null;
-  useEffect17(() => {
+  useEffect18(() => {
     const el = root.current, c = corner.current;
     if (!hasEnd || !el || !c) {
       setUnder(null);
@@ -6714,10 +6856,10 @@ function Ruler({ start, days, dayWidth, locale = "en-US", pinned, holdLeft, end,
     m.end = n + 1 < months.length ? months[n + 1].x : days * dayWidth;
   });
   return /* @__PURE__ */ jsxs41("div", { ref: root, className: cx("ad-ruler", pinned && "ad-ruler--pinned", className), style: { width: days * dayWidth, ["--ad-day-w"]: `${dayWidth}px`, ...holdLeft ? { ["--ad-hold-left"]: `${holdLeft}px` } : {} }, children: [
-    /* @__PURE__ */ jsx44("div", { className: "ad-ruler__months", "aria-hidden": "true", children: months.map((m) => /* @__PURE__ */ jsx44("span", { className: "ad-ruler__span", style: { left: m.x, width: (m.end ?? m.x) - m.x }, children: /* @__PURE__ */ jsx44("span", { className: "ad-ruler__month", children: m.label }) }, m.x)) }),
-    end != null && /* @__PURE__ */ jsx44("div", { ref: corner, className: "ad-ruler__end", children: end }),
-    /* @__PURE__ */ jsx44("div", { className: "ad-ruler__ticks", "aria-hidden": "true", children: ticks.map((t) => /* @__PURE__ */ jsx44("span", { className: cx("ad-ruler__tick", t.major && "ad-ruler__tick--major"), style: { left: t.x }, children: t.label && /* @__PURE__ */ jsx44("span", { className: "ad-ruler__day", children: t.label }) }, t.x)) }),
-    dots.length > 0 && /* @__PURE__ */ jsx44("div", { className: "ad-ruler__marks", children: dots.map((m) => /* @__PURE__ */ jsx44(Tooltip, { text: m.label, children: /* @__PURE__ */ jsx44("span", { className: "ad-ruler__mark", role: "img", "aria-label": m.words, style: { left: m.x } }) }, m.x)) })
+    /* @__PURE__ */ jsx45("div", { className: "ad-ruler__months", "aria-hidden": "true", children: months.map((m) => /* @__PURE__ */ jsx45("span", { className: "ad-ruler__span", style: { left: m.x, width: (m.end ?? m.x) - m.x }, children: /* @__PURE__ */ jsx45("span", { className: "ad-ruler__month", children: m.label }) }, m.x)) }),
+    end != null && /* @__PURE__ */ jsx45("div", { ref: corner, className: "ad-ruler__end", children: end }),
+    /* @__PURE__ */ jsx45("div", { className: "ad-ruler__ticks", "aria-hidden": "true", children: ticks.map((t) => /* @__PURE__ */ jsx45("span", { className: cx("ad-ruler__tick", t.major && "ad-ruler__tick--major"), style: { left: t.x }, children: t.label && /* @__PURE__ */ jsx45("span", { className: "ad-ruler__day", children: t.label }) }, t.x)) }),
+    dots.length > 0 && /* @__PURE__ */ jsx45("div", { className: "ad-ruler__marks", children: dots.map((m) => /* @__PURE__ */ jsx45(Tooltip, { text: m.label, children: /* @__PURE__ */ jsx45("span", { className: "ad-ruler__mark", role: "img", "aria-label": m.words, style: { left: m.x } }) }, m.x)) })
   ] });
 }
 var ORDER = ["days", "weeks", "months", "quarters"];
@@ -6748,8 +6890,8 @@ function ZoomCluster({
   const inside = onZoomIn ?? (builtin ? () => onZoom(ORDER[Math.max(i - 1, 0)]) : void 0);
   const outLabel = onZoomOut ? L.zoomOut : `${L.zoomOut} (${L[ORDER[Math.min(i + 1, ORDER.length - 1)]]})`;
   const inLabel = onZoomIn ? L.zoomIn : `${L.zoomIn} (${L[ORDER[Math.max(i - 1, 0)]]})`;
-  const btn = (label, glyph, on, off, endpoint) => on && /* @__PURE__ */ jsx44(IconButton, { label: off ? `${label}: ${off}` : label, disabled: !!off || endpoint, onClick: on, children: glyph === "today" ? /* @__PURE__ */ jsx44("span", { className: "ad-zoom__today", "aria-hidden": "true" }) : /* @__PURE__ */ jsx44(Icon, { job: glyph, size: "sm" }) }, glyph);
-  const cluster = /* @__PURE__ */ jsx44(ButtonSizeScope, { size: "row", children: /* @__PURE__ */ jsxs41("div", { ...range ? {} : attrs, className: "ad-zoom ad-zoom--compact", role: "group", "aria-label": ariaLabel ?? (zoom ? L[zoom] : "Zoom"), children: [
+  const btn = (label, glyph, on, off, endpoint) => on && /* @__PURE__ */ jsx45(IconButton, { label: off ? `${label}: ${off}` : label, disabled: !!off || endpoint, onClick: on, children: glyph === "today" ? /* @__PURE__ */ jsx45("span", { className: "ad-zoom__today", "aria-hidden": "true" }) : /* @__PURE__ */ jsx45(Icon, { job: glyph, size: "sm" }) }, glyph);
+  const cluster = /* @__PURE__ */ jsx45(ButtonSizeScope, { size: "row", children: /* @__PURE__ */ jsxs41("div", { ...range ? {} : attrs, className: "ad-zoom ad-zoom--compact", role: "group", "aria-label": ariaLabel ?? (zoom ? L[zoom] : "Zoom"), children: [
     btn(outLabel, "minus", out, zoomOutOff, !onZoomOut && i === ORDER.length - 1),
     !noPaging && btn(L.previous, "chevron-left", onPrevious, previousOff),
     !noPaging && btn(L.today, "today", onToday, todayOff),
@@ -6758,14 +6900,14 @@ function ZoomCluster({
   ] }) });
   return range ? /* @__PURE__ */ jsxs41("div", { ...attrs, className: "ad-zoom-range", children: [
     cluster,
-    /* @__PURE__ */ jsx44(DateRange, { exact: true, ...range })
+    /* @__PURE__ */ jsx45(DateRange, { exact: true, ...range })
   ] }) : cluster;
 }
 
 // src/components/Calendar/Calendar.tsx
-import { useEffect as useEffect18, useLayoutEffect as useLayoutEffect12, useRef as useRef33, useState as useState27 } from "react";
-import { Fragment as Fragment26, jsx as jsx45, jsxs as jsxs42 } from "react/jsx-runtime";
-var code = (it) => it.code ? /* @__PURE__ */ jsx45(ProjectPill, { code: it.code, color: it.color?.startsWith("project-") ? it.color : void 0 }) : null;
+import { useEffect as useEffect19, useLayoutEffect as useLayoutEffect12, useRef as useRef34, useState as useState28 } from "react";
+import { Fragment as Fragment26, jsx as jsx46, jsxs as jsxs42 } from "react/jsx-runtime";
+var code = (it) => it.code ? /* @__PURE__ */ jsx46(ProjectPill, { code: it.code, color: it.color?.startsWith("project-") ? it.color : void 0 }) : null;
 var hooksOf3 = (h) => {
   if (!h) return {};
   const { className: _c, style: _s, ...rest } = h;
@@ -6785,7 +6927,7 @@ function MonthCalendar({ month, span = "month", items, today: todayIn, weekStart
   const sorted = [...items].sort((a, b) => a.start.getTime() - b.start.getTime() || diff(b.end, b.start) - diff(a.end, a.start));
   const name = span === "day" ? start.toLocaleDateString(locale, { weekday: "long", month: "long", day: "numeric", year: "numeric" }) : span === "week" ? `${start.toLocaleDateString(locale, { month: "short", day: "numeric" })} \u2013 ${addDays(start, 6).toLocaleDateString(locale, { month: "short", day: "numeric", year: "numeric" })}` : first.toLocaleDateString(locale, { month: "long", year: "numeric" });
   return /* @__PURE__ */ jsxs42("section", { className: cx("ad-month", span !== "month" && "ad-month--fill", className), style: cols !== 7 ? { "--ad-cols": cols } : void 0, "aria-label": name, children: [
-    /* @__PURE__ */ jsx45("div", { className: "ad-month__dows", "aria-hidden": "true", children: dows.map((d, i) => /* @__PURE__ */ jsx45("span", { className: "ad-month__dow", children: d }, i)) }),
+    /* @__PURE__ */ jsx46("div", { className: "ad-month__dows", "aria-hidden": "true", children: dows.map((d, i) => /* @__PURE__ */ jsx46("span", { className: "ad-month__dow", children: d }, i)) }),
     Array.from({ length: weeks }, (_, w) => {
       const ws = addDays(start, w * 7);
       const we = addDays(ws, cols - 1);
@@ -6808,9 +6950,9 @@ function MonthCalendar({ month, span = "month", items, today: todayIn, weekStart
           const d = addDays(ws, i);
           const wk = d.getDay() === 0 || d.getDay() === 6;
           const mark = marks?.(d);
-          return /* @__PURE__ */ jsx45("div", { "aria-hidden": dayProps ? void 0 : true, ...hooksOf3(dayProps?.(d)), style: { gridColumn: i + 1 }, className: "ad-month__cell", "data-outside": span === "month" && d.getMonth() !== first.getMonth() || void 0, "data-weekend": shadeWeekends && wk || void 0, "data-ring": diff(d, today) === 0 || ringDay?.(d) || void 0, children: /* @__PURE__ */ jsxs42("span", { className: "ad-month__day", children: [
-            /* @__PURE__ */ jsx45("span", { className: "ad-month__num", "data-today": diff(d, today) === 0 || void 0, children: d.getDate() }),
-            mark != null && /* @__PURE__ */ jsx45("span", { className: "ad-month__marks", children: mark })
+          return /* @__PURE__ */ jsx46("div", { "aria-hidden": dayProps ? void 0 : true, ...hooksOf3(dayProps?.(d)), style: { gridColumn: i + 1 }, className: "ad-month__cell", "data-outside": span === "month" && d.getMonth() !== first.getMonth() || void 0, "data-weekend": shadeWeekends && wk || void 0, "data-ring": diff(d, today) === 0 || ringDay?.(d) || void 0, children: /* @__PURE__ */ jsxs42("span", { className: "ad-month__day", children: [
+            /* @__PURE__ */ jsx46("span", { className: "ad-month__num", "data-today": diff(d, today) === 0 || void 0, children: d.getDate() }),
+            mark != null && /* @__PURE__ */ jsx46("span", { className: "ad-month__marks", children: mark })
           ] }) }, i);
         }),
         placed.map(({ item, lane, from, to, cutStart, cutEnd }) => {
@@ -6819,19 +6961,19 @@ function MonthCalendar({ month, span = "month", items, today: todayIn, weekStart
           const cls = cx("ad-bar", "ad-striped", "ad-month__bar", !ms && (item.unconfirmed ? "ad-bar--unconfirmed" : "ad-bar--confirmed"), ms && "ad-month__bar--milestone", ms && diff(item.end, today) < 0 && "ad-month__bar--past", item.unconfirmed && "ad-month__bar--unconfirmed", cutStart && "ad-month__bar--cut-start", cutEnd && "ad-month__bar--cut-end");
           const hooks = hooksOf3(itemProps?.(item));
           const inner = /* @__PURE__ */ jsxs42("span", { className: "ad-bar__label", children: [
-            ms && /* @__PURE__ */ jsx45("span", { className: "ad-month__diamond ad-diamond", "aria-hidden": "true" }),
+            ms && /* @__PURE__ */ jsx46("span", { className: "ad-month__diamond ad-diamond", "aria-hidden": "true" }),
             code(item),
-            /* @__PURE__ */ jsx45(DeptGlyph, { hue: item.color }),
-            /* @__PURE__ */ jsx45("span", { className: "ad-bar__name", title: typeof item.label === "string" ? item.label : void 0, children: item.label })
+            /* @__PURE__ */ jsx46(DeptGlyph, { hue: item.color }),
+            /* @__PURE__ */ jsx46("span", { className: "ad-bar__name", title: typeof item.label === "string" ? item.label : void 0, children: item.label })
           ] });
-          return onOpen ? /* @__PURE__ */ jsx45("button", { type: "button", ...hooks, className: cls, style, onClick: (e) => {
+          return onOpen ? /* @__PURE__ */ jsx46("button", { type: "button", ...hooks, className: cls, style, onClick: (e) => {
             hooks.onClick?.(e);
             onOpen(item);
-          }, children: inner }, item.id) : /* @__PURE__ */ jsx45("span", { ...hooks, className: cls, style, children: inner }, item.id);
+          }, children: inner }, item.id) : /* @__PURE__ */ jsx46("span", { ...hooks, className: cls, style, children: inner }, item.id);
         }),
         dayContent && Array.from({ length: cols }, (_2, i) => {
           const content = dayContent(addDays(ws, i));
-          return content == null ? null : /* @__PURE__ */ jsx45("div", { className: "ad-month__content", style: { gridColumn: i + 1 }, children: content }, `content-${i}`);
+          return content == null ? null : /* @__PURE__ */ jsx46("div", { className: "ad-month__content", style: { gridColumn: i + 1 }, children: content }, `content-${i}`);
         })
       ] }, w);
     })
@@ -6840,20 +6982,20 @@ function MonthCalendar({ month, span = "month", items, today: todayIn, weekStart
 function YearCalendar({ year, today: todayIn, busy, onPressDay, weekStart = 1, locale = "en-US", className }) {
   const today = dayOf(todayIn);
   const y = year.getFullYear();
-  return /* @__PURE__ */ jsx45("section", { className: cx("ad-year", className), "aria-label": String(y), children: Array.from({ length: 12 }, (_, m) => {
+  return /* @__PURE__ */ jsx46("section", { className: cx("ad-year", className), "aria-label": String(y), children: Array.from({ length: 12 }, (_, m) => {
     const first = new Date(y, m, 1);
     const start = weekStartOf(first, weekStart);
     const last = new Date(y, m + 1, 0);
     const cells = Math.ceil((diff(last, start) + 1) / 7) * 7;
     return /* @__PURE__ */ jsxs42("div", { className: "ad-year__month", role: "group", "aria-label": first.toLocaleDateString(locale, { month: "long", year: "numeric" }), children: [
-      /* @__PURE__ */ jsx45("div", { className: "ad-year__name", "aria-hidden": "true", children: first.toLocaleDateString(locale, { month: "short" }).toUpperCase() }),
-      /* @__PURE__ */ jsx45("div", { className: "ad-year__days", children: Array.from({ length: cells }, (_2, i) => {
+      /* @__PURE__ */ jsx46("div", { className: "ad-year__name", "aria-hidden": "true", children: first.toLocaleDateString(locale, { month: "short" }).toUpperCase() }),
+      /* @__PURE__ */ jsx46("div", { className: "ad-year__days", children: Array.from({ length: cells }, (_2, i) => {
         const d = addDays(start, i);
-        if (d.getMonth() !== m) return /* @__PURE__ */ jsx45("span", { className: "ad-year__day ad-year__day--outside", "aria-hidden": "true" }, i);
+        if (d.getMonth() !== m) return /* @__PURE__ */ jsx46("span", { className: "ad-year__day ad-year__day--outside", "aria-hidden": "true" }, i);
         const holds = !!busy?.(d);
         const attrs = { "data-busy": holds || void 0, "data-today": diff(d, today) === 0 || void 0 };
         const name = d.toLocaleDateString(locale, { weekday: "long", month: "long", day: "numeric" });
-        return onPressDay ? /* @__PURE__ */ jsx45("button", { type: "button", ...attrs, className: "ad-year__day", "aria-label": name, onClick: () => onPressDay(d), children: d.getDate() }, i) : /* @__PURE__ */ jsx45("span", { ...attrs, className: "ad-year__day", children: d.getDate() }, i);
+        return onPressDay ? /* @__PURE__ */ jsx46("button", { type: "button", ...attrs, className: "ad-year__day", "aria-label": name, onClick: () => onPressDay(d), children: d.getDate() }, i) : /* @__PURE__ */ jsx46("span", { ...attrs, className: "ad-year__day", children: d.getDate() }, i);
       }) })
     ] }, m);
   }) });
@@ -6864,12 +7006,12 @@ function Booking({ name, time, unconfirmed, color, stripe, style, onOpen, bookin
   const hue = useHue(color);
   const kind = useNamedColour(stripe);
   const hooks = hooksOf3(bookingProps);
-  const grip = (side, h) => h && /* @__PURE__ */ jsx45("span", { role: h["aria-label"] ? "button" : void 0, "aria-hidden": h["aria-label"] ? void 0 : true, ...hooksOf3(h), className: `ad-booking__grip ad-booking__grip--${side}` });
+  const grip = (side, h) => h && /* @__PURE__ */ jsx46("span", { role: h["aria-label"] ? "button" : void 0, "aria-hidden": h["aria-label"] ? void 0 : true, ...hooksOf3(h), className: `ad-booking__grip ad-booking__grip--${side}` });
   const inControl = (t) => !!t.closest(".ad-booking__grip, .ad-booking__actions");
   const beside = !!onOpen && !asButton;
   const controls = /* @__PURE__ */ jsxs42(Fragment26, { children: [
     grip("start", ends?.start),
-    actions != null && /* @__PURE__ */ jsx45("span", { className: "ad-booking__actions", children: /* @__PURE__ */ jsx45(ButtonSizeScope, { size: "row", children: actions }) }),
+    actions != null && /* @__PURE__ */ jsx46("span", { className: "ad-booking__actions", children: /* @__PURE__ */ jsx46(ButtonSizeScope, { size: "row", children: actions }) }),
     grip("end", ends?.end)
   ] });
   const block = /* @__PURE__ */ jsxs42(
@@ -6900,13 +7042,13 @@ function Booking({ name, time, unconfirmed, color, stripe, style, onOpen, bookin
       children: [
         !beside && grip("start", ends?.start),
         /* @__PURE__ */ jsxs42("span", { className: "ad-booking__name", children: [
-          /* @__PURE__ */ jsx45(DeptGlyph, { hue: color }),
+          /* @__PURE__ */ jsx46(DeptGlyph, { hue: color }),
           name
         ] }),
-        !labelOutside && !fit && /* @__PURE__ */ jsx45("span", { className: "ad-booking__time", children: time }),
-        meta != null && !fit && !narrow && /* @__PURE__ */ jsx45("span", { className: "ad-booking__meta", children: meta }),
-        mark != null && mark !== false && /* @__PURE__ */ jsx45("span", { className: "ad-booking__mark", children: mark }),
-        !beside && actions != null && /* @__PURE__ */ jsx45("span", { className: "ad-booking__actions", children: /* @__PURE__ */ jsx45(ButtonSizeScope, { size: "row", children: actions }) }),
+        !labelOutside && !fit && /* @__PURE__ */ jsx46("span", { className: "ad-booking__time", children: time }),
+        meta != null && !fit && !narrow && /* @__PURE__ */ jsx46("span", { className: "ad-booking__meta", children: meta }),
+        mark != null && mark !== false && /* @__PURE__ */ jsx46("span", { className: "ad-booking__mark", children: mark }),
+        !beside && actions != null && /* @__PURE__ */ jsx46("span", { className: "ad-booking__actions", children: /* @__PURE__ */ jsx46(ButtonSizeScope, { size: "row", children: actions }) }),
         !beside && grip("end", ends?.end)
       ]
     }
@@ -6918,13 +7060,13 @@ function Booking({ name, time, unconfirmed, color, stripe, style, onOpen, bookin
 }
 function NowMarker({ time, style }) {
   return /* @__PURE__ */ jsxs42("span", { className: "ad-now", style, children: [
-    /* @__PURE__ */ jsx45("span", { className: "ad-now__time", children: time }),
-    /* @__PURE__ */ jsx45("span", { className: "ad-now__dot", "aria-hidden": "true" })
+    /* @__PURE__ */ jsx46("span", { className: "ad-now__time", children: time }),
+    /* @__PURE__ */ jsx46("span", { className: "ad-now__dot", "aria-hidden": "true" })
   ] });
 }
 function WeekendShade({ children, className }) {
   const on = useShow().weekendShading;
-  return /* @__PURE__ */ jsx45("div", { className: cx(on && "ad-weekend", className), children });
+  return /* @__PURE__ */ jsx46("div", { className: cx(on && "ad-weekend", className), children });
 }
 var clockHour = (h) => String((h + 11) % 12 + 1);
 function scrollerAbove(el) {
@@ -6934,9 +7076,9 @@ function scrollerAbove(el) {
 }
 function TimeGrid({ headerEnd, startHour, endHour, bookings = [], columns, now, hourLabel = clockHour, onOpen, itemProps, columnProps, ariaLabel, bandHours, onPressAt, over, visibleHours, scrollTo, asideWidth = "narrow", hourHeight = "compact", bandHeading, allDayContent, todayLine, className }) {
   const hours = Math.max(1, endHour - startHour);
-  const frame = useRef33(null);
-  const [barW, setBarW] = useState27(0);
-  useEffect18(() => {
+  const frame = useRef34(null);
+  const [barW, setBarW] = useState28(0);
+  useEffect19(() => {
     const el = frame.current;
     if (!el || !headerEnd || !visibleHours) return;
     const read2 = () => {
@@ -6949,9 +7091,9 @@ function TimeGrid({ headerEnd, startHour, endHour, bookings = [], columns, now, 
     ro?.observe(el);
     return () => ro?.disconnect();
   }, [headerEnd, visibleHours]);
-  const [headH, setHeadH] = useState27(0);
-  const [asideCap, setAsideCap] = useState27(0);
-  const [contentH, setContentH] = useState27(0);
+  const [headH, setHeadH] = useState28(0);
+  const [asideCap, setAsideCap] = useState28(0);
+  const [contentH, setContentH] = useState28(0);
   useLayoutEffect12(() => {
     const el = frame.current;
     if (!el) return;
@@ -6987,7 +7129,7 @@ function TimeGrid({ headerEnd, startHour, endHour, bookings = [], columns, now, 
     el.querySelectorAll(".ad-time-grid__head, .ad-time-grid__allday-content").forEach((n) => ro.observe(n));
     return () => ro.disconnect();
   });
-  useEffect18(() => {
+  useEffect19(() => {
     const el = frame.current;
     if (!el || scrollTo == null) return;
     const go = () => {
@@ -7073,77 +7215,77 @@ function TimeGrid({ headerEnd, startHour, endHour, bookings = [], columns, now, 
   const scrolls = !!visibleHours;
   const last = cols[cols.length - 1];
   const lastHeaded = !!last && (last.head != null || headBand || !!last.label);
-  const corner = headerEnd != null && !scrolls && lastHeaded ? /* @__PURE__ */ jsx45("span", { className: "ad-time-grid__corner", children: headerEnd }) : null;
+  const corner = headerEnd != null && !scrolls && lastHeaded ? /* @__PURE__ */ jsx46("span", { className: "ad-time-grid__corner", children: headerEnd }) : null;
   const grid = /* @__PURE__ */ jsxs42("div", { ref: frame, className: cx("ad-time-grid", !!visibleHours && "ad-time-grid--scrolls", `ad-time-grid--aside-${asideWidth}`, hourHeight === "roomy" && "ad-time-grid--roomy", className), role: "group", "aria-label": ariaLabel, tabIndex: visibleHours ? 0 : void 0, style: { ["--ad-hours"]: hours, ["--ad-allday-rows"]: allDayRows, ["--ad-column-count"]: cols.length, ["--ad-allday-content-h"]: `${contentH}px`, ...visibleHours ? { ["--ad-visible-hours"]: visibleHours } : {}, ...headH ? { ["--ad-head-h"]: `${headH}px` } : {}, ...asideWidth === "wide" && asideCap ? { ["--ad-aside"]: `${asideCap}px` } : {} }, children: [
-    headerEnd != null && !scrolls && !lastHeaded && /* @__PURE__ */ jsx45("div", { className: "ad-time-grid__corner", children: headerEnd }),
+    headerEnd != null && !scrolls && !lastHeaded && /* @__PURE__ */ jsx46("div", { className: "ad-time-grid__corner", children: headerEnd }),
     /* @__PURE__ */ jsxs42("div", { className: "ad-time-grid__gutter", "aria-hidden": "true", children: [
-      anyBand && !headBand && /* @__PURE__ */ jsx45("div", { className: "ad-time-grid__band-space" }),
-      allDayContent != null && /* @__PURE__ */ jsx45("div", { className: "ad-time-grid__content-space" }),
-      allDayRows > 0 && /* @__PURE__ */ jsx45("div", { className: "ad-time-grid__allday-space" }),
+      anyBand && !headBand && /* @__PURE__ */ jsx46("div", { className: "ad-time-grid__band-space" }),
+      allDayContent != null && /* @__PURE__ */ jsx46("div", { className: "ad-time-grid__content-space" }),
+      allDayRows > 0 && /* @__PURE__ */ jsx46("div", { className: "ad-time-grid__allday-space" }),
       /* @__PURE__ */ jsxs42("div", { className: "ad-time-grid__hours", children: [
-        Array.from({ length: hours }, (_, i) => now && Math.abs(startHour + i - now.at) < (hourHeight === "fill" ? 0.75 : 0.5) ? null : /* @__PURE__ */ jsx45("span", { className: cx("ad-time-grid__hour-label", i === 0 && "ad-time-grid__hour-label--first"), style: { top: at(startHour + i) }, children: hourLabel(startHour + i) }, i)),
-        now && /* @__PURE__ */ jsx45(NowMarker, { time: now.time, style: { position: "absolute", top: at(now.at), right: 0, transform: "translateY(-50%)" } })
+        Array.from({ length: hours }, (_, i) => now && Math.abs(startHour + i - now.at) < (hourHeight === "fill" ? 0.75 : 0.5) ? null : /* @__PURE__ */ jsx46("span", { className: cx("ad-time-grid__hour-label", i === 0 && "ad-time-grid__hour-label--first"), style: { top: at(startHour + i) }, children: hourLabel(startHour + i) }, i)),
+        now && /* @__PURE__ */ jsx46(NowMarker, { time: now.time, style: { position: "absolute", top: at(now.at), right: 0, transform: "translateY(-50%)" } })
       ] })
     ] }),
     cols.map((c, colAt) => /* @__PURE__ */ jsxs42("div", { className: cx("ad-time-grid__column", over === c.id && "ad-time-grid__column--over"), role: "group", "aria-label": c.label || void 0, children: [
-      todayLine?.column === c.id && /* @__PURE__ */ jsx45("span", { className: "ad-today ad-time-grid__today", "aria-hidden": "true", style: { left: `${Math.max(0, Math.min(1, todayLine.at ?? 0)) * 100}%` } }),
+      todayLine?.column === c.id && /* @__PURE__ */ jsx46("span", { className: "ad-today ad-time-grid__today", "aria-hidden": "true", style: { left: `${Math.max(0, Math.min(1, todayLine.at ?? 0)) * 100}%` } }),
       c.head != null || headBand ? /* @__PURE__ */ jsxs42("div", { className: "ad-time-grid__head", children: [
-        headBand && /* @__PURE__ */ jsx45(BandHeading, { band: c.band }),
+        headBand && /* @__PURE__ */ jsx46(BandHeading, { band: c.band }),
         c.head,
         colAt === cols.length - 1 && corner
       ] }) : c.label && /* @__PURE__ */ jsxs42("span", { className: "ad-time-grid__day", children: [
         /* @__PURE__ */ jsxs42("span", { className: "ad-time-grid__day-line", children: [
-          /* @__PURE__ */ jsx45("span", { className: "ad-time-grid__day-label", children: c.label }),
-          c.marks != null && /* @__PURE__ */ jsx45("span", { className: "ad-time-grid__marks", children: /* @__PURE__ */ jsx45(ButtonSizeScope, { size: "row", children: c.marks }) }),
+          /* @__PURE__ */ jsx46("span", { className: "ad-time-grid__day-label", children: c.label }),
+          c.marks != null && /* @__PURE__ */ jsx46("span", { className: "ad-time-grid__marks", children: /* @__PURE__ */ jsx46(ButtonSizeScope, { size: "row", children: c.marks }) }),
           colAt === cols.length - 1 && corner
         ] }),
-        c.figure != null && /* @__PURE__ */ jsx45("span", { className: "ad-time-grid__figure", children: c.figure })
+        c.figure != null && /* @__PURE__ */ jsx46("span", { className: "ad-time-grid__figure", children: c.figure })
       ] }),
-      anyBand && !headBand && (c.band ? /* @__PURE__ */ jsx45(PhaseBand, { ...c.band }) : /* @__PURE__ */ jsx45("div", { className: "ad-time-grid__band-space" })),
-      allDayContent != null && (colAt === 0 ? /* @__PURE__ */ jsx45("div", { className: "ad-time-grid__allday-content", children: allDayContent }) : /* @__PURE__ */ jsx45("div", { className: "ad-time-grid__content-space", "aria-hidden": "true" })),
-      allDayRows > 0 && /* @__PURE__ */ jsx45("div", { role: "group", ...hooksOf3(columnProps?.(c.id)), className: "ad-time-grid__allday", style: { ["--ad-lane-over"]: cols.length - colAt }, children: (c.allDay ?? []).map((item) => {
+      anyBand && !headBand && (c.band ? /* @__PURE__ */ jsx46(PhaseBand, { ...c.band }) : /* @__PURE__ */ jsx46("div", { className: "ad-time-grid__band-space" })),
+      allDayContent != null && (colAt === 0 ? /* @__PURE__ */ jsx46("div", { className: "ad-time-grid__allday-content", children: allDayContent }) : /* @__PURE__ */ jsx46("div", { className: "ad-time-grid__content-space", "aria-hidden": "true" })),
+      allDayRows > 0 && /* @__PURE__ */ jsx46("div", { role: "group", ...hooksOf3(columnProps?.(c.id)), className: "ad-time-grid__allday", style: { ["--ad-lane-over"]: cols.length - colAt }, children: (c.allDay ?? []).map((item) => {
         const hooks = hooksOf3(itemProps?.(item));
         const cls = cx("ad-bar", "ad-striped", "ad-month__bar", "ad-time-grid__item", item.unconfirmed ? "ad-bar--unconfirmed" : "ad-bar--confirmed", item.unconfirmed && "ad-month__bar--unconfirmed");
         const style = { ...barColour(item.color, hueOf(item.color)), ...item.span && item.span > 1 ? { ["--ad-span"]: item.span } : {} };
         const inner = /* @__PURE__ */ jsxs42("span", { className: "ad-bar__label", children: [
           code(item),
-          item.icon ? slotIcon(item.icon, { size: "sm" }) : /* @__PURE__ */ jsx45(DeptGlyph, { hue: item.color }),
-          /* @__PURE__ */ jsx45("span", { className: "ad-bar__name", title: typeof item.label === "string" ? item.label : void 0, children: item.label })
+          item.icon ? slotIcon(item.icon, { size: "sm" }) : /* @__PURE__ */ jsx46(DeptGlyph, { hue: item.color }),
+          /* @__PURE__ */ jsx46("span", { className: "ad-bar__name", title: typeof item.label === "string" ? item.label : void 0, children: item.label })
         ] });
-        return onOpen ? /* @__PURE__ */ jsx45("button", { type: "button", ...hooks, "data-span": item.span && item.span > 1 ? item.span : void 0, className: cls, style, onClick: (e) => {
+        return onOpen ? /* @__PURE__ */ jsx46("button", { type: "button", ...hooks, "data-span": item.span && item.span > 1 ? item.span : void 0, className: cls, style, onClick: (e) => {
           hooks.onClick?.(e);
           onOpen(item);
-        }, children: inner }, item.id) : /* @__PURE__ */ jsx45("span", { ...hooks, "data-span": item.span && item.span > 1 ? item.span : void 0, className: cls, style, children: inner }, item.id);
+        }, children: inner }, item.id) : /* @__PURE__ */ jsx46("span", { ...hooks, "data-span": item.span && item.span > 1 ? item.span : void 0, className: cls, style, children: inner }, item.id);
       }) }),
       /* @__PURE__ */ jsxs42("div", { className: cx("ad-time-grid__body", c.aside && "ad-time-grid__body--aside"), onClick: pressAt(c.id), children: [
         (c.blocks ?? []).map((b) => {
           const reach = b.span ? Math.max(colAt, ...b.span.map((id) => cols.findIndex((x) => x.id === id))) - colAt + 1 : 1;
           const n = reach > 1 ? 1 : Math.max(1, b.lanes ?? 1), k = Math.min(n - 1, Math.max(0, b.lane ?? 0));
-          return /* @__PURE__ */ jsx45("div", { className: cx("ad-time-grid__slot", reach > 1 && "ad-time-grid__slot--span"), "data-lane": n > 1 ? `${k + 1}/${n}` : void 0, style: { top: at(b.start), height: `calc(${at(b.end)} - ${at(b.start)})`, ...n > 1 ? { ["--ad-lane-k"]: k, ["--ad-lanes"]: n } : {}, ...reach > 1 ? { ["--ad-span"]: reach } : {} }, children: b.node }, b.id);
+          return /* @__PURE__ */ jsx46("div", { className: cx("ad-time-grid__slot", reach > 1 && "ad-time-grid__slot--span"), "data-lane": n > 1 ? `${k + 1}/${n}` : void 0, style: { top: at(b.start), height: `calc(${at(b.end)} - ${at(b.start)})`, ...n > 1 ? { ["--ad-lane-k"]: k, ["--ad-lanes"]: n } : {}, ...reach > 1 ? { ["--ad-span"]: reach } : {} }, children: b.node }, b.id);
         }),
-        c.aside && /* @__PURE__ */ jsx45("div", { className: "ad-time-grid__aside", children: [...c.aside].sort((x, y) => x.at - y.at).map((m, i) => {
+        c.aside && /* @__PURE__ */ jsx46("div", { className: "ad-time-grid__aside", children: [...c.aside].sort((x, y) => x.at - y.at).map((m, i) => {
           const words2 = [m.time, m.title].filter(Boolean).join(" ");
-          const inner = m.node ?? (asideWidth === "narrow" ? /* @__PURE__ */ jsx45("span", { className: "ad-time-grid__moment-mark", "aria-label": m.onPress ? void 0 : words2, role: m.onPress ? void 0 : "img" }) : /* @__PURE__ */ jsxs42(Fragment26, { children: [
-            m.time && /* @__PURE__ */ jsx45("span", { className: "ad-time-grid__moment-time", children: m.time }),
-            m.title && /* @__PURE__ */ jsx45("span", { className: "ad-time-grid__moment-title", title: m.title, children: m.title })
+          const inner = m.node ?? (asideWidth === "narrow" ? /* @__PURE__ */ jsx46("span", { className: "ad-time-grid__moment-mark", "aria-label": m.onPress ? void 0 : words2, role: m.onPress ? void 0 : "img" }) : /* @__PURE__ */ jsxs42(Fragment26, { children: [
+            m.time && /* @__PURE__ */ jsx46("span", { className: "ad-time-grid__moment-time", children: m.time }),
+            m.title && /* @__PURE__ */ jsx46("span", { className: "ad-time-grid__moment-title", title: m.title, children: m.title })
           ] }));
           const shown = m.hue ? hueOf(m.hue) : void 0;
           const style = { top: at(m.at), ...shown ? { ["--ad-stripe"]: shown } : {} };
           const cls = cx("ad-time-grid__moment", m.unconfirmed && "ad-time-grid__moment--unconfirmed", m.hue && "ad-time-grid__moment--hued");
-          return m.onPress ? /* @__PURE__ */ jsx45("button", { type: "button", className: cx(cls, "ad-time-grid__moment--press"), style, "aria-label": words2 || void 0, title: asideWidth === "narrow" ? words2 : void 0, onClick: (e) => {
+          return m.onPress ? /* @__PURE__ */ jsx46("button", { type: "button", className: cx(cls, "ad-time-grid__moment--press"), style, "aria-label": words2 || void 0, title: asideWidth === "narrow" ? words2 : void 0, onClick: (e) => {
             e.stopPropagation();
             m.onPress();
-          }, children: inner }, i) : /* @__PURE__ */ jsx45("span", { className: cls, style, title: asideWidth === "narrow" && words2 ? words2 : void 0, children: inner }, i);
+          }, children: inner }, i) : /* @__PURE__ */ jsx46("span", { className: cls, style, title: asideWidth === "narrow" && words2 ? words2 : void 0, children: inner }, i);
         }) }),
-        Array.from({ length: hours }, (_, i) => /* @__PURE__ */ jsx45("div", { className: cx("ad-time-grid__hour", bandHours && i % 2 === 1 && "ad-time-grid__hour--band"), "aria-hidden": "true" }, i)),
-        c.bookings.map(({ id, start, end, ...b }) => /* @__PURE__ */ jsx45("div", { className: "ad-time-grid__slot", style: { top: at(start), height: `calc(${at(end)} - ${at(start)})` }, children: /* @__PURE__ */ jsx45(Booking, { ...b, style: { height: "100%" } }) }, id))
+        Array.from({ length: hours }, (_, i) => /* @__PURE__ */ jsx46("div", { className: cx("ad-time-grid__hour", bandHours && i % 2 === 1 && "ad-time-grid__hour--band"), "aria-hidden": "true" }, i)),
+        c.bookings.map(({ id, start, end, ...b }) => /* @__PURE__ */ jsx46("div", { className: "ad-time-grid__slot", style: { top: at(start), height: `calc(${at(end)} - ${at(start)})` }, children: /* @__PURE__ */ jsx46(Booking, { ...b, style: { height: "100%" } }) }, id))
       ] })
     ] }, c.id))
   ] });
   if (headerEnd == null || !scrolls) return grid;
   return /* @__PURE__ */ jsxs42("div", { className: "ad-time-grid-frame", style: { ["--ad-bar-w"]: `${barW}px` }, children: [
     grid,
-    /* @__PURE__ */ jsx45("div", { className: "ad-time-grid__corner ad-time-grid__corner--pinned", children: headerEnd })
+    /* @__PURE__ */ jsx46("div", { className: "ad-time-grid__corner ad-time-grid__corner--pinned", children: headerEnd })
   ] });
 }
 function DayCell({ day, today, where, whereLabel, away, travel, letter, ground, label, compact, picked, dayProps }) {
@@ -7162,26 +7304,26 @@ function DayCell({ day, today, where, whereLabel, away, travel, letter, ground, 
       "data-picked": picked ? "" : void 0,
       style: wash ? { ["--ad-ground"]: wash } : void 0,
       children: [
-        /* @__PURE__ */ jsx45("span", { className: "ad-day-cell__letter ad-type-heading", "aria-hidden": "true", children: letter ?? ENGLISH.weekdayLetters[day.getDay()] }),
-        /* @__PURE__ */ jsx45("span", { className: "ad-day-cell__number", "aria-hidden": "true", children: day.getDate() }),
-        /* @__PURE__ */ jsx45("span", { className: "ad-day-cell__where", "aria-hidden": "true", style: colour ? { ["--ad-where"]: colour } : void 0, "data-where": colour ? true : void 0 }),
-        label != null && label !== false && /* @__PURE__ */ jsx45("span", { className: "ad-day-cell__label", title: compact && typeof label === "string" ? label : void 0, "aria-hidden": typeof label === "string" ? true : void 0, children: label }),
-        travel && /* @__PURE__ */ jsx45("span", { className: "ad-day-cell__travel", "aria-hidden": "true", children: /* @__PURE__ */ jsx45(Icon, { job: "plane", size: "sm" }) })
+        /* @__PURE__ */ jsx46("span", { className: "ad-day-cell__letter ad-type-heading", "aria-hidden": "true", children: letter ?? ENGLISH.weekdayLetters[day.getDay()] }),
+        /* @__PURE__ */ jsx46("span", { className: "ad-day-cell__number", "aria-hidden": "true", children: day.getDate() }),
+        /* @__PURE__ */ jsx46("span", { className: "ad-day-cell__where", "aria-hidden": "true", style: colour ? { ["--ad-where"]: colour } : void 0, "data-where": colour ? true : void 0 }),
+        label != null && label !== false && /* @__PURE__ */ jsx46("span", { className: "ad-day-cell__label", title: compact && typeof label === "string" ? label : void 0, "aria-hidden": typeof label === "string" ? true : void 0, children: label }),
+        travel && /* @__PURE__ */ jsx46("span", { className: "ad-day-cell__travel", "aria-hidden": "true", children: /* @__PURE__ */ jsx46(Icon, { job: "plane", size: "sm" }) })
       ]
     }
   );
 }
 function BandHeading({ band }) {
-  if (!band) return /* @__PURE__ */ jsx45("div", { className: "ad-time-grid__band-heading ad-time-grid__band-heading--none", "aria-hidden": "true" });
-  return /* @__PURE__ */ jsx45("div", { className: cx("ad-group-heading", "ad-group-heading--rule-above", "ad-time-grid__band-heading", band.unconfirmed && "ad-time-grid__band-heading--unconfirmed"), children: band.label ? /* @__PURE__ */ jsx45("h2", { className: "ad-group-heading__title ad-time-grid__band-name", children: band.label }) : null });
+  if (!band) return /* @__PURE__ */ jsx46("div", { className: "ad-time-grid__band-heading ad-time-grid__band-heading--none", "aria-hidden": "true" });
+  return /* @__PURE__ */ jsx46("div", { className: cx("ad-group-heading", "ad-group-heading--rule-above", "ad-time-grid__band-heading", band.unconfirmed && "ad-time-grid__band-heading--unconfirmed"), children: band.label ? /* @__PURE__ */ jsx46("h2", { className: "ad-group-heading__title ad-time-grid__band-name", children: band.label }) : null });
 }
 function PhaseBand({ label, color, unconfirmed }) {
   const drawn = useNamedColour(color);
-  return /* @__PURE__ */ jsx45("div", { className: cx("ad-time-grid__band", unconfirmed && "ad-time-grid__band--unconfirmed", label && "ad-time-grid__band--first"), style: drawn ? { ["--ad-wash"]: drawn } : void 0, children: label && /* @__PURE__ */ jsx45("span", { className: "ad-time-grid__band-label", children: label }) });
+  return /* @__PURE__ */ jsx46("div", { className: cx("ad-time-grid__band", unconfirmed && "ad-time-grid__band--unconfirmed", label && "ad-time-grid__band--first"), style: drawn ? { ["--ad-wash"]: drawn } : void 0, children: label && /* @__PURE__ */ jsx46("span", { className: "ad-time-grid__band-label", children: label }) });
 }
 
 // src/components/Map/Map.tsx
-import { useEffect as useEffect19, useMemo as useMemo3, useRef as useRef34, useState as useState28 } from "react";
+import { useEffect as useEffect20, useMemo as useMemo3, useRef as useRef35, useState as useState29 } from "react";
 
 // src/components/Map/worldGeo.ts
 var GEO_LAT_MAX = 84;
@@ -7198,7 +7340,7 @@ var LAND = decode(LAND_SRC);
 var BORDERS = decode(BORDER_SRC);
 
 // src/components/Map/Map.tsx
-import { jsx as jsx46, jsxs as jsxs43 } from "react/jsx-runtime";
+import { jsx as jsx47, jsxs as jsxs43 } from "react/jsx-runtime";
 var DAY_MS = 864e5;
 var millerY = (lat) => {
   const p = Math.max(-89.5, Math.min(89.5, lat)) * Math.PI / 180;
@@ -7250,11 +7392,11 @@ var LABEL_ALL_FROM = 760;
 var LABEL_SOME_FROM = 380;
 var PICKS = new Set(pickColours);
 function WorldMap({ pins, at, ariaLabel, onPin, hoverCard, pinProps }) {
-  const [hover, setHover] = useState28(null);
+  const [hover, setHover] = useState29(null);
   const night = useMemo3(() => nightPath(at), [at]);
-  const wrap = useRef34(null);
-  const [w, setW] = useState28(0);
-  useEffect19(() => {
+  const wrap = useRef35(null);
+  const [w, setW] = useState29(0);
+  useEffect20(() => {
     const el = wrap.current;
     if (!el) return;
     setW(el.getBoundingClientRect().width);
@@ -7278,20 +7420,20 @@ function WorldMap({ pins, at, ariaLabel, onPin, hoverCard, pinProps }) {
   const parallels = [60, 40, 20, 0, -20, -40];
   return /* @__PURE__ */ jsxs43("div", { ref: wrap, className: "ad-world-map", children: [
     /* @__PURE__ */ jsxs43("svg", { viewBox: `0 0 ${VBW} ${VBH}`, width: "100%", role: "group", "aria-label": ariaLabel, className: "ad-world-map__svg", children: [
-      /* @__PURE__ */ jsx46("g", { children: LAND_PATHS.map((d, i) => /* @__PURE__ */ jsx46("path", { d, className: "ad-world-map__land" }, i)) }),
-      /* @__PURE__ */ jsx46("g", { children: BORDER_PATHS.map((d, i) => /* @__PURE__ */ jsx46("path", { d, className: "ad-world-map__border" }, i)) }),
-      night && /* @__PURE__ */ jsx46("path", { d: night, className: "ad-world-map__night", "data-night": "" }),
-      /* @__PURE__ */ jsx46("g", { children: parallels.map((lat) => /* @__PURE__ */ jsx46("line", { x1: 0, y1: py(lat), x2: VBW, y2: py(lat), className: lat === 0 ? "ad-world-map__equator" : "ad-world-map__parallel" }, lat)) }),
-      /* @__PURE__ */ jsx46("g", { children: meridians.map((lng, i) => {
+      /* @__PURE__ */ jsx47("g", { children: LAND_PATHS.map((d, i) => /* @__PURE__ */ jsx47("path", { d, className: "ad-world-map__land" }, i)) }),
+      /* @__PURE__ */ jsx47("g", { children: BORDER_PATHS.map((d, i) => /* @__PURE__ */ jsx47("path", { d, className: "ad-world-map__border" }, i)) }),
+      night && /* @__PURE__ */ jsx47("path", { d: night, className: "ad-world-map__night", "data-night": "" }),
+      /* @__PURE__ */ jsx47("g", { children: parallels.map((lat) => /* @__PURE__ */ jsx47("line", { x1: 0, y1: py(lat), x2: VBW, y2: py(lat), className: lat === 0 ? "ad-world-map__equator" : "ad-world-map__parallel" }, lat)) }),
+      /* @__PURE__ */ jsx47("g", { children: meridians.map((lng, i) => {
         const hour = Math.round(lng / 15);
         const show = labelEvery > 0 && Math.abs(hour) < 12 && (hour === 0 || i % labelEvery === 0);
         return /* @__PURE__ */ jsxs43("g", { children: [
-          /* @__PURE__ */ jsx46("line", { x1: px2(lng), y1: 0, x2: px2(lng), y2: VBH, className: hour === 0 ? "ad-world-map__utc" : "ad-world-map__meridian" }),
-          show && /* @__PURE__ */ jsx46("text", { x: px2(lng), y: 11, textAnchor: "middle", className: "ad-world-map__tz", "data-tz": hour, children: hour === 0 ? "UTC" : `${hour > 0 ? "+" : "\u2212"}${Math.abs(hour)}` })
+          /* @__PURE__ */ jsx47("line", { x1: px2(lng), y1: 0, x2: px2(lng), y2: VBH, className: hour === 0 ? "ad-world-map__utc" : "ad-world-map__meridian" }),
+          show && /* @__PURE__ */ jsx47("text", { x: px2(lng), y: 11, textAnchor: "middle", className: "ad-world-map__tz", "data-tz": hour, children: hour === 0 ? "UTC" : `${hour > 0 ? "+" : "\u2212"}${Math.abs(hour)}` })
         ] }, lng);
       }) }),
-      /* @__PURE__ */ jsx46("g", { children: placed.filter((p) => p.pin.route).map(({ pin, colour }) => /* @__PURE__ */ jsx46("line", { x1: px2(pin.route.from[0]), y1: py(pin.route.from[1]), x2: px2(pin.route.to[0]), y2: py(pin.route.to[1]), className: "ad-world-map__route", style: { stroke: colour } }, `route-${pin.id}`)) }),
-      hovered && /* @__PURE__ */ jsx46("circle", { cx: hovered.cx, cy: hovered.cy, className: "ad-world-map__hover", style: { fill: hovered.colour } }),
+      /* @__PURE__ */ jsx47("g", { children: placed.filter((p) => p.pin.route).map(({ pin, colour }) => /* @__PURE__ */ jsx47("line", { x1: px2(pin.route.from[0]), y1: py(pin.route.from[1]), x2: px2(pin.route.to[0]), y2: py(pin.route.to[1]), className: "ad-world-map__route", style: { stroke: colour } }, `route-${pin.id}`)) }),
+      hovered && /* @__PURE__ */ jsx47("circle", { cx: hovered.cx, cy: hovered.cy, className: "ad-world-map__hover", style: { fill: hovered.colour } }),
       placed.map(({ pin, cx: x, cy: y, colour }) => {
         const on = hover === pin.id;
         const hooks = pinProps?.(pin) ?? {};
@@ -7316,45 +7458,45 @@ function WorldMap({ pins, at, ariaLabel, onPin, hoverCard, pinProps }) {
             },
             style: { ["--ad-pin"]: colour },
             children: [
-              /* @__PURE__ */ jsx46("circle", { cx: x, cy: y, className: "ad-world-map__halo" }),
-              /* @__PURE__ */ jsx46("circle", { cx: x, cy: y, className: "ad-world-map__dot" }),
-              /* @__PURE__ */ jsx46("text", { x, y: y + 2.6, textAnchor: "middle", className: "ad-world-map__initials", "aria-hidden": "true", children: pin.initials })
+              /* @__PURE__ */ jsx47("circle", { cx: x, cy: y, className: "ad-world-map__halo" }),
+              /* @__PURE__ */ jsx47("circle", { cx: x, cy: y, className: "ad-world-map__dot" }),
+              /* @__PURE__ */ jsx47("text", { x, y: y + 2.6, textAnchor: "middle", className: "ad-world-map__initials", "aria-hidden": "true", children: pin.initials })
             ]
           },
           pin.id
         );
       })
     ] }),
-    hovered && hoverCard && /* @__PURE__ */ jsx46("div", { className: "ad-float ad-world-map__card", style: { left: `${Math.min(72, hovered.cx / VBW * 100)}%`, top: `${hovered.cy / VBH * 100}%` }, children: hoverCard(hovered.pin) })
+    hovered && hoverCard && /* @__PURE__ */ jsx47("div", { className: "ad-float ad-world-map__card", style: { left: `${Math.min(72, hovered.cx / VBW * 100)}%`, top: `${hovered.cy / VBH * 100}%` }, children: hoverCard(hovered.pin) })
   ] });
 }
 function MapNightDot() {
-  return /* @__PURE__ */ jsx46(Dot, { className: "ad-world-map__night-dot" });
+  return /* @__PURE__ */ jsx47(Dot, { className: "ad-world-map__night-dot" });
 }
 
 // src/components/Charts/Charts.tsx
-import { Fragment as Fragment27, jsx as jsx47, jsxs as jsxs44 } from "react/jsx-runtime";
+import { Fragment as Fragment27, jsx as jsx48, jsxs as jsxs44 } from "react/jsx-runtime";
 var partStyle = (hue) => {
   const c = projectPillHue(hue);
   return c ? { "--ad-part": c } : void 0;
 };
 function AmountBars({ items, max, target, ariaLabel, className }) {
   const top = max ?? Math.max(1, ...items.map((i) => i.value), target?.value ?? 0);
-  return /* @__PURE__ */ jsx47("div", { className: cx("ad-amounts", className), role: "list", "aria-label": ariaLabel, children: items.map((i, n) => /* @__PURE__ */ jsxs44("div", { className: "ad-amounts__row", role: "listitem", children: [
-    /* @__PURE__ */ jsx47("span", { className: "ad-amounts__label", children: i.label }),
+  return /* @__PURE__ */ jsx48("div", { className: cx("ad-amounts", className), role: "list", "aria-label": ariaLabel, children: items.map((i, n) => /* @__PURE__ */ jsxs44("div", { className: "ad-amounts__row", role: "listitem", children: [
+    /* @__PURE__ */ jsx48("span", { className: "ad-amounts__label", children: i.label }),
     /* @__PURE__ */ jsxs44("span", { className: "ad-amounts__track", children: [
-      /* @__PURE__ */ jsx47("span", { className: cx("ad-amounts__bar", projectPillHue(i.hue) && "ad-chart-part"), style: { width: `${Math.max(0, i.value / top) * 100}%`, ...partStyle(i.hue) }, children: target && i.value > target.value && /* @__PURE__ */ jsx47("span", { className: "ad-amounts__past", style: { left: `${target.value / i.value * 100}%` } }) }),
-      target && /* @__PURE__ */ jsx47("span", { className: "ad-amounts__target", ...n === 0 ? { role: "img", "aria-label": target.label } : { "aria-hidden": true }, style: { left: `${target.value / top * 100}%` } }),
-      /* @__PURE__ */ jsx47("span", { className: "ad-amounts__value", children: i.display })
+      /* @__PURE__ */ jsx48("span", { className: cx("ad-amounts__bar", projectPillHue(i.hue) && "ad-chart-part"), style: { width: `${Math.max(0, i.value / top) * 100}%`, ...partStyle(i.hue) }, children: target && i.value > target.value && /* @__PURE__ */ jsx48("span", { className: "ad-amounts__past", style: { left: `${target.value / i.value * 100}%` } }) }),
+      target && /* @__PURE__ */ jsx48("span", { className: "ad-amounts__target", ...n === 0 ? { role: "img", "aria-label": target.label } : { "aria-hidden": true }, style: { left: `${target.value / top * 100}%` } }),
+      /* @__PURE__ */ jsx48("span", { className: "ad-amounts__value", children: i.display })
     ] })
   ] }, i.id)) });
 }
 function BudgetBar({ fraction, figure, note = "worked", remainder, end, ariaLabel, planned, marks = [], hue, segments: segments2, className }) {
   return /* @__PURE__ */ jsxs44("div", { className: cx("ad-budget", className), children: [
-    /* @__PURE__ */ jsx47("div", { className: "ad-budget__figure", children: figure }),
-    /* @__PURE__ */ jsx47(ProgressBar, { meter: true, fraction, ariaLabel: ariaLabel ?? String(figure), planned, marks: marks.length ? marks : void 0, hue, segments: segments2 }),
+    /* @__PURE__ */ jsx48("div", { className: "ad-budget__figure", children: figure }),
+    /* @__PURE__ */ jsx48(ProgressBar, { meter: true, fraction, ariaLabel: ariaLabel ?? String(figure), planned, marks: marks.length ? marks : void 0, hue, segments: segments2 }),
     /* @__PURE__ */ jsxs44("div", { className: "ad-budget__foot", children: [
-      /* @__PURE__ */ jsx47("span", { children: note }),
+      /* @__PURE__ */ jsx48("span", { children: note }),
       /* @__PURE__ */ jsxs44("span", { className: cx(fraction > 1 && "ad-budget__over"), children: [
         remainder,
         end && /* @__PURE__ */ jsxs44(Fragment27, { children: [
@@ -7366,15 +7508,15 @@ function BudgetBar({ fraction, figure, note = "worked", remainder, end, ariaLabe
   ] });
 }
 function BudgetLines({ lines, ariaLabel, className }) {
-  return /* @__PURE__ */ jsx47("div", { className: cx("ad-budget-lines", className), role: "list", "aria-label": ariaLabel, children: lines.map((l) => /* @__PURE__ */ jsxs44("div", { className: "ad-budget-lines__line", role: "listitem", ...l.hooks, children: [
-    /* @__PURE__ */ jsx47("span", { className: "ad-budget-lines__label", children: l.label }),
-    /* @__PURE__ */ jsx47(FigureTip, { tip: l.tip, children: /* @__PURE__ */ jsx47("span", { className: "ad-budget-lines__figure", tabIndex: l.tip ? 0 : void 0, children: l.figure }) }),
-    /* @__PURE__ */ jsx47("span", { className: "ad-budget-lines__of", children: l.of }),
-    l.of != null && l.fraction != null && /* @__PURE__ */ jsx47("span", { className: "ad-budget-lines__bar", children: /* @__PURE__ */ jsx47(ProgressBar, { thin: true, fraction: l.fraction, planned: l.planned, ariaLabel: l.ariaLabel ?? String(l.label) }) })
+  return /* @__PURE__ */ jsx48("div", { className: cx("ad-budget-lines", className), role: "list", "aria-label": ariaLabel, children: lines.map((l) => /* @__PURE__ */ jsxs44("div", { className: "ad-budget-lines__line", role: "listitem", ...l.hooks, children: [
+    /* @__PURE__ */ jsx48("span", { className: "ad-budget-lines__label", children: l.label }),
+    /* @__PURE__ */ jsx48(FigureTip, { tip: l.tip, children: /* @__PURE__ */ jsx48("span", { className: "ad-budget-lines__figure", tabIndex: l.tip ? 0 : void 0, children: l.figure }) }),
+    /* @__PURE__ */ jsx48("span", { className: "ad-budget-lines__of", children: l.of }),
+    l.of != null && l.fraction != null && /* @__PURE__ */ jsx48("span", { className: "ad-budget-lines__bar", children: /* @__PURE__ */ jsx48(ProgressBar, { thin: true, fraction: l.fraction, planned: l.planned, ariaLabel: l.ariaLabel ?? String(l.label) }) })
   ] }, l.id)) });
 }
 function FigureTip({ tip, children }) {
-  return tip ? /* @__PURE__ */ jsx47(Tooltip, { text: tip, children }) : children;
+  return tip ? /* @__PURE__ */ jsx48(Tooltip, { text: tip, children }) : children;
 }
 function ProgressBar({ fraction, ariaLabel, thin, planned, marks = [], meter: asMeter, hue, segments: segments2 }) {
   const meter = !!asMeter || planned != null || marks.length > 0;
@@ -7385,15 +7527,15 @@ function ProgressBar({ fraction, ariaLabel, thin, planned, marks = [], meter: as
   const parts = segments2 ?? (projectPillHue(hue) ? [{ hue, value: f }] : void 0);
   let at = 0;
   return /* @__PURE__ */ jsxs44("div", { className: cx("ad-progress", thin && "ad-progress--thin"), role: meter ? "meter" : "progressbar", "aria-label": ariaLabel, "aria-valuemin": 0, "aria-valuemax": meter ? Math.max(100, Math.round(fraction * 100)) : 100, "aria-valuenow": Math.round(fraction * 100), children: [
-    planned != null && /* @__PURE__ */ jsx47("span", { className: "ad-progress__planned", style: { width: pct(planned) } }),
+    planned != null && /* @__PURE__ */ jsx48("span", { className: "ad-progress__planned", style: { width: pct(planned) } }),
     parts ? parts.map((p, i) => {
       const from = Math.min(1, at);
       at += Math.max(0, p.value);
       const to = Math.min(1, at);
-      return to > from ? /* @__PURE__ */ jsx47("span", { className: cx("ad-progress__done", "ad-progress__part", projectPillHue(p.hue) && "ad-chart-part"), style: { left: pct(from), width: pct(to - from), ...partStyle(p.hue) } }, i) : null;
-    }) : /* @__PURE__ */ jsx47("span", { className: "ad-progress__done", style: { width: pct(f) } }),
-    over && /* @__PURE__ */ jsx47("span", { className: "ad-progress__over", style: { left: pct(1) } }),
-    marks.map((m) => /* @__PURE__ */ jsx47("span", { className: "ad-progress__mark", role: "img", "aria-label": m.label, title: m.label, style: { left: pct(m.at) } }, m.label))
+      return to > from ? /* @__PURE__ */ jsx48("span", { className: cx("ad-progress__done", "ad-progress__part", projectPillHue(p.hue) && "ad-chart-part"), style: { left: pct(from), width: pct(to - from), ...partStyle(p.hue) } }, i) : null;
+    }) : /* @__PURE__ */ jsx48("span", { className: "ad-progress__done", style: { width: pct(f) } }),
+    over && /* @__PURE__ */ jsx48("span", { className: "ad-progress__over", style: { left: pct(1) } }),
+    marks.map((m) => /* @__PURE__ */ jsx48("span", { className: "ad-progress__mark", role: "img", "aria-label": m.label, title: m.label, style: { left: pct(m.at) } }, m.label))
   ] });
 }
 function lineSeries(periods) {
@@ -7411,40 +7553,40 @@ function OverTime({ periods, currentId, grid: lines = [], size, kind = "columns"
   const pts = (values) => values.map((v, i) => `${at(i)},${y(v)}`).join(" ");
   return /* @__PURE__ */ jsxs44("figure", { className: cx("ad-overtime", compact && "ad-overtime--compact", className), "aria-label": ariaLabel, children: [
     /* @__PURE__ */ jsxs44("div", { className: "ad-overtime__plot", children: [
-      grid.map((g) => /* @__PURE__ */ jsx47("div", { className: "ad-overtime__grid", style: { bottom: `${g.value / top * 100}%` }, children: /* @__PURE__ */ jsx47("span", { children: g.display }) }, g.value)),
-      /* @__PURE__ */ jsx47("div", { className: "ad-overtime__columns", role: "list", children: periods.map((p) => {
+      grid.map((g) => /* @__PURE__ */ jsx48("div", { className: "ad-overtime__grid", style: { bottom: `${g.value / top * 100}%` }, children: /* @__PURE__ */ jsx48("span", { children: g.display }) }, g.value)),
+      /* @__PURE__ */ jsx48("div", { className: "ad-overtime__columns", role: "list", children: periods.map((p) => {
         const cur = p.id === currentId;
         const past = !line && target && p.value > target.value;
         return /* @__PURE__ */ jsxs44("div", { className: "ad-overtime__slot", role: "listitem", "aria-label": `${p.label}: ${p.display}`, children: [
-          !line && p.compare != null && /* @__PURE__ */ jsx47("div", { className: "ad-overtime__compare", style: { height: `${Math.max(0, p.compare) / top * 100}%` } }),
+          !line && p.compare != null && /* @__PURE__ */ jsx48("div", { className: "ad-overtime__compare", style: { height: `${Math.max(0, p.compare) / top * 100}%` } }),
           !line && /* @__PURE__ */ jsxs44("div", { className: cx("ad-overtime__column", cur && "ad-overtime__column--current", p.parts && "ad-overtime__column--parts"), style: { height: `${p.value / top * 100}%` }, children: [
-            cur && !compact && /* @__PURE__ */ jsx47("span", { className: "ad-overtime__cap", children: p.display }),
-            past && /* @__PURE__ */ jsx47("span", { className: "ad-overtime__past", style: { bottom: `${target.value / p.value * 100}%` } }),
-            p.parts?.map((q, i) => /* @__PURE__ */ jsx47("span", { className: cx("ad-overtime__part", projectPillHue(q.hue) && "ad-chart-part"), style: { height: `${p.value > 0 ? Math.max(0, q.value) / p.value * 100 : 0}%`, ...partStyle(q.hue) } }, i))
+            cur && !compact && /* @__PURE__ */ jsx48("span", { className: "ad-overtime__cap", children: p.display }),
+            past && /* @__PURE__ */ jsx48("span", { className: "ad-overtime__past", style: { bottom: `${target.value / p.value * 100}%` } }),
+            p.parts?.map((q, i) => /* @__PURE__ */ jsx48("span", { className: cx("ad-overtime__part", projectPillHue(q.hue) && "ad-chart-part"), style: { height: `${p.value > 0 ? Math.max(0, q.value) / p.value * 100 : 0}%`, ...partStyle(q.hue) } }, i))
           ] })
         ] }, p.id);
       }) }),
       line && /* @__PURE__ */ jsxs44("svg", { className: "ad-overtime__lines", viewBox: "0 0 100 100", preserveAspectRatio: "none", "aria-hidden": "true", children: [
-        periods.some((p) => p.compare != null) && /* @__PURE__ */ jsx47("polyline", { className: "ad-overtime__line ad-overtime__line--compare", points: pts(periods.map((p) => p.compare ?? 0)) }),
-        lineSeries(periods).map((sr, i) => /* @__PURE__ */ jsx47("polyline", { className: cx("ad-overtime__line", projectPillHue(sr.hue) && "ad-overtime__line--hued"), style: partStyle(sr.hue), points: pts(sr.values) }, i))
+        periods.some((p) => p.compare != null) && /* @__PURE__ */ jsx48("polyline", { className: "ad-overtime__line ad-overtime__line--compare", points: pts(periods.map((p) => p.compare ?? 0)) }),
+        lineSeries(periods).map((sr, i) => /* @__PURE__ */ jsx48("polyline", { className: cx("ad-overtime__line", projectPillHue(sr.hue) && "ad-overtime__line--hued"), style: partStyle(sr.hue), points: pts(sr.values) }, i))
       ] }),
-      line && lineSeries(periods).map((sr, i) => /* @__PURE__ */ jsx47("span", { "aria-hidden": "true", className: cx("ad-overtime__end", projectPillHue(sr.hue) && "ad-overtime__end--hued"), style: { left: `${at(periods.length - 1)}%`, top: `${y(sr.values[sr.values.length - 1] ?? 0)}%`, ...partStyle(sr.hue) } }, i)),
-      target && !compact && /* @__PURE__ */ jsx47("div", { className: "ad-overtime__target", role: "img", "aria-label": target.label, style: { bottom: `${target.value / top * 100}%` } })
+      line && lineSeries(periods).map((sr, i) => /* @__PURE__ */ jsx48("span", { "aria-hidden": "true", className: cx("ad-overtime__end", projectPillHue(sr.hue) && "ad-overtime__end--hued"), style: { left: `${at(periods.length - 1)}%`, top: `${y(sr.values[sr.values.length - 1] ?? 0)}%`, ...partStyle(sr.hue) } }, i)),
+      target && !compact && /* @__PURE__ */ jsx48("div", { className: "ad-overtime__target", role: "img", "aria-label": target.label, style: { bottom: `${target.value / top * 100}%` } })
     ] }),
     !compact && /* @__PURE__ */ jsxs44("div", { className: "ad-overtime__labels", "aria-hidden": "true", children: [
-      /* @__PURE__ */ jsx47("span", { children: periods[0]?.label }),
-      periods.length > 1 && /* @__PURE__ */ jsx47("span", { children: periods[periods.length - 1].label })
+      /* @__PURE__ */ jsx48("span", { children: periods[0]?.label }),
+      periods.length > 1 && /* @__PURE__ */ jsx48("span", { children: periods[periods.length - 1].label })
     ] })
   ] });
 }
 function OneFigure({ label, value, unit, note, over, className }) {
   return /* @__PURE__ */ jsxs44("figure", { className: cx("ad-one-figure", className), children: [
-    /* @__PURE__ */ jsx47("figcaption", { className: "ad-one-figure__label ad-type-heading", children: label }),
+    /* @__PURE__ */ jsx48("figcaption", { className: "ad-one-figure__label ad-type-heading", children: label }),
     /* @__PURE__ */ jsxs44("span", { className: cx("ad-one-figure__value ad-type-title ad-type-title--text-44", over && "ad-one-figure__value--over"), children: [
       value,
-      unit && /* @__PURE__ */ jsx47("span", { className: "ad-one-figure__unit ad-type-detail", children: unit })
+      unit && /* @__PURE__ */ jsx48("span", { className: "ad-one-figure__unit ad-type-detail", children: unit })
     ] }),
-    note != null && /* @__PURE__ */ jsx47("span", { className: "ad-one-figure__note ad-type-detail", children: note })
+    note != null && /* @__PURE__ */ jsx48("span", { className: "ad-one-figure__note ad-type-detail", children: note })
   ] });
 }
 var clamp01 = (n) => Math.max(0, Math.min(1, Number.isFinite(n) ? n : 0));
@@ -7483,36 +7625,36 @@ function Dial({ fraction, label, size, value, valueText, half, target, targetLab
   return /* @__PURE__ */ jsxs44("figure", { className: cx("ad-dial", size != null && "ad-dial--compact", gauge && "ad-dial--half", pointer && "ad-dial--needle", gauge && scale && "ad-dial--scaled", className), children: [
     /* @__PURE__ */ jsxs44("div", { className: "ad-dial__face", role: "meter", "aria-valuemin": 0, "aria-valuemax": 100, "aria-valuenow": Math.round(f * 100), "aria-label": String(label), "aria-valuetext": said || void 0, children: [
       /* @__PURE__ */ jsxs44("svg", { viewBox: gauge ? "0 0 70 40" : "0 0 70 70", "aria-hidden": "true", children: [
-        gauge ? /* @__PURE__ */ jsx47("path", { className: "ad-dial__track", d: track }) : /* @__PURE__ */ jsx47("circle", { className: "ad-dial__track", cx: "35", cy: "35", r }),
-        b != null && b[1] > b[0] && /* @__PURE__ */ jsx47("path", { className: "ad-dial__band", d: arc(b[0], b[1], r - 5.5) }),
-        !pointer && (gauge ? /* @__PURE__ */ jsx47("path", { className: "ad-dial__arc", d: track, strokeDasharray: `${c * f} ${c}` }) : /* @__PURE__ */ jsx47("circle", { className: cx("ad-dial__arc", full && "ad-dial__arc--full"), cx: "35", cy: "35", r, strokeDasharray: `${c * f} ${c}`, transform: "rotate(-90 35 35)" })),
-        past > 0 && /* @__PURE__ */ jsx47("circle", { className: "ad-dial__past", cx: "35", cy: "35", r, strokeDasharray: `${c * past} ${c}`, transform: "rotate(-90 35 35)" }),
-        gauge && scale && Array.from({ length: 11 }, (_, i) => /* @__PURE__ */ jsx47("line", { className: "ad-dial__tick", ...line(i / 10, r + 4.5, i % 5 === 0 ? r + 8 : r + 6.5) }, i)),
-        t != null && /* @__PURE__ */ jsx47("line", { className: "ad-dial__target", ...line(t, r - 5, r + 5) }),
+        gauge ? /* @__PURE__ */ jsx48("path", { className: "ad-dial__track", d: track }) : /* @__PURE__ */ jsx48("circle", { className: "ad-dial__track", cx: "35", cy: "35", r }),
+        b != null && b[1] > b[0] && /* @__PURE__ */ jsx48("path", { className: "ad-dial__band", d: arc(b[0], b[1], r - 5.5) }),
+        !pointer && (gauge ? /* @__PURE__ */ jsx48("path", { className: "ad-dial__arc", d: track, strokeDasharray: `${c * f} ${c}` }) : /* @__PURE__ */ jsx48("circle", { className: cx("ad-dial__arc", full && "ad-dial__arc--full"), cx: "35", cy: "35", r, strokeDasharray: `${c * f} ${c}`, transform: "rotate(-90 35 35)" })),
+        past > 0 && /* @__PURE__ */ jsx48("circle", { className: "ad-dial__past", cx: "35", cy: "35", r, strokeDasharray: `${c * past} ${c}`, transform: "rotate(-90 35 35)" }),
+        gauge && scale && Array.from({ length: 11 }, (_, i) => /* @__PURE__ */ jsx48("line", { className: "ad-dial__tick", ...line(i / 10, r + 4.5, i % 5 === 0 ? r + 8 : r + 6.5) }, i)),
+        t != null && /* @__PURE__ */ jsx48("line", { className: "ad-dial__target", ...line(t, r - 5, r + 5) }),
         pointer && /* @__PURE__ */ jsxs44(Fragment27, { children: [
-          /* @__PURE__ */ jsx47("line", { className: "ad-dial__needle", ...line(f, 0, r - 1) }),
-          /* @__PURE__ */ jsx47("circle", { className: "ad-dial__hub", cx: "35", cy: "35", r: "2.5" })
+          /* @__PURE__ */ jsx48("line", { className: "ad-dial__needle", ...line(f, 0, r - 1) }),
+          /* @__PURE__ */ jsx48("circle", { className: "ad-dial__hub", cx: "35", cy: "35", r: "2.5" })
         ] })
       ] }),
-      !pointer && /* @__PURE__ */ jsx47("span", { className: "ad-dial__value", children: display })
+      !pointer && /* @__PURE__ */ jsx48("span", { className: "ad-dial__value", children: display })
     ] }),
     gauge && (scale || pointer) && /* @__PURE__ */ jsxs44("span", { className: "ad-dial__under", children: [
-      /* @__PURE__ */ jsx47("span", { className: "ad-dial__end", "aria-hidden": "true", children: scale?.from }),
-      pointer && /* @__PURE__ */ jsx47("span", { className: "ad-dial__reading", children: display }),
-      /* @__PURE__ */ jsx47("span", { className: "ad-dial__end", "aria-hidden": "true", children: scale?.to })
+      /* @__PURE__ */ jsx48("span", { className: "ad-dial__end", "aria-hidden": "true", children: scale?.from }),
+      pointer && /* @__PURE__ */ jsx48("span", { className: "ad-dial__reading", children: display }),
+      /* @__PURE__ */ jsx48("span", { className: "ad-dial__end", "aria-hidden": "true", children: scale?.to })
     ] }),
-    /* @__PURE__ */ jsx47("figcaption", { className: cx("ad-dial__label", size != null && "ad-sr"), children: label })
+    /* @__PURE__ */ jsx48("figcaption", { className: cx("ad-dial__label", size != null && "ad-sr"), children: label })
   ] });
 }
 function Verdict({ word, sentence }) {
   return /* @__PURE__ */ jsxs44("div", { className: word ? "ad-verdict" : "ad-verdict ad-verdict--headline", children: [
-    word ? /* @__PURE__ */ jsx47("p", { className: "ad-verdict__word", children: String(word) }) : null,
-    /* @__PURE__ */ jsx47("p", { className: "ad-verdict__sentence", children: String(sentence) })
+    word ? /* @__PURE__ */ jsx48("p", { className: "ad-verdict__word", children: String(word) }) : null,
+    /* @__PURE__ */ jsx48("p", { className: "ad-verdict__sentence", children: String(sentence) })
   ] });
 }
 
 // src/components/Charts/Graphs.tsx
-import { jsx as jsx48, jsxs as jsxs45 } from "react/jsx-runtime";
+import { jsx as jsx49, jsxs as jsxs45 } from "react/jsx-runtime";
 var clamp012 = (n) => Math.max(0, Math.min(1, Number.isFinite(n) ? n : 0));
 function points(values, top, floor = 0) {
   const span = Math.max(1e-9, top - floor);
@@ -7528,10 +7670,10 @@ function Sparkline({ values, ariaLabel, area, max, className }) {
   const last = p[p.length - 1];
   return /* @__PURE__ */ jsxs45("span", { className: cx("ad-spark", className), role: "img", "aria-label": ariaLabel, children: [
     /* @__PURE__ */ jsxs45("svg", { viewBox: "0 0 100 100", preserveAspectRatio: "none", "aria-hidden": "true", children: [
-      area && /* @__PURE__ */ jsx48("path", { className: "ad-graph-area", d: areaPath(p) }),
-      /* @__PURE__ */ jsx48("path", { className: "ad-graph-line ad-graph-line--1", d: linePath(p) })
+      area && /* @__PURE__ */ jsx49("path", { className: "ad-graph-area", d: areaPath(p) }),
+      /* @__PURE__ */ jsx49("path", { className: "ad-graph-line ad-graph-line--1", d: linePath(p) })
     ] }),
-    last && /* @__PURE__ */ jsx48("span", { className: "ad-graph-point", style: { left: `${last[0]}%`, top: `${last[1]}%` } })
+    last && /* @__PURE__ */ jsx49("span", { className: "ad-graph-point", style: { left: `${last[0]}%`, top: `${last[1]}%` } })
   ] });
 }
 function ShareBar({ parts, ariaLabel, noKey, className }) {
@@ -7539,7 +7681,7 @@ function ShareBar({ parts, ariaLabel, noKey, className }) {
   const total = sorted.reduce((s, p) => s + p.value, 0) || 1;
   const step = (i) => Math.max(1, 4 - i);
   return /* @__PURE__ */ jsxs45("figure", { className: cx("ad-sharebar", className), "aria-label": ariaLabel, children: [
-    /* @__PURE__ */ jsx48("div", { className: "ad-sharebar__bar", role: "list", children: sorted.map((p, i) => /* @__PURE__ */ jsx48(
+    /* @__PURE__ */ jsx49("div", { className: "ad-sharebar__bar", role: "list", children: sorted.map((p, i) => /* @__PURE__ */ jsx49(
       "span",
       {
         role: "listitem",
@@ -7550,7 +7692,7 @@ function ShareBar({ parts, ariaLabel, noKey, className }) {
       },
       p.id
     )) }),
-    !noKey && /* @__PURE__ */ jsx48("figcaption", { className: "ad-sharebar__key", "aria-hidden": "true", children: /* @__PURE__ */ jsx48(ChartKey, { items: sorted.map((p, i) => ({ label: `${p.label} ${p.display}`, mark: /* @__PURE__ */ jsx48("span", { className: cx("ad-chart-key__swatch", `ad-graph-step--${step(i)}`) }) })) }) })
+    !noKey && /* @__PURE__ */ jsx49("figcaption", { className: "ad-sharebar__key", "aria-hidden": "true", children: /* @__PURE__ */ jsx49(ChartKey, { items: sorted.map((p, i) => ({ label: `${p.label} ${p.display}`, mark: /* @__PURE__ */ jsx49("span", { className: cx("ad-chart-key__swatch", `ad-graph-step--${step(i)}`) }) })) }) })
   ] });
 }
 function Heatmap({ rows, columns = [], every = 1, ariaLabel, className }) {
@@ -7565,12 +7707,12 @@ function Heatmap({ rows, columns = [], every = 1, ariaLabel, className }) {
       style: { gridTemplateColumns: `${named ? "max-content " : ""}repeat(${n}, var(--space-3))` },
       children: [
         columns.length > 0 && /* @__PURE__ */ jsxs45("div", { className: "ad-heatmap__row", role: "row", children: [
-          named && /* @__PURE__ */ jsx48("span", { role: "columnheader" }),
-          Array.from({ length: n }, (_, i) => /* @__PURE__ */ jsx48("span", { role: "columnheader", className: "ad-heatmap__col", children: i % every === 0 ? columns[i] : "" }, i))
+          named && /* @__PURE__ */ jsx49("span", { role: "columnheader" }),
+          Array.from({ length: n }, (_, i) => /* @__PURE__ */ jsx49("span", { role: "columnheader", className: "ad-heatmap__col", children: i % every === 0 ? columns[i] : "" }, i))
         ] }),
         rows.map((r) => /* @__PURE__ */ jsxs45("div", { className: "ad-heatmap__row", role: "row", children: [
-          named && /* @__PURE__ */ jsx48("span", { role: "rowheader", className: "ad-heatmap__label", children: r.label }),
-          r.cells.map((c, i) => /* @__PURE__ */ jsx48("span", { role: "cell", "aria-label": c.label, title: c.label, className: cx("ad-heatmap__cell", `ad-graph-step--${c.level}`) }, i))
+          named && /* @__PURE__ */ jsx49("span", { role: "rowheader", className: "ad-heatmap__label", children: r.label }),
+          r.cells.map((c, i) => /* @__PURE__ */ jsx49("span", { role: "cell", "aria-label": c.label, title: c.label, className: cx("ad-heatmap__cell", `ad-graph-step--${c.level}`) }, i))
         ] }, r.id))
       ]
     }
@@ -7580,18 +7722,18 @@ function DotMatrix({ total, filled, second = 0, columns = 10, ariaLabel, classNa
   const t = Math.max(0, Math.round(total));
   const f = Math.min(t, Math.max(0, Math.round(filled)));
   const s = Math.min(t - f, Math.max(0, Math.round(second)));
-  return /* @__PURE__ */ jsx48("span", { className: cx("ad-dotmatrix", className), role: "img", "aria-label": ariaLabel, style: { gridTemplateColumns: `repeat(${Math.max(1, columns)}, var(--dot-size))` }, children: Array.from({ length: t }, (_, i) => /* @__PURE__ */ jsx48("span", { "aria-hidden": "true", className: cx("ad-dotmatrix__dot", `ad-graph-step--${i < f ? 4 : i < f + s ? 3 : 0}`) }, i)) });
+  return /* @__PURE__ */ jsx49("span", { className: cx("ad-dotmatrix", className), role: "img", "aria-label": ariaLabel, style: { gridTemplateColumns: `repeat(${Math.max(1, columns)}, var(--dot-size))` }, children: Array.from({ length: t }, (_, i) => /* @__PURE__ */ jsx49("span", { "aria-hidden": "true", className: cx("ad-dotmatrix__dot", `ad-graph-step--${i < f ? 4 : i < f + s ? 3 : 0}`) }, i)) });
 }
 function Tracker({ periods, ariaLabel, className }) {
-  return /* @__PURE__ */ jsx48("div", { className: cx("ad-tracker", className), role: "list", "aria-label": ariaLabel, children: periods.map((p) => /* @__PURE__ */ jsx48("span", { role: "listitem", "aria-label": p.label, title: p.label, className: cx("ad-tracker__block", `ad-tracker__block--${p.tone}`) }, p.id)) });
+  return /* @__PURE__ */ jsx49("div", { className: cx("ad-tracker", className), role: "list", "aria-label": ariaLabel, children: periods.map((p) => /* @__PURE__ */ jsx49("span", { role: "listitem", "aria-label": p.label, title: p.label, className: cx("ad-tracker__block", `ad-tracker__block--${p.tone}`) }, p.id)) });
 }
 
 // src/components/Path/Path.tsx
-import { Fragment as Fragment28, jsx as jsx49, jsxs as jsxs46 } from "react/jsx-runtime";
+import { Fragment as Fragment28, jsx as jsx50, jsxs as jsxs46 } from "react/jsx-runtime";
 function Steps({ steps, current, onPress, ariaLabel, compact, late, complete, waiting, className }) {
   const finished = useNamedColour(complete);
   const at = finished ? steps.length : Math.max(0, steps.findIndex((s) => s.id === current));
-  return /* @__PURE__ */ jsx49(
+  return /* @__PURE__ */ jsx50(
     "ol",
     {
       className: cx("ad-steps", compact && "ad-steps--compact", finished && "ad-steps--complete", className),
@@ -7600,22 +7742,22 @@ function Steps({ steps, current, onPress, ariaLabel, compact, late, complete, wa
       children: steps.map((s, i) => {
         const state = i < at ? !finished && waiting?.includes(s.id) ? "waiting" : "done" : i === at ? "current" : "next";
         const words2 = /* @__PURE__ */ jsxs46(Fragment28, { children: [
-          /* @__PURE__ */ jsx49("span", { className: cx("ad-steps__bar", `ad-steps__bar--${state}`, state === "current" && late && "ad-steps__bar--late"), "aria-hidden": "true" }),
-          /* @__PURE__ */ jsx49("span", { className: compact ? "ad-sr" : "ad-steps__name ad-clamp-line", children: s.label }),
-          s.note && !compact && /* @__PURE__ */ jsx49("span", { className: "ad-steps__note ad-clamp-line", children: s.note }),
-          /* @__PURE__ */ jsx49("span", { className: "ad-sr", children: state === "done" ? ", done" : state === "waiting" ? ", waiting for feedback" : state === "next" ? ", to do" : late ? ", late" : "" })
+          /* @__PURE__ */ jsx50("span", { className: cx("ad-steps__bar", `ad-steps__bar--${state}`, state === "current" && late && "ad-steps__bar--late"), "aria-hidden": "true" }),
+          /* @__PURE__ */ jsx50("span", { className: compact ? "ad-sr" : "ad-steps__name ad-clamp-line", children: s.label }),
+          s.note && !compact && /* @__PURE__ */ jsx50("span", { className: "ad-steps__note ad-clamp-line", children: s.note }),
+          /* @__PURE__ */ jsx50("span", { className: "ad-sr", children: state === "done" ? ", done" : state === "waiting" ? ", waiting for feedback" : state === "next" ? ", to do" : late ? ", late" : "" })
         ] });
-        return /* @__PURE__ */ jsx49("li", { className: cx("ad-steps__step", `ad-steps__step--${state}`), "aria-current": state === "current" ? "step" : void 0, children: (state === "done" || state === "waiting") && onPress ? /* @__PURE__ */ jsx49("button", { type: "button", className: "ad-steps__press", onClick: () => onPress(s.id), children: words2 }) : /* @__PURE__ */ jsx49("span", { className: "ad-steps__press", children: words2 }) }, s.id);
+        return /* @__PURE__ */ jsx50("li", { className: cx("ad-steps__step", `ad-steps__step--${state}`), "aria-current": state === "current" ? "step" : void 0, children: (state === "done" || state === "waiting") && onPress ? /* @__PURE__ */ jsx50("button", { type: "button", className: "ad-steps__press", onClick: () => onPress(s.id), children: words2 }) : /* @__PURE__ */ jsx50("span", { className: "ad-steps__press", children: words2 }) }, s.id);
       })
     }
   );
 }
 
 // src/components/Slider/Slider.tsx
-import { useRef as useRef35 } from "react";
-import { jsx as jsx50, jsxs as jsxs47 } from "react/jsx-runtime";
+import { useRef as useRef36 } from "react";
+import { jsx as jsx51, jsxs as jsxs47 } from "react/jsx-runtime";
 function Slider({ value, onChange, min = 0, max = 100, step = 1, ariaLabel, display, disabled, className }) {
-  const track = useRef35(null);
+  const track = useRef36(null);
   const range = Array.isArray(value);
   const vals = range ? [...value] : [value];
   const span = Math.max(1e-9, max - min);
@@ -7663,8 +7805,8 @@ function Slider({ value, onChange, min = 0, max = 100, step = 1, ariaLabel, disp
   const hi = at(range ? vals[1] : vals[0]);
   return /* @__PURE__ */ jsxs47("div", { className: cx("ad-slider", disabled && "ad-slider--disabled", className), children: [
     /* @__PURE__ */ jsxs47("div", { ref: track, className: "ad-slider__track", onPointerDown: press, children: [
-      /* @__PURE__ */ jsx50("span", { className: "ad-slider__set", style: { left: `${lo}%`, width: `${hi - lo}%` } }),
-      vals.map((v, i) => /* @__PURE__ */ jsx50(
+      /* @__PURE__ */ jsx51("span", { className: "ad-slider__set", style: { left: `${lo}%`, width: `${hi - lo}%` } }),
+      vals.map((v, i) => /* @__PURE__ */ jsx51(
         "span",
         {
           role: "slider",
@@ -7682,20 +7824,20 @@ function Slider({ value, onChange, min = 0, max = 100, step = 1, ariaLabel, disp
         i
       ))
     ] }),
-    /* @__PURE__ */ jsx50("span", { className: "ad-slider__value", "aria-hidden": "true", children: range ? `${words2(vals[0])} \u2013 ${words2(vals[1])}` : words2(vals[0]) })
+    /* @__PURE__ */ jsx51("span", { className: "ad-slider__value", "aria-hidden": "true", children: range ? `${words2(vals[0])} \u2013 ${words2(vals[1])}` : words2(vals[0]) })
   ] });
 }
 
 // src/components/Search/Search.tsx
-import { useRef as useRef36 } from "react";
-import { jsx as jsx51 } from "react/jsx-runtime";
+import { useRef as useRef37 } from "react";
+import { jsx as jsx52 } from "react/jsx-runtime";
 function CommandSearch({ open, onClose, query, onQuery, results, onPick, label = "Search everything", noMatch = "Nothing by that name" }) {
-  const box = useRef36(null);
+  const box = useRef37(null);
   const z = useLayer(open, onClose, [box], "dialog");
   usePageInert(open, [box]);
   useFocusReturn(open, box);
   if (!open) return null;
-  return /* @__PURE__ */ jsx51(Portal, { children: /* @__PURE__ */ jsx51("div", { ref: box, role: "dialog", "aria-modal": "true", "aria-label": label, onKeyDown: (e) => trapTab(e, box.current), style: { zIndex: z }, className: "ad-float ad-search", children: /* @__PURE__ */ jsx51(
+  return /* @__PURE__ */ jsx52(Portal, { children: /* @__PURE__ */ jsx52("div", { ref: box, role: "dialog", "aria-modal": "true", "aria-label": label, onKeyDown: (e) => trapTab(e, box.current), style: { zIndex: z }, className: "ad-float ad-search", children: /* @__PURE__ */ jsx52(
     PickList,
     {
       searchLabel: label,
@@ -7706,20 +7848,20 @@ function CommandSearch({ open, onClose, query, onQuery, results, onPick, label =
         onPick(id);
         onClose();
       },
-      options: results.map((r) => ({ id: r.id, label: r.label, group: r.group, lead: slotIcon(r.icon), hint: r.code ? /* @__PURE__ */ jsx51(ProjectPill, { code: r.code }) : void 0 })),
+      options: results.map((r) => ({ id: r.id, label: r.label, group: r.group, lead: slotIcon(r.icon), hint: r.code ? /* @__PURE__ */ jsx52(ProjectPill, { code: r.code }) : void 0 })),
       className: "ad-search__list"
     }
   ) }) });
 }
 
 // src/components/Guidance/Guidance.tsx
-import { useEffect as useEffect20, useLayoutEffect as useLayoutEffect13, useRef as useRef37, useState as useState29 } from "react";
-import { Fragment as Fragment29, jsx as jsx52, jsxs as jsxs48 } from "react/jsx-runtime";
-var useIsoLayoutEffect3 = typeof window === "undefined" ? useEffect20 : useLayoutEffect13;
+import { useEffect as useEffect21, useLayoutEffect as useLayoutEffect13, useRef as useRef38, useState as useState30 } from "react";
+import { Fragment as Fragment29, jsx as jsx53, jsxs as jsxs48 } from "react/jsx-runtime";
+var useIsoLayoutEffect3 = typeof window === "undefined" ? useEffect21 : useLayoutEffect13;
 function TourStep({ open, anchor, heading, step, total, title, children, onBack, onNext, onExit, backLabel = "Back", nextLabel = "Next", backOff, nextOff, exitLabel = "Skip tour", progressLabel = (s, t) => `${s} of ${t}`, placement, side: older, onClose, closeLabel }) {
-  const card = useRef37(null);
-  const [rect, setRect] = useState29(null);
-  const [size, setSize] = useState29(null);
+  const card = useRef38(null);
+  const [rect, setRect] = useState30(null);
+  const [size, setSize] = useState30(null);
   const asked = placement ?? older ?? "below";
   const doc = useFloatingDocument() ?? document;
   useFocusReturn(open, card);
@@ -7750,25 +7892,25 @@ function TourStep({ open, anchor, heading, step, total, title, children, onBack,
     setSize((o) => o && o.w === next.w && o.h === next.h ? o : next);
   });
   const centred = anchor == null;
-  const foot = /* @__PURE__ */ jsx52("div", { className: "ad-tour-card__foot", children: /* @__PURE__ */ jsxs48(ButtonSizeScope, { size: "bar", children: [
-    onExit && /* @__PURE__ */ jsx52(Button, { className: "ad-tour-card__exit", onClick: onExit, children: exitLabel }),
-    onBack && /* @__PURE__ */ jsx52(Button, { onClick: onBack, disabled: backOff ?? step <= 1, children: backLabel }),
-    /* @__PURE__ */ jsx52(Button, { variant: "main", onClick: onNext, unavailable: nextOff, "data-autofocus": true, children: nextLabel })
+  const foot = /* @__PURE__ */ jsx53("div", { className: "ad-tour-card__foot", children: /* @__PURE__ */ jsxs48(ButtonSizeScope, { size: "bar", children: [
+    onExit && /* @__PURE__ */ jsx53(Button, { className: "ad-tour-card__exit", onClick: onExit, children: exitLabel }),
+    onBack && /* @__PURE__ */ jsx53(Button, { onClick: onBack, disabled: backOff ?? step <= 1, children: backLabel }),
+    /* @__PURE__ */ jsx53(Button, { variant: "main", onClick: onNext, unavailable: nextOff, "data-autofocus": true, children: nextLabel })
   ] }) });
   const body = /* @__PURE__ */ jsxs48(Fragment29, { children: [
-    onClose && /* @__PURE__ */ jsx52(CloseButton, { onClose, label: closeLabel }),
+    onClose && /* @__PURE__ */ jsx53(CloseButton, { onClose, label: closeLabel }),
     /* @__PURE__ */ jsxs48("div", { className: "ad-tour-card__top", children: [
-      heading != null && /* @__PURE__ */ jsx52("span", { className: "ad-tour-card__heading", children: heading }),
-      /* @__PURE__ */ jsx52("div", { className: "ad-tour-card__ticks", "aria-label": progressLabel(step, total), role: "img", children: Array.from({ length: total }, (_, i) => /* @__PURE__ */ jsx52("i", { "data-done": i < step || void 0 }, i)) })
+      heading != null && /* @__PURE__ */ jsx53("span", { className: "ad-tour-card__heading", children: heading }),
+      /* @__PURE__ */ jsx53("div", { className: "ad-tour-card__ticks", "aria-label": progressLabel(step, total), role: "img", children: Array.from({ length: total }, (_, i) => /* @__PURE__ */ jsx53("i", { "data-done": i < step || void 0 }, i)) })
     ] }),
-    /* @__PURE__ */ jsx52("h2", { className: "ad-tour-card__title", children: title }),
-    /* @__PURE__ */ jsx52("div", { className: "ad-tour-card__text", children }),
+    /* @__PURE__ */ jsx53("h2", { className: "ad-tour-card__title", children: title }),
+    /* @__PURE__ */ jsx53("div", { className: "ad-tour-card__text", children }),
     foot
   ] });
   if (open && centred) {
     return /* @__PURE__ */ jsxs48(Portal, { children: [
-      /* @__PURE__ */ jsx52("div", { className: "ad-tour-dim", "aria-hidden": "true" }),
-      /* @__PURE__ */ jsx52("div", { ref: card, role: "dialog", "aria-label": typeof title === "string" ? title : void 0, tabIndex: -1, className: cx("ad-tour-card", "ad-tour-card--centre", onClose && "ad-tour-card--closes"), children: body })
+      /* @__PURE__ */ jsx53("div", { className: "ad-tour-dim", "aria-hidden": "true" }),
+      /* @__PURE__ */ jsx53("div", { ref: card, role: "dialog", "aria-label": typeof title === "string" ? title : void 0, tabIndex: -1, className: cx("ad-tour-card", "ad-tour-card--centre", onClose && "ad-tour-card--closes"), children: body })
     ] });
   }
   if (!open || !rect) return null;
@@ -7803,21 +7945,21 @@ function TourStep({ open, anchor, heading, step, total, title, children, onBack,
   }
   if (!size) cardStyle.visibility = "hidden";
   return /* @__PURE__ */ jsxs48(Portal, { children: [
-    /* @__PURE__ */ jsx52("div", { className: "ad-spotlight", "aria-hidden": "true", style: { top: rect.top - pad, left: rect.left - pad, width: rect.width + pad * 2, height: rect.height + pad * 2 } }),
-    /* @__PURE__ */ jsx52("div", { ref: card, role: "dialog", "aria-label": typeof title === "string" ? title : void 0, tabIndex: -1, className: cx("ad-tour-card", `ad-tour-card--${side}`, onClose && "ad-tour-card--closes"), style: cardStyle, children: body })
+    /* @__PURE__ */ jsx53("div", { className: "ad-spotlight", "aria-hidden": "true", style: { top: rect.top - pad, left: rect.left - pad, width: rect.width + pad * 2, height: rect.height + pad * 2 } }),
+    /* @__PURE__ */ jsx53("div", { ref: card, role: "dialog", "aria-label": typeof title === "string" ? title : void 0, tabIndex: -1, className: cx("ad-tour-card", `ad-tour-card--${side}`, onClose && "ad-tour-card--closes"), style: cardStyle, children: body })
   ] });
 }
 function PixxBrief({ open, face, greeting, children, onSnooze, onGotIt, snoozeLabel = "Snooze", gotItLabel = "Got it" }) {
   if (!open) return null;
-  return /* @__PURE__ */ jsx52(Portal, { children: /* @__PURE__ */ jsxs48("section", { className: "ad-float ad-brief", "aria-label": typeof greeting === "string" ? greeting : "Pixx", role: "complementary", children: [
+  return /* @__PURE__ */ jsx53(Portal, { children: /* @__PURE__ */ jsxs48("section", { className: "ad-float ad-brief", "aria-label": typeof greeting === "string" ? greeting : "Pixx", role: "complementary", children: [
     /* @__PURE__ */ jsxs48("div", { className: "ad-brief__head", children: [
-      /* @__PURE__ */ jsx52("img", { className: "ad-brief__face", src: face, alt: "" }),
-      /* @__PURE__ */ jsx52("h2", { className: "ad-brief__greeting", children: greeting })
+      /* @__PURE__ */ jsx53("img", { className: "ad-brief__face", src: face, alt: "" }),
+      /* @__PURE__ */ jsx53("h2", { className: "ad-brief__greeting", children: greeting })
     ] }),
-    /* @__PURE__ */ jsx52("div", { className: "ad-brief__text", children }),
+    /* @__PURE__ */ jsx53("div", { className: "ad-brief__text", children }),
     /* @__PURE__ */ jsxs48("div", { className: "ad-brief__foot", children: [
-      /* @__PURE__ */ jsx52(Button, { onClick: onSnooze, children: snoozeLabel }),
-      /* @__PURE__ */ jsx52(Button, { onClick: onGotIt, children: gotItLabel })
+      /* @__PURE__ */ jsx53(Button, { onClick: onSnooze, children: snoozeLabel }),
+      /* @__PURE__ */ jsx53(Button, { onClick: onGotIt, children: gotItLabel })
     ] })
   ] }) });
 }
@@ -7836,9 +7978,9 @@ function PixxFigure({ onPress, open, unread = 0, tip = "Pixx", motion, body, tai
         className: cx("ad-pixx", open && "ad-pixx--open", unread > 0 && "ad-pixx--unread", motion && `ad-pixx--${motion}`, className),
         onClick: onPress,
         children: [
-          /* @__PURE__ */ jsx52("img", { className: "ad-pixx__tail", src: tail, alt: "", draggable: false }),
-          /* @__PURE__ */ jsx52("img", { className: "ad-pixx__body", src: body, alt: "", draggable: false }),
-          unread > 0 && /* @__PURE__ */ jsx52(UnreadDot, { className: "ad-pixx__dot", label: `${unread} need you` })
+          /* @__PURE__ */ jsx53("img", { className: "ad-pixx__tail", src: tail, alt: "", draggable: false }),
+          /* @__PURE__ */ jsx53("img", { className: "ad-pixx__body", src: body, alt: "", draggable: false }),
+          unread > 0 && /* @__PURE__ */ jsx53(UnreadDot, { className: "ad-pixx__dot", label: `${unread} need you` })
         ]
       }
     ),
@@ -7847,36 +7989,36 @@ function PixxFigure({ onPress, open, unread = 0, tip = "Pixx", motion, body, tai
 }
 
 // src/components/Furniture/Furniture.tsx
-import { Fragment as Fragment30, jsx as jsx53, jsxs as jsxs49 } from "react/jsx-runtime";
+import { Fragment as Fragment30, jsx as jsx54, jsxs as jsxs49 } from "react/jsx-runtime";
 function Footer({ code: code2, number, venue, description, countdown: countdown2, page, undo, news }) {
   return /* @__PURE__ */ jsxs49("footer", { className: "ad-footer", children: [
     /* @__PURE__ */ jsxs49("span", { className: "ad-footer__cell ad-footer__code", children: [
-      news && /* @__PURE__ */ jsx53("button", { type: "button", ref: news.anchorRef, className: "ad-footer__news", "aria-label": news.label, title: news.label, onClick: news.onOpen, children: /* @__PURE__ */ jsx53("span", { className: "ad-unread", "aria-hidden": "true" }) }),
+      news && /* @__PURE__ */ jsx54("button", { type: "button", ref: news.anchorRef, className: "ad-footer__news", "aria-label": news.label, title: news.label, onClick: news.onOpen, children: /* @__PURE__ */ jsx54("span", { className: "ad-unread", "aria-hidden": "true" }) }),
       code2 ?? "LOUDBOX",
-      number && /* @__PURE__ */ jsx53("span", { className: "ad-footer__number", children: number })
+      number && /* @__PURE__ */ jsx54("span", { className: "ad-footer__number", children: number })
     ] }),
     /* @__PURE__ */ jsxs49("span", { className: "ad-footer__cell ad-footer__venue", children: [
       venue,
-      description != null && !undo && /* @__PURE__ */ jsx53("span", { className: "ad-footer__description", title: typeof description === "string" ? description : void 0, children: description })
+      description != null && !undo && /* @__PURE__ */ jsx54("span", { className: "ad-footer__description", title: typeof description === "string" ? description : void 0, children: description })
     ] }),
-    /* @__PURE__ */ jsx53("span", { className: "ad-footer__cell ad-footer__run", children: !undo && countdown2 }),
-    /* @__PURE__ */ jsx53("span", { className: "ad-footer__undo", "data-ad-layer": "", role: "status", "aria-live": "polite", children: undo && /* @__PURE__ */ jsxs49(Fragment30, { children: [
-      /* @__PURE__ */ jsx53("span", { className: "ad-footer__undo-words", children: undo.message }),
-      undo.onUndo && /* @__PURE__ */ jsx53(ButtonSizeScope, { size: "row", children: /* @__PURE__ */ jsx53(Button, { onClick: undo.onUndo, children: undo.label ?? "Undo" }) })
+    /* @__PURE__ */ jsx54("span", { className: "ad-footer__cell ad-footer__run", children: !undo && countdown2 }),
+    /* @__PURE__ */ jsx54("span", { className: "ad-footer__undo", "data-ad-layer": "", role: "status", "aria-live": "polite", children: undo && /* @__PURE__ */ jsxs49(Fragment30, { children: [
+      /* @__PURE__ */ jsx54("span", { className: "ad-footer__undo-words", children: undo.message }),
+      undo.onUndo && /* @__PURE__ */ jsx54(ButtonSizeScope, { size: "row", children: /* @__PURE__ */ jsx54(Button, { onClick: undo.onUndo, children: undo.label ?? "Undo" }) })
     ] }) }),
-    /* @__PURE__ */ jsx53("span", { className: "ad-footer__cell ad-footer__page", children: page })
+    /* @__PURE__ */ jsx54("span", { className: "ad-footer__cell ad-footer__page", children: page })
   ] });
 }
 function Contents({ entries, ariaLabel = "Contents" }) {
-  return /* @__PURE__ */ jsx53("ol", { className: "ad-contents", "aria-label": ariaLabel, children: entries.map((e, i) => {
+  return /* @__PURE__ */ jsx54("ol", { className: "ad-contents", "aria-label": ariaLabel, children: entries.map((e, i) => {
     const inner = /* @__PURE__ */ jsxs49(Fragment30, { children: [
-      /* @__PURE__ */ jsx53("span", { className: "ad-contents__numeral", children: e.numeral ?? String(i + 1).padStart(2, "0") }),
+      /* @__PURE__ */ jsx54("span", { className: "ad-contents__numeral", children: e.numeral ?? String(i + 1).padStart(2, "0") }),
       /* @__PURE__ */ jsxs49("span", { className: "ad-contents__body", children: [
-        /* @__PURE__ */ jsx53("span", { className: "ad-contents__name", children: e.name }),
-        e.summary && /* @__PURE__ */ jsx53("span", { className: "ad-contents__summary", children: e.summary })
+        /* @__PURE__ */ jsx54("span", { className: "ad-contents__name", children: e.name }),
+        e.summary && /* @__PURE__ */ jsx54("span", { className: "ad-contents__summary", children: e.summary })
       ] })
     ] });
-    return /* @__PURE__ */ jsx53("li", { className: "ad-contents__entry", "data-needs-you": e.needsYou || void 0, children: e.onOpen ? /* @__PURE__ */ jsx53("button", { type: "button", className: "ad-contents__button", onClick: e.onOpen, children: inner }) : /* @__PURE__ */ jsx53("div", { className: "ad-contents__button", children: inner }) }, e.id);
+    return /* @__PURE__ */ jsx54("li", { className: "ad-contents__entry", "data-needs-you": e.needsYou || void 0, children: e.onOpen ? /* @__PURE__ */ jsx54("button", { type: "button", className: "ad-contents__button", onClick: e.onOpen, children: inner }) : /* @__PURE__ */ jsx54("div", { className: "ad-contents__button", children: inner }) }, e.id);
   }) });
 }
 function Caption({ children, bracket = "none", className }) {
@@ -7902,35 +8044,35 @@ function Frame({ rail, pages, corner, header, toolbar, key, footer, children, cl
   return /* @__PURE__ */ jsxs49("div", { className: cx("ad-frame", corner != null && "ad-frame--corner", className), children: [
     rail,
     pages,
-    /* @__PURE__ */ jsx53("div", { className: "ad-frame__page", children: slots ? /* @__PURE__ */ jsxs49(Fragment30, { children: [
+    /* @__PURE__ */ jsx54("div", { className: "ad-frame__page", children: slots ? /* @__PURE__ */ jsxs49(Fragment30, { children: [
       header,
-      toolbar != null && /* @__PURE__ */ jsx53(FrameToolbar, { children: toolbar }),
-      key != null && /* @__PURE__ */ jsx53(FrameKey, { children: key }),
-      /* @__PURE__ */ jsx53(FrameWork, { children }),
+      toolbar != null && /* @__PURE__ */ jsx54(FrameToolbar, { children: toolbar }),
+      key != null && /* @__PURE__ */ jsx54(FrameKey, { children: key }),
+      /* @__PURE__ */ jsx54(FrameWork, { children }),
       footer
     ] }) : children }),
-    corner != null && /* @__PURE__ */ jsx53("div", { className: "ad-frame__corner", children: corner })
+    corner != null && /* @__PURE__ */ jsx54("div", { className: "ad-frame__corner", children: corner })
   ] });
 }
 function FrameToolbar({ children }) {
-  return /* @__PURE__ */ jsx53("div", { className: "ad-frame__toolbar", children });
+  return /* @__PURE__ */ jsx54("div", { className: "ad-frame__toolbar", children });
 }
 function FrameKey({ children }) {
-  return /* @__PURE__ */ jsx53("div", { className: "ad-frame__key", children });
+  return /* @__PURE__ */ jsx54("div", { className: "ad-frame__key", children });
 }
 function FrameWork({ scroll, children }) {
-  return /* @__PURE__ */ jsx53("div", { className: cx("ad-frame__work", scroll === "columns" ? "ad-frame__work--columns" : scroll && "ad-frame__work--scroll"), children });
+  return /* @__PURE__ */ jsx54("div", { className: cx("ad-frame__work", scroll === "columns" ? "ad-frame__work--columns" : scroll && "ad-frame__work--scroll"), children });
 }
 function CloudGlow() {
-  return /* @__PURE__ */ jsx53("div", { className: "ad-cloud-glow", "aria-hidden": "true", children: /* @__PURE__ */ jsx53("div", { className: "ad-cloud-glow__drift" }) });
+  return /* @__PURE__ */ jsx54("div", { className: "ad-cloud-glow", "aria-hidden": "true", children: /* @__PURE__ */ jsx54("div", { className: "ad-cloud-glow__drift" }) });
 }
 function Ground({ children, className, style }) {
-  return /* @__PURE__ */ jsx53("div", { className: cx("ad-ground", className), style, children });
+  return /* @__PURE__ */ jsx54("div", { className: cx("ad-ground", className), style, children });
 }
 
 // src/runtime/AdsProvider.tsx
-import { useContext as useContext13, useEffect as useEffect21, useMemo as useMemo4 } from "react";
-import { jsx as jsx54 } from "react/jsx-runtime";
+import { useContext as useContext13, useEffect as useEffect22, useMemo as useMemo4 } from "react";
+import { jsx as jsx55 } from "react/jsx-runtime";
 var MODE = typeof process !== "undefined" && process.env && process.env.NODE_ENV || "development";
 var pending = [];
 var warned = /* @__PURE__ */ new Set();
@@ -7957,11 +8099,11 @@ ${describeViolations(all)}`);
 }
 function AdsProvider({ strict = false, show, children }) {
   const on = strict && MODE !== "production";
-  useEffect21(() => {
+  useEffect22(() => {
     if (!on) return;
     report(scanIn(document.body), true);
   });
-  useEffect21(() => {
+  useEffect22(() => {
     if (!on) return;
     const look = () => report(scanIn(document.body), false);
     const watch = new MutationObserver(look);
@@ -7981,50 +8123,50 @@ function AdsProvider({ strict = false, show, children }) {
   const value = useMemo4(() => ({ project, item, department, inProject: outer.inProject }), [project, item, department, outer.inProject]);
   const key = JSON.stringify(o);
   const options = useMemo4(() => o, [key]);
-  return /* @__PURE__ */ jsx54(HueSwitches.Provider, { value, children: /* @__PURE__ */ jsx54(Show.Provider, { value: options, children }) });
+  return /* @__PURE__ */ jsx55(HueSwitches.Provider, { value, children: /* @__PURE__ */ jsx55(Show.Provider, { value: options, children }) });
 }
 function AdsScope({ project, children }) {
   const outer = useContext13(HueSwitches);
   const value = useMemo4(() => ({ ...outer, inProject: true }), [outer]);
-  return /* @__PURE__ */ jsx54(HueSwitches.Provider, { value, children: /* @__PURE__ */ jsx54("div", { "data-ads-project": project, style: { display: "contents" }, children }) });
+  return /* @__PURE__ */ jsx55(HueSwitches.Provider, { value, children: /* @__PURE__ */ jsx55("div", { "data-ads-project": project, style: { display: "contents" }, children }) });
 }
 
 // src/components/ClockFace/ClockFace.tsx
 import { forwardRef as forwardRef11 } from "react";
-import { Fragment as Fragment31, jsx as jsx55, jsxs as jsxs50 } from "react/jsx-runtime";
+import { Fragment as Fragment31, jsx as jsx56, jsxs as jsxs50 } from "react/jsx-runtime";
 var ClockFace = forwardRef11(function ClockFace2({ label, time: given, period, daytime, detail, size, className, ...props }, ref) {
   const time = period ? given.replace(/^0(?=\d:)/, "") : given;
   return /* @__PURE__ */ jsxs50("button", { type: "button", ...props, ref, title: detail, "aria-label": props["aria-label"] ?? `Options for ${label}, ${time}${period ? ` ${period}` : ""}${detail ? `, ${detail}` : ""}`, className: cx("ad-clock-face", size === "compact" && "ad-clock-face--compact", className), children: [
     /* @__PURE__ */ jsxs50("span", { className: "ad-clock-face__label", children: [
       label,
-      typeof daytime === "boolean" && /* @__PURE__ */ jsx55(Icon, { job: daytime ? "weather-clear" : "moon", size: "sm", label: daytime ? "Daytime" : "Nighttime" })
+      typeof daytime === "boolean" && /* @__PURE__ */ jsx56(Icon, { job: daytime ? "weather-clear" : "moon", size: "sm", label: daytime ? "Daytime" : "Nighttime" })
     ] }),
     /* @__PURE__ */ jsxs50("span", { className: "ad-clock-face__bezel", children: [
-      /* @__PURE__ */ jsx55("span", { className: "ad-clock-face__digits", children: /* @__PURE__ */ jsx55(ClockDigits, { time }) }),
-      period && /* @__PURE__ */ jsx55("span", { className: "ad-clock-face__period", "aria-hidden": "true", children: /* @__PURE__ */ jsx55("span", { "data-active": "", children: period.toUpperCase() }) })
+      /* @__PURE__ */ jsx56("span", { className: "ad-clock-face__digits", children: /* @__PURE__ */ jsx56(ClockDigits, { time }) }),
+      period && /* @__PURE__ */ jsx56("span", { className: "ad-clock-face__period", "aria-hidden": "true", children: /* @__PURE__ */ jsx56("span", { "data-active": "", children: period.toUpperCase() }) })
     ] })
   ] });
 });
 var segments = { 0: "abcdef", 1: "bc", 2: "abged", 3: "abgcd", 4: "fgbc", 5: "afgcd", 6: "afgecd", 7: "abc", 8: "abcdefg", 9: "abfgcd" };
 var bars = { a: [1.5, 0, 6, 2], g: [1.5, 9, 6, 2], d: [1.5, 18, 6, 2], b: [7, 2, 2, 7], f: [0, 2, 2, 7], c: [7, 11, 2, 7], e: [0, 11, 2, 7] };
 function ClockDigits({ time }) {
-  if (!/^\d{1,2}:\d{2}$/.test(time)) return /* @__PURE__ */ jsx55(Fragment31, { children: time });
+  if (!/^\d{1,2}:\d{2}$/.test(time)) return /* @__PURE__ */ jsx56(Fragment31, { children: time });
   let x = 0;
   const marks = time.split("").map((char, i) => {
     const left = x;
     x += (char === ":" ? 4 : 9) + 2;
-    return /* @__PURE__ */ jsx55("g", { transform: `translate(${left} 0)`, children: char === ":" ? /* @__PURE__ */ jsxs50(Fragment31, { children: [
-      /* @__PURE__ */ jsx55("circle", { cx: 2, cy: 6, r: 1 }),
-      /* @__PURE__ */ jsx55("circle", { cx: 2, cy: 14, r: 1 })
+    return /* @__PURE__ */ jsx56("g", { transform: `translate(${left} 0)`, children: char === ":" ? /* @__PURE__ */ jsxs50(Fragment31, { children: [
+      /* @__PURE__ */ jsx56("circle", { cx: 2, cy: 6, r: 1 }),
+      /* @__PURE__ */ jsx56("circle", { cx: 2, cy: 14, r: 1 })
     ] }) : segments[char].split("").map((name) => {
       const [x2, y, width2, height] = bars[name];
-      return /* @__PURE__ */ jsx55("rect", { x: x2, y, width: width2, height, rx: 1 }, name);
+      return /* @__PURE__ */ jsx56("rect", { x: x2, y, width: width2, height, rx: 1 }, name);
     }) }, i);
   });
   const width = x - 2;
   return /* @__PURE__ */ jsxs50(Fragment31, { children: [
-    /* @__PURE__ */ jsx55("span", { className: "ad-sr", children: time }),
-    /* @__PURE__ */ jsx55("svg", { className: "ad-clock-face__segments", viewBox: `0 0 ${width} 20`, width, height: 20, "aria-hidden": "true", fill: "currentColor", children: marks })
+    /* @__PURE__ */ jsx56("span", { className: "ad-sr", children: time }),
+    /* @__PURE__ */ jsx56("svg", { className: "ad-clock-face__segments", viewBox: `0 0 ${width} 20`, width, height: 20, "aria-hidden": "true", fill: "currentColor", children: marks })
   ] });
 }
 export {
