@@ -5110,7 +5110,7 @@ function countdownWords(c) {
   const days = n === 0 ? "Today" : `${n} ${n === 1 ? "day" : "days"} to`;
   return `${days} ${c.what}`;
 }
-function PageHeader({ title, icon, stamp, back, trail, description, countdown: given, alerts, gear, onSearch, onPopOut, onHelp, headerLabels, pickerMenu, connection, connectionLabels, scramble = true, className }) {
+function PageHeader({ title, star, icon, stamp, back, trail, description, countdown: given, alerts, gear, onSearch, onPopOut, onHelp, headerLabels, pickerMenu, connection, connectionLabels, scramble = true, className }) {
   const anyEnd = gear || onSearch || onPopOut || onHelp || pickerMenu || connection;
   const shownStamp = typeof stamp === "string" && STATES.has(stamp);
   const countdown2 = given && typeof given === "object" && given.to instanceof Date ? countdownWords(given) : null;
@@ -5129,7 +5129,8 @@ function PageHeader({ title, icon, stamp, back, trail, description, countdown: g
             /* @__PURE__ */ jsx34("span", { className: "ad-page-header__slash", "aria-hidden": "true", children: "/" })
           ] }, i)),
           /* @__PURE__ */ jsx34("span", { className: "ad-page-header__words", "aria-current": trail?.length ? "page" : void 0, children: scramble ? /* @__PURE__ */ jsx34(TextScramble, { text: title }) : title })
-        ] })
+        ] }),
+        star && /* @__PURE__ */ jsx34(ButtonSizeScope, { size: "row", children: /* @__PURE__ */ jsx34(IconButton, { className: "ad-page-header__star", label: star.label, "aria-pressed": star.on, onClick: star.onToggle, children: /* @__PURE__ */ jsx34(Icon, { job: "star", size: "md", fill: star.on }) }) })
       ] }),
       (description || countdown2) && /* @__PURE__ */ jsxs31("div", { className: "ad-page-header__aside", children: [
         description && /* @__PURE__ */ jsx34("p", { className: "ad-page-header__description", children: String(description) }),

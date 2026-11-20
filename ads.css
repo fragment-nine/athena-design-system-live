@@ -2821,11 +2821,12 @@ button.ad-row__name:focus-visible { outline: none; }
 @media (prefers-reduced-motion: reduce) { .ad-todo-check[data-pop] { animation: none; } }
 .ad-row--compact { min-height: calc(var(--h-row) - var(--space-1)); }
 .ad-row--compact.ad-row--two { min-height: calc(var(--h-row-2) - var(--space-1)); }
-/* Assigned to you, not yet acknowledged: the ring is filled in its priority colour; one click acknowledges. */
-.ad-todo-check--asked { background: var(--ad-ring); }
+/* Assigned to you, not yet acknowledged: a square filled in its priority colour, the ring's size, so it never reads as a todo to tick
+   (2026-11-17 call); one click acknowledges, and it is the ring again. */
+.ad-todo-check--asked { border-radius: var(--radius-mark); background: var(--ad-ring); }
 .ad-todo-check--asked:hover { background: var(--accent); box-shadow: none; }
 /* Not acknowledged yet: a slow blink until it is: full, down to
- opacity-disabled at the half, back, every dur-ack-pulse. Still under reduce-motion: the filled ring alone says it. */
+ opacity-disabled at the half, back, every dur-ack-pulse. Still under reduce-motion: the filled square alone says it. */
 @keyframes ad-ack-pulse { 0%, 100% { opacity: 1; } 50% { opacity: var(--opacity-disabled); } }
 .ad-todo-check--asked, .ad-unseen-mark { animation: ad-ack-pulse var(--dur-ack-pulse) var(--ease-ack-pulse) infinite; }
 @media (prefers-reduced-motion: reduce) { .ad-todo-check--asked, .ad-unseen-mark { animation: none; opacity: 1; } }
@@ -3480,7 +3481,9 @@ button.ad-milestone:focus-visible { outline: none; }
 .ad-today { position: absolute; top: 0; bottom: 0; width: var(--border-w); background: var(--text-primary); box-shadow: var(--glow-today); pointer-events: none; }
 .ad-today__word { position: absolute; top: 0; right: calc(var(--icon-md) / 2 + var(--space-2)); transform: translateY(-100%); font: var(--type-data); font-size: var(--text-xs); color: var(--text-primary); white-space: nowrap; }
 /* The ⊕: an open ring, as the card's .reg is — no disc, so the today line runs through it. */
-.ad-regmark { position: absolute; top: 0; left: 50%; width: var(--icon-md); height: var(--icon-md); transform: translate(-50%, -50%); color: var(--crop); }
+.ad-regmark { position: absolute; top: calc(var(--icon-md) / -2); left: calc(var(--border-w) / 2 - var(--icon-md) / 2); width: var(--icon-md); height: var(--icon-md); color: var(--crop); }
+/* The cap's strokes are the line's own weight, whatever size the mark draws at, and its cross runs on the line's centre (2026-11-17 call). */
+.ad-regmark > * { stroke-width: var(--border-w); vector-effect: non-scaling-stroke; }
 /* The past is plain (2026-11-07): the region draws nothing; away keeps its hatch. */
 .ad-past { position: absolute; top: 0; bottom: 0; background-image: none; pointer-events: none; }
 .ad-past--away { background-image: var(--hatch-away); }
