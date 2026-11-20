@@ -3333,6 +3333,9 @@ button.ad-row__name:focus-visible { outline: none; }
 .ad-ruler__mark { position: absolute; bottom: 0; width: var(--ad-day-w); height: var(--space-2); }
 .ad-ruler__mark::before { content: ""; position: absolute; left: calc(var(--ad-day-w) / 2); top: 50%; width: var(--space-1); height: var(--space-1); border-radius: var(--radius-round); background: var(--text-muted); transform: translate(-50%, -50%); }
 
+/* The zoom with the exact dates it reads, always beside it (ZoomCluster range, a report): one row, the zoom first. */
+.ad-zoom-range { display: inline-flex; align-items: center; gap: var(--space-2); flex-wrap: nowrap; }
+
 /* src/components/Timeline/Timeline.css */
 /* Timeline marks, as the Bars and Page-Schedule cards draw them */
 .ad-bar { --ad-bar: var(--bg-hover); position: relative; display: flex; align-items: center; box-sizing: border-box; width: 100%; height: var(--h-bar); margin: 0; padding: 0 var(--space-2); border: 0; border-radius: var(--radius-page); background: var(--ad-bar); color: var(--text-primary); font: var(--type-name); text-align: left; white-space: nowrap; transition: box-shadow var(--dur-fast) var(--ease-out); }

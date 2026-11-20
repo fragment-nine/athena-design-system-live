@@ -729,8 +729,17 @@ var REGULAR = {
   "chart-bar-horizontal": [
     "M224,96H184V56a8,8,0,0,0-8-8H56V40a8,8,0,0,0-16,0V216a8,8,0,0,0,16,0v-8h88a8,8,0,0,0,8-8V160h72a8,8,0,0,0,8-8V104A8,8,0,0,0,224,96ZM168,64V96H56V64ZM136,192H56V160h80Zm80-48H56V112H216Z"
   ],
+  "chart-bar": [
+    "M224,200h-8V40a8,8,0,0,0-8-8H152a8,8,0,0,0-8,8V80H96a8,8,0,0,0-8,8v40H48a8,8,0,0,0-8,8v64H32a8,8,0,0,0,0,16H224a8,8,0,0,0,0-16ZM160,48h40V200H160ZM104,96h40V200H104ZM56,144H88v56H56Z"
+  ],
   "chart-line": [
     "M232,208a8,8,0,0,1-8,8H32a8,8,0,0,1-8-8V48a8,8,0,0,1,16,0v94.37L90.73,98a8,8,0,0,1,10.07-.38l58.81,44.11L218.73,90a8,8,0,1,1,10.54,12l-64,56a8,8,0,0,1-10.07.38L96.39,114.29,40,163.63V200H224A8,8,0,0,1,232,208Z"
+  ],
+  "chart-split-bar": [
+    "M40,88H216a8,8,0,0,1,8,8v64a8,8,0,0,1-8,8H40a8,8,0,0,1-8-8V96A8,8,0,0,1,40,88ZM48,104v48H208V104ZM104,104h16v48H104ZM160,104h16v48H160Z"
+  ],
+  "chart-split-columns": [
+    "M224,200h-8V40a8,8,0,0,0-8-8H152a8,8,0,0,0-8,8V80H96a8,8,0,0,0-8,8v40H48a8,8,0,0,0-8,8v64H32a8,8,0,0,0,0,16H224a8,8,0,0,0,0-16ZM160,48h40V200H160ZM104,96h40V200H104ZM56,144H88v56H56ZM200,112H160v16h40ZM144,144H104v16h40ZM88,168H56v16H88Z"
   ],
   "check": [
     "M229.66,77.66l-128,128a8,8,0,0,1-11.32,0l-56-56a8,8,0,0,1,11.32-11.32L96,188.69,218.34,66.34a8,8,0,0,1,11.32,11.32Z"
@@ -840,6 +849,9 @@ var REGULAR = {
   "google-drive-logo": [
     "M237.6,143.78,169.13,31.52A15.91,15.91,0,0,0,155.56,24H100.43a15.89,15.89,0,0,0-13.56,7.52l-.05.07L18.44,143.7a16,16,0,0,0-.33,16.42l27.32,47.82A16,16,0,0,0,59.32,216H196.67a16,16,0,0,0,13.89-8.06l27.32-47.82A15.91,15.91,0,0,0,237.6,143.78ZM219,144H172.52L137.33,85.33l22.75-37.92Zm-116.87,0L128,100.88,153.87,144Zm61.34,16,24,40H68.53l24-40ZM128,69.78,110.12,40l35.78-.05ZM95.91,47.41l22.76,37.92L83.47,144H37ZM36.54,160H73.87L54.72,191.92Zm164.74,31.93L182.12,160h37.41Z"
   ],
+  "grid-nine": [
+    "M216,48H40A16,16,0,0,0,24,64V192a16,16,0,0,0,16,16H216a16,16,0,0,0,16-16V64A16,16,0,0,0,216,48ZM104,144V112h48v32Zm48,16v32H104V160ZM40,112H88v32H40Zm64-16V64h48V96Zm64,16h48v32H168Zm48-16H168V64h48ZM88,64V96H40V64ZM40,160H88v32H40Zm176,32H168V160h48v32Z"
+  ],
   "handshake": [
     "M254.3,107.91,228.78,56.85a16,16,0,0,0-21.47-7.15L182.44,62.13,130.05,48.27a8.14,8.14,0,0,0-4.1,0L73.56,62.13,48.69,49.7a16,16,0,0,0-21.47,7.15L1.7,107.9a16,16,0,0,0,7.15,21.47l27,13.51,55.49,39.63a8.06,8.06,0,0,0,2.71,1.25l64,16a8,8,0,0,0,7.6-2.1l55.07-55.08,26.42-13.21a16,16,0,0,0,7.15-21.46Zm-54.89,33.37L165,113.72a8,8,0,0,0-10.68.61C136.51,132.27,116.66,130,104,122L147.24,80h31.81l27.21,54.41ZM41.53,64,62,74.22,36.43,125.27,16,115.06Zm116,119.13L99.42,168.61l-49.2-35.14,28-56L128,64.28l9.8,2.59-45,43.68-.08.09a16,16,0,0,0,2.72,24.81c20.56,13.13,45.37,11,64.91-5L188,152.66Zm62-57.87-25.52-51L214.47,64,240,115.06Zm-87.75,92.67a8,8,0,0,1-7.75,6.06,8.13,8.13,0,0,1-1.95-.24L80.41,213.33a7.89,7.89,0,0,1-2.71-1.25L51.35,193.26a8,8,0,0,1,9.3-13l25.11,17.94L126,208.24A8,8,0,0,1,131.82,217.94Z"
   ],
@@ -920,6 +932,9 @@ var REGULAR = {
   "notebook": [
     "M184,112a8,8,0,0,1-8,8H112a8,8,0,0,1,0-16h64A8,8,0,0,1,184,112Zm-8,24H112a8,8,0,0,0,0,16h64a8,8,0,0,0,0-16Zm48-88V208a16,16,0,0,1-16,16H48a16,16,0,0,1-16-16V48A16,16,0,0,1,48,32H208A16,16,0,0,1,224,48ZM48,208H72V48H48Zm160,0V48H88V208H208Z"
   ],
+  "number-square-one": [
+    "M208,32H48A16,16,0,0,0,32,48V208a16,16,0,0,0,16,16H208a16,16,0,0,0,16-16V48A16,16,0,0,0,208,32Zm0,176H48V48H208V208ZM140,80v96a8,8,0,0,1-16,0V95l-11.56,7.71a8,8,0,1,1-8.88-13.32l24-16A8,8,0,0,1,140,80Z"
+  ],
   "package": [
     "M223.68,66.15,135.68,18a15.88,15.88,0,0,0-15.36,0l-88,48.17a16,16,0,0,0-8.32,14v95.64a16,16,0,0,0,8.32,14l88,48.17a15.88,15.88,0,0,0,15.36,0l88-48.17a16,16,0,0,0,8.32-14V80.18A16,16,0,0,0,223.68,66.15ZM128,32l80.34,44-29.77,16.3-80.35-44ZM128,120,47.66,76l33.9-18.56,80.34,44ZM40,90l80,43.78v85.79L40,175.82Zm176,85.78h0l-80,43.79V133.82l32-17.51V152a8,8,0,0,0,16,0V107.55L216,90v85.77Z"
   ],
@@ -988,6 +1003,9 @@ var REGULAR = {
   ],
   "t-shirt": [
     "M247.59,61.22,195.83,33A8,8,0,0,0,192,32H160a8,8,0,0,0-8,8,24,24,0,0,1-48,0,8,8,0,0,0-8-8H64a8,8,0,0,0-3.84,1L8.41,61.22A15.76,15.76,0,0,0,1.82,82.48l19.27,36.81A16.37,16.37,0,0,0,35.67,128H56v80a16,16,0,0,0,16,16H184a16,16,0,0,0,16-16V128h20.34a16.37,16.37,0,0,0,14.58-8.71l19.27-36.81A15.76,15.76,0,0,0,247.59,61.22ZM35.67,112a.62.62,0,0,1-.41-.13L16.09,75.26,56,53.48V112ZM184,208H72V48h16.8a40,40,0,0,0,78.38,0H184Zm36.75-96.14a.55.55,0,0,1-.41.14H200V53.48l39.92,21.78Z"
+  ],
+  "table": [
+    "M224,48H32a8,8,0,0,0-8,8V192a16,16,0,0,0,16,16H216a16,16,0,0,0,16-16V56A8,8,0,0,0,224,48ZM40,112H80v32H40Zm56,0H216v32H96ZM216,64V96H40V64ZM40,160H80v32H40Zm176,32H96V160H216v32Z"
   ],
   "tag": [
     "M243.31,136,144,36.69A15.86,15.86,0,0,0,132.69,32H40a8,8,0,0,0-8,8v92.69A15.86,15.86,0,0,0,36.69,144L136,243.31a16,16,0,0,0,22.63,0l84.68-84.68a16,16,0,0,0,0-22.63Zm-96,96L48,132.69V48h84.69L232,147.31ZM96,84A12,12,0,1,1,84,72,12,12,0,0,1,96,84Z"
@@ -1623,6 +1641,14 @@ var JOBS = {
   "chevron-right": "caret-right",
   "export": "export",
   "show-note": "microphone-stage",
+  "chart-kind-columns": "chart-bar",
+  "chart-kind-split-columns": "chart-split-columns",
+  "chart-kind-bars": "chart-bar-horizontal",
+  "chart-kind-line": "chart-line",
+  "chart-kind-split-bar": "chart-split-bar",
+  "chart-kind-day-grid": "grid-nine",
+  "chart-kind-table": "table",
+  "chart-kind-figure": "number-square-one",
   "lights-half": "lights-half",
   "lights-localised": "lights-localised",
   "lights-off": "lights-off",
@@ -4814,12 +4840,14 @@ function DateField({ onParsed, label, error, text: given, onText, format, icon, 
     }
   );
 }
-function DateRange({ from, to, onChange, today, weekStart, fromLabel = "From", toLabel = "To", disabled }) {
+var exactWords = (d) => `${d.toLocaleDateString("en-US", { month: "short" })} ${d.getDate()} ${d.getFullYear()}`;
+function DateRange({ from, to, onChange, today, weekStart, fromLabel = "From", toLabel = "To", disabled, exact }) {
+  const format = exact ? exactWords : void 0;
   const after = (a, b) => daysBetween(b, a) > 0;
   return /* @__PURE__ */ jsxs26("span", { className: "ad-daterange", children: [
-    /* @__PURE__ */ jsx29(DateField, { label: fromLabel, value: from, today, weekStart, disabled, onChange: (d) => onChange({ from: d, to: d && to && after(d, to) ? d : to }) }),
+    /* @__PURE__ */ jsx29(DateField, { label: fromLabel, value: from, today, weekStart, disabled, format, onChange: (d) => onChange({ from: d, to: d && to && after(d, to) ? d : to }) }),
     /* @__PURE__ */ jsx29("span", { className: "ad-daterange__to", "aria-hidden": "true", children: /* @__PURE__ */ jsx29(Icon, { job: "chevron-right", size: "sm" }) }),
-    /* @__PURE__ */ jsx29(DateField, { label: toLabel, value: to, today, weekStart, disabled, onChange: (d) => onChange({ from: d && from && after(from, d) ? d : from, to: d }) })
+    /* @__PURE__ */ jsx29(DateField, { label: toLabel, value: to, today, weekStart, disabled, format, onChange: (d) => onChange({ from: d && from && after(from, d) ? d : from, to: d }) })
   ] });
 }
 
@@ -6680,7 +6708,8 @@ function ZoomCluster({
   noPaging,
   ariaLabel,
   attrs,
-  labels
+  labels,
+  range
 }) {
   const L = { ...NAMES, ...labels };
   const i = zoom ? ORDER.indexOf(zoom) : -1;
@@ -6690,13 +6719,17 @@ function ZoomCluster({
   const outLabel = onZoomOut ? L.zoomOut : `${L.zoomOut} (${L[ORDER[Math.min(i + 1, ORDER.length - 1)]]})`;
   const inLabel = onZoomIn ? L.zoomIn : `${L.zoomIn} (${L[ORDER[Math.max(i - 1, 0)]]})`;
   const btn = (label, glyph, on, off, endpoint) => on && /* @__PURE__ */ jsx44(IconButton, { label: off ? `${label}: ${off}` : label, disabled: !!off || endpoint, onClick: on, children: glyph === "today" ? /* @__PURE__ */ jsx44("span", { className: "ad-zoom__today", "aria-hidden": "true" }) : /* @__PURE__ */ jsx44(Icon, { job: glyph, size: "sm" }) }, glyph);
-  return /* @__PURE__ */ jsx44(ButtonSizeScope, { size: "row", children: /* @__PURE__ */ jsxs41("div", { ...attrs, className: "ad-zoom ad-zoom--compact", role: "group", "aria-label": ariaLabel ?? (zoom ? L[zoom] : "Zoom"), children: [
+  const cluster = /* @__PURE__ */ jsx44(ButtonSizeScope, { size: "row", children: /* @__PURE__ */ jsxs41("div", { ...range ? {} : attrs, className: "ad-zoom ad-zoom--compact", role: "group", "aria-label": ariaLabel ?? (zoom ? L[zoom] : "Zoom"), children: [
     btn(outLabel, "minus", out, zoomOutOff, !onZoomOut && i === ORDER.length - 1),
     !noPaging && btn(L.previous, "chevron-left", onPrevious, previousOff),
     !noPaging && btn(L.today, "today", onToday, todayOff),
     !noPaging && btn(L.next, "chevron-right", onNext, nextOff),
     btn(inLabel, "plus", inside, zoomInOff, !onZoomIn && i === 0)
   ] }) });
+  return range ? /* @__PURE__ */ jsxs41("div", { ...attrs, className: "ad-zoom-range", children: [
+    cluster,
+    /* @__PURE__ */ jsx44(DateRange, { exact: true, ...range })
+  ] }) : cluster;
 }
 
 // src/components/Calendar/Calendar.tsx
