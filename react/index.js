@@ -6285,7 +6285,7 @@ function useSheet(sheet, rowIds, colIds, table) {
   useEffect17(() => {
     if (!sel || !table.current) return;
     const at = document.activeElement;
-    if (!(at instanceof HTMLElement) || !table.current.contains(at) || !at.dataset.colId || typing(at)) return;
+    if (!(at instanceof HTMLElement) || !table.current.contains(at) || !at.closest("[data-col-id]") || typing(at)) return;
     const next = table.current.querySelector(`[data-row-id="${CSS.escape(sel.from.row)}"][data-col-id="${CSS.escape(sel.from.col)}"]`);
     if (next && next !== at) next.focus({ preventScroll: false });
   }, [sel?.from.row, sel?.from.col]);
