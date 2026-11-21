@@ -2327,11 +2327,11 @@ button:hover > .ad-project-pill:not(.ad-project-pill--current) { color: var(--ac
 .ad-page-header__back:hover { color: var(--accent); }
 .ad-page-header__back:focus-visible { outline: none; }
 :where(:root:not([data-ad-pointer])) .ad-page-header__back:focus-visible { box-shadow: var(--ring-select); border-radius: var(--radius-page); }
-/* A screen's own menu before the gear; the small white dot says your board differs from the default. */
+/* A screen's own menu before Show options; the small white dot says your board differs from the default. */
 .ad-page-header__menu { position: relative; display: inline-flex; }
 .ad-page-header__mark { position: absolute; top: var(--space-1); right: var(--space-1); width: var(--space-2); height: var(--space-2); border-radius: var(--radius-round); background: var(--text-primary); pointer-events: none; }
 
-/* The header's icon buttons (gear, search, pop out, help) in the primary ink at rest, as the toolbar's and the rail's. */
+/* The header's icon buttons (show options, search, pop out, help) in the primary ink at rest, as the toolbar's and the rail's. */
 .ad-header-actions .ad-icon-button { color: var(--text-primary); }
 /* The screen's picker and its menu, one control first in the box: its words and a caret, drawn as the box's icon buttons are. */
 .ad-page-header__pick { display: inline-flex; align-items: center; gap: var(--space-1); height: var(--h-btn-bar); margin: 0; padding: 0 var(--space-2); border: 0; border-radius: var(--radius-control); background: transparent; font: var(--type-name); white-space: nowrap; color: var(--text-primary); cursor: pointer; }
@@ -2563,7 +2563,7 @@ button.ad-steps__press:focus-visible { outline: none; }
 .ad-popover__section:first-child, .ad-close + .ad-popover__section:not(:has(> .ad-popover__section-head .ad-popover__section-end)) { margin-top: 0; }
 /* A section's head beside the card's X sits on the X's line (the X is placed, not in the flow). */
 .ad-close + .ad-popover__section > .ad-popover__section-head:not(:has(.ad-popover__section-end)) { min-height: var(--h-close); margin-top: calc(var(--space-3) - var(--space-4)); padding-right: var(--h-close); }
-/* Settings rows in a card (the header gear): menu-size words in the primary ink, rows a row tall, a hairline between and no other gap. */
+/* Settings rows in a card (the header's Show options): menu-size words in the primary ink, rows a row tall, a hairline between and no other gap. */
 .ad-popover .ad-setting .ad-field-row__label { font: var(--type-name); color: var(--text-primary); }
 .ad-popover__section-body:has(> .ad-setting) { gap: 0; }
 .ad-popover__section-body > .ad-setting + .ad-setting { padding-top: 0; border-top: 0; }

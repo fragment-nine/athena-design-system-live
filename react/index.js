@@ -5096,7 +5096,7 @@ function ShowOptionsGear({ value, onChange, options = [...showOrder], labels: l 
   const shown = showOrder.filter((o) => options.includes(o));
   const gearLabel = l.gear ?? "Show options";
   return /* @__PURE__ */ jsxs30(Fragment16, { children: [
-    /* @__PURE__ */ jsx33(IconButton, { ref: gear, label: gearLabel, active: open, "aria-expanded": open, "aria-haspopup": "dialog", onClick: () => setOpen(!open), children: /* @__PURE__ */ jsx33(Icon, { job: "settings" }) }),
+    /* @__PURE__ */ jsx33(IconButton, { ref: gear, label: gearLabel, active: open, "aria-expanded": open, "aria-haspopup": "dialog", onClick: () => setOpen(!open), children: /* @__PURE__ */ jsx33(Icon, { job: "view" }) }),
     /* @__PURE__ */ jsx33(Popover, { open, onClose: () => setOpen(false), anchor: gear, width: "menu", ariaLabel: gearLabel, children: /* @__PURE__ */ jsx33(PopoverSection, { label: gearLabel, children: shown.map((o) => /* @__PURE__ */ jsx33(SettingRow, { label: l[o] ?? WORDS[o], children: /* @__PURE__ */ jsx33(Switch, { checked: now[o], "aria-label": l[o] ?? WORDS[o], onChange: (on) => onChange({ ...now, [o]: on }) }) }, o)) }) })
   ] });
 }
