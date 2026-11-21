@@ -140,7 +140,6 @@
   --shadow-pixx: drop-shadow(0 3px 6px rgba(0, 0, 0, 0.5));
   --shadow-pixx-open: drop-shadow(0 0 2px #e16d48) drop-shadow(0 3px 6px rgba(0, 0, 0, 0.5));
   --shadow-pixx-empty: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.5));
-  --tint-project-pill: 75%;
 }
 [data-theme="light"] {
   color-scheme: light;
@@ -271,7 +270,6 @@
   --shadow-pixx: drop-shadow(0 3px 6px rgba(0, 0, 0, 0.18));
   --shadow-pixx-open: drop-shadow(0 0 2px #e16d48) drop-shadow(0 3px 6px rgba(0, 0, 0, 0.18));
   --shadow-pixx-empty: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.18));
-  --tint-project-pill: 30%;
 }
 :root {
   --space-hair: 2px;
@@ -1080,6 +1078,8 @@ button.ad-booking { cursor: pointer; }
 button.ad-booking:hover .ad-booking__name { color: var(--accent); }
 button.ad-booking:focus-visible { outline: none; }
 :where(:root:not([data-ad-pointer])) button.ad-booking:focus-visible { box-shadow: var(--ring-select); }
+/* A booking with Project colours on wears its bar's recipe: the fill at tint-lane-wash inside a hairline at tint-bar-edge. */
+.ad-booking--hued { background: color-mix(in srgb, var(--ad-bar) var(--tint-lane-wash), transparent); outline: var(--border-w) solid color-mix(in srgb, var(--ad-bar) var(--tint-bar-edge), transparent); outline-offset: calc(var(--border-w) * -1); }
 .ad-booking--unconfirmed { background: transparent; background-image: var(--hatch); box-shadow: inset 0 0 0 var(--border-w) var(--line-strong); }
 .ad-booking--unconfirmed .ad-booking__name { align-self: flex-start; background: var(--ad-under); padding: 0 var(--space-1); border-radius: var(--radius-page); }
 .ad-booking__time { font: var(--type-data); font-size: var(--text-xs); color: var(--text-secondary); }
@@ -1189,6 +1189,8 @@ button.ad-year__day:focus-visible { outline: none; }
 .ad-time-grid__head { position: absolute; top: calc(-1 * var(--ad-head-h)); left: 0; right: 0; padding: 0 var(--space-2) var(--space-3); } /* every head starts on one line at the top; the grid reserves the tallest */
 .ad-time-grid__band { --ad-wash: var(--text-muted); height: var(--space-2); margin: 0 0 var(--space-1); background: color-mix(in srgb, var(--ad-wash) var(--tint-lane-wash), transparent); border-top: var(--bw-select) solid color-mix(in srgb, var(--ad-wash) var(--tint-lane-edge), transparent); position: relative; }
 .ad-time-grid__band--unconfirmed { border-top-style: dashed; }
+/* A band in a project's colour wears its bar's recipe: the fill at tint-lane-wash (as every band), the edge at tint-bar-edge. */
+.ad-time-grid__band--project { --ad-wash-edge: color-mix(in srgb, var(--ad-wash) var(--tint-bar-edge), transparent); border-top-color: var(--ad-wash-edge); }
 .ad-time-grid__band-label { position: absolute; left: var(--space-2); top: 100%; font: var(--type-detail); color: var(--text-muted); white-space: nowrap; }
 .ad-time-grid__slot { --ad-lane-k: 0; --ad-lanes: 1; }
 .ad-time-grid__slot[data-lane] { left: calc(var(--space-1) + (100% - var(--space-2)) * var(--ad-lane-k) / var(--ad-lanes)); right: auto; width: calc((100% - var(--space-2)) / var(--ad-lanes) - var(--space-hair)); }
@@ -2145,8 +2147,9 @@ button.ad-contents__button:focus-visible { outline: none; }
 .ad-rail__project { margin: 0; padding: var(--space-hair); border: 0; border-radius: var(--radius-page); background: transparent; cursor: pointer; }
 .ad-project-pill { flex: none; --ad-pill: var(--line-strong); --ad-code-len: 6; /* One size everywhere: no taller than a name's type, four mono letters wide and a hair of padding either side, its code in the middle (a two-letter code centred in the same box); a longer code widens it, never cut. */
   display: inline-flex; align-items: center; justify-content: center; box-sizing: border-box; min-width: calc(4ch + 2 * var(--space-hair)); height: var(--text-base); padding: 0 var(--space-hair); border-radius: var(--radius-page); box-shadow: inset 0 0 0 var(--border-w) var(--ad-pill); background: transparent; line-height: 1; font: var(--type-data); font-size: var(--text-11); color: var(--text-secondary); white-space: nowrap; }
-/* Its colour on the outline and a tint of it inside (tint-project-pill), its letters text-primary; no taller than the name beside it. */
-.ad-project-pill[data-coloured] { background: color-mix(in srgb, var(--ad-pill) var(--tint-project-pill), transparent); color: var(--text-primary); }
+/* Its project's bar recipe: the outline at tint-bar-edge and a faint fill at tint-lane-wash, as a hued Bar, so a code and its bar read as one
+   colour; its letters text-primary; no taller than the name beside it. */
+.ad-project-pill[data-coloured] { --ad-pill-edge: color-mix(in srgb, var(--ad-pill) var(--tint-bar-edge), transparent); background: color-mix(in srgb, var(--ad-pill) var(--tint-lane-wash), transparent); box-shadow: inset 0 0 0 var(--border-w) var(--ad-pill-edge); color: var(--text-primary); }
 /* In the menu only: never wider than the rail leaves right of the icon column, a hair of padding, so a four-letter code fits and nothing runs off
 . */
 /* In the rail a pill starts at the item's left edge and never reaches the rail's right edge. */
@@ -3395,7 +3398,8 @@ button.ad-bar { cursor: pointer; }
 :where(:root:not([data-ad-pointer])) .ad-bar__grip:focus-visible { box-shadow: var(--ring-select); border-radius: var(--radius-page); }
 @media (prefers-reduced-motion: reduce) { .ad-bar__grip::after { transition: none; } }
 /* A part line: outlined only, no fill, the name text-secondary at the small size. */
-/* Project colours on: the colour on the left stripe and the edge, and a very faint fill of it, never a solid fill (Jeremy, 2026-10-14). */
+/* Project colours on: the colour on the left stripe, the edge at tint-bar-edge and a faint fill at tint-lane-wash. This is the one recipe for
+   everything washed in a project's colour (a code, a booking, a calendar item, a lane wash, a band), so each reads as the same colour beside its bar. */
 .ad-bar--hued { --ad-edge: var(--ad-bar); --ad-stripe: var(--ad-bar); background: color-mix(in srgb, var(--ad-bar) var(--tint-lane-wash), transparent); }
 .ad-bar--thin { background: transparent; box-shadow: inset 0 0 0 var(--border-w) var(--line-strong); color: var(--text-secondary); }
 .ad-bar--unconfirmed { background: transparent; background-image: var(--hatch); box-shadow: inset 0 0 0 var(--border-w) var(--line-strong); }
@@ -3556,6 +3560,9 @@ button.ad-milestone:focus-visible { outline: none; }
 /* LaneWash: a named colour at tint-lane-wash behind the lanes. */
 .ad-lane-wash { --ad-wash: var(--text-muted); position: absolute; top: 0; bottom: 0; box-sizing: border-box; border-radius: var(--radius-page); background: color-mix(in srgb, var(--ad-wash) var(--tint-lane-wash), transparent); pointer-events: none; overflow: hidden; }
 .ad-lane-wash--edge { border-left: var(--bw-select) solid color-mix(in srgb, var(--ad-wash) var(--tint-lane-edge), transparent); }
+/* A wash in a project's colour wears its bar's recipe: the fill at tint-lane-wash inside a hairline at tint-bar-edge. */
+.ad-lane-wash--project { --ad-wash-edge: color-mix(in srgb, var(--ad-wash) var(--tint-bar-edge), transparent); box-shadow: inset 0 0 0 var(--border-w) var(--ad-wash-edge); }
+.ad-lane-wash--project.ad-lane-wash--edge { border-left-color: var(--ad-wash-edge); }
 .ad-lane-wash--unconfirmed { border-left-style: dashed; }
 .ad-lane-wash__label { position: absolute; top: var(--space-8); left: var(--space-1); white-space: nowrap; overflow: hidden; font: var(--type-detail); color: var(--text-muted); } /* Detail: over a wash the dim ink still clears 4.5:1 (DR Colour) */
 

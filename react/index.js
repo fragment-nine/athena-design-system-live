@@ -6207,7 +6207,7 @@ function LaneWash({ left, width, colour, edge, label, unconfirmed }) {
     {
       "aria-hidden": "true",
       "data-coloured": drawn ? true : void 0,
-      className: cx("ad-lane-wash", edge && "ad-lane-wash--edge", edge && unconfirmed && "ad-lane-wash--unconfirmed"),
+      className: cx("ad-lane-wash", drawn && String(colour).startsWith("project-") && "ad-lane-wash--project", edge && "ad-lane-wash--edge", edge && unconfirmed && "ad-lane-wash--unconfirmed"),
       style: { left: px(left), width: px(width, 1), ...drawn ? { ["--ad-wash"]: drawn } : {} },
       children: edge && label && /* @__PURE__ */ jsx42("span", { className: "ad-lane-wash__label", children: label })
     }
@@ -6958,7 +6958,7 @@ function MonthCalendar({ month, span = "month", items, today: todayIn, weekStart
         placed.map(({ item, lane, from, to, cutStart, cutEnd }) => {
           const style = { gridColumn: `${from + 1} / ${to + 2}`, ["--ad-lane"]: lane, ...barColour(item.color, hueOf(item.color)) };
           const ms = !!item.milestone;
-          const cls = cx("ad-bar", "ad-striped", "ad-month__bar", !ms && (item.unconfirmed ? "ad-bar--unconfirmed" : "ad-bar--confirmed"), ms && "ad-month__bar--milestone", ms && diff(item.end, today) < 0 && "ad-month__bar--past", item.unconfirmed && "ad-month__bar--unconfirmed", cutStart && "ad-month__bar--cut-start", cutEnd && "ad-month__bar--cut-end");
+          const cls = cx("ad-bar", "ad-striped", "ad-month__bar", !ms && !item.unconfirmed && !!style["--ad-bar"] && "ad-bar--hued", !ms && (item.unconfirmed ? "ad-bar--unconfirmed" : "ad-bar--confirmed"), ms && "ad-month__bar--milestone", ms && diff(item.end, today) < 0 && "ad-month__bar--past", item.unconfirmed && "ad-month__bar--unconfirmed", cutStart && "ad-month__bar--cut-start", cutEnd && "ad-month__bar--cut-end");
           const hooks = hooksOf3(itemProps?.(item));
           const inner = /* @__PURE__ */ jsxs42("span", { className: "ad-bar__label", children: [
             ms && /* @__PURE__ */ jsx46("span", { className: "ad-month__diamond ad-diamond", "aria-hidden": "true" }),
@@ -7032,7 +7032,7 @@ function Booking({ name, time, unconfirmed, color, stripe, style, onOpen, bookin
           onOpen();
         }
       },
-      className: cx("ad-booking", "ad-striped", unconfirmed && !creating && "ad-booking--unconfirmed", creating && "ad-booking--creating", !asButton && onOpen && "ad-booking--press", labelOutside && "ad-booking--outside", fit && "ad-booking--fit", narrow && "ad-booking--narrow", dragging && "ad-booking--dragging"),
+      className: cx("ad-booking", "ad-striped", !unconfirmed && !creating && !!barColour(color, hue)["--ad-bar"] && "ad-booking--hued", unconfirmed && !creating && "ad-booking--unconfirmed", creating && "ad-booking--creating", !asButton && onOpen && "ad-booking--press", labelOutside && "ad-booking--outside", fit && "ad-booking--fit", narrow && "ad-booking--narrow", dragging && "ad-booking--dragging"),
       "data-dragging": dragging || void 0,
       style: (() => {
         const c = { ...barColour(color, hue), ...kind ? { "--ad-stripe": kind } : {} };
@@ -7245,7 +7245,7 @@ function TimeGrid({ headerEnd, startHour, endHour, bookings = [], columns, now, 
       allDayContent != null && (colAt === 0 ? /* @__PURE__ */ jsx46("div", { className: "ad-time-grid__allday-content", children: allDayContent }) : /* @__PURE__ */ jsx46("div", { className: "ad-time-grid__content-space", "aria-hidden": "true" })),
       allDayRows > 0 && /* @__PURE__ */ jsx46("div", { role: "group", ...hooksOf3(columnProps?.(c.id)), className: "ad-time-grid__allday", style: { ["--ad-lane-over"]: cols.length - colAt }, children: (c.allDay ?? []).map((item) => {
         const hooks = hooksOf3(itemProps?.(item));
-        const cls = cx("ad-bar", "ad-striped", "ad-month__bar", "ad-time-grid__item", item.unconfirmed ? "ad-bar--unconfirmed" : "ad-bar--confirmed", item.unconfirmed && "ad-month__bar--unconfirmed");
+        const cls = cx("ad-bar", "ad-striped", "ad-month__bar", "ad-time-grid__item", item.unconfirmed ? "ad-bar--unconfirmed" : "ad-bar--confirmed", item.unconfirmed && "ad-month__bar--unconfirmed", !item.unconfirmed && !!barColour(item.color, hueOf(item.color))["--ad-bar"] && "ad-bar--hued");
         const style = { ...barColour(item.color, hueOf(item.color)), ...item.span && item.span > 1 ? { ["--ad-span"]: item.span } : {} };
         const inner = /* @__PURE__ */ jsxs42("span", { className: "ad-bar__label", children: [
           code(item),
@@ -7319,7 +7319,7 @@ function BandHeading({ band }) {
 }
 function PhaseBand({ label, color, unconfirmed }) {
   const drawn = useNamedColour(color);
-  return /* @__PURE__ */ jsx46("div", { className: cx("ad-time-grid__band", unconfirmed && "ad-time-grid__band--unconfirmed", label && "ad-time-grid__band--first"), style: drawn ? { ["--ad-wash"]: drawn } : void 0, children: label && /* @__PURE__ */ jsx46("span", { className: "ad-time-grid__band-label", children: label }) });
+  return /* @__PURE__ */ jsx46("div", { className: cx("ad-time-grid__band", drawn && String(color).startsWith("project-") && "ad-time-grid__band--project", unconfirmed && "ad-time-grid__band--unconfirmed", label && "ad-time-grid__band--first"), style: drawn ? { ["--ad-wash"]: drawn } : void 0, children: label && /* @__PURE__ */ jsx46("span", { className: "ad-time-grid__band-label", children: label }) });
 }
 
 // src/components/Map/Map.tsx
