@@ -2250,8 +2250,9 @@ button:hover > .ad-project-pill:not(.ad-project-pill--current) { color: var(--ac
 /* A separator the person placed among the screens: a short hairline with room above and below, grabbed like any row. */
 .ad-menu__sep { list-style: none; display: flex; align-items: center; height: var(--space-3); cursor: grab; }
 .ad-menu__sep::before { content: ''; flex: 1; height: var(--border-w); margin: 0 var(--space-2); background: var(--border); }
-/* A project's name in the menu is written in caps, whatever was typed (design-rules: Caps). */
-.ad-menu__label--project { text-transform: uppercase; }
+/* A project's name in the menu is written in caps, whatever was typed (design-rules: Caps), at its code's letter size (text-11) in its own
+   face; its row keeps the menu's height and pitch. */
+.ad-menu__label--project { text-transform: uppercase; font-size: var(--text-11); }
 
 /* Adding a separator: the table's insert, coral line and +, on the gap between two screens (SideMenu onAddSeparator). */
 .ad-side.ad-menu-frame { position: relative; padding-top: var(--ad-menu-top); }
