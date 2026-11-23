@@ -1850,8 +1850,9 @@ button.ad-contents__button:focus-visible { outline: none; }
 /* It names its washes, and what a section's fill looks like laid on it (--ad-section-plane: the fill, the washes, the black), so what must
    cover a row scrolling under it inside a section (a pinned ruler) paints the section's own look, never a flat tone. */
 .ad-ground { --ad-ground-wash: radial-gradient(80% 70% at 15% -10%, var(--wash-warm), transparent 60%), radial-gradient(60% 60% at 105% 105%, var(--wash-cool), transparent 60%); --ad-section-plane: linear-gradient(var(--bg-surface), var(--bg-surface)), var(--ad-ground-wash), linear-gradient(var(--bg-base), var(--bg-base)); display: flex; flex-direction: column; min-height: 100%; background-color: var(--bg-base); background-image: var(--ad-ground-wash); background-attachment: fixed; counter-reset: widget; }
-/* The frame every screen keeps: the rail, then the page (header, one toolbar, the work) in its gutter. */
-.ad-frame { display: flex; align-items: stretch; flex: 1; min-height: 100vh; min-height: 100dvh; }
+/* The frame every screen keeps: the rail, then the page (header, one toolbar, the work) in its gutter. It fills the box the app gives it and
+   never more: the app's root is the window's height, or what a host's bar above it leaves; the frame never reaches past it. */
+.ad-frame { display: flex; align-items: stretch; flex: 1; min-height: 100%; }
 /* The page: the header at the top with 8 above it, the toolbar 8 under the header, the work
  16 under the toolbar. The rail runs the whole height of the frame, never shorter than the page. */
 /* The page column's insets, named so the header's bar can reach past them to the column's edges: one step, space-6, on both sides. */
@@ -1880,7 +1881,7 @@ button.ad-contents__button:focus-visible { outline: none; }
 .ad-frame__work--columns > * { min-height: 0; overflow-y: auto; scrollbar-gutter: stable; }
 .ad-frame > .ad-rail, .ad-frame > .ad-side { height: auto; align-self: stretch; }
 /* The footer: on a short page it stays at the bottom of the screen, never floating up under the work.
- The frame is never shorter than the window (above), so the page column has room and the footer's top margin takes it; an app
+ The frame fills the app's box (above), so the page column has room and the footer's top margin takes it; an app
  places Footer last in the page and does nothing else. */
 .ad-frame__page > .ad-footer { margin-top: auto; flex: none; }
 /* The footer starts at the rail's edge, however deep an app nests it: page gutter undone, so rail and footer meet as one L. */
@@ -2184,6 +2185,10 @@ button:hover > .ad-project-pill:not(.ad-project-pill--current) { color: var(--ac
 .ad-side { display: flex; flex-direction: column; }
 .ad-side__foot { margin-top: auto; display: flex; flex-direction: column; align-items: stretch; gap: var(--space-1); }
 .ad-side__foot .ad-side__item { flex: none; }
+/* The menu never scrolls and its foot never gives way: if its runs need more room than the window has, the runs are cut at their
+   bottom, the foot whole under them. */
+.ad-menu-frame > .ad-menu__foot { flex: none; }
+.ad-menu-frame > .ad-menu__list { min-height: 0; overflow-x: visible; overflow-y: clip; overflow-clip-margin: var(--space-1); }
 .ad-side__list li[draggable] { cursor: grab; }
 /* A pressable pill (a row's, a board card's) keeps the pill's own type, the menu's size. */
 .ad-project-pill--press { margin: 0; border: 0; font: var(--type-data); font-size: var(--text-11); line-height: 1; cursor: pointer; }
